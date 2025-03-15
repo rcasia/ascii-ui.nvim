@@ -1,3 +1,5 @@
+require("luassert")
+
 local Checkbox = require("one-ui.components.checkbox")
 
 describe("checkbox", function()

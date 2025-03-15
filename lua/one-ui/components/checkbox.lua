@@ -1,3 +1,4 @@
+---@class one-ui.Checkbox
 local Checkbox = {}
 
 ---@param active? boolean
