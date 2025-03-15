@@ -44,6 +44,7 @@ d.............b
 		end)
 
 		for _, width in ipairs({ 10, 15, 20, 25 }) do
+			-- TODO: add height
 			it(("should render a box with width %d"):format(width), function()
 				local box = Box:new({ width = width })
 
@@ -58,28 +59,28 @@ d.............b
 		end
 
 		it("should render a box with simple text", function()
-			local box_hello = Box:new()
+			local box_hello = Box:new({ width = 17 })
 			box_hello:add_child("Hello!")
 
 			eq(
 				[[
 
-┏━━━━━━━━━━━━━━━┓
-┃     Hello!    ┃
-┗━━━━━━━━━━━━━━━┛
+q...............p
+.     Hello!    .
+d...............b
 ]],
 				renderer:render(box_hello)
 			)
 
-			local box_world = Box:new()
+			local box_world = Box:new({ width = 17 })
 			box_world:add_child("World!")
 
 			eq(
 				[[
 
-┏━━━━━━━━━━━━━━━┓
-┃     World!    ┃
-┗━━━━━━━━━━━━━━━┛
+q...............p
+.     World!    .
+d...............b
 ]],
 				renderer:render(box_world)
 			)
