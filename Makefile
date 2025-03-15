@@ -1,5 +1,5 @@
 .PHONY: test
 
 test:
-	./scripts/test
+	 bash scripts/test
 
