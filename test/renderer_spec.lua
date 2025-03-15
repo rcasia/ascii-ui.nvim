@@ -1,7 +1,8 @@
+require("luassert")
+
 local Checkbox = require("one-ui.components.checkbox")
 local Box = require("one-ui.components.box")
 local Renderer = require("one-ui.renderer")
-local assert = require("luassert")
 local eq = assert.are.same
 
 describe("renderer", function()
@@ -30,6 +31,19 @@ describe("renderer", function()
 ]],
 				renderer:render(box)
 			)
+		end)
+
+		it("should render a box with defined dimensions", function()
+			local width = 25
+			local box = Box:new({ width = width })
+
+			local result = renderer:render(box)
+
+			local top_left = result:find("┏")
+			local top_right = result:find("┓")
+			local units = string.len("━") -- because each character is counted in bytes
+			local number_of_chars_on_top = top_right - top_left - units
+			eq(width * units, number_of_chars_on_top)
 		end)
 
 		it("should render a box with simple text", function()

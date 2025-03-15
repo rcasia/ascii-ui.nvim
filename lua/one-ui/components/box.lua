@@ -1,10 +1,12 @@
 ---@class one-ui.Box
 local Box = {}
 
-function Box:new()
+---@param props? { width?: number }
+function Box:new(props)
 	local state = {
 		_children = {},
 		type = "box",
+		props = props or { width = 15 },
 	}
 
 	setmetatable(state, self)
