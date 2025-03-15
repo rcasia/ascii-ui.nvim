@@ -33,18 +33,20 @@ describe("renderer", function()
 			)
 		end)
 
-		it("should render a box with defined dimensions", function()
-			local width = 25
-			local box = Box:new({ width = width })
+		for _, width in ipairs({ 10, 15, 20, 25 }) do
+			it(("should render a box with width %d"):format(width), function()
+				local box = Box:new({ width = width })
 
-			local result = renderer:render(box)
+				local result = renderer:render(box)
 
-			local top_left = result:find("┏")
-			local top_right = result:find("┓")
-			local units = string.len("━") -- because each character is counted in bytes
-			local number_of_chars_on_top = top_right - top_left - units
-			eq(width * units, number_of_chars_on_top)
-		end)
+				local top_left = result:find("┏")
+				local top_right = result:find("┓")
+				local units = string.len("━") -- because each character is counted in bytes
+				local number_of_chars_on_top = top_right - top_left - units
+
+				eq(width * units, number_of_chars_on_top)
+			end)
+		end
 
 		it("should render a box with simple text", function()
 			local box_hello = Box:new()
