@@ -59,7 +59,6 @@ d.............b
 
 				local actual_height = #vim.split(result, "\n") - 2 -- remove the first and last line
 
-				print(result)
 				eq(box_props.width, top_right_pos - top_left_pos + 1)
 				eq(box_props.height, actual_height)
 			end)
