@@ -42,8 +42,19 @@ function Renderer:render_box(box)
 
 	if #children == 0 then
 		local output = "\n"
+		local vertical_space = (box.props.height / 2)
+		local upper_vertical_space = math.floor(vertical_space)
+		local lower_vertical_space = math.ceil(vertical_space)
+		local space = cc.vertical .. (" "):rep(width - 2) .. cc.vertical .. "\n"
+
 		output = output .. cc.top_left .. (cc.horizontal):rep(width - 2) .. cc.top_right .. "\n"
-		output = output .. cc.vertical .. (" "):rep(width - 2) .. cc.vertical .. "\n"
+		for i = 1, upper_vertical_space - 1 do
+			output = output .. space
+		end
+		output = vim.iter({ output .. cc.vertical .. (" "):rep(width - 2) .. cc.vertical .. "\n" }):join("")
+		for i = 1, lower_vertical_space - 2 do
+			output = output .. space
+		end
 		output = output .. cc.bottom_left .. (cc.horizontal):rep(width - 2) .. cc.bottom_right .. "\n"
 
 		return output

@@ -43,18 +43,25 @@ d.............b
 			)
 		end)
 
-		for _, width in ipairs({ 10, 15, 20, 25 }) do
-			-- TODO: add height
-			it(("should render a box with width %d"):format(width), function()
-				local box = Box:new({ width = width })
+		for _, box_props in ipairs({
+			{ width = 10, height = 5 },
+			{ width = 15, height = 3 },
+			{ width = 20, height = 4 },
+			{ width = 25, height = 10 },
+		}) do
+			it(("should render a box with width %s"):format(box_props), function()
+				local box = Box:new(box_props)
 
 				local result = renderer:render(box)
 
 				local top_left_pos = string.find(result, "q")
 				local top_right_pos = string.find(result, "p")
 
+				local actual_height = #vim.split(result, "\n") - 2 -- remove the first and last line
+
 				print(result)
-				eq(width, top_right_pos - top_left_pos + 1)
+				eq(box_props.width, top_right_pos - top_left_pos + 1)
+				eq(box_props.height, actual_height)
 			end)
 		end
 
