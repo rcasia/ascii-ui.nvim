@@ -41,15 +41,9 @@ function Renderer:render_box(box)
 	if #children == 0 then
 		local width = box.props.width
 		local output = "\n"
-		output = output .. cc.top_left
-		output = output .. (cc.horizontal):rep(width - 2)
-		output = output .. cc.top_right .. "\n"
-		output = output .. cc.vertical
-		output = output .. (" "):rep(width - 2)
-		output = output .. cc.vertical .. "\n"
-		output = output .. cc.bottom_left
-		output = output .. (cc.horizontal):rep(width - 2)
-		output = output .. cc.bottom_right .. "\n"
+		output = output .. cc.top_left .. (cc.horizontal):rep(width - 2) .. cc.top_right .. "\n"
+		output = output .. cc.vertical .. (" "):rep(width - 2) .. cc.vertical .. "\n"
+		output = output .. cc.bottom_left .. (cc.horizontal):rep(width - 2) .. cc.bottom_right .. "\n"
 
 		return output
 	end
