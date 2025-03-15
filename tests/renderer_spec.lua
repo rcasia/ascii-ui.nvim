@@ -65,27 +65,31 @@ d.............b
 		end
 
 		it("should render a box with simple text", function()
-			local box_hello = Box:new({ width = 17 })
+			local box_hello = Box:new({ width = 17, height = 5 })
 			box_hello:add_child("Hello!")
 
 			eq(
 				[[
 
 q...............p
+.               .
 .     Hello!    .
+.               .
 d...............b
 ]],
 				renderer:render(box_hello)
 			)
 
-			local box_world = Box:new({ width = 17 })
+			local box_world = Box:new({ width = 17, height = 5 })
 			box_world:add_child("World!")
 
 			eq(
 				[[
 
 q...............p
+.               .
 .     World!    .
+.               .
 d...............b
 ]],
 				renderer:render(box_world)
