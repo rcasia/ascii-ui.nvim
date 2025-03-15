@@ -26,11 +26,21 @@ function Renderer:render_checkbox(checkbox)
 	return "[ ]"
 end
 
+---@param box one-ui.Box
 function Renderer:render_box(box)
-	return [[
+	if #box:children() == 0 then
+		return [[
 
 ┏━━━━━━━━━━━━━━━┓
 ┃               ┃
+┗━━━━━━━━━━━━━━━┛
+]]
+	end
+
+	return [[
+
+┏━━━━━━━━━━━━━━━┓
+┃     Hello!    ┃
 ┗━━━━━━━━━━━━━━━┛
 ]]
 end

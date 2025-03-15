@@ -31,5 +31,20 @@ describe("renderer", function()
 				renderer:render(box)
 			)
 		end)
+
+		it("should render a box with simple text", function()
+			local box = Box:new()
+			box:add_child("Hello!")
+
+			eq(
+				[[
+
+┏━━━━━━━━━━━━━━━┓
+┃     Hello!    ┃
+┗━━━━━━━━━━━━━━━┛
+]],
+				renderer:render(box)
+			)
+		end)
 	end)
 end)
