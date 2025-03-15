@@ -1,1 +1,2 @@
-# spring-initializer.nvim
+# one-ui.nvim
+
