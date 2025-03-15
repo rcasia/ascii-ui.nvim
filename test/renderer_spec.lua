@@ -33,8 +33,8 @@ describe("renderer", function()
 		end)
 
 		it("should render a box with simple text", function()
-			local box = Box:new()
-			box:add_child("Hello!")
+			local box_hello = Box:new()
+			box_hello:add_child("Hello!")
 
 			eq(
 				[[
@@ -43,11 +43,11 @@ describe("renderer", function()
 ┃     Hello!    ┃
 ┗━━━━━━━━━━━━━━━┛
 ]],
-				renderer:render(box)
+				renderer:render(box_hello)
 			)
 
-			local box = Box:new()
-			box:add_child("World!")
+			local box_world = Box:new()
+			box_world:add_child("World!")
 
 			eq(
 				[[
@@ -56,7 +56,7 @@ describe("renderer", function()
 ┃     World!    ┃
 ┗━━━━━━━━━━━━━━━┛
 ]],
-				renderer:render(box)
+				renderer:render(box_world)
 			)
 		end)
 	end)
