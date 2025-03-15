@@ -28,7 +28,8 @@ end
 
 ---@param box one-ui.Box
 function Renderer:render_box(box)
-	if #box:children() == 0 then
+	local children = box:children()
+	if #children == 0 then
 		return [[
 
 ┏━━━━━━━━━━━━━━━┓
@@ -37,12 +38,16 @@ function Renderer:render_box(box)
 ]]
 	end
 
-	return [[
+	if #children == 1 and type(children[1]) == "string" then
+		return ([[
 
 ┏━━━━━━━━━━━━━━━┓
-┃     Hello!    ┃
+┃     %s    ┃
 ┗━━━━━━━━━━━━━━━┛
-]]
+]]):format(children[1])
+	end
+
+	error("Not implemented")
 end
 
 return Renderer

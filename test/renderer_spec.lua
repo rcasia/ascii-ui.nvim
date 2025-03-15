@@ -45,6 +45,19 @@ describe("renderer", function()
 ]],
 				renderer:render(box)
 			)
+
+			local box = Box:new()
+			box:add_child("World!")
+
+			eq(
+				[[
+
+┏━━━━━━━━━━━━━━━┓
+┃     World!    ┃
+┗━━━━━━━━━━━━━━━┛
+]],
+				renderer:render(box)
+			)
 		end)
 	end)
 end)
