@@ -6,7 +6,17 @@ local Renderer = require("one-ui.renderer")
 local eq = assert.are.same
 
 describe("renderer", function()
-	local renderer = Renderer:new()
+	local config = {
+		characters = {
+			top_left = "q",
+			top_right = "p",
+			bottom_left = "d",
+			bottom_right = "b",
+			horizontal = ".",
+			vertical = ".",
+		},
+	}
+	local renderer = Renderer:new(config)
 
 	describe("checkbox", function()
 		it("should render a checkbox", function()
@@ -25,9 +35,9 @@ describe("renderer", function()
 			eq(
 				[[
 
-┏━━━━━━━━━━━━━━━┓
-┃               ┃
-┗━━━━━━━━━━━━━━━┛
+q.............p
+.             .
+d.............b
 ]],
 				renderer:render(box)
 			)
@@ -39,12 +49,11 @@ describe("renderer", function()
 
 				local result = renderer:render(box)
 
-				local top_left = result:find("┏")
-				local top_right = result:find("┓")
-				local units = string.len("━") -- because each character is counted in bytes
-				local number_of_chars_on_top = top_right - top_left - units
+				local top_left_pos = string.find(result, "q")
+				local top_right_pos = string.find(result, "p")
 
-				eq(width * units, number_of_chars_on_top)
+				print(result)
+				eq(width, top_right_pos - top_left_pos + 1)
 			end)
 		end
 

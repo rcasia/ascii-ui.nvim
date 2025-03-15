@@ -1,13 +1,17 @@
 ---@class one-ui.Renderer
 local Renderer = {}
 
-function Renderer:new()
-	local renderer = {}
+---@param config { characters: { top_left: string, top_right: string,
+--- bottom_left: string, bottom_right: string, horizontal: string, vertical: string } }
+function Renderer:new(config)
+	local state = {
+		config = config,
+	}
 
-	setmetatable(renderer, self)
+	setmetatable(state, self)
 	self.__index = self
 
-	return renderer
+	return state
 end
 
 ---@param component one-ui.Checkbox
@@ -33,18 +37,19 @@ end
 ---@param box one-ui.Box
 function Renderer:render_box(box)
 	local children = box:children()
+	local cc = self.config.characters
 	if #children == 0 then
 		local width = box.props.width
 		local output = "\n"
-		output = output .. "┏"
-		output = output .. ("━"):rep(width)
-		output = output .. "┓\n"
-		output = output .. "┃"
-		output = output .. (" "):rep(width)
-		output = output .. "┃\n"
-		output = output .. "┗"
-		output = output .. ("━"):rep(width)
-		output = output .. "┛\n"
+		output = output .. cc.top_left
+		output = output .. (cc.horizontal):rep(width - 2)
+		output = output .. cc.top_right .. "\n"
+		output = output .. cc.vertical
+		output = output .. (" "):rep(width - 2)
+		output = output .. cc.vertical .. "\n"
+		output = output .. cc.bottom_left
+		output = output .. (cc.horizontal):rep(width - 2)
+		output = output .. cc.bottom_right .. "\n"
 
 		return output
 	end
