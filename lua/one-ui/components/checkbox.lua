@@ -1,8 +1,9 @@
 local Checkbox = {}
 
-function Checkbox:new()
+---@param active? boolean
+function Checkbox:new(active)
 	local checkbox = {
-		checked = false,
+		checked = active or false,
 	}
 
 	setmetatable(checkbox, self)
