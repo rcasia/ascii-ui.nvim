@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# add git hooks
+git config core.hooksPath .githooks
