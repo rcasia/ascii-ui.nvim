@@ -11,10 +11,28 @@ end
 
 ---@param component one-ui.Checkbox
 function Renderer:render(component)
-	if component:is_checked() then
+	if component.type == "checkbox" then
+		return self:render_checkbox(component)
+	end
+	if component.type == "box" then
+		return self:render_box(component)
+	end
+end
+
+function Renderer:render_checkbox(checkbox)
+	if checkbox:is_checked() then
 		return "[X]"
 	end
 	return "[ ]"
+end
+
+function Renderer:render_box(box)
+	return [[
+
+┏━━━━━━━━━━━━━━━┓
+┃               ┃
+┗━━━━━━━━━━━━━━━┛
+]]
 end
 
 return Renderer

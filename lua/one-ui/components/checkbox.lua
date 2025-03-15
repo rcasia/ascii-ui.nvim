@@ -5,6 +5,7 @@ local Checkbox = {}
 function Checkbox:new(active)
 	local checkbox = {
 		checked = active or false,
+		type = "checkbox",
 	}
 
 	setmetatable(checkbox, self)

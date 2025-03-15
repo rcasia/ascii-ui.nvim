@@ -4,6 +4,7 @@ local Box = {}
 function Box:new()
 	local state = {
 		_children = {},
+		type = "box",
 	}
 
 	setmetatable(state, self)
