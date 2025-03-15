@@ -48,11 +48,11 @@ function Renderer:render_box(box)
 		local space = cc.vertical .. (" "):rep(width - 2) .. cc.vertical .. "\n"
 
 		output = output .. cc.top_left .. (cc.horizontal):rep(width - 2) .. cc.top_right .. "\n"
-		for i = 1, upper_vertical_space - 1 do
+		for _ = 1, upper_vertical_space - 1 do
 			output = output .. space
 		end
 		output = vim.iter({ output .. cc.vertical .. (" "):rep(width - 2) .. cc.vertical .. "\n" }):join("")
-		for i = 1, lower_vertical_space - 2 do
+		for _ = 1, lower_vertical_space - 2 do
 			output = output .. space
 		end
 		output = output .. cc.bottom_left .. (cc.horizontal):rep(width - 2) .. cc.bottom_right .. "\n"
