@@ -3,7 +3,7 @@ local Element = require("one-ui.buffer.element")
 ---@class one-ui.BufferLine
 local BufferLine = {}
 
----@param elements one-ui.Element
+---@param elements one-ui.Element[]
 ---@return one-ui.BufferLine
 function BufferLine:new(elements)
 	if vim.isarray(elements) == false then
@@ -24,10 +24,10 @@ end
 ---@return { col: number } | nil
 function BufferLine:find_focusable()
 	assert(self.elements, "bufferline component failed: element cannot be nil")
-	if not self.elements[1]:is_focusable() then
-		return nil, nil
-	end
-	return self.elements[1], { col = 1 }
+	local found = vim.iter(self.elements):find(function(element)
+		return element:is_focusable()
+	end)
+	return found, found and { col = 1 } or nil
 end
 
 function BufferLine.from_string(str)
