@@ -6,6 +6,7 @@ function Checkbox:new(opts)
 	opts = opts or {}
 	local checkbox = {
 		checked = opts.active or false,
+		label = opts.label or "",
 		type = "checkbox",
 	}
 

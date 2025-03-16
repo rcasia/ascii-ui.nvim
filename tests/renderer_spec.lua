@@ -24,7 +24,12 @@ describe("renderer", function()
 			eq("[ ]", renderer:render(checkbox))
 
 			checkbox:toggle()
-			eq("[X]", renderer:render(checkbox))
+			eq("[x]", renderer:render(checkbox))
+		end)
+
+		it("should render a checkbox with label", function()
+			local checkbox = Checkbox:new({ active = true, label = "test_label" })
+			eq("[x] test_label", renderer:render(checkbox))
 		end)
 	end)
 

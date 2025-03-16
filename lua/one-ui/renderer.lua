@@ -29,9 +29,9 @@ end
 
 function Renderer:render_checkbox(checkbox)
 	if checkbox:is_checked() then
-		return "[X]"
+		return vim.trim("[x] " .. checkbox.label)
 	end
-	return "[ ]"
+	return vim.trim("[ ] " .. checkbox.label)
 end
 
 ---@param box one-ui.Box
