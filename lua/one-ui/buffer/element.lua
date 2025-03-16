@@ -2,10 +2,13 @@
 local Element = {}
 
 ---@param text string
-function Element:new(text)
+---@param is_focusable? boolean
+---@return one-ui.Element
+function Element:new(text, is_focusable)
 	vim.validate({ text = { text, "string" } })
 	local state = {
 		text = text,
+		focusable = is_focusable or false,
 	}
 
 	setmetatable(state, self)
@@ -19,7 +22,7 @@ function Element:to_string()
 end
 
 function Element:is_focusable()
-	return true
+	return self.focusable
 end
 
 return Element

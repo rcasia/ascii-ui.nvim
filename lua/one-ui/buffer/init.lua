@@ -4,6 +4,7 @@ local BufferLine = require("one-ui.buffer.bufferline")
 local Buffer = {}
 
 ---@param lines? one-ui.BufferLine[]
+---@return one-ui.Buffer
 function Buffer:new(lines)
 	local state = {
 		lines = lines or {},
@@ -19,7 +20,7 @@ end
 function Buffer:find_focusable()
 	assert(self.lines, "buffer component failed: lines cannot be nil")
 
-	local result 
+	local result
 	for i, line in ipairs(self.lines) do
 		result = { line:find_focusable() }
 		if result[1] then

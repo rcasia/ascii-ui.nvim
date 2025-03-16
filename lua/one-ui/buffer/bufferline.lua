@@ -4,6 +4,7 @@ local Element = require("one-ui.buffer.element")
 local BufferLine = {}
 
 ---@param element one-ui.Element
+---@return one-ui.BufferLine
 function BufferLine:new(element)
 	vim.validate({ element = { element, "table" } })
 
