@@ -1,7 +1,7 @@
 local Window = require("one-ui.window")
 
 describe("window", function()
-	it("should open", function()
+	it("should open and close", function()
 		local window = Window:new()
 		window:open()
 

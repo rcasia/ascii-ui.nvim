@@ -1,9 +1,19 @@
-local Window = {}
+---@alias one-ui.WindowOpts { width: integer, height: integer }
 
-function Window:new()
+local Window = {
+	---@type one-ui.WindowOpts
+	default_opts = { width = 40, height = 20 },
+}
+
+---@param opts one-ui.WindowOpts
+function Window:new(opts)
+	opts = opts or {}
+	opts = vim.tbl_extend("force", self.default_opts, opts)
+
 	local state = {
 		winid = nil,
 		bufnr = nil,
+		opts = opts,
 	}
 
 	setmetatable(state, self)
@@ -19,15 +29,14 @@ function Window:open()
 	-- Open a floating window with the new buffer
 	local win = vim.api.nvim_open_win(buf, true, {
 		relative = "editor",
-		width = 80,
-		height = 20,
+		width = self.opts.width,
+		height = self.opts.height,
 		col = 10,
 		row = 10,
 		style = "minimal",
 	})
 
-	-- Retrieve the buffer from the window (this returns the same buffer created above)
-	local buf_from_win = vim.api.nvim_win_get_buf(win)
+	vim.api.nvim_win_get_buf(win)
 
 	self.winid = win
 	self.bufnr = buf
