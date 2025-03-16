@@ -29,18 +29,25 @@ describe("buffer", function()
 		end)
 
 		it("should find the next focusable element", function()
-			local target1 = Element:new("this is focusable", true)
-			local target2 = Element:new("another focusable", true)
+			local target_a = Element:new("this is focusable", true)
+			local target_b = Element:new("another focusable", true)
+			local target_c = Element:new("yet another focusable", true)
 			local b = Buffer:new(
-				BufferLine:new(Element:new("this is not focusable"), target1),
-				BufferLine:new(Element:new("not focusable either"), target2)
+				BufferLine:new(Element:new("this is not focusable"), target_a),
+				BufferLine:new(Element:new("not focusable either"), target_b),
+				BufferLine:new(),
+				BufferLine:new(),
+				BufferLine:new(target_c)
 			)
 			local next = b:iter_focusables()
-			local found = next()
-			eq(target1, found)
+			local found_a = next()
+			eq(target_a, found_a)
 
-			local found2 = next()
-			eq(target2, found2)
+			local found_b = next()
+			eq(target_b, found_b)
+
+			local found_c = next()
+			eq(target_c, found_c)
 
 			assert.is_nil(next())
 		end)
