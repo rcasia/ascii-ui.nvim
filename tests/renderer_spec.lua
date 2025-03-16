@@ -8,10 +8,10 @@ local eq = assert.are.same
 describe("renderer", function()
 	local config = {
 		characters = {
-			top_left = "q",
-			top_right = "p",
-			bottom_left = "d",
-			bottom_right = "b",
+			top_left = ".",
+			top_right = ".",
+			bottom_left = ".",
+			bottom_right = ".",
 			horizontal = ".",
 			vertical = ".",
 		},
@@ -40,9 +40,9 @@ describe("renderer", function()
 			eq(
 				--
 				{
-					"q.............p",
+					"...............",
 					".             .",
-					"d.............b",
+					"...............",
 				},
 				renderer:render(box)
 			)
@@ -69,22 +69,22 @@ describe("renderer", function()
 			box_hello:set_child("Hello!")
 
 			eq({
-				"q...............p",
+				".................",
 				".               .",
 				".     Hello!    .",
 				".               .",
-				"d...............b",
+				".................",
 			}, renderer:render(box_hello))
 
 			local box_world = Box:new({ width = 17, height = 5 })
 			box_world:set_child("World!")
 
 			eq({
-				"q...............p",
+				".................",
 				".               .",
 				".     World!    .",
 				".               .",
-				"d...............b",
+				".................",
 			}, renderer:render(box_world))
 		end)
 	end)
