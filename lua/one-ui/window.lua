@@ -1,11 +1,11 @@
----@alias one-ui.WindowOpts { width: integer, height: integer }
+---@alias one-ui.WindowOpts { width?: integer, height?: integer }
 
 local Window = {
 	---@type one-ui.WindowOpts
 	default_opts = { width = 40, height = 20 },
 }
 
----@param opts one-ui.WindowOpts
+---@param opts? one-ui.WindowOpts
 function Window:new(opts)
 	opts = opts or {}
 	opts = vim.tbl_extend("force", self.default_opts, opts)
