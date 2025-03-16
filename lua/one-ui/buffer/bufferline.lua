@@ -18,9 +18,13 @@ function BufferLine:new(element)
 end
 
 ---@return one-ui.Element | nil
+---@return { col: number } | nil
 function BufferLine:find_focusable()
 	assert(self.element, "bufferline component failed: element cannot be nil")
-	return self.element:is_focusable() and self.element or nil
+	if not self.element:is_focusable() then
+		return nil, nil
+	end
+	return self.element, { col = 1 }
 end
 
 function BufferLine.from_string(str)

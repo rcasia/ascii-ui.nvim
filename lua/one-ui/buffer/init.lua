@@ -19,11 +19,14 @@ end
 function Buffer:find_focusable()
 	assert(self.lines, "buffer component failed: lines cannot be nil")
 
-	return vim.iter(self.lines)
-		:map(function(line)
-			return line:find_focusable()
-		end)
-		:nth(1)
+	local result 
+	for i, line in ipairs(self.lines) do
+		result = { line:find_focusable() }
+		if result[1] then
+			return result[1], { line = i, col = result[2].col }
+		end
+	end
+	return result[1], result[2]
 end
 
 ---@param lines string[]
