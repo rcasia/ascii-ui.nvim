@@ -66,7 +66,7 @@ d.............b
 
 		it("should render a box with simple text", function()
 			local box_hello = Box:new({ width = 17, height = 5 })
-			box_hello:add_child("Hello!")
+			box_hello:set_child("Hello!")
 
 			eq(
 				[[
@@ -81,7 +81,7 @@ d...............b
 			)
 
 			local box_world = Box:new({ width = 17, height = 5 })
-			box_world:add_child("World!")
+			box_world:set_child("World!")
 
 			eq(
 				[[

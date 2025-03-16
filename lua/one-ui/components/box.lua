@@ -11,7 +11,7 @@ function Box:new(props)
 	assert(props.height >= 3, "box component failed: height cannot be less than 3")
 
 	local state = {
-		_children = {},
+		_child = "",
 		type = "box",
 		props = props,
 	}
@@ -23,13 +23,18 @@ function Box:new(props)
 end
 
 ---@param child string
-function Box:add_child(child)
-	self._children[#self._children + 1] = child
+function Box:set_child(child)
+	self._child = child
 end
 
----@return table<any>
-function Box:children()
-	return self._children
+---@return string
+function Box:child()
+	return self._child
+end
+
+---@return boolean
+function Box:has_child()
+	return self._child ~= ""
 end
 
 return Box
