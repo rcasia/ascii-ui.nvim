@@ -1,10 +1,11 @@
 ---@class one-ui.Checkbox
 local Checkbox = {}
 
----@param active? boolean
-function Checkbox:new(active)
+---@param opts { active?: boolean }
+function Checkbox:new(opts)
+	opts = opts or {}
 	local checkbox = {
-		checked = active or false,
+		checked = opts.active or false,
 		type = "checkbox",
 	}
 
