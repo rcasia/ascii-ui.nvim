@@ -13,6 +13,7 @@ function Window:new(opts)
 	opts = vim.tbl_extend("force", self.default_opts, opts)
 
 	local state = {
+		_is_color_set = false,
 		winid = nil,
 		bufnr = nil,
 		opts = opts,
@@ -64,6 +65,41 @@ function Window:update(buffer_content)
 		vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
 		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer_content)
 		vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+		if self._is_color_set == false then
+			self._is_color_set = true
+
+			-- Create a namespace for your highlights.
+			local ns_id = vim.api.nvim_create_namespace("my_namespace")
+
+			-- Define a highlight group.
+			vim.api.nvim_set_hl(0, "MyHighlight", { fg = "#d1ccc0", bg = "#2c2c54", bold = true })
+
+			local function apply_highlight(bufnr)
+				-- Clear previous extmarks in the namespace (if needed)
+				vim.api.nvim_buf_clear_namespace(bufnr, ns_id, 0, -1)
+
+				-- Set an extmark on the first line from column 0 to 10.
+				vim.api.nvim_buf_set_extmark(bufnr, ns_id, 0, 0, {
+					end_line = self.opts.height - 1, -- highlight ends on the same line
+					end_col = self.opts.width - 1, -- highlight from col 0 to 10
+					hl_group = "MyHighlight",
+				})
+			end
+
+			-- Apply the highlight initially.
+			apply_highlight(self.bufnr)
+
+			-- Set up an autocommand to reapply the highlight when the buffer changes.
+			vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+				buffer = self.bufnr,
+				callback = function()
+					-- Ensure we're in the main context
+					vim.schedule(function()
+						apply_highlight(self.bufnr)
+					end)
+				end,
+			})
+		end
 	end)
 end
 

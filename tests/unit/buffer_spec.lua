@@ -25,6 +25,7 @@ describe("buffer", function()
 			)
 			local found, position = b:find_focusable()
 			eq(e, found)
+			-- TODO: check a better way to determine position and range in buffer
 			eq({ line = 2, col = 1 }, position)
 		end)
 
