@@ -21,15 +21,15 @@ describe("renderer", function()
 	describe("checkbox", function()
 		it("should render a checkbox", function()
 			local checkbox = Checkbox:new()
-			eq("[ ]", renderer:render(checkbox))
+			eq({ "[ ]" }, renderer:render(checkbox))
 
 			checkbox:toggle()
-			eq("[x]", renderer:render(checkbox))
+			eq({ "[x]" }, renderer:render(checkbox))
 		end)
 
 		it("should render a checkbox with label", function()
 			local checkbox = Checkbox:new({ active = true, label = "test_label" })
-			eq("[x] test_label", renderer:render(checkbox))
+			eq({ "[x] test_label" }, renderer:render(checkbox))
 		end)
 	end)
 
@@ -38,12 +38,12 @@ describe("renderer", function()
 			local box = Box:new()
 
 			eq(
-				[[
-
-q.............p
-.             .
-d.............b
-]],
+				--
+				{
+					"q.............p",
+					".             .",
+					"d.............b",
+				},
 				renderer:render(box)
 			)
 		end)
@@ -59,13 +59,8 @@ d.............b
 
 				local result = renderer:render(box)
 
-				local top_left_pos = string.find(result, "q")
-				local top_right_pos = string.find(result, "p")
-
-				local actual_height = #vim.split(result, "\n") - 2 -- remove the first and last line
-
-				eq(box_props.width, top_right_pos - top_left_pos + 1)
-				eq(box_props.height, actual_height)
+				eq(box_props.width, result[1]:len())
+				eq(box_props.height, #result)
 			end)
 		end
 
@@ -73,32 +68,24 @@ d.............b
 			local box_hello = Box:new({ width = 17, height = 5 })
 			box_hello:set_child("Hello!")
 
-			eq(
-				[[
-
-q...............p
-.               .
-.     Hello!    .
-.               .
-d...............b
-]],
-				renderer:render(box_hello)
-			)
+			eq({
+				"q...............p",
+				".               .",
+				".     Hello!    .",
+				".               .",
+				"d...............b",
+			}, renderer:render(box_hello))
 
 			local box_world = Box:new({ width = 17, height = 5 })
 			box_world:set_child("World!")
 
-			eq(
-				[[
-
-q...............p
-.               .
-.     World!    .
-.               .
-d...............b
-]],
-				renderer:render(box_world)
-			)
+			eq({
+				"q...............p",
+				".               .",
+				".     World!    .",
+				".               .",
+				"d...............b",
+			}, renderer:render(box_world))
 		end)
 	end)
 end)

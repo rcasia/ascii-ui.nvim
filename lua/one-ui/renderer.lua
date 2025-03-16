@@ -15,7 +15,7 @@ function Renderer:new(config)
 end
 
 ---@param component one-ui.Checkbox
----@return string
+---@return string[]
 function Renderer:render(component)
 	if component.type == "checkbox" then
 		return self:render_checkbox(component)
@@ -29,9 +29,9 @@ end
 
 function Renderer:render_checkbox(checkbox)
 	if checkbox:is_checked() then
-		return vim.trim("[x] " .. checkbox.label)
+		return { vim.trim("[x] " .. checkbox.label) }
 	end
-	return vim.trim("[ ] " .. checkbox.label)
+	return { vim.trim("[ ] " .. checkbox.label) }
 end
 
 ---@param box one-ui.Box
@@ -40,39 +40,33 @@ function Renderer:render_box(box)
 	local cc = self.config.characters
 	local width = box.props.width
 
-	local output = "\n"
+	local output = {}
 	local vertical_space = (box.props.height / 2)
 	local upper_vertical_space = math.floor(vertical_space)
 	local lower_vertical_space = math.ceil(vertical_space)
-	local space = cc.vertical .. (" "):rep(width - 2) .. cc.vertical .. "\n"
+	local space = cc.vertical .. (" "):rep(width - 2) .. cc.vertical
 
-	output = output .. cc.top_left .. (cc.horizontal):rep(width - 2) .. cc.top_right .. "\n"
+	output[#output + 1] = cc.top_left .. (cc.horizontal):rep(width - 2) .. cc.top_right
 	for _ = 1, upper_vertical_space - 1 do
-		output = output .. space
+		output[#output + 1] = space
 	end
 
 	if box:has_child() == false then
-		output = vim.iter({ output .. cc.vertical .. (" "):rep(width - 2) .. cc.vertical .. "\n" }):join("")
+		output[#output + 1] = space
 	elseif type(child) == "string" then
 		local text = child
 		local side_spaces = (width - #text - 2) / 2
 		local left_spaces = math.ceil(side_spaces)
 		local right_spaces = math.floor(side_spaces)
-		output = output
-			.. cc.vertical
-			.. (" "):rep(left_spaces)
-			.. text
-			.. (" "):rep(right_spaces)
-			.. cc.vertical
-			.. "\n"
+		output[#output + 1] = cc.vertical .. (" "):rep(left_spaces) .. text .. (" "):rep(right_spaces) .. cc.vertical
 	else
 		error("Not implemented")
 	end
 
 	for _ = 1, lower_vertical_space - 2 do
-		output = output .. space
+		output[#output + 1] = space
 	end
-	output = output .. cc.bottom_left .. (cc.horizontal):rep(width - 2) .. cc.bottom_right .. "\n"
+	output[#output + 1] = cc.bottom_left .. (cc.horizontal):rep(width - 2) .. cc.bottom_right
 
 	return output
 end
