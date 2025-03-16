@@ -1,12 +1,19 @@
 ---@class one-ui.Element
 local Element = {}
 
+local last_incremental_id = 0
+local function generate_id()
+	last_incremental_id = last_incremental_id + 1
+	return last_incremental_id
+end
+
 ---@param text string
 ---@param is_focusable? boolean
 ---@return one-ui.Element
 function Element:new(text, is_focusable)
 	vim.validate({ text = { text, "string" } })
 	local state = {
+		id = generate_id(),
 		text = text,
 		focusable = is_focusable or false,
 	}

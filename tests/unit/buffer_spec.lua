@@ -51,5 +51,17 @@ describe("buffer", function()
 
 			assert.is_nil(next())
 		end)
+
+		it("should find element by id", function()
+			local target = Element:new("target element")
+			local b = Buffer:new(
+				BufferLine:new(Element:new("some element A")),
+				BufferLine:new(Element:new("some element B"), target),
+				BufferLine:new(Element:new("some elmenent C", true))
+			)
+
+			local found = b:find_element_by_id(target.id)
+			eq(target, found)
+		end)
 	end)
 end)

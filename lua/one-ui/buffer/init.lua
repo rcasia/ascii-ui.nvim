@@ -35,8 +35,9 @@ end
 function Buffer:iter_focusables()
 	assert(self.lines, "buffer component failed: lines cannot be nil")
 
-	---@param line one-ui.BufferLine
-	local iter = vim.iter(self.lines)
+	local iter = vim
+		.iter(self.lines)
+		---@param line one-ui.BufferLine
 		:map(function(line)
 			return vim.iter(line.elements)
 				:filter(function(element)
@@ -69,6 +70,19 @@ function Buffer:to_lines()
 			return line:to_string()
 		end)
 		:totable()
+end
+
+---@param id string
+---@return one-ui.Element | nil
+function Buffer:find_element_by_id(id)
+	return vim.iter(self.lines)
+		:map(function(line)
+			return vim.iter(line.elements):find(function(element)
+				return element.id == id
+			end)
+		end)
+		:take(1)
+		:last()
 end
 
 return Buffer
