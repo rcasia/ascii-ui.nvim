@@ -38,6 +38,9 @@ function Window:open()
 
 	vim.api.nvim_win_get_buf(win)
 
+	-- Assume `buf` is the buffer ID associated with your window.
+	vim.api.nvim_buf_set_option(buf, "modifiable", false)
+
 	self.winid = win
 	self.bufnr = buf
 end
