@@ -1,6 +1,8 @@
 require("luassert")
 
 local Buffer = require("one-ui.buffer")
+local BufferLine = require("one-ui.buffer.bufferline")
+local Element = require("one-ui.buffer.element")
 local eq = assert.are.same
 
 describe("buffer", function()
@@ -12,5 +14,14 @@ describe("buffer", function()
 	it("creates buffer from array of strings", function()
 		local b = Buffer.from_lines({ "1test", "2test" })
 		eq({ "1test", "2test" }, b:to_lines())
+	end)
+
+	describe("find_focusable", function()
+		it("should find the first focusable element", function()
+			local e = Element:new("test")
+			local l = BufferLine:new(e)
+			local b = Buffer:new({ l })
+			eq(e, b:find_focusable())
+		end)
 	end)
 end)

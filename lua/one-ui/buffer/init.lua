@@ -15,6 +15,17 @@ function Buffer:new(lines)
 	return state
 end
 
+---@return one-ui.Element | nil
+function Buffer:find_focusable()
+	assert(self.lines, "buffer component failed: lines cannot be nil")
+
+	return vim.iter(self.lines)
+		:map(function(line)
+			return line:find_focusable()
+		end)
+		:nth(1)
+end
+
 ---@param lines string[]
 ---@return one-ui.Buffer
 function Buffer.from_lines(lines)
