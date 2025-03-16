@@ -20,7 +20,7 @@ end
 function Buffer.from_lines(lines)
 	local bufferlines = vim.iter(lines)
 		:map(function(line)
-			return BufferLine:new(line)
+			return BufferLine.from_string(line)
 		end)
 		:totable()
 	return Buffer:new(bufferlines)
@@ -30,7 +30,7 @@ end
 function Buffer:to_lines()
 	return vim.iter(self.lines)
 		:map(function(line)
-			return line.text
+			return line:to_string()
 		end)
 		:totable()
 end
