@@ -3,13 +3,15 @@ local Element = require("one-ui.buffer.element")
 ---@class one-ui.BufferLine
 local BufferLine = {}
 
----@param element one-ui.Element
+---@param elements one-ui.Element
 ---@return one-ui.BufferLine
-function BufferLine:new(element)
-	vim.validate({ element = { element, "table" } })
+function BufferLine:new(elements)
+	if vim.isarray(elements) == false then
+		elements = { elements }
+	end
 
 	local state = {
-		element = element,
+		elements = elements,
 	}
 
 	setmetatable(state, self)
@@ -21,11 +23,11 @@ end
 ---@return one-ui.Element | nil
 ---@return { col: number } | nil
 function BufferLine:find_focusable()
-	assert(self.element, "bufferline component failed: element cannot be nil")
-	if not self.element:is_focusable() then
+	assert(self.elements, "bufferline component failed: element cannot be nil")
+	if not self.elements[1]:is_focusable() then
 		return nil, nil
 	end
-	return self.element, { col = 1 }
+	return self.elements[1], { col = 1 }
 end
 
 function BufferLine.from_string(str)
@@ -33,7 +35,7 @@ function BufferLine.from_string(str)
 end
 
 function BufferLine:to_string()
-	return self.element:to_string()
+	return self.elements[1]:to_string()
 end
 
 return BufferLine
