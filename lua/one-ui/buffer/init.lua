@@ -31,6 +31,25 @@ function Buffer:find_focusable()
 	return result[1], result[2]
 end
 
+---@return fun(): one-ui.Element | nil
+function Buffer:iter_focusables()
+	assert(self.lines, "buffer component failed: lines cannot be nil")
+
+	---@param line one-ui.BufferLine
+	local iter = vim.iter(self.lines)
+		:map(function(line)
+			return vim.iter(line.elements)
+				:filter(function(element)
+					return element:is_focusable()
+				end)
+				:totable()
+		end)
+		:flatten()
+	return function()
+		return iter:next()
+	end
+end
+
 ---@param lines string[]
 ---@return one-ui.Buffer
 function Buffer.from_lines(lines)

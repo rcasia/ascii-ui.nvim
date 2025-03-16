@@ -27,5 +27,22 @@ describe("buffer", function()
 			eq(e, found)
 			eq({ line = 2, col = 1 }, position)
 		end)
+
+		it("should find the next focusable element", function()
+			local target1 = Element:new("this is focusable", true)
+			local target2 = Element:new("another focusable", true)
+			local b = Buffer:new(
+				BufferLine:new(Element:new("this is not focusable"), target1),
+				BufferLine:new(Element:new("not focusable either"), target2)
+			)
+			local next = b:iter_focusables()
+			local found = next()
+			eq(target1, found)
+
+			local found2 = next()
+			eq(target2, found2)
+
+			assert.is_nil(next())
+		end)
 	end)
 end)
