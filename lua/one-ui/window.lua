@@ -39,7 +39,7 @@ function Window:open()
 	vim.api.nvim_win_get_buf(win)
 
 	-- Assume `buf` is the buffer ID associated with your window.
-	vim.api.nvim_buf_set_option(buf, "modifiable", false)
+	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
 
 	self.winid = win
 	self.bufnr = buf
@@ -54,6 +54,15 @@ function Window:close()
 	vim.api.nvim_win_close(self.winid, true)
 	self.winid = nil
 	self.bufnr = nil
+end
+
+---@param buffer_content string[]
+function Window:update(buffer_content)
+	vim.schedule(function()
+		vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
+		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer_content)
+		vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+	end)
 end
 
 return Window

@@ -10,4 +10,13 @@ describe("window", function()
 		window:close()
 		assert.is_false(window:is_open())
 	end)
+
+	it("should show render", function()
+		local window = Window:new()
+		window:open()
+
+		window:update({ "Hello, World!" })
+
+		window:close()
+	end)
 end)
