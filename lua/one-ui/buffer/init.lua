@@ -3,9 +3,10 @@ local BufferLine = require("one-ui.buffer.bufferline")
 ---@class one-ui.Buffer
 local Buffer = {}
 
----@param lines? one-ui.BufferLine[]
+---@param ...? one-ui.BufferLine
 ---@return one-ui.Buffer
-function Buffer:new(lines)
+function Buffer:new(...)
+	local lines = { ... }
 	local state = {
 		lines = lines or {},
 	}
@@ -38,11 +39,12 @@ function Buffer.from_lines(lines)
 			return BufferLine.from_string(line)
 		end)
 		:totable()
-	return Buffer:new(bufferlines)
+	return Buffer:new(unpack(bufferlines))
 end
 
 ---@return string[]
 function Buffer:to_lines()
+	print("lines: " .. vim.inspect(self.lines))
 	return vim.iter(self.lines)
 		:map(function(line)
 			return line:to_string()
