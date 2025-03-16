@@ -21,7 +21,7 @@ describe("buffer", function()
 			local e = Element:new("this is focusable", true)
 			local b = Buffer:new(
 				BufferLine:new(Element:new("this is not focusable")),
-				BufferLine:new({ Element:new("not focusable either"), e })
+				BufferLine:new(Element:new("not focusable either"), e)
 			)
 			local found, position = b:find_focusable()
 			eq(e, found)

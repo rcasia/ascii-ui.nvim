@@ -3,12 +3,10 @@ local Element = require("one-ui.buffer.element")
 ---@class one-ui.BufferLine
 local BufferLine = {}
 
----@param elements one-ui.Element[]
+---@param ... one-ui.Element
 ---@return one-ui.BufferLine
-function BufferLine:new(elements)
-	if vim.isarray(elements) == false then
-		elements = { elements }
-	end
+function BufferLine:new(...)
+	local elements = { ... }
 
 	local state = {
 		elements = elements,
