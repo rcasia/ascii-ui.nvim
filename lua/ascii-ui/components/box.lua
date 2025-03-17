@@ -1,9 +1,12 @@
+---@alias ascii-ui.BoxProps { width: integer, height: integer }
+
 ---@class ascii-ui.Box
+---@field props ascii-ui.BoxProps
 local Box = {
 	default_props = { width = 15, height = 3 },
 }
 
----@param props? { width?: number, height?: number }
+---@param props? ascii-ui.BoxProps
 function Box:new(props)
 	props = props or {}
 	-- default props
