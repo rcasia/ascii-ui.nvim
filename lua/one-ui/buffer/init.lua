@@ -85,4 +85,10 @@ function Buffer:find_element_by_id(id)
 		:last()
 end
 
+---@param position { line: integer, col: integer }
+---@return one-ui.Element | nil
+function Buffer:find_element_by_position(position)
+	return self.lines[position.line]:find_element_by_col(position.col)
+end
+
 return Buffer

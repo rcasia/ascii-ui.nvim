@@ -28,6 +28,20 @@ function BufferLine:find_focusable()
 	return found, found and { col = 1 } or nil
 end
 
+---@param col number
+---@return one-ui.Element | nil
+function BufferLine:find_element_by_col(col)
+	local len = 0
+	for _, element in ipairs(self.elements) do
+		len = len + element:len()
+		if len >= col then
+			return element
+		end
+	end
+
+	return nil -- out of bounds
+end
+
 function BufferLine.from_string(str)
 	return BufferLine:new(Element:new(str))
 end

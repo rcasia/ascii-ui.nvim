@@ -63,5 +63,17 @@ describe("buffer", function()
 			local found = b:find_element_by_id(target.id)
 			eq(target, found)
 		end)
+
+		it("should find element by position", function()
+			local target_a = Element:new("target element")
+			local element_before_target = Element:new("some element B")
+			local b = Buffer:new(
+				BufferLine:new(Element:new("some element A")),
+				BufferLine:new(element_before_target, target_a),
+				BufferLine:new(Element:new("some element C"))
+			)
+
+			eq(target_a, b:find_element_by_position({ line = 2, col = element_before_target:len() + 1 }))
+		end)
 	end)
 end)

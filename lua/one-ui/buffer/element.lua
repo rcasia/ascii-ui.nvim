@@ -24,6 +24,11 @@ function Element:new(text, is_focusable)
 	return state
 end
 
+---@return integer
+function Element:len()
+	return string.len(self.text)
+end
+
 function Element:to_string()
 	return self.text
 end
