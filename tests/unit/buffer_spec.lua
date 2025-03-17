@@ -1,6 +1,6 @@
 require("luassert")
 
-local Buffer = require("ascii-ui.buffer")
+local Buffer = require("ascii-ui.buffer.buffer")
 local BufferLine = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 local eq = assert.are.same
