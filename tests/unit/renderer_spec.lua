@@ -1,8 +1,8 @@
 require("luassert")
 
-local Checkbox = require("one-ui.components.checkbox")
-local Box = require("one-ui.components.box")
-local Renderer = require("one-ui.renderer")
+local Checkbox = require("ascii-ui.components.checkbox")
+local Box = require("ascii-ui.components.box")
+local Renderer = require("ascii-ui.renderer")
 local eq = assert.are.same
 
 describe("renderer", function()

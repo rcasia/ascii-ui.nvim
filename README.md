@@ -1,2 +1,2 @@
-# one-ui.nvim
+# ascii-ui.nvim
 

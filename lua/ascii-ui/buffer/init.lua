@@ -1,10 +1,10 @@
-local BufferLine = require("one-ui.buffer.bufferline")
+local BufferLine = require("ascii-ui.buffer.bufferline")
 
----@class one-ui.Buffer
+---@class ascii-ui.Buffer
 local Buffer = {}
 
----@param ...? one-ui.BufferLine
----@return one-ui.Buffer
+---@param ...? ascii-ui.BufferLine
+---@return ascii-ui.Buffer
 function Buffer:new(...)
 	local lines = { ... }
 	local state = {
@@ -17,7 +17,7 @@ function Buffer:new(...)
 	return state
 end
 
----@return one-ui.Element | nil
+---@return ascii-ui.Element | nil
 function Buffer:find_focusable()
 	assert(self.lines, "buffer component failed: lines cannot be nil")
 
@@ -31,13 +31,13 @@ function Buffer:find_focusable()
 	return result[1], result[2]
 end
 
----@return fun(): one-ui.Element | nil
+---@return fun(): ascii-ui.Element | nil
 function Buffer:iter_focusables()
 	assert(self.lines, "buffer component failed: lines cannot be nil")
 
 	local iter = vim
 		.iter(self.lines)
-		---@param line one-ui.BufferLine
+		---@param line ascii-ui.BufferLine
 		:map(function(line)
 			return vim.iter(line.elements)
 				:filter(function(element)
@@ -52,7 +52,7 @@ function Buffer:iter_focusables()
 end
 
 ---@param lines string[]
----@return one-ui.Buffer
+---@return ascii-ui.Buffer
 function Buffer.from_lines(lines)
 	local bufferlines = vim.iter(lines)
 		:map(function(line)
@@ -73,7 +73,7 @@ function Buffer:to_lines()
 end
 
 ---@param id string
----@return one-ui.Element | nil
+---@return ascii-ui.Element | nil
 function Buffer:find_element_by_id(id)
 	return vim.iter(self.lines)
 		:map(function(line)
@@ -86,7 +86,7 @@ function Buffer:find_element_by_id(id)
 end
 
 ---@param position { line: integer, col: integer }
----@return one-ui.Element | nil
+---@return ascii-ui.Element | nil
 function Buffer:find_element_by_position(position)
 	return self.lines[position.line]:find_element_by_col(position.col)
 end

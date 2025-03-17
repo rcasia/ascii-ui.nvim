@@ -1,10 +1,10 @@
-local Element = require("one-ui.buffer.element")
+local Element = require("ascii-ui.buffer.element")
 
----@class one-ui.BufferLine
+---@class ascii-ui.BufferLine
 local BufferLine = {}
 
----@param ... one-ui.Element
----@return one-ui.BufferLine
+---@param ... ascii-ui.Element
+---@return ascii-ui.BufferLine
 function BufferLine:new(...)
 	local elements = { ... }
 
@@ -18,7 +18,7 @@ function BufferLine:new(...)
 	return state
 end
 
----@return one-ui.Element | nil
+---@return ascii-ui.Element | nil
 ---@return { col: number } | nil
 function BufferLine:find_focusable()
 	assert(self.elements, "bufferline component failed: element cannot be nil")
@@ -29,7 +29,7 @@ function BufferLine:find_focusable()
 end
 
 ---@param col number
----@return one-ui.Element | nil
+---@return ascii-ui.Element | nil
 function BufferLine:find_element_by_col(col)
 	local len = 0
 	for _, element in ipairs(self.elements) do

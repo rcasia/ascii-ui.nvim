@@ -1,4 +1,4 @@
-local Window = require("one-ui.window")
+local Window = require("ascii-ui.window")
 
 describe("window", function()
 	it("should open and close", function()

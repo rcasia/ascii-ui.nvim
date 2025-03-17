@@ -1,4 +1,4 @@
----@class one-ui.Box
+---@class ascii-ui.Box
 local Box = {
 	default_props = { width = 15, height = 3 },
 }

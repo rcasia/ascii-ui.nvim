@@ -1,4 +1,4 @@
----@class one-ui.Renderer
+---@class ascii-ui.Renderer
 local Renderer = {}
 
 ---@param config { characters: { top_left: string, top_right: string,
@@ -14,7 +14,7 @@ function Renderer:new(config)
 	return state
 end
 
----@param component one-ui.Checkbox
+---@param component ascii-ui.Checkbox
 ---@return string[]
 function Renderer:render(component)
 	if component.type == "checkbox" then
@@ -34,7 +34,7 @@ function Renderer:render_checkbox(checkbox)
 	return { vim.trim("[ ] " .. checkbox.label) }
 end
 
----@param box one-ui.Box
+---@param box ascii-ui.Box
 function Renderer:render_box(box)
 	local child = box:child()
 	local cc = self.config.characters

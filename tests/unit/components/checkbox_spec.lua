@@ -1,6 +1,6 @@
 require("luassert")
 
-local Checkbox = require("one-ui.components.checkbox")
+local Checkbox = require("ascii-ui.components.checkbox")
 
 describe("checkbox", function()
 	it("is initialized as false by default", function()

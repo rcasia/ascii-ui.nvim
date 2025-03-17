@@ -1,4 +1,4 @@
----@class one-ui.Checkbox
+---@class ascii-ui.Checkbox
 local Checkbox = {}
 
 ---@param opts { active?: boolean }

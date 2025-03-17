@@ -1,4 +1,4 @@
----@class one-ui.Element
+---@class ascii-ui.Element
 local Element = {}
 
 local last_incremental_id = 0
@@ -9,7 +9,7 @@ end
 
 ---@param text string
 ---@param is_focusable? boolean
----@return one-ui.Element
+---@return ascii-ui.Element
 function Element:new(text, is_focusable)
 	vim.validate({ text = { text, "string" } })
 	local state = {

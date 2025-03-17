@@ -1,7 +1,7 @@
 require("luassert")
 local eq = assert.are.same
 
-local Box = require("one-ui.components.box")
+local Box = require("ascii-ui.components.box")
 
 describe("box", function()
 	it("admits plain text", function()
