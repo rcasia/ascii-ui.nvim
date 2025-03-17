@@ -1,11 +1,13 @@
 ---@alias ascii-ui.WindowOpts { width?: integer, height?: integer }
 
+---@class ascii-ui.Window
 local Window = {
 	---@type ascii-ui.WindowOpts
 	default_opts = { width = 40, height = 20 },
 }
 
 ---@param opts? ascii-ui.WindowOpts
+---@return ascii-ui.Window
 function Window:new(opts)
 	opts = opts or {}
 	opts = vim.tbl_extend("force", self.default_opts, opts)
@@ -58,11 +60,11 @@ end
 
 ---@param buffer_content string[]
 function Window:update(buffer_content)
-	vim.schedule(function()
-		vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
-		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer_content)
-		vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
-	end)
+	-- vim.schedule(function()
+	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
+	vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer_content)
+	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+	-- end)
 end
 
 return Window

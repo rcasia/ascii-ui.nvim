@@ -7,6 +7,7 @@ local Box = {
 }
 
 ---@param props? ascii-ui.BoxProps
+---@return ascii-ui.Box
 function Box:new(props)
 	props = props or {}
 	-- default props

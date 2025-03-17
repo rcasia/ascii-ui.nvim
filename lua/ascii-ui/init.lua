@@ -16,25 +16,15 @@ local config = {
 
 local renderer = require("ascii-ui.renderer"):new(config)
 
-local function setInterval(interval, callback)
-	local timer = assert(uv.new_timer())
-	timer:start(interval, interval, function()
-		callback()
-	end)
-	return timer
-end
-
 ---@param box ascii-ui.Box
+---@return integer bufnr
 function M.render(box)
 	local window = Window:new({ width = box.props.width, height = box.props.height })
 	window:open()
 
-	setInterval(1000, function()
-		local time = os.date("%H:%M:%S")
-		box:set_child(time)
+	window:update(renderer:render(box))
 
-		window:update(renderer:render(box))
-	end)
+	return window.bufnr
 end
 
 setmetatable(M, {
