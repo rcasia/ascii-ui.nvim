@@ -3,10 +3,23 @@ local Component = {
 	__name = "BaseComponent",
 }
 
+---@param array any[]
+---@return boolean
+local function first_not_nil(array)
+	print(vim.inspect(array))
+	for _, item in ipairs(array) do
+		if type(item) ~= "nil" then
+			return item
+		end
+	end
+	return nil
+end
+
 --- @return ascii-ui.Component
 function Component:new()
 	local instance = {
 		__subscriptions = {},
+		__name = "BaseComponent",
 	}
 	setmetatable(instance, {
 		__index = self,
@@ -32,12 +45,30 @@ end
 function Component:extend(custom_component, props)
 	props = props or {}
 	local instance = self:new()
-	for k, v in pairs(custom_component) do
-		instance[k] = v
-	end
-	for k, v in pairs(props) do
-		instance[k] = v
-	end
+	setmetatable(instance, {
+		__index = function(t, key)
+			local i1 = rawget(Component, key)
+			local i2 = props[key]
+			local i3 = custom_component[key]
+
+			if type(i1) == "boolean" or i1 ~= nil then
+				return i1
+			end
+			if type(i2) == "boolean" or i2 ~= nil then
+				return i2
+			end
+			if type(i3) == "boolean" or i3 ~= nil then
+				return i3
+			end
+			return nil
+		end,
+		__newindex = function(t, key, value)
+			rawset(t, key, value)
+			for _, callback in ipairs(t.__subscriptions) do
+				callback(t, key, value)
+			end
+		end,
+	})
 	return instance
 end
 

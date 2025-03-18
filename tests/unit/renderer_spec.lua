@@ -28,7 +28,7 @@ describe("renderer", function()
 		end)
 
 		it("should render a checkbox with label", function()
-			local checkbox = Checkbox:new({ active = true, label = "test_label" })
+			local checkbox = Checkbox:new({ checked = true, label = "test_label" })
 			eq({ "[x] test_label" }, renderer:render(checkbox))
 		end)
 	end)

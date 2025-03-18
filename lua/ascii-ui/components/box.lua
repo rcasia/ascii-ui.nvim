@@ -2,7 +2,7 @@ local Component = require("ascii-ui.components.component")
 
 ---@alias ascii-ui.BoxProps { width: integer, height: integer }
 
----@class ascii-ui.Box
+---@class ascii-ui.Box : ascii-ui.Component
 ---@field props ascii-ui.BoxProps
 local Box = {
 	default_props = { width = 15, height = 3 },

@@ -17,7 +17,7 @@ describe("checkbox", function()
 	end)
 
 	it("can be initialized as true", function()
-		local checkbox = Checkbox:new({ active = true })
+		local checkbox = Checkbox:new({ checked = true })
 		assert(checkbox:is_checked())
 	end)
 end)
