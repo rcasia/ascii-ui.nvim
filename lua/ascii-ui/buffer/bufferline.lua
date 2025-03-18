@@ -47,7 +47,7 @@ function BufferLine.from_string(str)
 end
 
 function BufferLine:to_string()
-	return self.elements[1]:to_string()
+	return vim.trim(self.elements[1]:to_string())
 end
 
 return BufferLine

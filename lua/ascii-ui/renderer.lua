@@ -16,10 +16,10 @@ function Renderer:new(config)
 end
 
 ---@param component ascii-ui.Component
----@return string[]
+---@return ascii-ui.BufferLine[]
 function Renderer:render(component)
 	if component.type == "checkbox" then
-		return self:render_checkbox(component)
+		return component:render()
 	end
 	if component.type == "box" then
 		return self:render_box(component)

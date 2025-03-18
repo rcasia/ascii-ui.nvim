@@ -21,15 +21,15 @@ describe("renderer", function()
 	describe("checkbox", function()
 		it("should render a checkbox", function()
 			local checkbox = Checkbox:new()
-			eq({ "[ ]" }, renderer:render(checkbox))
+			eq("[ ]", renderer:render(checkbox)[1]:to_string())
 
 			checkbox:toggle()
-			eq({ "[x]" }, renderer:render(checkbox))
+			eq("[x]", renderer:render(checkbox)[1]:to_string())
 		end)
 
 		it("should render a checkbox with label", function()
 			local checkbox = Checkbox:new({ checked = true, label = "test_label" })
-			eq({ "[x] test_label" }, renderer:render(checkbox))
+			eq("[x] test_label", renderer:render(checkbox)[1]:to_string())
 		end)
 	end)
 

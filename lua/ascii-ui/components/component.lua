@@ -1,4 +1,5 @@
 ---@class ascii-ui.Component
+---@field render fun(): ascii-ui.BufferLine[]
 local Component = {
 	__name = "BaseComponent",
 }
