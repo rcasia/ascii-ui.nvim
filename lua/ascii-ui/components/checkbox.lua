@@ -1,4 +1,6 @@
 local Component = require("ascii-ui.components.component")
+local BufferLine = require("ascii-ui.buffer.bufferline")
+local Element = require("ascii-ui.buffer.element")
 
 ---@class ascii-ui.Checkbox : ascii-ui.Component
 local Checkbox = {}
@@ -19,6 +21,11 @@ end
 
 function Checkbox:is_checked()
 	return self.checked
+end
+
+---@return ascii-ui.BufferLines[]
+function Checkbox:render()
+	return { BufferLine:new(Element:new(("[%s] %s"):format(self.checked and "x" or " ", self.label))) }
 end
 
 return Checkbox
