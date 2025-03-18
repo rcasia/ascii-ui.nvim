@@ -75,4 +75,20 @@ describe("Component", function()
 		eq(true, component:is_checked())
 		eq(2, interactions_count)
 	end)
+
+	it("should unsubscribe", function()
+		local interactions_count = 0
+
+		local component = Checkbox:new()
+
+		component:subscribe(function()
+			interactions_count = interactions_count + 1
+		end)
+
+		component:clear_subscriptions()
+
+		component.unchecked_field = 1
+		component:toggle()
+		eq(0, interactions_count)
+	end)
 end)

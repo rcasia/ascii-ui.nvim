@@ -1,4 +1,5 @@
 ---@class ascii-ui.Component
+---@private __subscriptions fun()[]
 local Component = {
 	__name = "BaseComponent",
 }
@@ -21,11 +22,6 @@ function Component:new()
 		end,
 	})
 	return instance
-end
-
---- @param cb fun(component: table, key: string, value: any)
-function Component:subscribe(cb)
-	table.insert(self.__subscriptions, cb)
 end
 
 --- @generic T
@@ -64,6 +60,15 @@ function Component:extend(custom_component, props)
 		end,
 	})
 	return instance
+end
+
+--- @param cb fun(component: table, key: string, value: any)
+function Component:subscribe(cb)
+	table.insert(self.__subscriptions, cb)
+end
+
+function Component:clear_subscriptions()
+	self.__subscriptions = {}
 end
 
 return Component
