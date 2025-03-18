@@ -1,3 +1,5 @@
+local Component = require("ascii-ui.components.component")
+
 ---@alias ascii-ui.BoxProps { width: integer, height: integer }
 
 ---@class ascii-ui.Box
@@ -14,16 +16,11 @@ function Box:new(props)
 	props = vim.tbl_extend("force", self.default_props, props)
 	assert(props.height >= 3, "box component failed: height cannot be less than 3")
 
-	local state = {
+	return Component:extend(self, {
 		_child = "",
 		type = "box",
 		props = props,
-	}
-
-	setmetatable(state, self)
-	self.__index = self
-
-	return state
+	})
 end
 
 ---@param child string
