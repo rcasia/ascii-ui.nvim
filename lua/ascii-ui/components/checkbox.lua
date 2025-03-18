@@ -1,19 +1,16 @@
+local Component = require("ascii-ui.components.component")
+
 ---@class ascii-ui.Checkbox
 local Checkbox = {}
 
----@param opts { active?: boolean }
+---@param opts { active?: boolean, label?: boolean }
 function Checkbox:new(opts)
 	opts = opts or {}
-	local checkbox = {
+	return Component:extend(self, {
 		checked = opts.active or false,
 		label = opts.label or "",
 		type = "checkbox",
-	}
-
-	setmetatable(checkbox, self)
-	self.__index = self
-
-	return checkbox
+	})
 end
 
 function Checkbox:toggle()
