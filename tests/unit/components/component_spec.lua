@@ -50,6 +50,9 @@ describe("Component", function()
 
 		component:toggle_dummy_check()
 		eq(2, interactions_count)
+
+		component:toggle_dummy_check()
+		eq(3, interactions_count)
 	end)
 
 	it("should subscribe to functions and run them on state changes with Checkbox component", function()

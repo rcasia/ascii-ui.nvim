@@ -20,11 +20,13 @@ function Component:new()
 	local instance = {
 		__subscriptions = {},
 		__name = "BaseComponent",
+		__state = {},
 	}
 	setmetatable(instance, {
 		__index = self,
 		__newindex = function(t, key, value)
-			rawset(t, key, value)
+			print(vim.inspect({ key = key, value = value }))
+			rawset(instance, key, value)
 			for _, callback in ipairs(t.__subscriptions) do
 				callback(t, key, value)
 			end
@@ -47,10 +49,14 @@ function Component:extend(custom_component, props)
 	local instance = self:new()
 	setmetatable(instance, {
 		__index = function(t, key)
+			local i0 = rawget(t.__state, key)
 			local i1 = rawget(Component, key)
 			local i2 = props[key]
 			local i3 = custom_component[key]
 
+			if type(i0) == "boolean" or i0 ~= nil then
+				return i0
+			end
 			if type(i1) == "boolean" or i1 ~= nil then
 				return i1
 			end
@@ -63,7 +69,7 @@ function Component:extend(custom_component, props)
 			return nil
 		end,
 		__newindex = function(t, key, value)
-			rawset(t, key, value)
+			rawset(t.__state, key, value)
 			for _, callback in ipairs(t.__subscriptions) do
 				callback(t, key, value)
 			end
