@@ -1,37 +1,39 @@
 ---@class ascii-ui.Component
 local Component = {
 	__name = "BaseComponent",
-	__subscriptions = {},
 }
 
 --- @return ascii-ui.Component
 function Component:new()
-	local proxy = {}
-	setmetatable(proxy, self)
-	self.__index = self
-	self.__newindex = function(t, key, value)
-		rawset(t, key, value)
-		for _, subscription_fun in ipairs(t.__subscriptions) do
-			subscription_fun(t, key, value)
-		end
-	end
-	return proxy
+	local instance = {
+		__subscriptions = {},
+	}
+	setmetatable(instance, {
+		__index = self,
+		__newindex = function(t, key, value)
+			rawset(t, key, value)
+			for _, callback in ipairs(t.__subscriptions) do
+				callback(t, key, value)
+			end
+		end,
+	})
+	return instance
+end
+
+--- @param cb fun(component: table, key: string, value: any)
+function Component:subscribe(cb)
+	table.insert(self.__subscriptions, cb)
 end
 
 ---@generic T
----@param custom_component T
+--- @param custom_component T
+--- @return T
 function Component:extend(custom_component)
-	setmetatable(custom_component, self)
-	custom_component.__index = function(t, key)
-		return rawget(custom_component, key) or self[key]
+	local instance = self:new()
+	for k, v in pairs(custom_component) do
+		instance[k] = v
 	end
-	custom_component.__newindex = self.__newindex
-	return custom_component
-end
-
---- @param f fun(component: table, key: string, value: any)
-function Component:subscribe(f)
-	table.insert(self.__subscriptions, f)
+	return instance
 end
 
 return Component

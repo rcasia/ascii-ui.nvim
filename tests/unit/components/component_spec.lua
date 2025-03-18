@@ -3,26 +3,9 @@ local eq = assert.are.same
 
 local Component = require("ascii-ui.components.component")
 
-local function create_dummy_component()
-	---@class DummyComponent : ascii-ui.Component
-	---@field name string
-	local DummyComponent = {
-		name = "DummyComponent",
-	}
-
-	---@return DummyComponent
-	function DummyComponent:new()
-		Component:new()
-
-		return Component:extend(self)
-	end
-
-	return DummyComponent:new()
-end
-
 describe("Component", function()
 	it("should be extensible", function()
-		local component = create_dummy_component()
+		local component = Component:extend({ name = "DummyComponent" })
 		eq("DummyComponent", component.name)
 		eq("BaseComponent", component.__name)
 	end)
@@ -30,7 +13,7 @@ describe("Component", function()
 	it("should subscribe to functions and run them on state changes", function()
 		local interactions_count = 0
 
-		local component = create_dummy_component()
+		local component = Component:extend({ name = "DummyComponent" })
 
 		component:subscribe(function()
 			interactions_count = interactions_count + 1
