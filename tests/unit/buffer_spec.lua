@@ -1,4 +1,4 @@
-require("luassert")
+---@module "luassert"
 
 local Buffer = require("ascii-ui.buffer.buffer")
 local BufferLine = require("ascii-ui.buffer.bufferline")

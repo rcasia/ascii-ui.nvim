@@ -1,4 +1,5 @@
-require("luassert")
+---@module "luassert"
+
 local eq = assert.are.same
 
 local Component = require("ascii-ui.components.component")

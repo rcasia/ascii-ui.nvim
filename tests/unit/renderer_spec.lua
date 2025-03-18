@@ -1,4 +1,4 @@
-require("luassert")
+---@module "luassert"
 
 local Checkbox = require("ascii-ui.components.checkbox")
 local Box = require("ascii-ui.components.box")

@@ -1,4 +1,5 @@
-require("luassert")
+---@module "luassert"
+
 local ui = require("ascii-ui")
 local Box = require("ascii-ui.components.box")
 

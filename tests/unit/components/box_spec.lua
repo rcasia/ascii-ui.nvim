@@ -1,4 +1,5 @@
-require("luassert")
+---@module "luassert"
+
 local eq = assert.are.same
 
 local Box = require("ascii-ui.components.box")
