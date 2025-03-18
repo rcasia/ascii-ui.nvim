@@ -1,27 +1,27 @@
 ---@class ascii-ui.Component
----@private __susbcriptions any
 local Component = {
+	__name = "BaseComponent",
+
 	__subscriptions = {},
 }
 
----@return ascii-ui.Component
----@param state table<string, any>
-function Component:new(state)
+--- @return ascii-ui.Component
+function Component:new()
 	local proxy = {}
 	setmetatable(proxy, self)
 	self.__index = self
-	self.__newindex = function()
-		for _, subscription_fun in ipairs(self.__subscriptions) do
-			subscription_fun()
+	self.__newindex = function(t, key, value)
+		rawset(t, key, value)
+		for _, subscription_fun in ipairs(t.__subscriptions) do
+			subscription_fun(t, key, value)
 		end
 	end
-
 	return proxy
 end
 
----@param f fun()
+--- @param f fun(component: table, key: string, value: any)
 function Component:subscribe(f)
-	self.__subscriptions[#self.__subscriptions + 1] = f
+	table.insert(self.__subscriptions, f)
 end
 
 return Component
