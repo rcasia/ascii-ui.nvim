@@ -12,14 +12,9 @@ local function create_dummy_component()
 
 	---@return DummyComponent
 	function DummyComponent:new()
-		local super = Component:new()
-		setmetatable(DummyComponent, self)
-		self.__index = function(t, key)
-			return rawget(self, key) or super[key]
-		end
-		self.__newindex = super.__newindex
+		Component:new()
 
-		return self
+		return Component:extend(self)
 	end
 
 	return DummyComponent:new()

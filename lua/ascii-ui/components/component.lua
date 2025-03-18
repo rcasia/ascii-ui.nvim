@@ -1,7 +1,6 @@
 ---@class ascii-ui.Component
 local Component = {
 	__name = "BaseComponent",
-
 	__subscriptions = {},
 }
 
@@ -17,6 +16,17 @@ function Component:new()
 		end
 	end
 	return proxy
+end
+
+---@generic T
+---@param custom_component T
+function Component:extend(custom_component)
+	setmetatable(custom_component, self)
+	custom_component.__index = function(t, key)
+		return rawget(custom_component, key) or self[key]
+	end
+	custom_component.__newindex = self.__newindex
+	return custom_component
 end
 
 --- @param f fun(component: table, key: string, value: any)
