@@ -60,11 +60,11 @@ end
 
 ---@param buffer_content string[]
 function Window:update(buffer_content)
-	-- vim.schedule(function()
-	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
-	vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer_content)
-	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
-	-- end)
+	vim.schedule(function()
+		vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
+		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer_content)
+		vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+	end)
 end
 
 return Window

@@ -15,7 +15,7 @@ function Renderer:new(config)
 	return state
 end
 
----@param component ascii-ui.Checkbox
+---@param component ascii-ui.Component
 ---@return string[]
 function Renderer:render(component)
 	if component.type == "checkbox" then

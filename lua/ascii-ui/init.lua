@@ -31,8 +31,7 @@ function M.render(box)
 	window:open()
 
 	box:subscribe(function(t, key, value)
-		-- window:update(renderer:render(box))
-		print("cambio en suscription! " .. vim.inspect({ key = key, value = value }))
+		window:update(renderer:render(box))
 	end)
 
 	window:update(renderer:render(box))
@@ -40,7 +39,6 @@ function M.render(box)
 	setInterval(1000, function()
 		local time = os.date("%H:%M:%S") ---@cast time string
 		box:set_child(time)
-		print("cambio en interval! " .. vim.inspect(box))
 	end)
 
 	return window.bufnr

@@ -3,18 +3,6 @@ local Component = {
 	__name = "BaseComponent",
 }
 
----@param array any[]
----@return boolean
-local function first_not_nil(array)
-	print(vim.inspect(array))
-	for _, item in ipairs(array) do
-		if type(item) ~= "nil" then
-			return item
-		end
-	end
-	return nil
-end
-
 --- @return ascii-ui.Component
 function Component:new()
 	local instance = {
