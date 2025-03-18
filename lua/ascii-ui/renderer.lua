@@ -18,14 +18,12 @@ end
 ---@param component ascii-ui.Component
 ---@return ascii-ui.BufferLine[]
 function Renderer:render(component)
-	if component.type == "checkbox" then
-		return component:render()
-	end
 	if component.type == "box" then
 		return self:render_box(component)
 	end
+	assert(component.render)
 
-	error("Component type not supported")
+	return component:render()
 end
 
 function Renderer:render_checkbox(checkbox)
