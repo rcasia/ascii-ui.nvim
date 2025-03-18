@@ -26,13 +26,6 @@ function Renderer:render(component)
 	return component:render()
 end
 
-function Renderer:render_checkbox(checkbox)
-	if checkbox:is_checked() then
-		return { vim.trim("[x] " .. checkbox.label) }
-	end
-	return { vim.trim("[ ] " .. checkbox.label) }
-end
-
 ---@param box ascii-ui.Box
 function Renderer:render_box(box)
 	local child = box:child()
