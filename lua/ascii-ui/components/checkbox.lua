@@ -3,7 +3,7 @@ local Component = require("ascii-ui.components.component")
 ---@class ascii-ui.Checkbox : ascii-ui.Component
 local Checkbox = {}
 
----@param opts? { active?: boolean, label?: string }
+---@param opts? { checked?: boolean, label?: string }
 ---@return ascii-ui.Checkbox
 function Checkbox:new(opts)
 	opts = opts or {}

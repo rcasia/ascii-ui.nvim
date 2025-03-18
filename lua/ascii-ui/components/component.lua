@@ -1,5 +1,4 @@
 ---@class ascii-ui.Component
----@private __subscriptions fun()[]
 local Component = {
 	__name = "BaseComponent",
 }
