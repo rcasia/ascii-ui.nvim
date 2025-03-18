@@ -25,12 +25,17 @@ function Component:subscribe(cb)
 	table.insert(self.__subscriptions, cb)
 end
 
----@generic T
+--- @generic T
 --- @param custom_component T
+--- @param props? table<string, any>
 --- @return T
-function Component:extend(custom_component)
+function Component:extend(custom_component, props)
+	props = props or {}
 	local instance = self:new()
 	for k, v in pairs(custom_component) do
+		instance[k] = v
+	end
+	for k, v in pairs(props) do
 		instance[k] = v
 	end
 	return instance

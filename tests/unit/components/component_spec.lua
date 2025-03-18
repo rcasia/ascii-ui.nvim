@@ -7,15 +7,15 @@ local create_dummy_component = function()
 	local DummyComponent = {
 		name = "DummyComponent",
 	}
-	function DummyComponent:new()
-		return Component:extend(self)
+	function DummyComponent:new(props)
+		return Component:extend(self, props)
 	end
 
 	function DummyComponent:is_true()
-		return true
+		return self.dummy_check
 	end
 
-	return DummyComponent:new()
+	return DummyComponent:new({ dummy_check = true })
 end
 
 describe("Component", function()
