@@ -43,12 +43,18 @@ function BufferLine:find_element_by_col(col)
 	return nil -- out of bounds
 end
 
+---@param str string
 function BufferLine.from_string(str)
 	return BufferLine:new(Element:new(str))
 end
 
+---@return string
 function BufferLine:to_string()
-	return vim.trim(self.elements[1]:to_string())
+	if self.elements[1] then
+		return vim.trim(self.elements[1]:to_string())
+	else
+		return ""
+	end
 end
 
 return BufferLine
