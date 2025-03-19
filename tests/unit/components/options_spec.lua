@@ -27,11 +27,19 @@ describe("Options", function()
 		local option_names = { "apple", "banana", "mango" }
 		local options = Options:new({ options = option_names })
 
-		local buffer = Buffer:new(unpack(options:render())):to_lines()
+		local render_1 = options:render()
 		eq({
 			"[x] apple",
 			"[ ] banana",
 			"[ ] mango",
-		}, buffer)
+		}, Buffer:new(unpack(render_1)):to_lines())
+
+		options:select_index(3)
+		local render_2 = options:render()
+		eq({
+			"[ ] apple",
+			"[ ] banana",
+			"[x] mango",
+		}, Buffer:new(unpack(render_2)):to_lines())
 	end)
 end)
