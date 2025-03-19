@@ -19,8 +19,9 @@ end
 ---@param component ascii-ui.Component
 ---@return ascii-ui.Buffer
 function Renderer:render(component)
+	-- TODO:retire this custom render
 	if component.type == "box" then
-		return self:render_box(component)
+		return Buffer.from_lines(self:render_box(component))
 	end
 	assert(component.render)
 
