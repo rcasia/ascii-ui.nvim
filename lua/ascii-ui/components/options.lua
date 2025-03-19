@@ -1,15 +1,15 @@
 local Component = require("ascii-ui.components.component")
 
----@alias ascii-ui.SwitchOpts { options: string[] }
+---@alias ascii-ui.OptionsOpts { options: string[] }
 
----@class ascii-ui.Switch : ascii-ui.Component
+---@class ascii-ui.Options : ascii-ui.Component
 ---@field options string[]
 ---@field _index_selected integer
-local Switch = {}
+local Options = {}
 
----@param opts ascii-ui.SwitchOpts
----@return ascii-ui.Switch
-function Switch:new(opts)
+---@param opts ascii-ui.OptionsOpts
+---@return ascii-ui.Options
+function Options:new(opts)
 	local state = {
 		options = opts.options,
 		_index_selected = 1,
@@ -18,7 +18,7 @@ function Switch:new(opts)
 end
 
 ---@return string selected_option
-function Switch:select_next()
+function Options:select_next()
 	if #self.options == self._index_selected then
 		self._index_selected = 1
 	else
@@ -27,4 +27,4 @@ function Switch:select_next()
 	return self.options[self._index_selected]
 end
 
-return Switch
+return Options

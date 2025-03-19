@@ -1,15 +1,15 @@
 ---@module "luassert"
 local eq = assert.are.same
 
-local Switch = require("ascii-ui.components.switch")
+local Options = require("ascii-ui.components.options")
 
-describe("Switch", function()
-	it("should should be able to switch options", function()
-		local options = { "on", "off" }
-		local switch = Switch:new({ options = options })
+describe("Options", function()
+	it("should should be able to cycle options", function()
+		local options = { "apple", "banana", "mango" }
+		local switch = Options:new({ options = options })
 
-		eq("off", switch:select_next())
-
-		eq("on", switch:select_next())
+		eq("banana", switch:select_next())
+		eq("mango", switch:select_next())
+		eq("apple", switch:select_next())
 	end)
 end)
