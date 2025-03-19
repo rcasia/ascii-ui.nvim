@@ -1,6 +1,7 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
 
 ---@class ascii-ui.Buffer
+---@field lines ascii-ui.BufferLine[]
 local Buffer = {}
 
 ---@param ...? ascii-ui.BufferLine
@@ -35,9 +36,7 @@ end
 function Buffer:iter_focusables()
 	assert(self.lines, "buffer component failed: lines cannot be nil")
 
-	local iter = vim
-		.iter(self.lines)
-		---@param line ascii-ui.BufferLine
+	local iter = vim.iter(self.lines)
 		:map(function(line)
 			return vim.iter(line.elements)
 				:filter(function(element)

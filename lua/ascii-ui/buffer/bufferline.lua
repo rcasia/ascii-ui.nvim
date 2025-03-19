@@ -1,6 +1,7 @@
 local Element = require("ascii-ui.buffer.element")
 
 ---@class ascii-ui.BufferLine
+---@field elements ascii-ui.Element[]
 local BufferLine = {}
 
 ---@param ... ascii-ui.Element
