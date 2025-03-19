@@ -5,6 +5,8 @@ local Box = require("ascii-ui.components.box")
 local Renderer = require("ascii-ui.renderer")
 local eq = assert.are.same
 
+local create_dummy_component = require("tests.util.dummy_component")
+
 describe("renderer", function()
 	local config = {
 		characters = {
@@ -18,21 +20,12 @@ describe("renderer", function()
 	}
 	local renderer = Renderer:new(config)
 
-	describe("checkbox", function()
-		it("should render a checkbox", function()
-			local checkbox = Checkbox:new()
-			eq({ "[ ]" }, renderer:render(checkbox):to_lines())
-
-			checkbox:toggle()
-			eq({ "[x]" }, renderer:render(checkbox):to_lines())
-		end)
-
-		it("should render a checkbox with label", function()
-			local checkbox = Checkbox:new({ checked = true, label = "test_label" })
-			eq({ "[x] test_label" }, renderer:render(checkbox):to_lines())
-		end)
+	it("should render a component", function()
+		local component = create_dummy_component()
+		eq({ "dummy_render" }, renderer:render(component):to_lines())
 	end)
 
+	-- TODO: change responsability to box_spec.lua
 	describe("box", function()
 		it("should render a box", function()
 			local box = Box:new()
