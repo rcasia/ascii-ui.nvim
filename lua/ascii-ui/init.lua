@@ -27,10 +27,10 @@ function M.render(component)
 	window:open()
 
 	component:subscribe(function(t, key, value)
-		window:update(ascii_renderer:render(component))
+		window:update(ascii_renderer:render(component):to_lines())
 	end)
 
-	window:update(rendered)
+	window:update(rendered:to_lines())
 
 	return window.bufnr
 end
