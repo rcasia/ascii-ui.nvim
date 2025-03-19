@@ -20,6 +20,8 @@ function Component:new()
 			end
 		end,
 	})
+
+	---@cast instance ascii-ui.Component
 	return instance
 end
 
