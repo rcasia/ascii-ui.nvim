@@ -1,3 +1,4 @@
+local Buffer = require("ascii-ui.buffer.buffer")
 ---@class ascii-ui.Renderer
 local Renderer = {}
 
@@ -16,14 +17,14 @@ function Renderer:new(config)
 end
 
 ---@param component ascii-ui.Component
----@return ascii-ui.BufferLine[]
+---@return ascii-ui.Buffer
 function Renderer:render(component)
 	if component.type == "box" then
 		return self:render_box(component)
 	end
 	assert(component.render)
 
-	return component:render()
+	return Buffer:new(unpack(component:render()))
 end
 
 ---@param box ascii-ui.Box
