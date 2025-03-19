@@ -13,19 +13,24 @@ local config = {
 	},
 }
 
-local renderer = require("ascii-ui.renderer"):new(config)
+local ascii_renderer = require("ascii-ui.renderer"):new(config)
 
----@param box ascii-ui.Component
+---@param component ascii-ui.Component
 ---@return integer bufnr
-function M.render(box)
-	local window = Window:new({ width = box.props.width, height = box.props.height })
+function M.render(component)
+	local rendered = ascii_renderer:render(component)
+	-- TODO: should be calculated based on the rendered buffer
+	local width = 40
+	local height = 10
+
+	local window = Window:new({ width = width, height = height })
 	window:open()
 
-	box:subscribe(function(t, key, value)
-		window:update(renderer:render(box))
+	component:subscribe(function(t, key, value)
+		window:update(ascii_renderer:render(component))
 	end)
 
-	window:update(renderer:render(box))
+	window:update(rendered)
 
 	return window.bufnr
 end
