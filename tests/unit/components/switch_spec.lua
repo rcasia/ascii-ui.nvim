@@ -4,12 +4,21 @@ local eq = assert.are.same
 local Options = require("ascii-ui.components.options")
 
 describe("Options", function()
-	it("should should be able to cycle options", function()
-		local options = { "apple", "banana", "mango" }
-		local switch = Options:new({ options = options })
+	it("cycles options", function()
+		local option_names = { "apple", "banana", "mango" }
+		local options = Options:new({ options = option_names })
 
-		eq("banana", switch:select_next())
-		eq("mango", switch:select_next())
-		eq("apple", switch:select_next())
+		eq("banana", options:select_next())
+		eq("mango", options:select_next())
+		eq("apple", options:select_next())
+	end)
+
+	it("selects by 1-based index", function()
+		local option_names = { "apple", "banana", "mango" }
+		local options = Options:new({ options = option_names })
+
+		eq("apple", options:select_index(1))
+		eq("banana", options:select_index(2))
+		eq("mango", options:select_index(3))
 	end)
 end)

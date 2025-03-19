@@ -17,6 +17,13 @@ function Options:new(opts)
 	return Component:extend(self, state)
 end
 
+---@param index integer
+---@return string selected_option
+function Options:select_index(index)
+	self._index_selected = index
+	return self.options[self._index_selected]
+end
+
 ---@return string selected_option
 function Options:select_next()
 	if #self.options == self._index_selected then
