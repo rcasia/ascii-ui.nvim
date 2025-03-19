@@ -64,7 +64,6 @@ end
 
 ---@return string[]
 function Buffer:to_lines()
-	print("lines: " .. vim.inspect(self.lines))
 	return vim.iter(self.lines)
 		:map(function(line)
 			return line:to_string()

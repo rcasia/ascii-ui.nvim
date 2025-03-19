@@ -14,7 +14,6 @@ function Component:new()
 	setmetatable(instance, {
 		__index = self,
 		__newindex = function(t, key, value)
-			print(vim.inspect({ key = key, value = value }))
 			rawset(instance, key, value)
 			for _, callback in ipairs(t.__subscriptions) do
 				callback(t, key, value)
