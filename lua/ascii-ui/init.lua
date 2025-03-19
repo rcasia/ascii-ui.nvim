@@ -1,5 +1,4 @@
 local Window = require("ascii-ui.window")
-local uv = vim.uv
 
 local M = {}
 
@@ -16,15 +15,7 @@ local config = {
 
 local renderer = require("ascii-ui.renderer"):new(config)
 
-local function setInterval(interval, callback)
-	local timer = assert(uv.new_timer())
-	timer:start(interval, interval, function()
-		callback()
-	end)
-	return timer
-end
-
----@param box ascii-ui.Box
+---@param box ascii-ui.Component
 ---@return integer bufnr
 function M.render(box)
 	local window = Window:new({ width = box.props.width, height = box.props.height })
@@ -35,11 +26,6 @@ function M.render(box)
 	end)
 
 	window:update(renderer:render(box))
-
-	setInterval(1000, function()
-		local time = os.date("%H:%M:%S") ---@cast time string
-		box:set_child(time)
-	end)
 
 	return window.bufnr
 end
