@@ -3,6 +3,7 @@ local BufferLine = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 
 local create_dummy_component = function()
+	---@class DummyComponent : ascii-ui.Component
 	local DummyComponent = {
 		name = "DummyComponent",
 	}
