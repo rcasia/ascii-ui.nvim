@@ -1,4 +1,3 @@
-
 ---@class ascii-ui.UserInteractions
 ---@field private buffers table<integer, ascii-ui.Buffer>
 local UserInteractions = {}
@@ -25,7 +24,8 @@ end
 function UserInteractions:interact(opts)
 	local buffer = self.buffers[opts.buffer_id]
 	local element = buffer:find_element_by_position(opts.position)
-	element.interactions.on_select()
+	assert(opts.interaction_type, "interaction type cannot be nil")
+	assert(element.interactions[opts.interaction_type], "interaction type does not exist: " .. opts.interaction_type)()
 end
 
 ---@param buffer ascii-ui.Buffer
