@@ -43,6 +43,7 @@ function Window:open()
 		col = 10,
 		row = 10,
 		style = "minimal",
+		border = "rounded",
 	})
 
 	vim.api.nvim_win_get_buf(win)
