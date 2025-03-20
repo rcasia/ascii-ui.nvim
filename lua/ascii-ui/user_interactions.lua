@@ -1,6 +1,18 @@
 ---@class ascii-ui.UserInteractions
+---@field private singleton_instance ascii-ui.UserInteractions | nil
 ---@field private buffers table<integer, ascii-ui.Buffer>
-local UserInteractions = {}
+local UserInteractions = {
+	singleton_instance = nil,
+}
+
+function UserInteractions.instance()
+	if UserInteractions.singleton_intance then
+		return UserInteractions.singleton_intance
+	end
+
+	UserInteractions.singleton_intance = UserInteractions:new()
+	return UserInteractions.singleton_intance
+end
 
 ---@return ascii-ui.UserInteractions
 function UserInteractions:new()
@@ -9,6 +21,15 @@ function UserInteractions:new()
 	}
 	setmetatable(state, self)
 	self.__index = self
+
+	-- initialize keymaps
+	vim.keymap.set("n", "<CR>", function()
+		local i = require("ascii-ui.user_interactions")
+		local line, col = vim.api.nvim_win_get_cursor(0)
+		local position = { line = line, col = col }
+		print("Se presionó <CR> en modo normal, " .. vim.inspect(position))
+	end, { noremap = true, silent = true })
+
 	return state
 end
 
@@ -36,4 +57,5 @@ function UserInteractions:attach_buffer(buffer)
 	self.buffers[buffer.id] = buffer
 end
 
+-- return singleton for all the app
 return UserInteractions

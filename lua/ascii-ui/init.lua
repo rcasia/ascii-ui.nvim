@@ -34,7 +34,7 @@ function M.render(component)
 	window:update(rendered_buffer:to_lines())
 
 	-- bind to user interaction
-	user_interations.attach_buffer(rendered_buffer)
+	user_interations:instance():attach_buffer(rendered_buffer)
 
 	return window.bufnr
 end
