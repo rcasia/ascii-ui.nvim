@@ -1,5 +1,6 @@
 ---@class ascii-ui.Element
 ---@field interactions table<string, function>
+---@private focusable boolean
 local Element = {}
 
 local last_incremental_id = 0
