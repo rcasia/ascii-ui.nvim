@@ -16,12 +16,6 @@ function Renderer:new(config)
 	return state
 end
 
----@param layout ascii-ui.Layout
----@return ascii-ui.Buffer
-function Renderer:render_layout(layout)
-	return { "" }
-end
-
 ---@param component ascii-ui.Component
 ---@return ascii-ui.Buffer
 function Renderer:render(component)

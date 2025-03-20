@@ -1,8 +1,6 @@
 ---@module "luassert"
 
-local Checkbox = require("ascii-ui.components.checkbox")
 local Box = require("ascii-ui.components.box")
-local Layout = require("ascii-ui.layout")
 local Renderer = require("ascii-ui.renderer")
 local eq = assert.are.same
 
@@ -24,12 +22,6 @@ describe("renderer", function()
 	it("should render a component", function()
 		local component = create_dummy_component()
 		eq({ "dummy_render" }, renderer:render(component):to_lines())
-	end)
-
-	it("should render a layout", function()
-		local layout = Layout:new()
-
-		eq({ "" }, renderer:render_layout(layout))
 	end)
 
 	-- TODO: change responsability to box_spec.lua
