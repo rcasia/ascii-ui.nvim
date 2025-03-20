@@ -1,5 +1,6 @@
 return {
 	_all = {
+		lpath = "lua/?.lua;lua/?/init.lua",
 		lua = "./tests/nvim-shim",
 	},
 	unit = {
