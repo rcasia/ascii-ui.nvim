@@ -19,21 +19,24 @@ local ascii_renderer = require("ascii-ui.renderer"):new(config)
 ---@param component ascii-ui.Component
 ---@return integer bufnr
 function M.render(component)
-	local rendered_buffer = ascii_renderer:render(component)
 	-- TODO: should be calculated based on the rendered buffer
 	local width = 40
 	local height = 10
 
+	-- spawns a window
 	local window = Window:new({ width = width, height = height })
 	window:open()
 
+	-- does first render
+	local rendered_buffer = ascii_renderer:render(component)
+	window:update(rendered_buffer:to_lines())
+
+	-- subsequent renders triggered by data changes on component
 	component:subscribe(function(t, key, value)
 		window:update(ascii_renderer:render(component):to_lines())
 	end)
 
-	window:update(rendered_buffer:to_lines())
-
-	-- bind to user interaction
+	-- binds to user interaction
 	user_interations:instance():attach_buffer(rendered_buffer)
 
 	return window.bufnr

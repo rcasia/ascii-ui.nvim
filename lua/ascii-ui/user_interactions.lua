@@ -54,7 +54,6 @@ function UserInteractions:interact(opts)
 		"interaction type does not exist: " .. opts.interaction_type
 	)
 	interaction_function()
-	print("se interactuó con el elemento " .. vim.inspect(element))
 end
 
 ---@param buffer ascii-ui.Buffer
