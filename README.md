@@ -1,5 +1,7 @@
 # ascii-ui.nvim
 
+A WIP extensible ui framework with no non-sense apis (hopefully) for nvim. 
+
 ## Example
 
 ```lua
