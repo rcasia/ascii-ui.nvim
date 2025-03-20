@@ -1,4 +1,5 @@
 ---@module "luassert"
+local interaction_type = require("ascii-ui.interaction_type")
 
 local eq = assert.are.same
 
@@ -13,7 +14,7 @@ describe("UserInteractions", function()
 		local user_interactions = UserInteractions:new()
 		local position = { line = 1, col = 1 }
 		local buffer_id = 1
-		local interaction_type = "select"
+		local type = interaction_type.select
 
 		local buffer = Buffer:new(Bufferline:new(Element:new("my text here", false, {
 			on_select = function()
@@ -23,7 +24,7 @@ describe("UserInteractions", function()
 
 		user_interactions:attach_buffer(buffer)
 
-		user_interactions:interact({ buffer_id = buffer_id, position = position, interaction_type = interaction_type })
+		user_interactions:interact({ buffer_id = buffer_id, position = position, interaction_type = type })
 
 		eq(true, has_been_called)
 	end)

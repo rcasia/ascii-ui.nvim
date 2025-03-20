@@ -1,4 +1,3 @@
----@alias ascii-ui.UserInteractions.InteractionOpts { buffer_id: integer, position: table, interaction_type: string}
 
 ---@class ascii-ui.UserInteractions
 ---@field private buffers table<integer, ascii-ui.Buffer>
@@ -21,6 +20,7 @@ function UserInteractions:new()
 	return state
 end
 
+---@alias ascii-ui.UserInteractions.InteractionOpts { buffer_id: integer, position: table, interaction_type: ascii-ui.UserInteractions.InteractionType }
 ---@param opts ascii-ui.UserInteractions.InteractionOpts
 function UserInteractions:interact(opts)
 	local buffer = self.buffers[opts.buffer_id]
