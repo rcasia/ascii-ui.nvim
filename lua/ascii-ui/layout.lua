@@ -1,4 +1,6 @@
-local Layout = {}
+local Layout = {
+	__name = "Layout",
+}
 
 local Component = require("ascii-ui.components.component")
 local Buffer = require("ascii-ui.buffer.buffer")

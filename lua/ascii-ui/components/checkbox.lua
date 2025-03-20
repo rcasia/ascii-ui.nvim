@@ -5,7 +5,9 @@ local Element = require("ascii-ui.buffer.element")
 ---@class ascii-ui.Checkbox : ascii-ui.Component
 ---@field checked boolean
 ---@field label string
-local Checkbox = {}
+local Checkbox = {
+	__name = "CheckboxComponent",
+}
 
 ---@param opts? { checked?: boolean, label?: string }
 ---@return ascii-ui.Checkbox

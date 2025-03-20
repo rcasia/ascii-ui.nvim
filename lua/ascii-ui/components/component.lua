@@ -4,11 +4,12 @@ local Component = {
 	__name = "BaseComponent",
 }
 
+--- @param component_name? string
 --- @return ascii-ui.Component
-function Component:new()
+function Component:new(component_name)
 	local instance = {
 		__subscriptions = {},
-		__name = "BaseComponent",
+		__name = component_name or "BaseComponent",
 		__state = {},
 	}
 	setmetatable(instance, {
@@ -30,8 +31,10 @@ end
 --- @param props? table<string, any>
 --- @return T
 function Component:extend(custom_component, props)
+	assert(custom_component.__name, "your custom_component has to have a __name field")
+
 	props = props or {}
-	local instance = self:new()
+	local instance = self:new(custom_component.__name)
 	setmetatable(instance, {
 		__index = function(t, key)
 			local i0 = rawget(t.__state, key)

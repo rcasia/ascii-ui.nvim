@@ -27,7 +27,9 @@ end
 ---@class ascii-ui.Options : ascii-ui.Component
 ---@field options ascii-ui.Options.Item[]
 ---@field _index_selected integer
-local Options = {}
+local Options = {
+	__name = "OptionsComponent",
+}
 
 ---@param opts ascii-ui.OptionsOpts
 ---@return ascii-ui.Options

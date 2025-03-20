@@ -5,7 +5,7 @@ local Element = require("ascii-ui.buffer.element")
 local create_dummy_component = function()
 	---@class DummyComponent : ascii-ui.Component
 	local DummyComponent = {
-		name = "DummyComponent",
+		__name = "DummyComponent",
 	}
 	function DummyComponent:new(props)
 		return Component:extend(self, props)
