@@ -1,5 +1,6 @@
 ---@class ascii-ui.Element
 ---@field interactions table<string, function>
+---@field len fun(): integer
 ---@private focusable boolean
 local Element = {}
 
@@ -28,6 +29,7 @@ function Element:new(text, is_focusable, interactions)
 	setmetatable(state, self)
 	self.__index = self
 
+	---@cast state ascii-ui.Element
 	return state
 end
 
