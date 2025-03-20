@@ -6,28 +6,37 @@ A WIP extensible ui framework with no non-sense apis (hopefully) for nvim.
 
 ```lua
 
-local Box = require("ascii-ui.components.box")
+local Options = require("ascii-ui.components.options")
+local layout = require("ascii-ui.layout")
 local ui = require("ascii-ui")
-local uv = vim.uv
 
-local function setInterval(interval, callback)
- local timer = assert(uv.new_timer())
- timer:start(interval, interval, function()
-  callback()
- end)
- return timer
-end
-
-local box = Box:new({
- width = 40,
- height = 10,
+local projects = Options:new({
+	title = "Project",
+	options = {
+		"Gradle - Groovy",
+		"Gradle - Kotlin",
+		"Maven",
+	},
 })
 
-ui.render(box)
+local langs = Options:new({
+	title = "Language",
+	options = {
+		"Java",
+		"Kotlin",
+		"Groovy",
+	},
+})
 
-setInterval(1000, function()
- local time = os.date("%H:%M:%S") ---@cast time string
- box:set_child(time)
-end)
+local spring = Options:new({
+	title = "Spring Boot",
+	options = {
+		"3.5.0 (SNAPSHOT)",
+		"3.4.3",
+		"3.3.10",
+	},
+})
+
+ui.render(layout:new(projects, langs, spring))
 
 ```
