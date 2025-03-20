@@ -67,10 +67,13 @@ function Options:render()
 
 	return vim.iter(self.options)
 		:map(function(option)
+			local content = ""
 			if option.id == selected_id then
-				return Element:new(("[x] %s"):format(option.name))
+				content = ("[x] %s"):format(option.name)
+			else
+				content = ("[ ] %s"):format(option.name)
 			end
-			return Element:new(("[ ] %s"):format(option.name), false, {
+			return Element:new(content, false, {
 				on_select = function()
 					self:select_index(option.id)
 				end,
