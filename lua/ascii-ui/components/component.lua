@@ -42,6 +42,9 @@ function Component:extend(custom_component, props)
 			local i2 = props[key]
 			local i3 = custom_component[key]
 
+			if type(i3) == "boolean" or i3 ~= nil then
+				return i3
+			end
 			if type(i0) == "boolean" or i0 ~= nil then
 				return i0
 			end
@@ -50,9 +53,6 @@ function Component:extend(custom_component, props)
 			end
 			if type(i2) == "boolean" or i2 ~= nil then
 				return i2
-			end
-			if type(i3) == "boolean" or i3 ~= nil then
-				return i3
 			end
 			return nil
 		end,
