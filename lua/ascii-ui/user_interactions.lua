@@ -1,3 +1,4 @@
+local interaction_type = require("ascii-ui.interaction_type")
 ---@class ascii-ui.UserInteractions
 ---@field private singleton_instance ascii-ui.UserInteractions | nil
 ---@field private buffers table<integer, ascii-ui.Buffer>
@@ -24,22 +25,25 @@ function UserInteractions:new()
 
 	-- initialize keymaps
 	vim.keymap.set("n", "<CR>", function()
-		local i = require("ascii-ui.user_interactions")
-		local line, col = vim.api.nvim_win_get_cursor(0)
-		local position = { line = line, col = col }
-		print("Se presionó <CR> en modo normal, " .. vim.inspect(position))
+		local bufnr = 1 -- TODO: align buffer ids
+		local cursor = vim.api.nvim_win_get_cursor(0)
+		local position = { line = cursor[1], col = cursor[2] }
+
+		UserInteractions:instance()
+			:interact({ buffer_id = bufnr, position = position, interaction_type = interaction_type.SELECT })
 	end, { noremap = true, silent = true })
 
 	return state
 end
 
----@alias ascii-ui.UserInteractions.InteractionOpts { buffer_id: integer, position: table, interaction_type: ascii-ui.UserInteractions.InteractionType }
+---@alias ascii-ui.UserInteractions.InteractionOpts { buffer_id: integer, position: table, interaction_type: ascii-ui.UserInteractions.InteractionType | string }
 ---@param opts ascii-ui.UserInteractions.InteractionOpts
 function UserInteractions:interact(opts)
 	local buffer = self.buffers[opts.buffer_id]
 	local element = buffer:find_element_by_position(opts.position)
 
 	if not element then
+		print("no se encontro el elemento en el buffer" .. vim.inspect(buffer))
 		return -- there is no element to interact with
 	end
 
@@ -50,6 +54,7 @@ function UserInteractions:interact(opts)
 		"interaction type does not exist: " .. opts.interaction_type
 	)
 	interaction_function()
+	print("se interactuó con el elemento " .. vim.inspect(element))
 end
 
 ---@param buffer ascii-ui.Buffer
