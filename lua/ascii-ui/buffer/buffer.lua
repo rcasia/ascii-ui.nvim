@@ -1,14 +1,22 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
 
 ---@class ascii-ui.Buffer
+---@field id string
 ---@field lines ascii-ui.BufferLine[]
 local Buffer = {}
+
+local last_incremental_id = 0
+local function generate_id()
+	last_incremental_id = last_incremental_id + 1
+	return last_incremental_id
+end
 
 ---@param ...? ascii-ui.BufferLine
 ---@return ascii-ui.Buffer
 function Buffer:new(...)
 	local lines = { ... }
 	local state = {
+		id = generate_id(),
 		lines = lines or {},
 	}
 

@@ -22,7 +22,7 @@ function Element:new(text, is_focusable, interactions)
 			on_select = function()
 				print("selected", text)
 			end,
-		},
+		}, -- TODO: pass this to default interactions on a different module
 	}
 
 	setmetatable(state, self)

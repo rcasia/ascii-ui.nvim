@@ -1,4 +1,5 @@
 local Window = require("ascii-ui.window")
+local user_interations = require("ascii-ui.user_interactions")
 
 local M = {}
 
@@ -18,7 +19,7 @@ local ascii_renderer = require("ascii-ui.renderer"):new(config)
 ---@param component ascii-ui.Component
 ---@return integer bufnr
 function M.render(component)
-	local rendered = ascii_renderer:render(component)
+	local rendered_buffer = ascii_renderer:render(component)
 	-- TODO: should be calculated based on the rendered buffer
 	local width = 40
 	local height = 10
@@ -30,7 +31,10 @@ function M.render(component)
 		window:update(ascii_renderer:render(component):to_lines())
 	end)
 
-	window:update(rendered:to_lines())
+	window:update(rendered_buffer:to_lines())
+
+	-- bind to user interaction
+	user_interations.attach_buffer(rendered_buffer)
 
 	return window.bufnr
 end
