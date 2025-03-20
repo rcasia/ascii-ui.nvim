@@ -2,7 +2,7 @@ local Component = require("ascii-ui.components.component")
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 
----@alias ascii-ui.OptionsOpts { options: string[] }
+---@alias ascii-ui.OptionsOpts { options: string[], title?: string }
 
 ---@class ascii-ui.Options.Item
 ---@field id integer
@@ -27,6 +27,7 @@ end
 ---@class ascii-ui.Options : ascii-ui.Component
 ---@field options ascii-ui.Options.Item[]
 ---@field _index_selected integer
+---@field title string
 local Options = {
 	__name = "OptionsComponent",
 }
@@ -35,6 +36,7 @@ local Options = {
 ---@return ascii-ui.Options
 function Options:new(opts)
 	local state = {
+		title = opts.title or "",
 		options = from(opts.options),
 		_index_selected = 1,
 	}
@@ -67,7 +69,7 @@ end
 function Options:render()
 	local selected_id = self.options[self._index_selected].id
 
-	return vim.iter(self.options)
+	local bufferlines = vim.iter(self.options)
 		:map(function(option)
 			local content = ""
 			if option.id == selected_id then
@@ -85,6 +87,11 @@ function Options:render()
 			return Bufferline:new(element)
 		end)
 		:totable()
+
+	if vim.fn.empty(self.title) == 0 then
+		table.insert(bufferlines, 1, Bufferline:new(Element:new(self.title)))
+	end
+	return bufferlines
 end
 
 return Options

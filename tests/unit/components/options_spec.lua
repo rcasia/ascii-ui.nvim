@@ -43,6 +43,20 @@ describe("Options", function()
 		}, Buffer:new(unpack(render_2)):to_lines())
 	end)
 
+	it("can have a title", function()
+		local option_names = { "apple", "banana", "mango" }
+		local title = "Select a fruit:"
+		local options = Options:new({ options = option_names, title = title })
+
+		local render = options:render()
+		eq({
+			"Select a fruit:",
+			"[x] apple",
+			"[ ] banana",
+			"[ ] mango",
+		}, Buffer:new(unpack(render)):to_lines())
+	end)
+
 	it("reacts to user interaction", function()
 		local option_names = { "apple", "banana", "mango" }
 		local options = Options:new({ options = option_names })
