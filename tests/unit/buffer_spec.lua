@@ -75,5 +75,16 @@ describe("buffer", function()
 
 			eq(target_a, b:find_element_by_position({ line = 2, col = element_before_target:len() + 1 }))
 		end)
+
+		it("returns nil when not found", function()
+			local b = Buffer:new(
+				BufferLine:new(Element:new("some element A")),
+				BufferLine:new(element_before_target, target_a),
+				BufferLine:new(Element:new("some element C"))
+			)
+
+			assert.is_nil(b:find_element_by_position({ line = math.huge, col = 1 }))
+			assert.is_nil(b:find_element_by_position({ line = 1, col = math.huge }))
+		end)
 	end)
 end)

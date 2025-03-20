@@ -1,7 +1,7 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
 
 ---@class ascii-ui.Buffer
----@field id string
+---@field id integer
 ---@field lines ascii-ui.BufferLine[]
 local Buffer = {}
 
@@ -94,6 +94,9 @@ end
 ---@param position { line: integer, col: integer }
 ---@return ascii-ui.Element | nil
 function Buffer:find_element_by_position(position)
+	if not self.lines[position.line] then
+		return nil -- out of bound
+	end
 	return self.lines[position.line]:find_element_by_col(position.col)
 end
 

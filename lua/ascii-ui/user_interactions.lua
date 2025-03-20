@@ -17,7 +17,13 @@ end
 function UserInteractions:interact(opts)
 	local buffer = self.buffers[opts.buffer_id]
 	local element = buffer:find_element_by_position(opts.position)
+
+	if not element then
+		return -- there is no element to interact with
+	end
+
 	assert(opts.interaction_type, "interaction type cannot be nil")
+
 	local interaction_function = assert(
 		element.interactions[opts.interaction_type],
 		"interaction type does not exist: " .. opts.interaction_type

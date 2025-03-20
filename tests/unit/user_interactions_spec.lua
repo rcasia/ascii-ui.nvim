@@ -43,4 +43,25 @@ describe("UserInteractions", function()
 		})
 		eq(true, has_called.on_hover)
 	end)
+
+	it("does nothing when element is not found in position", function()
+		local user_interactions = UserInteractions:new()
+		local position = { line = math.huge, col = math.huge }
+
+		local buffer = Buffer:new(Bufferline:new(Element:new("my text here", false, {
+			on_select = function()
+				has_called.on_select = true
+			end,
+			on_hover = function()
+				has_called.on_hover = true
+			end,
+		})))
+
+		user_interactions:attach_buffer(buffer)
+		user_interactions:interact({
+			buffer_id = buffer.id,
+			position = position,
+			interaction_type = interaction_type.select,
+		})
+	end)
 end)
