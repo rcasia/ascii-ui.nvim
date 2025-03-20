@@ -1,4 +1,5 @@
 ---@class ascii-ui.Element
+---@field interactions table<string, function>
 local Element = {}
 
 local last_incremental_id = 0
@@ -10,12 +11,17 @@ end
 ---@param text string
 ---@param is_focusable? boolean
 ---@return ascii-ui.Element
-function Element:new(text, is_focusable)
+function Element:new(text, is_focusable, interactions)
 	vim.validate({ text = { text, "string" } })
 	local state = {
 		id = generate_id(),
 		text = text,
 		focusable = is_focusable or false,
+		interactions = interactions or {
+			on_select = function()
+				print("selected", text)
+			end,
+		},
 	}
 
 	setmetatable(state, self)

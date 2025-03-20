@@ -23,7 +23,7 @@ describe("Options", function()
 		eq("mango", options:select_index(3))
 	end)
 
-	it("renders", function()
+	it("renders elements", function()
 		local option_names = { "apple", "banana", "mango" }
 		local options = Options:new({ options = option_names })
 
@@ -41,5 +41,15 @@ describe("Options", function()
 			"[ ] banana",
 			"[x] mango",
 		}, Buffer:new(unpack(render_2)):to_lines())
+	end)
+
+	it("reacts to user interaction", function()
+		local option_names = { "apple", "banana", "mango" }
+		local options = Options:new({ options = option_names })
+		local render = options:render()
+
+		local second_element = render[2].elements[1]
+		second_element.interactions.on_select()
+		eq("banana", options:selected())
 	end)
 end)

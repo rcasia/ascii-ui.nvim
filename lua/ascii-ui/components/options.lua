@@ -39,6 +39,11 @@ function Options:new(opts)
 	return Component:extend(self, state)
 end
 
+---@return string selected_option
+function Options:selected()
+	return self.options[self._index_selected].name
+end
+
 ---@param index integer
 ---@return string selected_option
 function Options:select_index(index)
@@ -65,7 +70,11 @@ function Options:render()
 			if option.id == selected_id then
 				return Element:new(("[x] %s"):format(option.name))
 			end
-			return Element:new(("[ ] %s"):format(option.name))
+			return Element:new(("[ ] %s"):format(option.name), false, {
+				on_select = function()
+					self:select_index(option.id)
+				end,
+			})
 		end)
 		:map(function(element)
 			return Bufferline:new(element)
