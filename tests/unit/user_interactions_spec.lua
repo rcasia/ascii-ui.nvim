@@ -1,5 +1,5 @@
 ---@module "luassert"
-local interaction_type = require("ascii-ui.interaction_type")
+local INTERACTION_TYPE = require("ascii-ui.interaction_type")
 
 local eq = assert.are.same
 
@@ -32,28 +32,27 @@ describe("UserInteractions", function()
 		user_interactions:interact({
 			buffer_id = buffer_id,
 			position = position,
-			interaction_type = interaction_type.select,
+			interaction_type = INTERACTION_TYPE.SELECT,
 		})
 		eq(true, has_called.on_select)
 
 		user_interactions:interact({
 			buffer_id = buffer_id,
 			position = position,
-			interaction_type = interaction_type.hover,
+			interaction_type = INTERACTION_TYPE.HOVER,
 		})
 		eq(true, has_called.on_hover)
 	end)
 
 	it("does nothing when element is not found in position", function()
 		local user_interactions = UserInteractions:new()
+		local is_called = false
 		local position = { line = math.huge, col = math.huge }
+		local type = INTERACTION_TYPE.SELECT
 
 		local buffer = Buffer:new(Bufferline:new(Element:new("my text here", false, {
 			on_select = function()
-				has_called.on_select = true
-			end,
-			on_hover = function()
-				has_called.on_hover = true
+				is_called = true
 			end,
 		})))
 
@@ -61,7 +60,9 @@ describe("UserInteractions", function()
 		user_interactions:interact({
 			buffer_id = buffer.id,
 			position = position,
-			interaction_type = interaction_type.select,
+			interaction_type = type,
 		})
+
+		eq(false, is_called)
 	end)
 end)
