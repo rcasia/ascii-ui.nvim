@@ -11,10 +11,11 @@ on:
 jobs:
   lua-typecheck:
     runs-on: ubuntu-latest
-    name: Plenary Tests
+    name: Lua Typecheck
     steps:
       - name: lua-typecheck-action
         uses: mrcjkb/lua-typecheck-action@v1.1.0
+
   luacheck:
     runs-on: ubuntu-latest
     steps:
