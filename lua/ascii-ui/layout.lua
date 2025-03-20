@@ -1,3 +1,5 @@
+local BufferLine = require("ascii-ui.buffer.bufferline")
+
 --- @class ascii-ui.Layout : ascii-ui.Component
 --- @field components ascii-ui.Component[]
 local Layout = {
@@ -24,12 +26,17 @@ function Layout:subscribe(cb)
 end
 
 function Layout:render()
-	return Buffer:new(unpack(vim.iter(self.components)
-		:map(function(component)
-			return component:render()
+	local bufferlines = {}
+	for idx, component in ipairs(self.components) do
+		if idx ~= 1 then
+			bufferlines[#bufferlines + 1] = BufferLine:new()
+		end
+		vim.iter(component:render()):each(function(line)
+			bufferlines[#bufferlines + 1] = line
 		end)
-		:flatten()
-		:totable()))
+	end
+
+	return Buffer:new(unpack(vim.iter(bufferlines):totable()))
 end
 
 return Layout

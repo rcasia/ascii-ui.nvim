@@ -13,6 +13,7 @@ describe("Layout", function()
 
 		eq({
 			"dummy_render",
+			"",
 			"dummy_render",
 		}, layout:render():to_lines())
 	end)
