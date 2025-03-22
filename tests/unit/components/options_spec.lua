@@ -43,6 +43,16 @@ describe("Options", function()
 		}, Buffer:new(unpack(render_2)):to_lines())
 	end)
 
+	it("renders selected element with color", function()
+		local option_names = { "apple", "banana", "mango" }
+		local options = Options:new({ options = option_names })
+
+		local selected_element =
+			assert(Buffer:new(unpack(options:render())):find_element_by_position({ line = 1, col = 1 })) -- the first element is selected
+
+		eq(selected_element.highlight, "AsciiUISelected")
+	end)
+
 	it("can have a title", function()
 		local option_names = { "apple", "banana", "mango" }
 		local title = "Select a fruit:"

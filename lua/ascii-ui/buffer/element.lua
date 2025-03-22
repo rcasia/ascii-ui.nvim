@@ -1,6 +1,7 @@
 ---@class ascii-ui.Element
 ---@field interactions table<string, function>
 ---@field len fun(): integer
+---@field highlight string
 ---@private focusable boolean
 local Element = {}
 
@@ -13,11 +14,12 @@ end
 ---@param text string
 ---@param is_focusable? boolean
 ---@return ascii-ui.Element
-function Element:new(text, is_focusable, interactions)
+function Element:new(text, is_focusable, interactions, highlight)
 	vim.validate({ text = { text, "string" } })
 	local state = {
 		id = generate_id(),
 		text = text,
+		highlight = highlight,
 		focusable = is_focusable or false,
 		interactions = interactions or {
 			on_select = function()

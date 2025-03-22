@@ -77,11 +77,12 @@ function Options:render()
 			else
 				content = ("[ ] %s"):format(option.name)
 			end
+
 			return Element:new(content, false, {
 				on_select = function()
 					self:select_index(option.id)
 				end,
-			})
+			}, "AsciiUISelected")
 		end)
 		:map(function(element)
 			return Bufferline:new(element)
