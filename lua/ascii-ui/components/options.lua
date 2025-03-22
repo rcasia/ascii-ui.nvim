@@ -1,6 +1,7 @@
 local Component = require("ascii-ui.components.component")
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
+local highlights = require("ascii-ui.highlights")
 
 ---@alias ascii-ui.OptionsOpts { options: string[], title?: string }
 
@@ -82,7 +83,7 @@ function Options:render()
 				on_select = function()
 					self:select_index(option.id)
 				end,
-			}, "AsciiUISelected")
+			}, highlights.SELECTION)
 		end)
 		:map(function(element)
 			return Bufferline:new(element)

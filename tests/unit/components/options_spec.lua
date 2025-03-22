@@ -3,6 +3,7 @@ local eq = assert.are.same
 
 local Options = require("ascii-ui.components.options")
 local Buffer = require("ascii-ui.buffer.buffer")
+local Hightlights = require("ascii-ui.highlights")
 
 describe("Options", function()
 	it("cycles options", function()
@@ -50,7 +51,7 @@ describe("Options", function()
 		local selected_element =
 			assert(Buffer:new(unpack(options:render())):find_element_by_position({ line = 1, col = 1 })) -- the first element is selected
 
-		eq(selected_element.highlight, "AsciiUISelected")
+		eq(selected_element.highlight, Hightlights.SELECTION)
 	end)
 
 	it("can have a title", function()
