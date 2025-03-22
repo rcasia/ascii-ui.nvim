@@ -48,4 +48,8 @@ function Element:is_focusable()
 	return self.focusable
 end
 
+function Element:is_colored()
+	return self.highlight ~= nil
+end
+
 return Element

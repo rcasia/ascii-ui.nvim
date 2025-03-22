@@ -52,6 +52,31 @@ describe("buffer", function()
 			assert.is_nil(next())
 		end)
 
+		it("should find the next colored element", function()
+			local highlight = "SomeHighlight"
+			local target_a = Element:new("this is focusable", false, {}, highlight)
+			local target_b = Element:new("another focusable", true, {}, highlight)
+			local target_c = Element:new("yet another focusable", true, {}, highlight)
+			local b = Buffer:new(
+				BufferLine:new(Element:new("this is not focusable"), target_a),
+				BufferLine:new(Element:new("not focusable either"), target_b),
+				BufferLine:new(),
+				BufferLine:new(),
+				BufferLine:new(target_c)
+			)
+			local next = b:iter_colored_elements()
+			local found_a = next()
+			eq(target_a, found_a)
+
+			local found_b = next()
+			eq(target_b, found_b)
+
+			local found_c = next()
+			eq(target_c, found_c)
+
+			assert.is_nil(next())
+		end)
+
 		it("should find element by id", function()
 			local target = Element:new("target element")
 			local b = Buffer:new(

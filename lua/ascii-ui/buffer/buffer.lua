@@ -58,6 +58,23 @@ function Buffer:iter_focusables()
 	end
 end
 
+---@return fun() ascii-ui.Element | nil
+function Buffer:iter_colored_elements()
+	local iter = vim.iter(self.lines)
+		:map(function(line)
+			return vim.iter(line.elements)
+				:filter(function(element)
+					return element:is_colored()
+				end)
+				:totable()
+		end)
+		:flatten()
+
+	return function()
+		return iter:next()
+	end
+end
+
 ---@param lines string[]
 ---@return ascii-ui.Buffer
 function Buffer.from_lines(lines)
