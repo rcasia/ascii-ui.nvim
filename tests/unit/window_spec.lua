@@ -1,4 +1,5 @@
 local Window = require("ascii-ui.window")
+local Buffer = require("ascii-ui.buffer.buffer")
 
 describe("window", function()
 	it("should open and close", function()
@@ -15,7 +16,7 @@ describe("window", function()
 		local window = Window:new()
 		window:open()
 
-		window:update({ "Hello, World!" })
+		window:update(Buffer.from_lines({ "Hello, World!" }))
 
 		window:close()
 	end)

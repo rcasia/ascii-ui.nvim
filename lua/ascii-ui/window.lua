@@ -66,8 +66,9 @@ function Window:close()
 	self.bufnr = nil
 end
 
----@param buffer_content string[]
-function Window:update(buffer_content)
+---@param buffer ascii-ui.Buffer
+function Window:update(buffer)
+	local buffer_content = buffer:to_lines()
 	vim.schedule(function()
 		-- buffer content
 		vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })

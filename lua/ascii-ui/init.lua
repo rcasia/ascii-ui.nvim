@@ -29,11 +29,11 @@ function M.render(component)
 
 	-- does first render
 	local rendered_buffer = ascii_renderer:render(component)
-	window:update(rendered_buffer:to_lines())
+	window:update(rendered_buffer)
 
 	-- subsequent renders triggered by data changes on component
 	component:subscribe(function(t, key, value)
-		window:update(ascii_renderer:render(component):to_lines())
+		window:update(ascii_renderer:render(component))
 	end)
 
 	-- binds to user interaction
