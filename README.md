@@ -18,6 +18,7 @@ return {
 
 ```lua
 
+-- generate:start
 local Options = require("ascii-ui.components.options")
 local layout = require("ascii-ui.layout")
 local ui = require("ascii-ui")
@@ -41,6 +42,7 @@ local langs = Options:new({
 })
 
 local spring = Options:new({
+
  title = "Spring Boot",
  options = {
   "3.5.0 (SNAPSHOT)",
@@ -51,4 +53,5 @@ local spring = Options:new({
 
 ui.mount(layout:new(projects, langs, spring))
 
+-- generate:end
 ```

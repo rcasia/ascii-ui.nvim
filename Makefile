@@ -1,5 +1,8 @@
 .PHONY: test
 
+generate-examples:
+	nvim -u tests/minimal.lua -l scripts/generate_examples.lua
+
 test:
 	 bash scripts/test $(filter-out $@, $(MAKECMDGOALS))
 
