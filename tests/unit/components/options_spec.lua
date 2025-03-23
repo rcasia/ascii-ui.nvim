@@ -51,7 +51,9 @@ describe("Options", function()
 		local selected_element =
 			assert(Buffer:new(unpack(options:render())):find_element_by_position({ line = 1, col = 1 })) -- the first element is selected
 
-		eq(selected_element.highlight, Hightlights.SELECTION)
+		eq(Hightlights.SELECTION, selected_element.highlight)
+		eq(nil, Buffer:new(unpack(options:render())):find_element_by_position({ line = 2, col = 1 }).highlight)
+		eq(nil, Buffer:new(unpack(options:render())):find_element_by_position({ line = 3, col = 1 }).highlight)
 	end)
 
 	it("can have a title", function()

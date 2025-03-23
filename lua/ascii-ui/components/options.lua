@@ -73,8 +73,10 @@ function Options:render()
 	local bufferlines = vim.iter(self.options)
 		:map(function(option)
 			local content = ""
+			local highlight
 			if option.id == selected_id then
 				content = ("[x] %s"):format(option.name)
+				highlight = highlights.SELECTION
 			else
 				content = ("[ ] %s"):format(option.name)
 			end
@@ -83,7 +85,7 @@ function Options:render()
 				on_select = function()
 					self:select_index(option.id)
 				end,
-			}, highlights.SELECTION)
+			}, highlight)
 		end)
 		:map(function(element)
 			return Bufferline:new(element)
