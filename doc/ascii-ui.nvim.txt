@@ -14,6 +14,15 @@ Table of Contents                            *ascii-ui.nvim-table-of-contents*
 
 A WIP extensible ui framework with no non-sense apis (hopefully) for nvim.
 
+>lua
+    return {
+      { 
+      "rcasia/ascii-ui.nvim", 
+      opts = {}
+     },
+    }
+<
+
 
 EXAMPLE                                  *ascii-ui.nvim-ascii-ui.nvim-example*
 
@@ -50,7 +59,7 @@ EXAMPLE                                  *ascii-ui.nvim-ascii-ui.nvim-example*
      },
     })
     
-    ui.render(layout:new(projects, langs, spring))
+    ui.mount(layout:new(projects, langs, spring))
 <
 
 ==============================================================================
