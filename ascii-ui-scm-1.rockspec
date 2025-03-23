@@ -8,7 +8,7 @@ test_dependencies = {
 }
 
 source = {
-	url = "git://github.com/mrcjkb/" .. package,
+	url = "git://github.com/rcasia/" .. package,
 }
 
 build = {
