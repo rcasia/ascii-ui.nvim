@@ -22,12 +22,8 @@ function M.render(component)
 	-- does first render
 	local rendered_buffer = ascii_renderer:render(component)
 
-	-- TODO: should be calculated based on the rendered buffer
-	local width = 40
-	local height = 20
-
 	-- spawns a window
-	local window = Window:new({ width = width, height = height })
+	local window = Window:new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
 	window:open()
 
 	-- updates the window with the rendered buffer
