@@ -37,7 +37,7 @@ describe("Component", function()
 		eq(3, interactions_count)
 	end)
 
-	it("should subscribe to functions and run them on state changes with Checkbox component", function()
+	it("subscribes to functions and run them on state changes with Checkbox component", function()
 		local interactions_count = 0
 
 		local component = Checkbox:new()
@@ -57,7 +57,7 @@ describe("Component", function()
 		eq(2, interactions_count)
 	end)
 
-	it("should unsubscribe", function()
+	it("unsubscribes", function()
 		local interactions_count = 0
 
 		local component = Checkbox:new()
@@ -67,6 +67,22 @@ describe("Component", function()
 		end)
 
 		component:clear_subscriptions()
+
+		component.unchecked_field = 1
+		component:toggle()
+		eq(0, interactions_count)
+	end)
+
+	it("removes the subscriptions on destroy", function()
+		local interactions_count = 0
+
+		local component = Checkbox:new()
+
+		component:subscribe(function()
+			interactions_count = interactions_count + 1
+		end)
+
+		component:destroy()
 
 		component.unchecked_field = 1
 		component:toggle()

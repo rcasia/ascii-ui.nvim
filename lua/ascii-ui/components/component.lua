@@ -4,10 +4,19 @@ local Component = {
 	__name = "BaseComponent",
 }
 
+local last_incremental_id = 0
+local function generate_id()
+	last_incremental_id = last_incremental_id + 1
+	return last_incremental_id
+end
+
 --- @param component_name? string
 --- @return ascii-ui.Component
 function Component:new(component_name)
+	local id = generate_id()
+
 	local instance = {
+		__id = id,
 		__subscriptions = {},
 		__name = component_name or "BaseComponent",
 		__state = {},
@@ -73,6 +82,10 @@ end
 
 function Component:clear_subscriptions()
 	self.__subscriptions = {}
+end
+
+function Component:destroy()
+	self:clear_subscriptions()
 end
 
 return Component
