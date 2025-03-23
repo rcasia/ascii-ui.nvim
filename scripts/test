@@ -3,6 +3,58 @@
 
 tempfile=$(mktemp)
 minimal="tests/minimal.lua"
+plugins_dir="./.tests/site/pack/deps/start"
+
+function setup_environment() {
+  echo
+  echo "[test] setting up environment"
+  echo
+
+  if [[ ! -d "${plugins_dir}" ]]; then
+    mkdir -p "${plugins_dir}"
+  fi
+
+  if [[ ! -d "${plugins_dir}/plenary.nvim" ]]; then
+    echo "[plugins] plenary.nvim: installing..."
+    git clone https://github.com/nvim-lua/plenary.nvim "${plugins_dir}/plenary.nvim"
+    # commit 9069d14a120cadb4f6825f76821533f2babcab92 broke luacov
+    # issue: https://github.com/nvim-lua/plenary.nvim/issues/353
+    local -r plenary_353_patch="$(pwd)/scripts/plenary-353.patch"
+    git -C "${plugins_dir}/plenary.nvim" apply "${plenary_353_patch}"
+    echo "[plugins] plenary.nvim: installed"
+    echo
+  fi
+
+  echo "[test] environment ready"
+  echo
+}
+
+function luacov_start() {
+  luacov_dir="$(dirname "$(luarocks which luacov 2>/dev/null | head -1)")"
+  if [[ "${luacov_dir}" == "." ]]; then
+    luacov_dir=""
+  fi
+
+  if test -n "${luacov_dir}"; then
+    rm -f luacov.*.out
+    export LUA_PATH=";;${luacov_dir}/?.lua"
+  fi
+}
+
+function luacov_end() {
+  if test -n "${luacov_dir}"; then
+    if test -f "luacov.stats.out"; then
+      luacov
+
+      echo
+      tail -n +$(($(grep -n "^Summary$" luacov.report.out | cut -d":" -f1) - 1)) luacov.report.out
+    fi
+  fi
+}
+
+setup_environment
+
+luacov_start
 
 if [[ -n $1 ]] && [[ $1 == "--fail-fast" ]]; then
   echo "Running tests with --fail-fast"
@@ -12,8 +64,10 @@ elif [[ -n $1 ]]; then
   nvim --headless --noplugin -u ${minimal} -c "PlenaryBustedFile $1" | tee "${tempfile}"
 else
   nvim --headless --noplugin -u ${minimal} \
-    -c "PlenaryBustedDirectory tests/ {minimal_init = '${minimal}'}" | tee "${tempfile}"
+    -c "lua require('plenary.test_harness').test_directory('./tests/', { minimal_init = 'tests/minimal.lua', sequential = true })" | tee "${tempfile}"
 fi
+
+luacov_end
 
 # Plenary doesn't emit exit code 1 when tests have errors during setup
 errors=$(sed 's/\x1b\[[0-9;]*m//g' "${tempfile}" | awk '/(Errors|Failed) :/ {print $3}' | grep -v '0')

@@ -1,0 +1,63 @@
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+name: Luacov
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get Cache Key
+        id: luver-cache-key
+        env:
+          CI_RUNNER_OS: ${{ runner.os }}
+          CI_SECRETS_CACHE_VERSION: ${{ secrets.CACHE_VERSION }}
+        run: |
+          echo "value=${CI_RUNNER_OS}-luver-${CI_SECRETS_CACHE_VERSION}-$(date -u +%Y-%m-%d)" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Setup Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.local/share/luver
+          key: ${{ steps.luver-cache-key.outputs.value }}
+
+      - name: Setup Lua
+        uses: MunifTanjim/luver-action@v1
+        with:
+          default: 5.1.5
+          lua_versions: 5.1.5
+          luarocks_versions: 5.1.5:3.8.0
+
+      - name: Setup luacov
+        run: |
+          luarocks install luacov
+          luarocks install luafilesystem
+
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: stable
+
+      - name: Run Tests
+        run: |
+          nvim --version
+          ./scripts/test
+
+      - name: Print luacov report
+        run: cat luacov.report.out
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

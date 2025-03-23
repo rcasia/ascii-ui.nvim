@@ -1,3 +1,4 @@
+pcall(require, "luacov")
 local create_dummy_component = require("tests.util.dummy_component")
 local eq = assert.are.same
 

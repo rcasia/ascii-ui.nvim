@@ -1,3 +1,4 @@
+pcall(require, "luacov")
 ---@module "luassert"
 
 local eq = assert.are.same

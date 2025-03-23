@@ -1,3 +1,4 @@
+pcall(require, "luacov")
 ---@module "luassert"
 local INTERACTION_TYPE = require("ascii-ui.interaction_type")
 
