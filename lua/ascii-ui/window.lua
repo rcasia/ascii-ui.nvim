@@ -42,13 +42,18 @@ function Window:open()
 	-- Create a new unlisted, scratch buffer
 	local buf = vim.api.nvim_create_buf(false, true)
 
+	-- current window size
+	local width = vim.api.nvim_win_get_width(0)
+	local height = vim.api.nvim_win_get_height(0)
+	local center = { line = math.floor(height / 2), col = math.floor(width / 2) }
+
 	-- Open a floating window with the new buffer
 	local win = vim.api.nvim_open_win(buf, true, {
 		relative = "editor",
 		width = self.opts.width,
 		height = self.opts.height,
-		col = 10,
-		row = 10,
+		col = center.col - math.floor(self.opts.width / 2),
+		row = center.line - math.floor(self.opts.height / 2),
 		style = "minimal",
 		border = "rounded",
 	})

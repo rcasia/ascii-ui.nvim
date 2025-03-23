@@ -21,7 +21,7 @@ local ascii_renderer = require("ascii-ui.renderer"):new(config)
 function M.render(component)
 	-- TODO: should be calculated based on the rendered buffer
 	local width = 40
-	local height = 10
+	local height = 20
 
 	-- spawns a window
 	local window = Window:new({ width = width, height = height })
