@@ -25,7 +25,7 @@ function UserInteractions:new()
 
 	-- initialize keymaps
 	vim.keymap.set("n", "<CR>", function()
-		local bufnr = 1 -- TODO: align buffer ids
+		local bufnr = vim.api.nvim_get_current_buf()
 		local cursor = vim.api.nvim_win_get_cursor(0)
 		local position = { line = cursor[1], col = cursor[2] }
 
@@ -57,8 +57,14 @@ function UserInteractions:interact(opts)
 end
 
 ---@param buffer ascii-ui.Buffer
-function UserInteractions:attach_buffer(buffer)
-	self.buffers[buffer.id] = buffer
+---@param buffer_id integer
+function UserInteractions:attach_buffer(buffer, buffer_id)
+	self.buffers[buffer_id] = buffer
+end
+
+---@param buffer_id integer
+function UserInteractions:detach_buffer(buffer_id)
+	self.buffers[buffer_id] = nil
 end
 
 -- return singleton for all the app

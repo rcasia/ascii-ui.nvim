@@ -28,7 +28,7 @@ describe("UserInteractions", function()
 			end,
 		})))
 
-		user_interactions:attach_buffer(buffer)
+		user_interactions:attach_buffer(buffer, buffer_id)
 
 		user_interactions:interact({
 			buffer_id = buffer_id,
@@ -46,6 +46,7 @@ describe("UserInteractions", function()
 	end)
 
 	it("does nothing when element is not found in position", function()
+		local buffer_id = 1
 		local user_interactions = UserInteractions:new()
 		local is_called = false
 		local position = { line = math.huge, col = math.huge }
@@ -57,9 +58,9 @@ describe("UserInteractions", function()
 			end,
 		})))
 
-		user_interactions:attach_buffer(buffer)
+		user_interactions:attach_buffer(buffer, buffer_id)
 		user_interactions:interact({
-			buffer_id = buffer.id,
+			buffer_id = buffer_id,
 			position = position,
 			interaction_type = type,
 		})
