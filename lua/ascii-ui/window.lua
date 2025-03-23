@@ -19,7 +19,7 @@ function Window:new(opts)
 
 	-- set default color
 	local hl = vim.api.nvim_get_hl(0, { name = "Normal" })
-	vim.api.nvim_set_hl(0, "AsciiUiWindow", { fg = hl.fg, bg = hl.bg })
+	vim.api.nvim_set_hl(0, highlights.DEFAULT, { fg = hl.fg, bg = hl.bg })
 
 	-- set custom colors
 	local ns_id = vim.api.nvim_create_namespace("ascii-ui")
@@ -88,7 +88,7 @@ function Window:update(buffer)
 			-- NOTE: Good for updating all the window
 			-- but unoptimal for just parts of the window or buffer
 			-- for that use: nvim_buf_set_extmark
-			vim.api.nvim_set_option_value("winhl", "Normal:AsciiUiWindow", { win = self.winid })
+			vim.api.nvim_set_option_value("winhl", ("Normal:%s"):format(highlights.DEFAULT), { win = self.winid })
 
 			for element_result in buffer:iter_colored_elements() do
 				local pos = element_result.position
