@@ -40,6 +40,10 @@ end
 ---@param opts ascii-ui.UserInteractions.InteractionOpts
 function UserInteractions:interact(opts)
 	local buffer = self.buffers[opts.buffer_id]
+	if not buffer then
+		return -- buffer has not been found
+	end
+
 	local element = buffer:find_element_by_position(opts.position)
 
 	if not element then

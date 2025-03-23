@@ -67,4 +67,25 @@ describe("UserInteractions", function()
 
 		eq(false, is_called)
 	end)
+
+	it("does nothing when buffer is not found", function()
+		local buffer_id = 1
+		local user_interactions = UserInteractions:new()
+		local position = { line = 1, col = 1 }
+		local type = INTERACTION_TYPE.SELECT
+
+		-- interact without attach a buffer first
+		local ok = pcall(
+			--
+			user_interactions.interact,
+			user_interactions,
+			{
+				buffer_id = buffer_id,
+				position = position,
+				interaction_type = type,
+			}
+		)
+
+		eq(true, ok)
+	end)
 end)
