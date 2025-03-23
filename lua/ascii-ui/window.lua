@@ -76,6 +76,9 @@ function Window:close()
 	vim.api.nvim_win_close(self.winid, true)
 	self.winid = nil
 	self.bufnr = nil
+
+	-- restore modifiable for the bufnr
+	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
 end
 
 ---@param buffer ascii-ui.Buffer

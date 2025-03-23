@@ -51,6 +51,8 @@ function M.mount(component)
 
 			-- destroy our component
 			component:destroy()
+
+			window:close()
 		end,
 	})
 
