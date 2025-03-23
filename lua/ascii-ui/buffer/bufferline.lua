@@ -43,6 +43,15 @@ function BufferLine:find_element_by_col(col)
 	return nil -- out of bounds
 end
 
+---@return integer length
+function BufferLine:len()
+	local len = 0
+	for _, element in ipairs(self.elements) do
+		len = len + element:len()
+	end
+	return len
+end
+
 ---@param str string
 function BufferLine.from_string(str)
 	return BufferLine:new(Element:new(str))

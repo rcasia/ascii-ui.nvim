@@ -29,6 +29,17 @@ function Buffer:new(...)
 	return state
 end
 
+---@return integer width
+function Buffer:width()
+	return vim.iter(self.lines)
+		:map(function(line)
+			return line:len()
+		end)
+		:fold(0, function(acc, len)
+			return math.max(acc, len)
+		end)
+end
+
 ---@return ascii-ui.Element | nil
 function Buffer:find_focusable()
 	assert(self.lines, "buffer component failed: lines cannot be nil")

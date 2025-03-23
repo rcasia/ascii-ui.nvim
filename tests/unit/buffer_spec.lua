@@ -17,6 +17,14 @@ describe("buffer", function()
 		eq({ "1test", "2test" }, b:to_lines())
 	end)
 
+	it("has the longest buffer line length as width", function()
+		local longest = BufferLine:new(Element:new("longest line"), Element:new("ever written"))
+
+		local b = Buffer:new(BufferLine:new(Element:new("short")), BufferLine:new(Element:new("longer line")), longest)
+
+		eq(longest:len(), b:width())
+	end)
+
 	describe("find_focusable", function()
 		it("should find the first focusable element", function()
 			local e = Element:new("this is focusable", true)
