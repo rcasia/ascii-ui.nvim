@@ -1,3 +1,4 @@
+pcall(require, "luacov")
 ---@module "luassert"
 
 local Buffer = require("ascii-ui.buffer.buffer")
