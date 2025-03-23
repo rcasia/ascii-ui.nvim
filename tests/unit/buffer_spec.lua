@@ -25,6 +25,11 @@ describe("buffer", function()
 		eq(longest:len(), b:width())
 	end)
 
+	it("has the number of lines as height", function()
+		local b = Buffer:new(BufferLine:new(), BufferLine:new(), BufferLine:new())
+		eq(3, b:height())
+	end)
+
 	describe("find_focusable", function()
 		it("should find the first focusable element", function()
 			local e = Element:new("this is focusable", true)

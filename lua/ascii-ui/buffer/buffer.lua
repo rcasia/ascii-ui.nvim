@@ -40,6 +40,10 @@ function Buffer:width()
 		end)
 end
 
+function Buffer:height()
+	return #self.lines
+end
+
 ---@return ascii-ui.Element | nil
 function Buffer:find_focusable()
 	assert(self.lines, "buffer component failed: lines cannot be nil")
