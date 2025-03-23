@@ -23,16 +23,6 @@ function UserInteractions:new()
 	setmetatable(state, self)
 	self.__index = self
 
-	-- initialize keymaps
-	vim.keymap.set("n", "<CR>", function()
-		local bufnr = vim.api.nvim_get_current_buf()
-		local cursor = vim.api.nvim_win_get_cursor(0)
-		local position = { line = cursor[1], col = cursor[2] }
-
-		UserInteractions:instance()
-			:interact({ buffer_id = bufnr, position = position, interaction_type = interaction_type.SELECT })
-	end, { noremap = true, silent = true })
-
 	return state
 end
 

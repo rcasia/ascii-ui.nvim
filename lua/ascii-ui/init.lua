@@ -1,5 +1,6 @@
 local Window = require("ascii-ui.window")
 local user_interations = require("ascii-ui.user_interactions")
+local interaction_type = require("ascii-ui.interaction_type")
 
 local M = {}
 
@@ -36,6 +37,21 @@ function M.mount(component)
 
 	-- binds to user interaction
 	user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
+
+	-- initialize keymaps
+	vim.keymap.set("n", "q", function()
+		window:close()
+	end, { buffer = window.bufnr, noremap = true, silent = true })
+
+	vim.keymap.set("n", "<CR>", function()
+		local bufnr = vim.api.nvim_get_current_buf()
+		local cursor = vim.api.nvim_win_get_cursor(0)
+		local position = { line = cursor[1], col = cursor[2] }
+
+		user_interations
+			:instance()
+			:interact({ buffer_id = bufnr, position = position, interaction_type = interaction_type.SELECT })
+	end, { buffer = window.bufnr, noremap = true, silent = true })
 
 	-- binds to window close event
 	vim.api.nvim_create_autocmd("WinClosed", {
