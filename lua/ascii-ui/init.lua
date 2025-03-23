@@ -35,7 +35,24 @@ function M.mount(component)
 	end)
 
 	-- binds to user interaction
-	user_interations:instance():attach_buffer(rendered_buffer)
+	user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
+
+	-- binds to window close event
+	vim.api.nvim_create_autocmd("WinClosed", {
+		callback = function(args)
+			local win_id = tonumber(args.match)
+
+			if win_id ~= window.winid then
+				return -- not our window
+			end
+
+			-- detach from user interactions
+			user_interations:instance():detach_buffer(window.bufnr)
+
+			-- destroy our component
+			component:destroy()
+		end,
+	})
 
 	return window.bufnr
 end
