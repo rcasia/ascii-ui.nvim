@@ -5,6 +5,15 @@
 
 A WIP extensible ui framework with no non-sense apis (hopefully) for nvim.
 
+```lua
+return {
+  { 
+  "rcasia/ascii-ui.nvim", 
+  opts = {}
+ },
+}
+```
+
 ## Example
 
 ```lua
@@ -40,6 +49,6 @@ local spring = Options:new({
  },
 })
 
-ui.render(layout:new(projects, langs, spring))
+ui.mount(layout:new(projects, langs, spring))
 
 ```
