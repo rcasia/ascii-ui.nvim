@@ -18,7 +18,7 @@ local ascii_renderer = require("ascii-ui.renderer"):new(config)
 
 ---@param component ascii-ui.Component
 ---@return integer bufnr
-function M.render(component)
+function M.mount(component)
 	-- does first render
 	local rendered_buffer = ascii_renderer:render(component)
 

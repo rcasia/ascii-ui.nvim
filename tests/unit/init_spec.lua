@@ -21,7 +21,7 @@ describe("ascii-ui", function()
 		component:set_child(expected_msg)
 
 		vim.schedule(function()
-			local bufnr = ui.render(component)
+			local bufnr = ui.mount(component)
 			assert(bufnr)
 			assert(buffer_contains(bufnr, expected_msg))
 		end)

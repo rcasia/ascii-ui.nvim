@@ -24,7 +24,7 @@ describe("ascii-ui", function()
 			"rubber",
 		} })
 
-		local bufnr = ui.render(component)
+		local bufnr = ui.mount(component)
 
 		assert(vim.wait(1000, function()
 			return buffer_contains(bufnr, "[x] book")
@@ -32,7 +32,7 @@ describe("ascii-ui", function()
 
 		vim.api.nvim_buf_delete(bufnr, {})
 
-		local bufnr_2 = ui.render(component)
+		local bufnr_2 = ui.mount(component)
 
 		component:select_index(2)
 		assert(vim.wait(1000, function()
