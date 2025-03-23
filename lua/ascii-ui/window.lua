@@ -1,8 +1,10 @@
+local highlights = require("ascii-ui.highlights")
 ---@alias ascii-ui.WindowOpts { width?: integer, height?: integer }
 
 ---@class ascii-ui.Window
 ---@field winid integer
 ---@field bufnr integer
+---@field ns_id integer
 ---@field opts ascii-ui.WindowOpts
 local Window = {
 	---@type ascii-ui.WindowOpts
@@ -19,9 +21,14 @@ function Window:new(opts)
 	local hl = vim.api.nvim_get_hl(0, { name = "Normal" })
 	vim.api.nvim_set_hl(0, "AsciiUiWindow", { fg = hl.fg, bg = hl.bg })
 
+	-- set custom colors
+	local ns_id = vim.api.nvim_create_namespace("ascii-ui")
+	vim.api.nvim_set_hl(0, highlights.SELECTION, { fg = "#f6b93b" })
+
 	local state = {
 		winid = nil,
 		bufnr = nil,
+		ns_id = ns_id,
 		opts = opts,
 	}
 
@@ -68,22 +75,35 @@ end
 
 ---@param buffer ascii-ui.Buffer
 function Window:update(buffer)
-	local buffer_content = buffer:to_lines()
 	vim.schedule(function()
 		-- buffer content
 		vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
-		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer_content)
+		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer:to_lines())
 		vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
 
 		-- coloring
-		local function apply_highlight(bufnr)
+		local function apply_highlight()
+			vim.api.nvim_buf_clear_namespace(self.bufnr, self.ns_id, 0, -1)
+
 			-- NOTE: Good for updating all the window
 			-- but unoptimal for just parts of the window or buffer
 			-- for that use: nvim_buf_set_extmark
 			vim.api.nvim_set_option_value("winhl", "Normal:AsciiUiWindow", { win = self.winid })
+
+			for element_result in buffer:iter_colored_elements() do
+				local pos = element_result.position
+				local element = element_result.element
+				local end_col = pos.col + element:len()
+
+				vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, pos.line - 1, pos.col - 1, {
+					end_col = end_col - 1,
+					strict = false,
+					hl_group = element.highlight,
+				})
+			end
 		end
 
-		apply_highlight(self.bufnr)
+		apply_highlight()
 	end)
 end
 
