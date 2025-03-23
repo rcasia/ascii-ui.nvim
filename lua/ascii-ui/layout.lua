@@ -25,6 +25,12 @@ function Layout:subscribe(cb)
 	end
 end
 
+function Layout:destroy()
+	for _, component in ipairs(self.components) do
+		component:destroy()
+	end
+end
+
 function Layout:render()
 	local bufferlines = {}
 	for idx, component in ipairs(self.components) do
