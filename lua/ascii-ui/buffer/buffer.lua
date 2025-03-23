@@ -1,5 +1,8 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
 
+---@alias ascii-ui.Position { line: integer, col: integer }
+---@alias ascii-ui.Buffer.ElementFoundResult { element: ascii-ui.Element, position: ascii-ui.Position }
+
 ---@class ascii-ui.Buffer
 ---@field id integer
 ---@field lines ascii-ui.BufferLine[]
@@ -58,13 +61,30 @@ function Buffer:iter_focusables()
 	end
 end
 
----@return fun() ascii-ui.Element | nil
+---@return fun(): ascii-ui.Buffer.ElementFoundResult | nil
 function Buffer:iter_colored_elements()
 	local iter = vim.iter(self.lines)
-		:map(function(line)
+		:enumerate()
+		:map(function(line_index, line)
+			-- local line_index, line = indexed_line
+			local col_offset = 1
+
 			return vim.iter(line.elements)
-				:filter(function(element)
-					return element:is_colored()
+				:map(function(element)
+					local current_col = col_offset
+					col_offset = col_offset + element:len() -- o el método que dé el ancho
+
+					if element:is_colored() then
+						return {
+							element = element,
+							position = { line = line_index, col = current_col },
+						}
+					else
+						return nil
+					end
+				end)
+				:filter(function(e)
+					return e ~= nil
 				end)
 				:totable()
 		end)
