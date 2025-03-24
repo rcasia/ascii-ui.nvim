@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.1.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.0.0...v0.1.0) (2025-03-24)
+
+
+### Features
+
+* **buffer:** calculate height from the count of lines ([a9f8730](https://github.com/rcasia/ascii-ui.nvim/commit/a9f873065ff53287f588939e1807aaaaf499c8c0))
+* **buffer:** calculate width of a buffer by its longest line ([dfb35bc](https://github.com/rcasia/ascii-ui.nvim/commit/dfb35bcb31e48b40f18fba38160c151d1edad718))
+* **buffer:** find position when iterating through colored elements in buffer ([927951a](https://github.com/rcasia/ascii-ui.nvim/commit/927951a3184723d04a3261008eb516c42f891a5f))
+* **buffer:** implement Buffer:iter_colored_elements() ([31ef5b7](https://github.com/rcasia/ascii-ui.nvim/commit/31ef5b7832ca9e05031e5cee8f461f5680381aa4))
+* close virtual window when nvim window is closed ([7e919ce](https://github.com/rcasia/ascii-ui.nvim/commit/7e919ced84514732136a9b3328209f2a776d93a1))
+* **component:** removes subscriptions on destroy ([0990efe](https://github.com/rcasia/ascii-ui.nvim/commit/0990efe3b9e2a51d8596d67d10761ce6dffcaad9))
+* **element:** accept table of props for instantiation ([5125e56](https://github.com/rcasia/ascii-ui.nvim/commit/5125e56f0435d2271567a39c04b60146a54d65d4))
+* **element:** accept table of props for instantiation ([7c87561](https://github.com/rcasia/ascii-ui.nvim/commit/7c875611b2f505987a27f3c6009164cd49592216))
+* initialize keymaps on mount ([0d13a64](https://github.com/rcasia/ascii-ui.nvim/commit/0d13a64c78736317687f1f3e29d9442e610eac8b))
+* **interaction:** do nothing when buffer is not found ([d7cfea9](https://github.com/rcasia/ascii-ui.nvim/commit/d7cfea91e07b8110c226db35868c1c787a772794))
+* **interactions:** use the nvim buffer id ([91aae3f](https://github.com/rcasia/ascii-ui.nvim/commit/91aae3f3f11724d522b069d9bbd016996834f9b0))
+* **layout:** subscribe and detroy recursively ([ee65bc6](https://github.com/rcasia/ascii-ui.nvim/commit/ee65bc6f86d66d25b9c6e4040b58de61a24116c8))
+* listen to WinClosed autocommand to destroy components and interactions ([18dcb27](https://github.com/rcasia/ascii-ui.nvim/commit/18dcb27b09bbcf4c03b3b6a6ce754d29bebd1a61))
+* open floating window in the center by default ([9f8d6b3](https://github.com/rcasia/ascii-ui.nvim/commit/9f8d6b3c9da37947365d0d5fc1633085a612049b))
+* **options:** renders element with highlight ([c32651c](https://github.com/rcasia/ascii-ui.nvim/commit/c32651cb74a944976be98e6480729d8066b64188))
+* **options:** renders highlight only on selected option ([816dc41](https://github.com/rcasia/ascii-ui.nvim/commit/816dc419da72f370e01af721845b77011e80be87))
+* **slider:** create Slider component ([a23ce1f](https://github.com/rcasia/ascii-ui.nvim/commit/a23ce1fed718a82b9d9bd367bdfaca1ff7406678))
+* **slider:** move right and left by ten ([cca81a2](https://github.com/rcasia/ascii-ui.nvim/commit/cca81a2dd8640de029cf7a9631d6b75f5d59bd09))
+* **slider:** render when has different values ([33947d4](https://github.com/rcasia/ascii-ui.nvim/commit/33947d4dfa0f2491d078d01008a4b33a297f19bd))
+* **slider:** render when value is at 100 ([876e298](https://github.com/rcasia/ascii-ui.nvim/commit/876e298c61838e7cc5efe1acc6468d599a25d316))
+* **window:** open window with the size of the buffer ([24edf8c](https://github.com/rcasia/ascii-ui.nvim/commit/24edf8c37e098a4cdc5d9525ae23365df5d623ab))
+* **window:** print the element color in window ([f4a9558](https://github.com/rcasia/ascii-ui.nvim/commit/f4a9558d5731ff35931bfda80ee8787dffad445c))
+
 ## 0.0.0 (2025-03-22)
 
 
