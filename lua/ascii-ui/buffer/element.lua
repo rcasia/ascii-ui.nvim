@@ -20,6 +20,8 @@ function Element:new(...)
 
 	if type(props[1]) == "string" then
 		props = { content = props[1], is_focusable = props[2], interactions = props[3], highlight = props[4] }
+	else
+		props = props[1]
 	end
 	assert(type(props) == "table", "Element props must be a table")
 
