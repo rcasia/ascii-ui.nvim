@@ -16,6 +16,14 @@ function Slider:new()
 	return Component:extend(self, state)
 end
 
+function Slider:move_right()
+	self.value = self.value + 10
+end
+
+function Slider:move_left()
+	self.value = self.value - 10
+end
+
 function Slider:render()
 	if self.value == 0 then
 		return {
@@ -28,7 +36,7 @@ function Slider:render()
 	local line = string.rep("-", knob_position - 1) .. "+" .. string.rep("-", width - knob_position)
 
 	return {
-		Bufferline:new(Element:new(line)),
+		Bufferline:new(Element:new({ content = line })),
 	}
 end
 
