@@ -7,9 +7,8 @@ local Slider = {
 	__name = "SliderComponent",
 }
 
----@param props? ascii-ui.BoxProps
 ---@return ascii-ui.Slider
-function Slider:new(props)
+function Slider:new()
 	local state = {
 		value = 0,
 	}
@@ -24,8 +23,12 @@ function Slider:render()
 		}
 	end
 
+	local width = 10
+	local knob_position = math.floor(width * self.value / 100)
+	local line = string.rep("-", knob_position - 1) .. "+" .. string.rep("-", width - knob_position)
+
 	return {
-		Bufferline:new(Element:new("---------+")),
+		Bufferline:new(Element:new(line)),
 	}
 end
 

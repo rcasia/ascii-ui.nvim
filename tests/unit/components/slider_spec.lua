@@ -15,9 +15,13 @@ describe("SliderComponent", function()
 		local line = slider:render()[1]
 		eq("+---------", line:to_string())
 
-		slider:slide_to(100)
+		slider:slide_to(90)
+		eq("--------+-", slider:render()[1]:to_string())
 
-		local line_2 = slider:render()[1]
-		eq("---------+", line_2:to_string())
+		slider:slide_to(50)
+		eq("----+-----", slider:render()[1]:to_string())
+
+		slider:slide_to(100)
+		eq("---------+", slider:render()[1]:to_string())
 	end)
 end)
