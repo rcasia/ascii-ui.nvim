@@ -45,11 +45,9 @@ end
 
 ---@return integer length
 function BufferLine:len()
-	local len = 0
-	for _, element in ipairs(self.elements) do
-		len = len + element:len()
-	end
-	return len
+	return vim.iter(self.elements):fold(0, function(acc, element)
+		return acc + element:len()
+	end)
 end
 
 ---@param str string
