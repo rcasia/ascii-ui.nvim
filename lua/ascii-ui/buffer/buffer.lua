@@ -116,6 +116,7 @@ end
 ---@return string[]
 function Buffer:to_lines()
 	return vim.iter(self.lines)
+		---@param line ascii-ui.BufferLine
 		:map(function(line)
 			return line:to_string()
 		end)

@@ -1,3 +1,5 @@
+---@alias ascii-ui.ElementProps { content: string, is_focusable?: boolean, interactions?: table<string, function>, highlight?: string }
+
 ---@class ascii-ui.Element
 ---@field interactions table<string, function>
 ---@field len fun(): integer
@@ -11,19 +13,25 @@ local function generate_id()
 	return last_incremental_id
 end
 
----@param text string
----@param is_focusable? boolean
+---@param ... ascii-ui.ElementProps
 ---@return ascii-ui.Element
-function Element:new(text, is_focusable, interactions, highlight)
-	vim.validate({ text = { text, "string" } })
+function Element:new(...)
+	local props = { ... }
+
+	if type(props[1]) == "string" then
+		props = { content = props[1], is_focusable = props[2], interactions = props[3], highlight = props[4] }
+	end
+	assert(type(props) == "table", "Element props must be a table")
+
+	vim.validate({ content = { props.content, "string" } })
 	local state = {
 		id = generate_id(),
-		text = text,
-		highlight = highlight,
-		focusable = is_focusable or false,
-		interactions = interactions or {
+		content = props.content,
+		highlight = props.highlight,
+		focusable = props.is_focusable or false,
+		interactions = props.interactions or {
 			on_select = function()
-				print("selected", text)
+				print("selected", props.content)
 			end,
 		}, -- TODO: pass this to default interactions on a different module
 	}
@@ -37,13 +45,14 @@ end
 
 ---@return integer
 function Element:len()
-	return string.len(self.text)
+	return string.len(self.content)
 end
 
 function Element:to_string()
-	return self.text
+	return self.content
 end
 
+---@return boolean
 function Element:is_focusable()
 	return self.focusable
 end
