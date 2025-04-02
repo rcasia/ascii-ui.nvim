@@ -1,6 +1,7 @@
 pcall(require, "luacov")
 
 local eq = assert.are.same
+local test_config = require("tests.config")
 
 local Buffer = require("ascii-ui.buffer.buffer")
 local Slider = require("ascii-ui.components.slider")
@@ -15,7 +16,7 @@ describe("SliderComponent", function()
 
 		---@return string
 		local line = function()
-			return Buffer:new(unpack(slider:render())):to_string()
+			return Buffer:new(unpack(slider:render(test_config))):to_string()
 		end
 
 		eq("+---------", line())
