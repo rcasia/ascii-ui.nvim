@@ -5,7 +5,7 @@ local INTERACTION_TYPE = require("ascii-ui.interaction_type")
 local eq = assert.are.same
 
 local UserInteractions = require("ascii-ui.user_interactions")
-local Buffer = require("ascii-ui.buffer.buffer")
+local Buffer = require("ascii-ui.buffer")
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 

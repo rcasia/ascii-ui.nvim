@@ -3,7 +3,7 @@ pcall(require, "luacov")
 local eq = assert.are.same
 local test_config = require("tests.config")
 
-local Buffer = require("ascii-ui.buffer.buffer")
+local Buffer = require("ascii-ui.buffer")
 local Slider = require("ascii-ui.components.slider")
 
 describe("SliderComponent", function()

@@ -7,7 +7,7 @@ local Layout = {
 }
 
 local Component = require("ascii-ui.components.component")
-local Buffer = require("ascii-ui.buffer.buffer")
+local Buffer = require("ascii-ui.buffer")
 
 --- @param ... ascii-ui.Component
 function Layout:new(...)

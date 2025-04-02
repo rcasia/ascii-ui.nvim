@@ -3,7 +3,7 @@ pcall(require, "luacov")
 local eq = assert.are.same
 
 local Options = require("ascii-ui.components.options")
-local Buffer = require("ascii-ui.buffer.buffer")
+local Buffer = require("ascii-ui.buffer")
 local Hightlights = require("ascii-ui.highlights")
 
 describe("Options", function()

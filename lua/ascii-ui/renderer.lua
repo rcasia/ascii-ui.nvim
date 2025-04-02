@@ -1,4 +1,4 @@
-local Buffer = require("ascii-ui.buffer.buffer")
+local Buffer = require("ascii-ui.buffer")
 ---@class ascii-ui.Renderer
 local Renderer = {}
 

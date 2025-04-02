@@ -1,7 +1,7 @@
 pcall(require, "luacov")
 ---@module "luassert"
 
-local Buffer = require("ascii-ui.buffer.buffer")
+local Buffer = require("ascii-ui.buffer")
 local BufferLine = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 local eq = assert.are.same
