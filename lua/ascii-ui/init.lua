@@ -1,19 +1,9 @@
 local Window = require("ascii-ui.window")
 local user_interations = require("ascii-ui.user_interactions")
 local interaction_type = require("ascii-ui.interaction_type")
+local config = require("ascii-ui.config")
 
 local M = {}
-
-local config = {
-	characters = {
-		top_left = "╭",
-		top_right = "╮",
-		bottom_left = "╰",
-		bottom_right = "╯",
-		horizontal = "─",
-		vertical = "│",
-	},
-}
 
 local ascii_renderer = require("ascii-ui.renderer"):new(config)
 
@@ -39,11 +29,11 @@ function M.mount(component)
 	user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
 
 	-- initialize keymaps
-	vim.keymap.set("n", "q", function()
+	vim.keymap.set("n", config.keymaps.quit, function()
 		window:close()
 	end, { buffer = window.bufnr, noremap = true, silent = true })
 
-	vim.keymap.set("n", "<CR>", function()
+	vim.keymap.set("n", config.keymaps.select, function()
 		local bufnr = vim.api.nvim_get_current_buf()
 		local cursor = vim.api.nvim_win_get_cursor(0)
 		local position = { line = cursor[1], col = cursor[2] }
