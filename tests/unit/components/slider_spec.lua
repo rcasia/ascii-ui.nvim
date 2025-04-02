@@ -2,6 +2,7 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
+local Buffer = require("ascii-ui.buffer.buffer")
 local Slider = require("ascii-ui.components.slider")
 
 describe("SliderComponent", function()
@@ -12,17 +13,21 @@ describe("SliderComponent", function()
 	it("renders", function()
 		local slider = Slider:new()
 
-		local line = slider:render()[1]
-		eq("+---------", line:to_string())
+		---@return string
+		local line = function()
+			return Buffer:new(unpack(slider:render())):to_string()
+		end
+
+		eq("+---------", line())
 
 		slider:slide_to(90)
-		eq("--------+-", slider:render()[1]:to_string())
+		eq("--------+-", line())
 
 		slider:slide_to(50)
-		eq("----+-----", slider:render()[1]:to_string())
+		eq("----+-----", line())
 
 		slider:slide_to(100)
-		eq("---------+", slider:render()[1]:to_string())
+		eq("---------+", line())
 	end)
 
 	it("increments ten on move_right", function()

@@ -115,12 +115,20 @@ end
 
 ---@return string[]
 function Buffer:to_lines()
-	return vim.iter(self.lines)
+	return vim
+		.iter(self.lines)
+		:filter(function(item)
+			return item ~= nil
+		end)
 		---@param line ascii-ui.BufferLine
 		:map(function(line)
-			return line:to_string()
+			return assert(line):to_string()
 		end)
 		:totable()
+end
+
+function Buffer:to_string()
+	return vim.iter(self:to_lines()):join("\n")
 end
 
 ---@param id string
