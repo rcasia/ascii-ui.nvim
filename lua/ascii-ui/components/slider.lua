@@ -24,10 +24,16 @@ function Slider:move_left()
 	self.value = self.value - 10
 end
 
+---@return ascii-ui.Bufferline[]
 function Slider:render()
+	local interactions = {
+		on_select = function()
+			self:move_right()
+		end,
+	}
 	if self.value == 0 then
 		return {
-			Bufferline:new(Element:new("+---------")),
+			Bufferline:new(Element:new("+---------", false, interactions)),
 		}
 	end
 
@@ -36,7 +42,7 @@ function Slider:render()
 	local line = string.rep("-", knob_position - 1) .. "+" .. string.rep("-", width - knob_position)
 
 	return {
-		Bufferline:new(Element:new({ content = line })),
+		Bufferline:new(Element:new(line, false, interactions)),
 	}
 end
 
