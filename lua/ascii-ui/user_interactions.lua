@@ -43,11 +43,10 @@ function UserInteractions:interact(opts)
 
 	assert(opts.interaction_type, "interaction type cannot be nil")
 
-	local interaction_function = assert(
-		element.interactions[opts.interaction_type],
-		"interaction type does not exist: " .. opts.interaction_type
-	)
-	interaction_function()
+	local interaction_function = element.interactions[opts.interaction_type]
+	if type(interaction_function) == "function" then
+		interaction_function()
+	end
 end
 
 ---@param buffer ascii-ui.Buffer

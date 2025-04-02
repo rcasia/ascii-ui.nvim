@@ -43,6 +43,30 @@ function M.mount(component)
 			:interact({ buffer_id = bufnr, position = position, interaction_type = interaction_type.SELECT })
 	end, { buffer = window.bufnr, noremap = true, silent = true })
 
+	vim.on_key(function(key, typed)
+		print(vim.inspect({ key = key, typed = typed }))
+
+		local bufnr = vim.api.nvim_get_current_buf()
+		local cursor = vim.api.nvim_win_get_cursor(0)
+		local position = { line = cursor[1], col = cursor[2] }
+
+		if key == "l" then
+			user_interations:instance():interact({
+				buffer_id = bufnr,
+				position = position,
+				interaction_type = interaction_type.CURSOR_MOVE_RIGHT,
+			})
+		end
+
+		if key == "h" then
+			user_interations:instance():interact({
+				buffer_id = bufnr,
+				position = position,
+				interaction_type = interaction_type.CURSOR_MOVE_LEFT,
+			})
+		end
+	end, window.ns_id)
+
 	-- binds to window close event
 	vim.api.nvim_create_autocmd("WinClosed", {
 		callback = function(args)

@@ -13,7 +13,7 @@ local function generate_id()
 	return last_incremental_id
 end
 
----@param ... ascii-ui.ElementProps
+---@param ... ascii-ui.ElementProps  | string
 ---@return ascii-ui.Element
 function Element:new(...)
 	local props = { ... }

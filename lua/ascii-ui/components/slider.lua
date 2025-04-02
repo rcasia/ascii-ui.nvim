@@ -1,6 +1,7 @@
 local Component = require("ascii-ui.components.component")
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
+local interaction_type = require("ascii-ui.interaction_type")
 
 ---@class ascii-ui.Slider : ascii-ui.Component
 local Slider = {
@@ -24,13 +25,22 @@ function Slider:move_left()
 	self.value = self.value - 10
 end
 
+---@param value integer
+function Slider:slide_to(value)
+	self.value = value
+end
+
 ---@return ascii-ui.Bufferline[]
 function Slider:render()
 	local interactions = {
-		on_select = function()
+		[interaction_type.CURSOR_MOVE_RIGHT] = function()
 			self:move_right()
 		end,
+		[interaction_type.CURSOR_MOVE_LEFT] = function()
+			self:move_left()
+		end,
 	}
+
 	if self.value == 0 then
 		return {
 			Bufferline:new(Element:new("+---------", false, interactions)),
@@ -44,11 +54,6 @@ function Slider:render()
 	return {
 		Bufferline:new(Element:new(line, false, interactions)),
 	}
-end
-
----@param value integer
-function Slider:slide_to(value)
-	self.value = value
 end
 
 return Slider
