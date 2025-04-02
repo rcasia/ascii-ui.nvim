@@ -18,6 +18,10 @@ function Slider:new()
 end
 
 function Slider:move_right()
+	if self.value >= 90 then
+		self.value = 100
+		return
+	end
 	self.value = self.value + 10
 end
 
