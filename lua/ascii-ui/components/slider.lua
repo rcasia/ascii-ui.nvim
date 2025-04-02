@@ -22,6 +22,10 @@ function Slider:move_right()
 end
 
 function Slider:move_left()
+	if self.value <= 10 then
+		self.value = 0
+		return
+	end
 	self.value = self.value - 10
 end
 
