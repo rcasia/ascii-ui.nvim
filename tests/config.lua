@@ -1,3 +1,4 @@
+---@type ascii-ui.Config
 local config = {
 	characters = {
 		top_left = "+",
@@ -6,6 +7,7 @@ local config = {
 		bottom_right = "+",
 		horizontal = "-",
 		vertical = "|",
+		thumb = "+",
 	},
 
 	keymaps = {

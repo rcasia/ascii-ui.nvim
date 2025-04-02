@@ -7,6 +7,7 @@ local config = {
 		bottom_right = "╯",
 		horizontal = "─",
 		vertical = "│",
+		thumb = "●",
 	},
 	keymaps = {
 		quit = "q",
