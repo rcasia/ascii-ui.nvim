@@ -48,19 +48,20 @@ function M.mount(component)
 		local cursor = vim.api.nvim_win_get_cursor(0)
 		local position = { line = cursor[1], col = cursor[2] }
 
+		local interaction
 		if key == "l" then
-			user_interations:instance():interact({
-				buffer_id = bufnr,
-				position = position,
-				interaction_type = interaction_type.CURSOR_MOVE_RIGHT,
-			})
+			interaction = interaction_type.CURSOR_MOVE_RIGHT
 		end
 
 		if key == "h" then
+			interaction = interaction_type.CURSOR_MOVE_LEFT
+		end
+
+		if interaction then
 			user_interations:instance():interact({
 				buffer_id = bufnr,
 				position = position,
-				interaction_type = interaction_type.CURSOR_MOVE_LEFT,
+				interaction_type = interaction,
 			})
 		end
 	end, window.ns_id)
