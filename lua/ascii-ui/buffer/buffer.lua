@@ -90,23 +90,28 @@ function Buffer:find_position_of_the_last_focusable(position)
 		.iter(self.lines)
 		:enumerate()
 		:rev()
-		:skip(math.abs(#self.lines - position.line + 1))
+		:skip(math.abs(#self.lines - position.line))
 		--- @param line ascii-ui.BufferLine
 		:map(function(index, line)
 			local col = line:find_focusable2()
 			if col == 0 then
 				return nil -- return the current position when no focusable element is found
 			end
-			return index, line:find_focusable2()
+
+			return { line = index, col = line:find_focusable2() }
 		end)
-		:filter(function(e)
-			return e ~= nil
-		end)
-		:map(function(line_index, col)
-			return { line = line_index, col = col }
+		:filter(function(pos)
+			if pos == nil then
+				return false
+			end
+
+			-- filter in the lines that are before the current position
+			return pos.line < position.line
+				-- or a position that is in the same line but before the current column
+				or (pos.line == position.line and pos.col < position.col)
 		end)
 		:take(1)
-		:last()
+		:last() or {}
 
 	return {
 		pos = { line = pos.line or position.line, col = pos.col or position.col },
