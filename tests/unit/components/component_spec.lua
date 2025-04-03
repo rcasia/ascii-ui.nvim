@@ -20,7 +20,7 @@ describe("Component", function()
 
 		local component = create_dummy_component()
 
-		component:subscribe(function()
+		component:on_change(function()
 			interactions_count = interactions_count + 1
 		end)
 
@@ -42,7 +42,7 @@ describe("Component", function()
 
 		local component = Checkbox:new()
 
-		component:subscribe(function()
+		component:on_change(function()
 			interactions_count = interactions_count + 1
 		end)
 
@@ -62,7 +62,7 @@ describe("Component", function()
 
 		local component = Checkbox:new()
 
-		component:subscribe(function()
+		component:on_change(function()
 			interactions_count = interactions_count + 1
 		end)
 
@@ -78,7 +78,7 @@ describe("Component", function()
 
 		local component = Checkbox:new()
 
-		component:subscribe(function()
+		component:on_change(function()
 			interactions_count = interactions_count + 1
 		end)
 

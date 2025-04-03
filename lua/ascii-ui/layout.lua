@@ -21,7 +21,7 @@ end
 --- @param cb fun(component: table, key: string, value: any)
 function Layout:subscribe(cb)
 	for _, component in ipairs(self.components) do
-		component:subscribe(cb)
+		component:on_change(cb)
 	end
 end
 

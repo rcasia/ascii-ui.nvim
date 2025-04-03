@@ -75,8 +75,13 @@ function Component:extend(custom_component, props)
 	return instance
 end
 
+--- Adds a callback to be called when a property changes.
+--- Cleared when the component is destroyed.
+--- @see Component.destroy
+--- @see Component.clear_subscriptions
+---
 --- @param cb fun(component: table, key: string, value: any)
-function Component:subscribe(cb)
+function Component:on_change(cb)
 	table.insert(self.__subscriptions, cb)
 end
 

@@ -24,7 +24,7 @@ function M.mount(layout)
 	window:update(rendered_buffer)
 
 	-- subsequent renders triggered by data changes on component
-	layout:subscribe(function()
+	layout:on_change(function()
 		rendered_buffer = ascii_renderer:render(layout) -- assign variable to have change the referenced value
 		window:update(rendered_buffer)
 	end)
