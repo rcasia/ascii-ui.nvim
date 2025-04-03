@@ -1,3 +1,5 @@
+local interaction_type = require("ascii-ui.interaction_type")
+
 ---@alias ascii-ui.ElementProps { content: string, is_focusable?: boolean, interactions?: table<string, function>, highlight?: string }
 
 ---@class ascii-ui.Element
@@ -32,7 +34,7 @@ function Element:new(...)
 		highlight = props.highlight,
 		focusable = props.is_focusable or false,
 		interactions = props.interactions or {
-			on_select = function()
+			[interaction_type.SELECT] = function()
 				print("selected", props.content)
 			end,
 		}, -- TODO: pass this to default interactions on a different module
