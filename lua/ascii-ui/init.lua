@@ -58,6 +58,14 @@ function M.mount(component)
 			interaction = interaction_type.CURSOR_MOVE_LEFT
 		end
 
+		if key == "j" then
+			interaction = interaction_type.CURSOR_MOVE_DOWN
+		end
+
+		if key == "k" then
+			interaction = interaction_type.CURSOR_MOVE_UP
+		end
+
 		if interaction then
 			user_interations:instance():interact({
 				buffer_id = bufnr,
@@ -67,7 +75,7 @@ function M.mount(component)
 		end
 
 		vim.schedule(function()
-			if key == "j" then
+			if interaction == interaction_type.CURSOR_MOVE_DOWN then
 				-- move cursor to focusable element in the next line
 				local result = rendered_buffer:find_position_of_the_next_focusable({
 					line = position.line + 1,
@@ -82,7 +90,7 @@ function M.mount(component)
 				end
 			end
 
-			if key == "k" then
+			if interaction == interaction_type.CURSOR_MOVE_UP then
 				-- move cursor to focusable element in the previous line
 				local result =
 					rendered_buffer:find_position_of_the_last_focusable({ line = position.line, col = position.col })
