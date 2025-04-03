@@ -134,6 +134,7 @@ function M.mount(layout)
 
 			-- detach from user interactions
 			user_interations:instance():detach_buffer(window.bufnr)
+			vim.on_key(nil, window.ns_id)
 
 			-- destroy our component
 			layout:destroy()
