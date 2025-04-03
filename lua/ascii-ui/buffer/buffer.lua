@@ -70,7 +70,7 @@ function Buffer:find_position_of_the_next_focusable(position)
 			return e ~= nil
 		end)
 		:take(1)
-		:last() or { line = 0, col = 0 }
+		:last()
 end
 
 ---@return fun(): ascii-ui.Element | nil
