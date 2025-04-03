@@ -2,10 +2,13 @@ local Window = require("ascii-ui.window")
 local user_interations = require("ascii-ui.user_interactions")
 local interaction_type = require("ascii-ui.interaction_type")
 local config = require("ascii-ui.config")
+local Layout = require("ascii-ui.layout")
 
 local M = {}
 
 local ascii_renderer = require("ascii-ui.renderer"):new(config)
+
+M.layout = Layout
 
 ---@param layout ascii-ui.Layout | ascii-ui.Component
 ---@return integer bufnr
