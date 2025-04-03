@@ -3,6 +3,11 @@ pcall(require, "luacov")
 
 local ui = require("ascii-ui")
 local Options = require("ascii-ui.components.options")
+local it = require("plenary.async.tests").it
+
+local function feed(keys)
+	vim.api.nvim_feedkeys(keys, "mtx", true)
+end
 
 ---@param bufnr integer
 ---@param pattern string
@@ -38,5 +43,27 @@ describe("ascii-ui", function()
 		assert(vim.wait(1000, function()
 			return buffer_contains(bufnr_2, "[x] pencil")
 		end))
+	end)
+
+	describe("sliders", function()
+		it("silders slide", function()
+			local slider = ui.components.slider:new()
+
+			local bufnr = ui.mount(slider)
+
+			assert(vim.wait(1000, function()
+				return buffer_contains(bufnr, "0%")
+			end))
+
+			feed("llllll")
+			assert(vim.wait(1000, function()
+				return buffer_contains(bufnr, "60%")
+			end))
+
+			feed("hhh")
+			assert(vim.wait(1000, function()
+				return buffer_contains(bufnr, "30%")
+			end))
+		end)
 	end)
 end)
