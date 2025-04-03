@@ -22,7 +22,8 @@ function M.mount(component)
 
 	-- subsequent renders triggered by data changes on component
 	component:subscribe(function(t, key, value)
-		window:update(ascii_renderer:render(component))
+		rendered_buffer = ascii_renderer:render(component) -- assign variable to have change the referenced value
+		window:update(rendered_buffer)
 	end)
 
 	-- binds to user interaction
