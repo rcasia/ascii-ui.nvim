@@ -1,6 +1,6 @@
 local Window = require("ascii-ui.window")
 local user_interations = require("ascii-ui.user_interactions")
-local interaction_type = require("ascii-ui.interaction_type")
+local i = require("ascii-ui.interaction_type")
 local config = require("ascii-ui.config")
 local Layout = require("ascii-ui.layout")
 
@@ -42,9 +42,7 @@ function M.mount(layout)
 		local cursor = vim.api.nvim_win_get_cursor(0)
 		local position = { line = cursor[1], col = cursor[2] }
 
-		user_interations
-			:instance()
-			:interact({ buffer_id = bufnr, position = position, interaction_type = interaction_type.SELECT })
+		user_interations:instance():interact({ buffer_id = bufnr, position = position, interaction_type = i.SELECT })
 	end, { buffer = window.bufnr, noremap = true, silent = true })
 
 	vim.on_key(function(key, _)
@@ -54,19 +52,19 @@ function M.mount(layout)
 
 		local interaction
 		if key == "l" then
-			interaction = interaction_type.CURSOR_MOVE_RIGHT
+			interaction = i.CURSOR_MOVE_RIGHT
 		end
 
 		if key == "h" then
-			interaction = interaction_type.CURSOR_MOVE_LEFT
+			interaction = i.CURSOR_MOVE_LEFT
 		end
 
 		if key == "j" then
-			interaction = interaction_type.CURSOR_MOVE_DOWN
+			interaction = i.CURSOR_MOVE_DOWN
 		end
 
 		if key == "k" then
-			interaction = interaction_type.CURSOR_MOVE_UP
+			interaction = i.CURSOR_MOVE_UP
 		end
 
 		if interaction then
@@ -78,7 +76,7 @@ function M.mount(layout)
 		end
 
 		vim.schedule(function()
-			if interaction == interaction_type.CURSOR_MOVE_RIGHT then
+			if interaction == i.CURSOR_MOVE_RIGHT or interaction == i.CURSOR_MOVE_DOWN then
 				local result = rendered_buffer:find_position_of_the_next_focusable({
 					line = position.line,
 					col = position.col,
@@ -88,35 +86,11 @@ function M.mount(layout)
 				vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
 			end
 
-			if interaction == interaction_type.CURSOR_MOVE_LEFT then
+			if interaction == i.CURSOR_MOVE_LEFT or interaction == i.CURSOR_MOVE_UP then
 				local result = rendered_buffer:find_position_of_the_last_focusable({
 					line = position.line,
 					col = position.col,
 				})
-
-				local next_position = result.pos
-				vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
-			end
-
-			if interaction == interaction_type.CURSOR_MOVE_DOWN then
-				-- move cursor to focusable element in the next line
-				local result = rendered_buffer:find_position_of_the_next_focusable({
-					line = position.line,
-					col = position.col,
-				})
-
-				local next_position = result.pos
-				if result.found then
-					vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
-				else
-					vim.api.nvim_win_set_cursor(window.winid, { next_position.line - 1, next_position.col }) -- to choose back the original position
-				end
-			end
-
-			if interaction == interaction_type.CURSOR_MOVE_UP then
-				-- move cursor to focusable element in the previous line
-				local result =
-					rendered_buffer:find_position_of_the_last_focusable({ line = position.line, col = position.col })
 
 				local next_position = result.pos
 				vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
