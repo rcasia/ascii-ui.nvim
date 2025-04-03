@@ -1,7 +1,7 @@
-local function run_subs(subs)
+local function run_subs(subs, t, key, value)
 	for i = #subs, 1, -1 do -- iterating in reverse to be able to remove elements
 		local callback = subs[i]
-		local status_ok, err = pcall(callback, t, key, value)
+		local status_ok, err = pcall(callback, t.__state, key, value)
 		if not status_ok then
 			table.remove(subs, i) -- removes item and compacts table to be array like
 			print("Error in subscription callback: " .. err)
@@ -36,7 +36,7 @@ function Component:new(component_name)
 		__index = self,
 		__newindex = function(t, key, value)
 			rawset(instance, key, value)
-			run_subs(t.__subscriptions)
+			run_subs(t.__subscriptions, t, key, value)
 		end,
 	})
 
@@ -77,7 +77,7 @@ function Component:extend(custom_component, props)
 		__newindex = function(t, key, value)
 			rawset(t.__state, key, value)
 
-			run_subs(t.__subscriptions)
+			run_subs(t.__subscriptions, t, key, value)
 		end,
 	})
 	return instance
