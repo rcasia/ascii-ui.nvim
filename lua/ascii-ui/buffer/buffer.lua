@@ -61,16 +61,16 @@ function Buffer:find_position_of_the_next_focusable(position)
 		:skip(position.line - 1)
 		--- @param line ascii-ui.BufferLine
 		:map(function(index, line)
-			local _, col = line:find_focusable()
+			local col = line:find_focusable2()
 			if col == 0 then
 				return nil -- return the current position when no focusable element is found
 			end
-			return index, line:find_focusable()
+			return index, line:find_focusable2()
 		end)
 		:filter(function(e)
 			return e ~= nil
 		end)
-		:map(function(line_index, _, col)
+		:map(function(line_index, col)
 			return { line = line_index, col = col }
 		end)
 		:take(1)
@@ -79,15 +79,13 @@ function Buffer:find_position_of_the_next_focusable(position)
 	return { pos = pos or position, found = pos ~= nil }
 end
 
---
--- a
--- b
--- c
--- d
-
----@param position? ascii-ui.Position
+---@param position ascii-ui.Position
 ---@return { found: boolean, pos: ascii-ui.Position }
 function Buffer:find_position_of_the_last_focusable(position)
+	if position.line <= 1 then
+		return { pos = position, found = false }
+	end
+
 	local pos = vim
 		.iter(self.lines)
 		:enumerate()
@@ -95,22 +93,25 @@ function Buffer:find_position_of_the_last_focusable(position)
 		:skip(math.abs(#self.lines - position.line + 1))
 		--- @param line ascii-ui.BufferLine
 		:map(function(index, line)
-			local _, col = line:find_focusable()
+			local col = line:find_focusable2()
 			if col == 0 then
 				return nil -- return the current position when no focusable element is found
 			end
-			return index, line:find_focusable()
+			return index, line:find_focusable2()
 		end)
 		:filter(function(e)
 			return e ~= nil
 		end)
-		:map(function(line_index, _, col)
+		:map(function(line_index, col)
 			return { line = line_index, col = col }
 		end)
 		:take(1)
 		:last()
 
-	return { pos = pos or position, found = pos ~= nil }
+	return {
+		pos = { line = pos.line or position.line, col = pos.col or position.col },
+		found = (pos.line and pos.col) ~= nil,
+	}
 end
 
 ---@return fun(): ascii-ui.Element | nil

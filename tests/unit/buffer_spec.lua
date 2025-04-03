@@ -130,6 +130,27 @@ describe("buffer", function()
 				{ found = true, pos = { line = 1, col = 22 } },
 				b:find_position_of_the_last_focusable({ line = 2, col = 1 })
 			)
+
+			eq(
+				{ found = false, pos = { line = 1, col = 1 } },
+				b:find_position_of_the_last_focusable({ line = 1, col = 1 })
+			)
+		end)
+
+		it("returns not found when there is not last focusable", function()
+			local b = Buffer:new(
+				BufferLine:new(Element:new("this is not focusable")),
+				BufferLine:new(Element:new("not focusable either"))
+			)
+
+			eq(
+				{ found = false, pos = { line = 1, col = 10 } },
+				b:find_position_of_the_last_focusable({ line = 1, col = 10 })
+			)
+			eq(
+				{ found = false, pos = { line = 2, col = 10 } },
+				b:find_position_of_the_last_focusable({ line = 2, col = 10 })
+			)
 		end)
 
 		it("finds the next colored element and its position", function()

@@ -19,6 +19,7 @@ function BufferLine:new(...)
 	return state
 end
 
+---@deprecated
 ---@return ascii-ui.Element | nil
 ---@return number col returns 0 when not found
 function BufferLine:find_focusable()
@@ -36,6 +37,21 @@ function BufferLine:find_focusable()
 	return found, found and col or 0
 end
 
+---@return number col returns 0 when not found
+function BufferLine:find_focusable2()
+	assert(self.elements, "bufferline component failed: element cannot be nil")
+
+	local col = 1
+	---@param element ascii-ui.Element
+	local found = vim.iter(self.elements):find(function(element)
+		if element:is_focusable() == false then
+			col = col + element:len()
+		end
+		return element:is_focusable()
+	end)
+
+	return found and col or 0
+end
 ---@param col number
 ---@return ascii-ui.Element | nil
 function BufferLine:find_element_by_col(col)

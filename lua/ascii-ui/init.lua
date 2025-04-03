@@ -70,10 +70,21 @@ function M.mount(component)
 			local result =
 				rendered_buffer:find_position_of_the_next_focusable({ line = position.line + 1, col = position.col })
 
+			local next_position = result.pos
 			if result.found then
-				local next_position = result.pos
-				vim.api.nvim_win_set_cursor(window.winid, { next_position.line - 1, next_position.col })
+				vim.api.nvim_win_set_cursor(window.winid, { next_position.line - 1, next_position.col }) -- -1 to compensate key movement
+			else
+				vim.api.nvim_win_set_cursor(window.winid, { next_position.line - 2, next_position.col }) -- to choose back the original position plus key movement  1+1
 			end
+		end
+
+		if key == "k" then
+			-- move cursor to focusable element in the previous line
+			local result =
+				rendered_buffer:find_position_of_the_last_focusable({ line = position.line, col = position.col })
+
+			local next_position = result.pos
+			vim.api.nvim_win_set_cursor(window.winid, { next_position.line + 1, next_position.col }) -- +1 to compensate key movement
 		end
 	end, window.ns_id)
 
