@@ -24,7 +24,7 @@ describe("Layout", function()
 		local layout = Layout:new(component)
 
 		local interactions_count = 0
-		layout:subscribe(function()
+		layout:on_change(function()
 			interactions_count = interactions_count + 1
 		end)
 

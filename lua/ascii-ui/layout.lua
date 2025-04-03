@@ -19,7 +19,7 @@ function Layout:new(...)
 end
 
 --- @param cb fun(component: table, key: string, value: any)
-function Layout:subscribe(cb)
+function Layout:on_change(cb)
 	for _, component in ipairs(self.components) do
 		component:on_change(cb)
 	end
