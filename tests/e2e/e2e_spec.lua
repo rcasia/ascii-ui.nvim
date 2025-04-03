@@ -13,12 +13,14 @@ end
 ---@param pattern string
 ---@return boolean
 local function buffer_contains(bufnr, pattern)
-	local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-	local content_str = vim.iter(lines):join("\n")
+	return vim.wait(1000, function()
+		local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+		local content_str = vim.iter(lines):join("\n")
 
-	print(content_str)
-	print("")
-	return string.find(content_str, pattern, 1, true) ~= nil
+		print(content_str)
+		print("")
+		return string.find(content_str, pattern, 1, true) ~= nil
+	end)
 end
 
 describe("ascii-ui", function()
@@ -31,39 +33,31 @@ describe("ascii-ui", function()
 
 		local bufnr = ui.mount(component)
 
-		assert(vim.wait(1000, function()
-			return buffer_contains(bufnr, "[x] book")
-		end))
+		assert(buffer_contains(bufnr, "[x] book"))
 
 		vim.api.nvim_buf_delete(bufnr, {})
 
 		local bufnr_2 = ui.mount(component)
 
 		component:select_index(2)
-		assert(vim.wait(1000, function()
-			return buffer_contains(bufnr_2, "[x] pencil")
-		end))
+		assert(buffer_contains(bufnr_2, "[x] pencil"))
 	end)
 
 	describe("sliders", function()
 		it("silders slide", function()
-			local slider = ui.components.slider:new()
+			local bufnr = ui.mount(ui.layout:new(
+				--
+				ui.components.slider:new(),
+				ui.components.slider:new()
+			))
 
-			local bufnr = ui.mount(slider)
-
-			assert(vim.wait(1000, function()
-				return buffer_contains(bufnr, "0%")
-			end))
+			assert(buffer_contains(bufnr, "0%"))
 
 			feed("llllll")
-			assert(vim.wait(1000, function()
-				return buffer_contains(bufnr, "60%")
-			end))
+			assert(buffer_contains(bufnr, "60%"))
 
 			feed("hhh")
-			assert(vim.wait(1000, function()
-				return buffer_contains(bufnr, "30%")
-			end))
+			assert(buffer_contains(bufnr, "30%"))
 		end)
 	end)
 end)
