@@ -79,6 +79,40 @@ function Buffer:find_position_of_the_next_focusable(position)
 	return { pos = pos or position, found = pos ~= nil }
 end
 
+--
+-- a
+-- b
+-- c
+-- d
+
+---@param position? ascii-ui.Position
+---@return { found: boolean, pos: ascii-ui.Position }
+function Buffer:find_position_of_the_last_focusable(position)
+	local pos = vim
+		.iter(self.lines)
+		:enumerate()
+		:rev()
+		:skip(math.abs(#self.lines - position.line + 1))
+		--- @param line ascii-ui.BufferLine
+		:map(function(index, line)
+			local _, col = line:find_focusable()
+			if col == 0 then
+				return nil -- return the current position when no focusable element is found
+			end
+			return index, line:find_focusable()
+		end)
+		:filter(function(e)
+			return e ~= nil
+		end)
+		:map(function(line_index, _, col)
+			return { line = line_index, col = col }
+		end)
+		:take(1)
+		:last()
+
+	return { pos = pos or position, found = pos ~= nil }
+end
+
 ---@return fun(): ascii-ui.Element | nil
 function Buffer:iter_focusables()
 	assert(self.lines, "buffer component failed: lines cannot be nil")

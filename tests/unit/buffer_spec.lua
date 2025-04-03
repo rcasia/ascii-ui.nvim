@@ -109,6 +109,29 @@ describe("buffer", function()
 			)
 		end)
 
+		it("finds last focusable from position", function()
+			local target_a = Element:new("this is focusable", true)
+			local target_b = Element:new("another focusable", true)
+			local target_c = Element:new("yet another focusable", true)
+			local b = Buffer:new(
+				BufferLine:new(Element:new("this is not focusable"), target_a),
+				BufferLine:new(Element:new("not focusable either"), target_b),
+				BufferLine:new(),
+				BufferLine:new(),
+				BufferLine:new(target_c)
+			)
+
+			eq(
+				{ found = true, pos = { line = 2, col = 21 } },
+				b:find_position_of_the_last_focusable({ line = 3, col = 1 })
+			)
+
+			eq(
+				{ found = true, pos = { line = 1, col = 22 } },
+				b:find_position_of_the_last_focusable({ line = 2, col = 1 })
+			)
+		end)
+
 		it("finds the next colored element and its position", function()
 			local highlight = "SomeHighlight"
 			local target_a = Element:new("this is focusable", false, {}, highlight)
