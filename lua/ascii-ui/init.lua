@@ -101,7 +101,7 @@ function M.mount(layout)
 			if interaction == interaction_type.CURSOR_MOVE_DOWN then
 				-- move cursor to focusable element in the next line
 				local result = rendered_buffer:find_position_of_the_next_focusable({
-					line = position.line + 1,
+					line = position.line,
 					col = position.col,
 				})
 
