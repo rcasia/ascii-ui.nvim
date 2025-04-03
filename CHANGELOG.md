@@ -1,5 +1,69 @@
 # Changelog
 
+## [0.0.1](https://github.com/rcasia/ascii-ui.nvim/compare/v0.0.0...v0.0.1) (2025-04-03)
+
+
+### Features
+
+* **buffer:** calculate height from the count of lines ([a9f8730](https://github.com/rcasia/ascii-ui.nvim/commit/a9f873065ff53287f588939e1807aaaaf499c8c0))
+* **buffer:** calculate width of a buffer by its longest line ([dfb35bc](https://github.com/rcasia/ascii-ui.nvim/commit/dfb35bcb31e48b40f18fba38160c151d1edad718))
+* **buffer:** find last focusable element ([d344949](https://github.com/rcasia/ascii-ui.nvim/commit/d344949ff5df89ff20968fe91ff728e080e24730))
+* **buffer:** find last focusable even if in the same line ([ac4cf6b](https://github.com/rcasia/ascii-ui.nvim/commit/ac4cf6bf1246930778b94af7f0837d95817c48a9))
+* **buffer:** find position when iterating through colored elements in buffer ([927951a](https://github.com/rcasia/ascii-ui.nvim/commit/927951a3184723d04a3261008eb516c42f891a5f))
+* **buffer:** finds next focusable from default position 1,1 ([60f73ed](https://github.com/rcasia/ascii-ui.nvim/commit/60f73ed775cf3557241a5e47884448cb3b2d0090))
+* **buffer:** finds next focusable in next lines ([9d3740f](https://github.com/rcasia/ascii-ui.nvim/commit/9d3740f4a2cbca28d43ad2f61ffa6f5dfd2756f4))
+* **buffer:** finds next focusable returns nil when not found ([45104c8](https://github.com/rcasia/ascii-ui.nvim/commit/45104c85010db85273c620596a92633dd8257bc7))
+* **buffer:** finds position of the next focusable ([e411729](https://github.com/rcasia/ascii-ui.nvim/commit/e411729bf0d3e423c5d1622f5673cc3636be7341))
+* **buffer:** implement Buffer:iter_colored_elements() ([31ef5b7](https://github.com/rcasia/ascii-ui.nvim/commit/31ef5b7832ca9e05031e5cee8f461f5680381aa4))
+* **bufferline:** implement to_string function ([ee65110](https://github.com/rcasia/ascii-ui.nvim/commit/ee65110bba95bf34291b2f21e27592879e204b8b))
+* **buffer:** returns same input position when not found ([481713b](https://github.com/rcasia/ascii-ui.nvim/commit/481713bb0e6d48b5092f8cf21cece494effd7f80))
+* close virtual window when nvim window is closed ([7e919ce](https://github.com/rcasia/ascii-ui.nvim/commit/7e919ced84514732136a9b3328209f2a776d93a1))
+* **component:** removes subscriptions on destroy ([0990efe](https://github.com/rcasia/ascii-ui.nvim/commit/0990efe3b9e2a51d8596d67d10761ce6dffcaad9))
+* create cursor move up and down interaction types ([3a0cd35](https://github.com/rcasia/ascii-ui.nvim/commit/3a0cd35fbf83f5b67a1aaf7866d4d8a41b4eda55))
+* **element:** accept table of props for instantiation ([5125e56](https://github.com/rcasia/ascii-ui.nvim/commit/5125e56f0435d2271567a39c04b60146a54d65d4))
+* **element:** accept table of props for instantiation ([7c87561](https://github.com/rcasia/ascii-ui.nvim/commit/7c875611b2f505987a27f3c6009164cd49592216))
+* expose layout api ([89ad25b](https://github.com/rcasia/ascii-ui.nvim/commit/89ad25bd8b3cb30e4adb4fe32bfb5a9dfc093a59))
+* initialize keymaps on mount ([0d13a64](https://github.com/rcasia/ascii-ui.nvim/commit/0d13a64c78736317687f1f3e29d9442e610eac8b))
+* **interaction:** do nothing when buffer is not found ([d7cfea9](https://github.com/rcasia/ascii-ui.nvim/commit/d7cfea91e07b8110c226db35868c1c787a772794))
+* **interactions:** use the nvim buffer id ([91aae3f](https://github.com/rcasia/ascii-ui.nvim/commit/91aae3f3f11724d522b069d9bbd016996834f9b0))
+* jump lines right ([f04026a](https://github.com/rcasia/ascii-ui.nvim/commit/f04026a6f4d5fe90f0f043c6939543b23a1d2bb3))
+* jump only to focusable lines ([ede9d12](https://github.com/rcasia/ascii-ui.nvim/commit/ede9d128cbac11da06ddd3c1e1f7855844077444))
+* **layout:** subscribe and detroy recursively ([ee65bc6](https://github.com/rcasia/ascii-ui.nvim/commit/ee65bc6f86d66d25b9c6e4040b58de61a24116c8))
+* listen to WinClosed autocommand to destroy components and interactions ([18dcb27](https://github.com/rcasia/ascii-ui.nvim/commit/18dcb27b09bbcf4c03b3b6a6ce754d29bebd1a61))
+* move among focusables left and right ([7f31326](https://github.com/rcasia/ascii-ui.nvim/commit/7f3132609ba52eb2792be3395a95dc8e797ee2f4))
+* open floating window in the center by default ([9f8d6b3](https://github.com/rcasia/ascii-ui.nvim/commit/9f8d6b3c9da37947365d0d5fc1633085a612049b))
+* **options:** option items are focusable and title is not ([a79b05a](https://github.com/rcasia/ascii-ui.nvim/commit/a79b05a68fc652f162f8943d4fdc4b4e076f233b))
+* **options:** renders element with highlight ([c32651c](https://github.com/rcasia/ascii-ui.nvim/commit/c32651cb74a944976be98e6480729d8066b64188))
+* **options:** renders highlight only on selected option ([816dc41](https://github.com/rcasia/ascii-ui.nvim/commit/816dc419da72f370e01af721845b77011e80be87))
+* skip non focusable elements on cursor move down ([d8981ab](https://github.com/rcasia/ascii-ui.nvim/commit/d8981abf4cef8170602f71baa0e3bbf881ba9a63))
+* slider moves on select ([f0e7f1b](https://github.com/rcasia/ascii-ui.nvim/commit/f0e7f1bfd1dd3be8e992272bca75357c2bdaaab7))
+* slider moves right and left on interaction ([24d7853](https://github.com/rcasia/ascii-ui.nvim/commit/24d7853db0e1ffc25660992a7db628d9fc0adcce))
+* **slider:** add slider thumb to configuration ([96b53de](https://github.com/rcasia/ascii-ui.nvim/commit/96b53de8d7d9c31c522d1955d4201f92f08b725a))
+* **slider:** create Slider component ([a23ce1f](https://github.com/rcasia/ascii-ui.nvim/commit/a23ce1fed718a82b9d9bd367bdfaca1ff7406678))
+* **slider:** create with a given default value ([88aaefd](https://github.com/rcasia/ascii-ui.nvim/commit/88aaefdf1595716dc8abef40682122963a6fa994))
+* **slider:** do not go above 100 ([36eb4d4](https://github.com/rcasia/ascii-ui.nvim/commit/36eb4d48462936831e4dea85daff374b54dbf7d6))
+* **slider:** do not go below zero ([ab5168e](https://github.com/rcasia/ascii-ui.nvim/commit/ab5168e8b6b6894d3ed6aec0156694acf457de6c))
+* **slider:** made slider thumb focusable and slider line non focusable ([9ddf185](https://github.com/rcasia/ascii-ui.nvim/commit/9ddf18531434863a5df7c88562889edd1a0626c4))
+* **slider:** move right and left by ten ([cca81a2](https://github.com/rcasia/ascii-ui.nvim/commit/cca81a2dd8640de029cf7a9631d6b75f5d59bd09))
+* **slider:** render percentage value ([c48e412](https://github.com/rcasia/ascii-ui.nvim/commit/c48e41269cffc2b4762acd099530e691b5d00109))
+* **slider:** render when has different values ([33947d4](https://github.com/rcasia/ascii-ui.nvim/commit/33947d4dfa0f2491d078d01008a4b33a297f19bd))
+* **slider:** render when value is at 100 ([876e298](https://github.com/rcasia/ascii-ui.nvim/commit/876e298c61838e7cc5efe1acc6468d599a25d316))
+* **window:** open window with the size of the buffer ([24edf8c](https://github.com/rcasia/ascii-ui.nvim/commit/24edf8c37e098a4cdc5d9525ae23365df5d623ab))
+* **window:** print the element color in window ([f4a9558](https://github.com/rcasia/ascii-ui.nvim/commit/f4a9558d5731ff35931bfda80ee8787dffad445c))
+
+
+### Bug Fixes
+
+* **buffer:** find next focusables to the right in the same line ([6ec60d2](https://github.com/rcasia/ascii-ui.nvim/commit/6ec60d2f5755d172f0ef601b4a7c91bf8ad22c58))
+* **slider:** separate 10% and 0% ([3ebabca](https://github.com/rcasia/ascii-ui.nvim/commit/3ebabcac547cab9260b6053b298392c882f802b3))
+* unsubcribe from vim.on_key ([50bb9af](https://github.com/rcasia/ascii-ui.nvim/commit/50bb9afdbee6ad9182055c7449deb01892e48501))
+* update focusable points when buffer changes ([b3bbf1b](https://github.com/rcasia/ascii-ui.nvim/commit/b3bbf1b845f6bc7492a6f186150398e8b93debd9))
+
+
+### Miscellaneous Chores
+
+* release 0.0.1 ([75a085f](https://github.com/rcasia/ascii-ui.nvim/commit/75a085f58f60bbeabf9b19dabe3af23074e8da4e))
+
 ## 0.0.0 (2025-03-22)
 
 
