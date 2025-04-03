@@ -60,5 +60,4 @@ function UserInteractions:detach_buffer(buffer_id)
 	self.buffers[buffer_id] = nil
 end
 
--- return singleton for all the app
 return UserInteractions
