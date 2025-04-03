@@ -19,16 +19,16 @@ describe("SliderComponent", function()
 			return Buffer:new(unpack(slider:render(test_config))):to_string()
 		end
 
-		eq("+---------", line())
+		eq("+--------- 0%", line())
 
 		slider:slide_to(90)
-		eq("--------+-", line())
+		eq("--------+- 90%", line())
 
 		slider:slide_to(50)
-		eq("----+-----", line())
+		eq("----+----- 50%", line())
 
 		slider:slide_to(100)
-		eq("---------+", line())
+		eq("---------+ 100%", line())
 	end)
 
 	it("increments ten on move_right", function()
