@@ -75,6 +75,26 @@ function M.mount(component)
 		end
 
 		vim.schedule(function()
+			if interaction == interaction_type.CURSOR_MOVE_RIGHT then
+				local result = rendered_buffer:find_position_of_the_next_focusable({
+					line = position.line,
+					col = position.col,
+				})
+
+				local next_position = result.pos
+				vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
+			end
+
+			if interaction == interaction_type.CURSOR_MOVE_LEFT then
+				local result = rendered_buffer:find_position_of_the_last_focusable({
+					line = position.line,
+					col = position.col,
+				})
+
+				local next_position = result.pos
+				vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
+			end
+
 			if interaction == interaction_type.CURSOR_MOVE_DOWN then
 				-- move cursor to focusable element in the next line
 				local result = rendered_buffer:find_position_of_the_next_focusable({
