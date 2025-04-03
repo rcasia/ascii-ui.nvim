@@ -80,11 +80,13 @@ end
 
 ---@return string
 function BufferLine:to_string()
-	if self.elements[1] then
-		return vim.trim(self.elements[1]:to_string())
-	else
-		return ""
-	end
+	return vim
+		.iter(self.elements)
+		---@param element ascii-ui.Element
+		:map(function(element)
+			return element:to_string()
+		end)
+		:join("")
 end
 
 return BufferLine
