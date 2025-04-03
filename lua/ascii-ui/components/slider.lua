@@ -11,10 +11,11 @@ local Slider = {
 	__name = "SliderComponent",
 }
 
+---@param value? integer
 ---@return ascii-ui.Slider
-function Slider:new()
+function Slider:new(value)
 	local state = {
-		value = 0,
+		value = value or 0,
 		step = 10,
 	}
 
