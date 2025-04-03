@@ -65,13 +65,17 @@ function Buffer:find_position_of_the_next_focusable(position)
 			if col == 0 then
 				return nil -- return the current position when no focusable element is found
 			end
-			return index, line:find_focusable2()
+			return { line = index, col = col }
 		end)
-		:filter(function(e)
-			return e ~= nil
-		end)
-		:map(function(line_index, col)
-			return { line = line_index, col = col }
+		:filter(function(pos)
+			if pos == nil then
+				return false
+			end
+
+			-- filter in the lines that are after the current position
+			return pos.line > position.line
+				-- or a position that is in the same line but after the current column
+				or (pos.line == position.line and pos.col > position.col)
 		end)
 		:take(1)
 		:last()

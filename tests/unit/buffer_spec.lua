@@ -84,6 +84,10 @@ describe("buffer", function()
 			)
 			eq(
 				{ found = true, pos = { line = 2, col = 21 } },
+				b:find_position_of_the_next_focusable({ line = 1, col = 22 })
+			)
+			eq(
+				{ found = true, pos = { line = 2, col = 21 } },
 				b:find_position_of_the_next_focusable({ line = 2, col = 1 })
 			)
 			eq(
