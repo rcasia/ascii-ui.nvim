@@ -66,7 +66,11 @@ function M.mount(component)
 		end
 
 		if key == "j" then
-			rendered_buffer:find_position_of_the_next_focusable()
+			-- move cursor to focusable element in the next line
+			local next_position =
+				rendered_buffer:find_position_of_the_next_focusable({ line = position.line + 1, col = position.col })
+
+			vim.api.nvim_win_set_cursor(window.winid, { next_position.line - 1, next_position.col })
 		end
 	end, window.ns_id)
 
