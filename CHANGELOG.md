@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.0.1...v0.1.0) (2025-04-03)
+
+
+### Features
+
+* **component:** removes on_change callback when it fails ([927cc22](https://github.com/rcasia/ascii-ui.nvim/commit/927cc2243942466db7a5ae0e207a7dc3441192ed))
+* expose public components through api ([5121b0b](https://github.com/rcasia/ascii-ui.nvim/commit/5121b0b4bddef99064a1f2354672476bd2fa70b4))
+
+
+### Bug Fixes
+
+* **component:** pass state change params ([b862296](https://github.com/rcasia/ascii-ui.nvim/commit/b86229618378c0930b55b2ca8a82c2fcbba67f11))
+* **layout:** rename subscribe -&gt; on_change ([270720d](https://github.com/rcasia/ascii-ui.nvim/commit/270720d9aacf469110a9edff72db58dbefcaa1e3))
+* move just one focusable down at a time ([b0fdfc3](https://github.com/rcasia/ascii-ui.nvim/commit/b0fdfc3c9efb2dff5033e1e1238ef89775d831af))
+
 ## [0.0.1](https://github.com/rcasia/ascii-ui.nvim/compare/v0.0.0...v0.0.1) (2025-04-03)
 
 
