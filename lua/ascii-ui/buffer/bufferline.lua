@@ -20,7 +20,7 @@ function BufferLine:new(...)
 end
 
 ---@return ascii-ui.Element | nil
----@return { col: number } | nil
+---@return number col returns 0 when not found
 function BufferLine:find_focusable()
 	assert(self.elements, "bufferline component failed: element cannot be nil")
 
@@ -33,7 +33,7 @@ function BufferLine:find_focusable()
 		return element:is_focusable()
 	end)
 
-	return found, found and { col = col } or nil
+	return found, found and col or 0
 end
 
 ---@param col number

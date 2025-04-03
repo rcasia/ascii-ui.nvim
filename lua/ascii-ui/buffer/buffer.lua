@@ -44,7 +44,7 @@ function Buffer:find_focusable()
 	for i, line in ipairs(self.lines) do
 		result = { line:find_focusable() }
 		if result[1] then
-			return result[1], { line = i, col = result[2].col }
+			return result[1], { line = i, col = result[2] }
 		end
 	end
 	return result[1], result[2]
@@ -59,11 +59,11 @@ function Buffer:find_position_of_the_next_focusable(position)
 		.iter(ipairs(self.lines))
 		:skip(position.line - 1)
 		--- @param line ascii-ui.BufferLine
-		:map(function(idx, line)
-			return idx, line:find_focusable()
+		:map(function(index, line)
+			return index, line:find_focusable()
 		end)
-		:map(function(idx, a, b)
-			return { line = idx, col = b.col }
+		:map(function(idx, a, col)
+			return { line = idx, col = col }
 		end)
 		:filter(function(e)
 			return e ~= nil
