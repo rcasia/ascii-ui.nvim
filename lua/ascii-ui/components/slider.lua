@@ -64,7 +64,7 @@ function Slider:render(config)
 		return {
 			Bufferline:new(
 				Element:new(cc.thumb, true, interactions),
-				Element:new(cc.horizontal:rep(9), false, interactions),
+				Element:new(cc.horizontal:rep(10), false, interactions),
 				Element:new((" %d%%"):format(self.value))
 			),
 		}
@@ -75,7 +75,7 @@ function Slider:render(config)
 
 	return {
 		Bufferline:new(
-			Element:new(cc.horizontal:rep(knob_position - 1), false, interactions),
+			Element:new(cc.horizontal:rep(knob_position), false, interactions),
 			Element:new(cc.thumb, true, interactions),
 			Element:new(cc.horizontal:rep(width - knob_position), false, interactions),
 			Element:new((" %d%%"):format(self.value))
