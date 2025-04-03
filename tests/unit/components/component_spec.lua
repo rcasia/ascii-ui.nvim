@@ -57,6 +57,26 @@ describe("Component", function()
 		eq(2, interactions_count)
 	end)
 
+	it("removes change subscriptions when they throw errors", function()
+		local interactions_count = 0
+
+		local component = Checkbox:new()
+
+		component:on_change(function()
+			interactions_count = interactions_count + 1
+		end)
+
+		component:on_change(function()
+			error("test error")
+		end)
+
+		component:toggle()
+		component:toggle()
+		eq(2, interactions_count)
+
+		eq(1, #component.__subscriptions)
+	end)
+
 	it("unsubscribes", function()
 		local interactions_count = 0
 

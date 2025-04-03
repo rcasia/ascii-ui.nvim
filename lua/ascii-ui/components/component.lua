@@ -26,7 +26,7 @@ function Component:new(component_name)
 		__newindex = function(t, key, value)
 			rawset(instance, key, value)
 			for _, callback in ipairs(t.__subscriptions) do
-				callback(t, key, value)
+				pcall(callback, t, key, value)
 			end
 		end,
 	})
@@ -67,8 +67,14 @@ function Component:extend(custom_component, props)
 		end,
 		__newindex = function(t, key, value)
 			rawset(t.__state, key, value)
-			for _, callback in ipairs(t.__subscriptions) do
-				callback(t, key, value)
+
+			for i = #t.__subscriptions, 1, -1 do -- iterating in reverse to be able to remove elements
+				local callback = t.__subscriptions[i]
+				local status_ok, err = pcall(callback, t, key, value)
+				if not status_ok then
+					table.remove(t.__subscriptions, i) -- removes item and compacts table to be array like
+					print("Error in subscription callback: " .. err)
+				end
 			end
 		end,
 	})
@@ -76,7 +82,10 @@ function Component:extend(custom_component, props)
 end
 
 --- Adds a callback to be called when a property changes.
---- Cleared when the component is destroyed.
+--- Cleared either when:
+---  - the callback function fails
+---  - the component is destroyed
+---
 --- @see Component.destroy
 --- @see Component.clear_subscriptions
 ---
