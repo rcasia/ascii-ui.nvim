@@ -7,11 +7,11 @@ local M = {}
 
 local ascii_renderer = require("ascii-ui.renderer"):new(config)
 
----@param component ascii-ui.Component
+---@param layout ascii-ui.Layout | ascii-ui.Component
 ---@return integer bufnr
-function M.mount(component)
+function M.mount(layout)
 	-- does first render
-	local rendered_buffer = ascii_renderer:render(component)
+	local rendered_buffer = ascii_renderer:render(layout)
 
 	-- spawns a window
 	local window = Window:new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
@@ -21,8 +21,8 @@ function M.mount(component)
 	window:update(rendered_buffer)
 
 	-- subsequent renders triggered by data changes on component
-	component:subscribe(function(t, key, value)
-		rendered_buffer = ascii_renderer:render(component) -- assign variable to have change the referenced value
+	layout:subscribe(function()
+		rendered_buffer = ascii_renderer:render(layout) -- assign variable to have change the referenced value
 		window:update(rendered_buffer)
 	end)
 
@@ -133,7 +133,7 @@ function M.mount(component)
 			user_interations:instance():detach_buffer(window.bufnr)
 
 			-- destroy our component
-			component:destroy()
+			layout:destroy()
 
 			window:close()
 		end,
