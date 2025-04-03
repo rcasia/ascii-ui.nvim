@@ -24,11 +24,16 @@ end
 function BufferLine:find_focusable()
 	assert(self.elements, "bufferline component failed: element cannot be nil")
 
+	local col = 1
 	---@param element ascii-ui.Element
 	local found = vim.iter(self.elements):find(function(element)
+		if element:is_focusable() == false then
+			col = col + element:len()
+		end
 		return element:is_focusable()
 	end)
-	return found, found and { col = 1 } or nil
+
+	return found, found and { col = col } or nil
 end
 
 ---@param col number

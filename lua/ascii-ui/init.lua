@@ -64,6 +64,10 @@ function M.mount(component)
 				interaction_type = interaction,
 			})
 		end
+
+		if key == "j" then
+			rendered_buffer:find_position_of_the_next_focusable()
+		end
 	end, window.ns_id)
 
 	-- binds to window close event

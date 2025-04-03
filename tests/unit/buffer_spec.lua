@@ -39,7 +39,7 @@ describe("buffer", function()
 			)
 			local found, position = b:find_focusable()
 			eq(e, found)
-			eq({ line = 2, col = 1 }, position)
+			eq({ line = 2, col = 21 }, position)
 		end)
 
 		it("should find the next focusable element", function()
@@ -64,6 +64,17 @@ describe("buffer", function()
 			eq(target_c, found_c)
 
 			assert.is_nil(next())
+		end)
+
+		it("finds next focusable element from position", function()
+			local target_a = Element:new("this is focusable", true)
+			local target_b = Element:new("another focusable", true)
+			local b = Buffer:new(
+				BufferLine:new(Element:new("this is not focusable"), target_a),
+				BufferLine:new(Element:new("not focusable either"), target_b)
+			)
+
+			eq({ line = 1, col = 22 }, b:find_position_of_the_next_focusable({ line = 1, col = 1 }))
 		end)
 
 		it("finds the next colored element and its position", function()
