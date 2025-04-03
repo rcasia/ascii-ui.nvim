@@ -51,12 +51,12 @@ function Buffer:find_focusable()
 end
 
 ---@param position? ascii-ui.Position
----@return ascii-ui.Position
+---@return { found: boolean, pos: ascii-ui.Position }
 function Buffer:find_position_of_the_next_focusable(position)
 	position = position or {}
 	position = { line = position.line or 1, col = position.col or 1 }
 
-	return vim
+	local pos = vim
 		.iter(ipairs(self.lines))
 		:skip(position.line - 1)
 		--- @param line ascii-ui.BufferLine
@@ -74,7 +74,9 @@ function Buffer:find_position_of_the_next_focusable(position)
 			return { line = line_index, col = col }
 		end)
 		:take(1)
-		:last() or position
+		:last()
+
+	return { pos = pos or position, found = pos ~= nil }
 end
 
 ---@return fun(): ascii-ui.Element | nil
