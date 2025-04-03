@@ -74,6 +74,7 @@ function Options:render()
 		:map(function(option)
 			local content = ""
 			local highlight
+
 			if option.id == selected_id then
 				content = ("[x] %s"):format(option.name)
 				highlight = highlights.SELECTION
@@ -81,7 +82,7 @@ function Options:render()
 				content = ("[ ] %s"):format(option.name)
 			end
 
-			return Element:new(content, false, {
+			return Element:new(content, true, {
 				on_select = function()
 					self:select_index(option.id)
 				end,
