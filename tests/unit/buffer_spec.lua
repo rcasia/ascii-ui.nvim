@@ -75,6 +75,8 @@ describe("buffer", function()
 			)
 
 			eq({ line = 1, col = 22 }, b:find_position_of_the_next_focusable({ line = 1, col = 1 }))
+			eq({ line = 2, col = 21 }, b:find_position_of_the_next_focusable({ line = 2, col = 1 }))
+			eq(b:find_position_of_the_next_focusable(), b:find_position_of_the_next_focusable({ line = 1, col = 1 }))
 		end)
 
 		it("finds the next colored element and its position", function()

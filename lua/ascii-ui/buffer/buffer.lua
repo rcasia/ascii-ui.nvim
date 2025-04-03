@@ -53,7 +53,8 @@ end
 ---@param position? ascii-ui.Position
 ---@return ascii-ui.Position
 function Buffer:find_position_of_the_next_focusable(position)
-	assert(position, "position cannot be nil") -- TODO: 1,1 by default in near future
+	position = position or {}
+	position = { line = position.line or 1, col = position.col or 1 }
 
 	return vim
 		.iter(ipairs(self.lines))
@@ -62,8 +63,8 @@ function Buffer:find_position_of_the_next_focusable(position)
 		:map(function(index, line)
 			return index, line:find_focusable()
 		end)
-		:map(function(idx, a, col)
-			return { line = idx, col = col }
+		:map(function(line_index, _, col)
+			return { line = line_index, col = col }
 		end)
 		:filter(function(e)
 			return e ~= nil
