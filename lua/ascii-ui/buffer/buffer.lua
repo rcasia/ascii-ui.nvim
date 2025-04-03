@@ -61,6 +61,10 @@ function Buffer:find_position_of_the_next_focusable(position)
 		:skip(position.line - 1)
 		--- @param line ascii-ui.BufferLine
 		:map(function(index, line)
+			local _, col = line:find_focusable()
+			if col == 0 then
+				return position.line, nil, position.col -- return the current position when no focusable element is found
+			end
 			return index, line:find_focusable()
 		end)
 		:map(function(line_index, _, col)
