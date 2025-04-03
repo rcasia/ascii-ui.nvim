@@ -1,3 +1,14 @@
+local function run_subs(subs)
+	for i = #subs, 1, -1 do -- iterating in reverse to be able to remove elements
+		local callback = subs[i]
+		local status_ok, err = pcall(callback, t, key, value)
+		if not status_ok then
+			table.remove(subs, i) -- removes item and compacts table to be array like
+			print("Error in subscription callback: " .. err)
+		end
+	end
+end
+
 ---@class ascii-ui.Component
 ---@field render fun(): ascii-ui.BufferLine[]
 local Component = {
@@ -25,9 +36,7 @@ function Component:new(component_name)
 		__index = self,
 		__newindex = function(t, key, value)
 			rawset(instance, key, value)
-			for _, callback in ipairs(t.__subscriptions) do
-				pcall(callback, t, key, value)
-			end
+			run_subs(t.__subscriptions)
 		end,
 	})
 
@@ -68,14 +77,7 @@ function Component:extend(custom_component, props)
 		__newindex = function(t, key, value)
 			rawset(t.__state, key, value)
 
-			for i = #t.__subscriptions, 1, -1 do -- iterating in reverse to be able to remove elements
-				local callback = t.__subscriptions[i]
-				local status_ok, err = pcall(callback, t, key, value)
-				if not status_ok then
-					table.remove(t.__subscriptions, i) -- removes item and compacts table to be array like
-					print("Error in subscription callback: " .. err)
-				end
-			end
+			run_subs(t.__subscriptions)
 		end,
 	})
 	return instance
