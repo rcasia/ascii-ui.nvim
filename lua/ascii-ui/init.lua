@@ -3,11 +3,16 @@ local user_interations = require("ascii-ui.user_interactions")
 local i = require("ascii-ui.interaction_type")
 local config = require("ascii-ui.config")
 local Layout = require("ascii-ui.layout")
+local components = require("ascii-ui.components")
 
 local M = {}
 
 local ascii_renderer = require("ascii-ui.renderer"):new(config)
 
+--- This contains all the components available in the library
+M.components = components
+
+--- This contains the layout class
 M.layout = Layout
 
 ---@param layout ascii-ui.Layout | ascii-ui.Component
