@@ -61,18 +61,22 @@ function Slider:render(config)
 
 	if self.value == 0 then
 		return {
-			Bufferline:new(Element:new(cc.thumb .. cc.horizontal:rep(9), false, interactions)),
+			Bufferline:new(
+				Element:new(cc.thumb, true, interactions),
+				Element:new(cc.horizontal:rep(9), false, interactions)
+			),
 		}
 	end
 
 	local width = 10
 	local knob_position = math.floor(width * self.value / 100)
-	local line = string.rep(cc.horizontal, knob_position - 1)
-		.. cc.thumb
-		.. string.rep(cc.horizontal, width - knob_position)
 
 	return {
-		Bufferline:new(Element:new(line, false, interactions)),
+		Bufferline:new(
+			Element:new(cc.horizontal:rep(knob_position - 1), false, interactions),
+			Element:new(cc.thumb, true, interactions),
+			Element:new(cc.horizontal:rep(width - knob_position), false, interactions)
+		),
 	}
 end
 
