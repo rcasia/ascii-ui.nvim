@@ -14,13 +14,22 @@ local levels = {
 M.level = levels.INFO
 
 -- Get log file path
-local log_path = vim.fn.stdpath("data") .. "/ascii-ui/ascii-ui.log"
+local log_dir = vim.fn.stdpath("data") .. "/ascii-ui"
+local log_path = log_dir .. "/ascii-ui.log"
+
+local function ensure_log_dir()
+	if vim.fn.isdirectory(log_dir) == 0 then
+		vim.fn.mkdir(log_dir, "p")
+	end
+end
 
 -- Internal function to write a message to file
 local function write_log(level, msg)
 	if not level or not msg then
 		return
 	end
+	ensure_log_dir()
+
 	local file = io.open(log_path, "a")
 	if file then
 		local time = os.date("%Y-%m-%d %H:%M:%S")
