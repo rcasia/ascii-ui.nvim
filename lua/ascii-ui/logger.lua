@@ -14,7 +14,7 @@ local levels = {
 M.level = levels.INFO
 
 -- Get log file path
-local log_path = vim.fn.stdpath("data") .. "/ascii-ui.log"
+local log_path = vim.fn.stdpath("data") .. "/ascii-ui/ascii-ui.log"
 
 -- Internal function to write a message to file
 local function write_log(level, msg)
