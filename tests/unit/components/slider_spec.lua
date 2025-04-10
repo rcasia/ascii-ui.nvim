@@ -34,6 +34,28 @@ describe("SliderComponent", function()
 		eq("----------+ 100%", line())
 	end)
 
+	it("renders slider with title", function()
+		local slider = Slider:new({ title = "Volume" })
+
+		---@return string
+		local line = function()
+			return Buffer:new(unpack(slider:render(test_config))):to_string()
+		end
+
+		eq(
+			[[Volume
++---------- 0%]],
+			line()
+		)
+
+		slider:slide_to(100)
+		eq(
+			[[Volume
+----------+ 100%]],
+			line()
+		)
+	end)
+
 	it("increments ten on move_right", function()
 		local slider = Slider:new()
 		slider:slide_to(50)

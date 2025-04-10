@@ -7,6 +7,7 @@ local global_config = require("ascii-ui.config")
 ---@class ascii-ui.Slider : ascii-ui.Component
 ---@field value integer current value of the slider, from 0 to 100
 ---@field step integer how much to move the slider by
+---@field title? string title of the slider
 local Slider = {
 	__name = "SliderComponent",
 }
@@ -14,9 +15,16 @@ local Slider = {
 ---@param value? integer
 ---@return ascii-ui.Slider
 function Slider:new(value)
+	local title = nil
+	if type(value) == "table" then
+		title = value.title or nil
+		value = value.value or 0
+	end
+
 	local state = {
 		value = value or 0,
 		step = 10,
+		title = title,
 	}
 
 	return Component:extend(self, state)
@@ -62,6 +70,7 @@ function Slider:render(config)
 
 	if self.value == 0 then
 		return {
+			self.title and Bufferline:new(Element:new(self.title, false)),
 			Bufferline:new(
 				Element:new(cc.thumb, true, interactions),
 				Element:new(cc.horizontal:rep(10), false, interactions),
@@ -74,6 +83,7 @@ function Slider:render(config)
 	local knob_position = math.floor(width * self.value / 100)
 
 	return {
+		self.title and Bufferline:new(Element:new(self.title, false)),
 		Bufferline:new(
 			Element:new(cc.horizontal:rep(knob_position), false, interactions),
 			Element:new(cc.thumb, true, interactions),
