@@ -68,17 +68,6 @@ function Slider:render(config)
 		end,
 	}
 
-	if self.value == 0 then
-		return {
-			self.title and Bufferline:new(Element:new(self.title, false)),
-			Bufferline:new(
-				Element:new(cc.thumb, true, interactions),
-				Element:new(cc.horizontal:rep(10), false, interactions),
-				Element:new((" %d%%"):format(self.value))
-			),
-		}
-	end
-
 	local width = 10
 	local knob_position = math.floor(width * self.value / 100)
 
