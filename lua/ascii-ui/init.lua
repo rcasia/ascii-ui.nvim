@@ -4,6 +4,7 @@ local i = require("ascii-ui.interaction_type")
 local config = require("ascii-ui.config")
 local Layout = require("ascii-ui.layout")
 local components = require("ascii-ui.components")
+local logger = require("ascii-ui.logger")
 
 local M = {}
 
@@ -18,6 +19,8 @@ M.layout = Layout
 ---@param layout ascii-ui.Layout | ascii-ui.Component
 ---@return integer bufnr
 function M.mount(layout)
+	logger.info("Mounting layout/component into a window")
+
 	-- does first render
 	local rendered_buffer = ascii_renderer:render(layout)
 
@@ -36,6 +39,7 @@ function M.mount(layout)
 
 	-- binds to user interaction
 	user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
+	logger.info("Attached buffer to user interactions")
 
 	-- initialize keymaps
 	vim.keymap.set("n", config.keymaps.quit, function()
@@ -89,6 +93,9 @@ function M.mount(layout)
 
 				local next_position = result.pos
 				vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
+				logger.debug(
+					"Cursor moved to next focusable position: " .. next_position.line .. ", " .. next_position.col
+				)
 			end
 
 			if interaction == i.CURSOR_MOVE_LEFT or interaction == i.CURSOR_MOVE_UP then
@@ -99,9 +106,13 @@ function M.mount(layout)
 
 				local next_position = result.pos
 				vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
+				logger.debug(
+					"Cursor moved to last focusable position: " .. next_position.line .. ", " .. next_position.col
+				)
 			end
 		end)
 	end, window.ns_id)
+
 	-- binds to window close event
 	vim.api.nvim_create_autocmd("WinClosed", {
 		callback = function(args)
@@ -114,11 +125,14 @@ function M.mount(layout)
 			-- detach from user interactions
 			user_interations:instance():detach_buffer(window.bufnr)
 			vim.on_key(nil, window.ns_id)
+			logger.info("Detached buffer from user interactions")
 
 			-- destroy our component
 			layout:destroy()
+			logger.info("Destroyed component")
 
 			window:close()
+			logger.info("Closed window")
 		end,
 	})
 
