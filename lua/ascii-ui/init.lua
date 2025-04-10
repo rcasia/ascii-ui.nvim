@@ -88,7 +88,7 @@ function M.mount(layout)
 			if interaction == i.CURSOR_MOVE_RIGHT or interaction == i.CURSOR_MOVE_DOWN then
 				local result = rendered_buffer:find_position_of_the_next_focusable({
 					line = position.line,
-					col = position.col,
+					col = position.col + 1, -- next calculated from the next column on same line
 				})
 
 				local next_position = result.pos
@@ -101,7 +101,7 @@ function M.mount(layout)
 			if interaction == i.CURSOR_MOVE_LEFT or interaction == i.CURSOR_MOVE_UP then
 				local result = rendered_buffer:find_position_of_the_last_focusable({
 					line = position.line,
-					col = position.col,
+					col = position.col - 1,
 				})
 
 				local next_position = result.pos
