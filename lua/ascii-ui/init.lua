@@ -19,6 +19,7 @@ M.layout = Layout
 ---@param layout ascii-ui.Layout | ascii-ui.Component
 ---@return integer bufnr
 function M.mount(layout)
+	logger.set_level("DEBUG")
 	logger.info("Mounting layout/component into a window")
 
 	-- does first render

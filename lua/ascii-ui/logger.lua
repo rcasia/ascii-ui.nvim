@@ -2,7 +2,7 @@
 local M = {}
 
 -- Define log levels
---- @enum (key) ascii-ui.Logger.LogLevel
+--- @enum ascii-ui.Logger.LogLevel
 local levels = {
 	DEBUG = "DEBUG",
 	INFO = "INFO",
@@ -62,6 +62,7 @@ function M.error(msg)
 end
 
 -- Optional: set log level
+--- @param new_level ascii-ui.Logger.LogLevel
 function M.set_level(new_level)
 	if levels[new_level] then
 		M.level = levels[new_level]
