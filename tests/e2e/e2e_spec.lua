@@ -9,6 +9,15 @@ local function feed(keys)
 	vim.api.nvim_feedkeys(keys, "mtx", true)
 end
 
+local function cursor_is_in_line(number)
+	return vim.wait(1, function()
+		local cursor = vim.api.nvim_win_get_cursor(0)
+		local line = cursor[1]
+
+		return line == number
+	end)
+end
+
 ---@param bufnr integer
 ---@param pattern string
 ---@return boolean
@@ -58,6 +67,15 @@ describe("ascii-ui", function()
 
 			feed("hhh")
 			assert(buffer_contains(bufnr, "30%"))
+
+			feed("j")
+			assert(cursor_is_in_line(3))
+
+			feed("ll")
+			assert(buffer_contains(bufnr, "20%"))
+
+			feed("ll")
+			assert(buffer_contains(bufnr, "40%"))
 		end)
 	end)
 end)
