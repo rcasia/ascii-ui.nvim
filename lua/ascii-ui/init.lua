@@ -20,7 +20,7 @@ M.layout = Layout
 ---@return integer bufnr
 function M.mount(layout)
 	logger.set_level("DEBUG")
-	logger.info("Mounting layout/component into a window")
+	logger.info("Mounting layout/component " .. layout.__name)
 
 	-- does first render
 	local rendered_buffer = ascii_renderer:render(layout)
