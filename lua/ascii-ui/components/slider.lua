@@ -12,7 +12,7 @@ local Slider = {
 	__name = "SliderComponent",
 }
 
----@param value? integer
+---@param value? integer | { title: string, value: integer }
 ---@return ascii-ui.Slider
 function Slider:new(value)
 	local title = nil
