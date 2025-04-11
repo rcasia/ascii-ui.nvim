@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.1.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.0.1...v0.1.0) (2025-04-10)
+
+
+### Features
+
+* add simple logger ([b5319d8](https://github.com/rcasia/ascii-ui.nvim/commit/b5319d8130cddd28b833739ba80ba48b5d9cc793))
+* **component:** removes on_change callback when it fails ([927cc22](https://github.com/rcasia/ascii-ui.nvim/commit/927cc2243942466db7a5ae0e207a7dc3441192ed))
+* ensure the log dir exists ([71c77fb](https://github.com/rcasia/ascii-ui.nvim/commit/71c77fb9985594b48476e45b8d0a3b544cfef565))
+* expose public components through api ([5121b0b](https://github.com/rcasia/ascii-ui.nvim/commit/5121b0b4bddef99064a1f2354672476bd2fa70b4))
+* **slider:** render slider with title ([89b42f2](https://github.com/rcasia/ascii-ui.nvim/commit/89b42f277111cc8b011bf571ad82d4f5d99559cf))
+
+
+### Bug Fixes
+
+* calculate next position from the next column in the same line ([d4c6996](https://github.com/rcasia/ascii-ui.nvim/commit/d4c6996e14bd07331413aa63c4a82c99adad67aa))
+* **component:** pass state change params ([b862296](https://github.com/rcasia/ascii-ui.nvim/commit/b86229618378c0930b55b2ca8a82c2fcbba67f11))
+* **layout:** rename subscribe -&gt; on_change ([270720d](https://github.com/rcasia/ascii-ui.nvim/commit/270720d9aacf469110a9edff72db58dbefcaa1e3))
+* move just one focusable down at a time ([b0fdfc3](https://github.com/rcasia/ascii-ui.nvim/commit/b0fdfc3c9efb2dff5033e1e1238ef89775d831af))
+* write logs into the plugin data folder ([79c7353](https://github.com/rcasia/ascii-ui.nvim/commit/79c73532d11d695f454b75e4eacd0df191f3a3a0))
+
 ## [0.0.1](https://github.com/rcasia/ascii-ui.nvim/compare/v0.0.0...v0.0.1) (2025-04-03)
 
 
