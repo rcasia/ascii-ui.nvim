@@ -23,7 +23,7 @@ end
 
 ---@return ascii-ui.BufferLine[]
 function Button:render()
-	return { Bufferline:new(Element:new({ content = self.label, highlight = highlights.BUTTON })) }
+	return { Bufferline:new(Element:new({ content = self.label, highlight = highlights.BUTTON, is_focusable = true })) }
 end
 
 return Button
