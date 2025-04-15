@@ -67,6 +67,17 @@ function Options:select_next()
 	return self.options[self._index_selected].name
 end
 
+--- @param f fun(selected_option: string)
+function Options:on_select(f)
+	self:on_change(function(component, key, value)
+		if key ~= "_index_selected" then
+			return
+		end
+
+		f(self:selected())
+	end)
+end
+
 ---@return ascii-ui.BufferLine[]
 function Options:render()
 	local selected_id = self.options[self._index_selected].id

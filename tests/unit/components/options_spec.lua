@@ -80,4 +80,35 @@ describe("Options", function()
 		second_element.interactions.on_select()
 		eq("banana", options:selected())
 	end)
+
+	it("runs user function on select", function()
+		local option_names = { "apple", "banana", "mango" }
+		local options = Options:new({ options = option_names })
+		local expected_option_index = 3
+		local expected_option = "mango"
+
+		local actual_option
+		options:on_select(function(selected_option)
+			actual_option = selected_option
+		end)
+
+		options:select_index(expected_option_index)
+
+		eq(expected_option, actual_option)
+	end)
+
+	it("runs user function on select only when selected option changed", function()
+		local option_names = { "apple", "banana", "mango" }
+		local options = Options:new({ options = option_names })
+		local invocations = 0
+		local expected_invocations = 0
+
+		options:on_select(function(_)
+			invocations = invocations + 1
+		end)
+
+		options.title = "changed title" -- this triggers should not trigger on_select, but it does trigger on_change
+
+		eq(expected_invocations, invocations)
+	end)
 end)
