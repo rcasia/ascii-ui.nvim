@@ -8,6 +8,7 @@ local global_config = require("ascii-ui.config")
 ---@field value integer current value of the slider, from 0 to 100
 ---@field step integer how much to move the slider by
 ---@field title? string title of the slider
+---@field on_change fun(self: ascii-ui.Slider, f : fun(component: ascii-ui.Slider, key: ascii-ui.Slider.Fields, value: any))
 local Slider = {
 	__name = "SliderComponent",
 }
@@ -21,6 +22,7 @@ function Slider:new(value)
 		value = value.value or 0
 	end
 
+	--- @enum (key) ascii-ui.Slider.Fields
 	local state = {
 		value = value or 0,
 		step = 10,

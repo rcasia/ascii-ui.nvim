@@ -30,6 +30,7 @@ end
 ---@field options ascii-ui.Options.Item[]
 ---@field _index_selected integer
 ---@field title string
+---@field on_change fun(self: ascii-ui.Options, f : fun(component: ascii-ui.Options, key: ascii-ui.Options.Fields, value: any))
 local Options = {
 	__name = "OptionsComponent",
 }
@@ -37,6 +38,7 @@ local Options = {
 ---@param opts ascii-ui.OptionsOpts
 ---@return ascii-ui.Options
 function Options:new(opts)
+	--- @enum (key) ascii-ui.Options.Fields
 	local state = {
 		title = opts.title or "",
 		options = from(opts.options),
