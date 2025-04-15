@@ -111,4 +111,20 @@ describe("Options", function()
 
 		eq(expected_invocations, invocations)
 	end)
+
+	it("accepts on_select function on creation", function()
+		local option_names = { "apple", "banana", "mango" }
+		local invocations = 0
+		local expected_invocations = 1
+		local options = Options:new({
+			options = option_names,
+			on_select = function(_)
+				invocations = invocations + 1
+			end,
+		})
+
+		options:select_index(3)
+
+		eq(expected_invocations, invocations)
+	end)
 end)

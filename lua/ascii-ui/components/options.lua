@@ -4,7 +4,7 @@ local Element = require("ascii-ui.buffer.element")
 local highlights = require("ascii-ui.highlights")
 local interation_type = require("ascii-ui.interaction_type")
 
----@alias ascii-ui.OptionsOpts { options: string[], title?: string }
+---@alias ascii-ui.OptionsOpts { options: string[], title?: string, on_select? : fun(selected_option: string) }
 
 ---@class ascii-ui.Options.Item
 ---@field id integer
@@ -44,7 +44,11 @@ function Options:new(opts)
 		options = from(opts.options),
 		_index_selected = 1,
 	}
-	return Component:extend(self, state)
+	local c = Component:extend(self, state)
+	if type(opts.on_select) == "function" then
+		c:on_select(opts.on_select)
+	end
+	return c
 end
 
 ---@return string selected_option
