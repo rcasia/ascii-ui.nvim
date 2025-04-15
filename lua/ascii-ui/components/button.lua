@@ -1,6 +1,7 @@
 local Component = require("ascii-ui.components.component")
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
+local highlights = require("ascii-ui.highlights")
 
 --- @alias ascii-ui.ButtonComponent.Props { label: string }
 
@@ -22,7 +23,7 @@ end
 
 ---@return ascii-ui.BufferLine[]
 function Button:render()
-	return { Bufferline:new(Element:new({ content = self.label })) }
+	return { Bufferline:new(Element:new({ content = self.label, highlight = highlights.BUTTON })) }
 end
 
 return Button

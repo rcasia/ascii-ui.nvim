@@ -24,6 +24,7 @@ function Window:new(opts)
 	-- set custom colors
 	local ns_id = vim.api.nvim_create_namespace("ascii-ui")
 	vim.api.nvim_set_hl(0, highlights.SELECTION, { fg = "#f6b93b" })
+	vim.api.nvim_set_hl(0, highlights.BUTTON, { bg = "#f6b93b" })
 
 	local state = {
 		winid = nil,
