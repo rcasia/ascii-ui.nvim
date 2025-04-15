@@ -30,11 +30,13 @@ describe("Layout", function()
 
 		eq(0, interactions_count)
 
+		---@diagnostic disable-next-line: inject-field
 		component.unchecked_field = 1
 		eq(1, interactions_count)
 
 		layout:destroy()
 
+		---@diagnostic disable-next-line: inject-field
 		component.unchecked_field = 2
 		eq(1, interactions_count)
 	end)
