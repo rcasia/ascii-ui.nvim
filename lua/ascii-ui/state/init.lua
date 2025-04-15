@@ -1,20 +1,20 @@
---- @alias StateWatcher fun(state: table): nil
---- @class BoundState
+--- @alias ascii-ui.StateWatcher fun(state: table): nil
+--- @class ascii-ui.BoundState
 --- @field get fun(): any
 --- @field set fun(value: any): nil
 
---- @class ReactiveState
+--- @class ascii-ui.ReactiveState
 --- @field get fun(): table
 --- @field set fun(new_value: table): nil
---- @field watch fun(fn: StateWatcher): nil
---- @field bind fun(key: string): BoundState
+--- @field watch fun(fn: ascii-ui.StateWatcher): nil
+--- @field bind fun(key: string): ascii-ui.BoundState
 
 local State = {}
 
 --- Creates a reactive state object.
 -- The state allows global or key-specific access, supports watchers for changes.
--- @param initial table The initial state value
--- @return ReactiveState A reactive state instance
+--- @param initial table The initial state value
+--- @return ascii-ui.ReactiveState A reactive state instance
 function State.state(initial)
 	local value = vim.deepcopy(initial)
 	local watchers = {}
@@ -32,14 +32,14 @@ function State.state(initial)
 		end
 	end
 
-	--- @param fn StateWatcher
+	--- @param fn ascii-ui.StateWatcher
 	local function watch(fn)
 		table.insert(watchers, fn)
 		fn(value)
 	end
 
 	--- @param key string
-	--- @return BoundState
+	--- @return ascii-ui.BoundState
 	local function bind(key)
 		return {
 			--- @return any
