@@ -1,5 +1,8 @@
+<img align="right" width="200px" src="https://github.com/user-attachments/assets/4763b7a6-a996-4a29-946c-bae21de176db" alt="GitHub Stats" />
 
 [![codecov](https://codecov.io/gh/rcasia/ascii-ui.nvim/graph/badge.svg?token=J5ISORZOQF)](https://codecov.io/gh/rcasia/ascii-ui.nvim)
+
+
 
 # ascii-ui.nvim
 
