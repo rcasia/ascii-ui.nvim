@@ -4,14 +4,14 @@ local Element = require("ascii-ui.buffer.element")
 local highlights = require("ascii-ui.highlights")
 local interation_type = require("ascii-ui.interaction_type")
 
----@alias ascii-ui.OptionsOpts { options: string[], title?: string, on_select? : fun(selected_option: string) }
+---@alias ascii-ui.SelectComponentOpts { options: string[], title?: string, on_select? : fun(selected_option: string) }
 
----@class ascii-ui.Options.Item
+---@class ascii-ui.SelectComponent.Option
 ---@field id integer
 ---@field name string
 
 ---@param option_names string[]
----@return ascii-ui.Options.Item[]
+---@return ascii-ui.SelectComponent.Option[]
 local function from(option_names)
 	local id = 0
 	local next_id = function()
@@ -20,25 +20,25 @@ local function from(option_names)
 	end
 	return vim.iter(option_names)
 		:map(function(name)
-			---@type ascii-ui.Options.Item
+			---@type ascii-ui.SelectComponent.Option
 			return { id = next_id(), name = name }
 		end)
 		:totable()
 end
 
----@class ascii-ui.Options : ascii-ui.Component
----@field options ascii-ui.Options.Item[]
+---@class ascii-ui.SelectComponent : ascii-ui.Component
+---@field options ascii-ui.SelectComponent.Option[]
 ---@field _index_selected integer
 ---@field title string
----@field on_change fun(self: ascii-ui.Options, f : fun(component: ascii-ui.Options, key: ascii-ui.Options.Fields, value: any))
-local Options = {
-	__name = "OptionsComponent",
+---@field on_change fun(self: ascii-ui.SelectComponent, f : fun(component: ascii-ui.SelectComponent, key: ascii-ui.SelectComponent.Fields, value: any))
+local Select = {
+	__name = "SelectComponent",
 }
 
----@param opts ascii-ui.OptionsOpts
----@return ascii-ui.Options
-function Options:new(opts)
-	--- @enum (key) ascii-ui.Options.Fields
+---@param opts ascii-ui.SelectComponentOpts
+---@return ascii-ui.SelectComponent
+function Select:new(opts)
+	--- @enum (key) ascii-ui.SelectComponent.Fields
 	local state = {
 		title = opts.title or "",
 		options = from(opts.options),
@@ -52,19 +52,19 @@ function Options:new(opts)
 end
 
 ---@return string selected_option
-function Options:selected()
+function Select:selected()
 	return self.options[self._index_selected].name
 end
 
 ---@param index integer
 ---@return string selected_option
-function Options:select_index(index)
+function Select:select_index(index)
 	self._index_selected = index
 	return self.options[self._index_selected].name
 end
 
 ---@return string selected_option
-function Options:select_next()
+function Select:select_next()
 	if #self.options == self._index_selected then
 		self._index_selected = 1
 	else
@@ -74,7 +74,7 @@ function Options:select_next()
 end
 
 --- @param f fun(selected_option: string)
-function Options:on_select(f)
+function Select:on_select(f)
 	self:on_change(function(component, key, value)
 		if key ~= "_index_selected" then
 			return
@@ -85,7 +85,7 @@ function Options:on_select(f)
 end
 
 ---@return ascii-ui.BufferLine[]
-function Options:render()
+function Select:render()
 	local selected_id = self.options[self._index_selected].id
 
 	local bufferlines = vim.iter(self.options)
@@ -117,4 +117,4 @@ function Options:render()
 	return bufferlines
 end
 
-return Options
+return Select

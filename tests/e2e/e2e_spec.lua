@@ -2,7 +2,7 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local ui = require("ascii-ui")
-local Options = require("ascii-ui.components.options")
+local Options = require("ascii-ui.components.select")
 local it = require("plenary.async.tests").it
 
 local function feed(keys)
