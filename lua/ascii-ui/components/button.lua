@@ -27,14 +27,14 @@ end
 ---@return ascii-ui.BufferLine[]
 function Button:render()
 	return {
-		Bufferline:new(Element:new({
+		Element:new({
 			content = self.label,
 			highlight = highlights.BUTTON,
 			is_focusable = true,
 			interactions = {
 				[interaction_type.SELECT] = self.on_press,
 			},
-		})),
+		}):wrap(),
 	}
 end
 

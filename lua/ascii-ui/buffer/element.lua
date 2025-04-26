@@ -3,10 +3,10 @@ local interaction_type = require("ascii-ui.interaction_type")
 ---@alias ascii-ui.ElementProps { content: string, is_focusable?: boolean, interactions?: table<string, function>, highlight?: string }
 
 ---@class ascii-ui.Element
+---@field content string
 ---@field interactions table<string, function>
----@field len fun(): integer
----@field highlight string
----@private focusable boolean
+---@field highlight? string
+---@field private focusable boolean
 local Element = {}
 
 local last_incremental_id = 0
@@ -43,7 +43,6 @@ function Element:new(...)
 	setmetatable(state, self)
 	self.__index = self
 
-	---@cast state ascii-ui.Element
 	return state
 end
 
@@ -63,6 +62,13 @@ end
 
 function Element:is_colored()
 	return self.highlight ~= nil
+end
+
+--- Wraps the element in a ascii-ui.Bufferline object
+---@return ascii-ui.BufferLine
+function Element:wrap()
+	local Bufferline = require("ascii-ui.buffer.bufferline")
+	return Bufferline:new(self)
 end
 
 return Element

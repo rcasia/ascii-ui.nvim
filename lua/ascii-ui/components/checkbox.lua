@@ -28,7 +28,7 @@ end
 
 ---@return ascii-ui.BufferLine[]
 function Checkbox:render()
-	return { BufferLine:new(Element:new(("[%s] %s"):format(self.checked and "x" or " ", self.label))) }
+	return { Element:new(("[%s] %s"):format(self.checked and "x" or " ", self.label)):wrap() }
 end
 
 return Checkbox

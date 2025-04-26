@@ -74,7 +74,7 @@ function Slider:render(config)
 	local knob_position = math.floor(width * self.value / 100)
 
 	return {
-		self.title and Bufferline:new(Element:new(self.title, false)),
+		self.title and Element:new(self.title, false):wrap(),
 		Bufferline:new(
 			Element:new(cc.horizontal:rep(knob_position), false, interactions),
 			Element:new(cc.thumb, true, interactions),

@@ -22,7 +22,7 @@ end
 
 ---@return ascii-ui.BufferLine[]
 function Paragraph:render()
-	return { Bufferline:new(Element:new(self.content)) }
+	return { Element:new(self.content):wrap() }
 end
 
 return Paragraph

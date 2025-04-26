@@ -107,12 +107,12 @@ function Select:render()
 			}, highlight)
 		end)
 		:map(function(element)
-			return Bufferline:new(element)
+			return element:wrap()
 		end)
 		:totable()
 
 	if vim.fn.empty(self.title) == 0 then
-		table.insert(bufferlines, 1, Bufferline:new(Element:new(self.title)))
+		table.insert(bufferlines, 1, Element:new(self.title):wrap())
 	end
 	return bufferlines
 end
