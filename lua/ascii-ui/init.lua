@@ -5,6 +5,7 @@ local config = require("ascii-ui.config")
 local Layout = require("ascii-ui.layout")
 local components = require("ascii-ui.components")
 local logger = require("ascii-ui.logger")
+local EventListener = require("ascii-ui.events")
 
 local M = {}
 
@@ -16,11 +17,16 @@ M.components = components
 --- This contains the layout class
 M.layout = Layout
 
----@param layout ascii-ui.Layout | ascii-ui.Component
+---@param layout ascii-ui.Component | fun(): ascii-ui.BufferLine[]
 ---@return integer bufnr
 function M.mount(layout)
 	logger.set_level("DEBUG")
-	logger.info("Mounting layout/component " .. layout.__name)
+	local _layout
+	if type(layout) == "function" then
+		_layout = layout
+		layout = layout()
+	end
+	local is_component = layout.__name ~= nil
 
 	-- does first render
 	local rendered_buffer = ascii_renderer:render(layout)
@@ -32,11 +38,18 @@ function M.mount(layout)
 	-- updates the window with the rendered buffer
 	window:update(rendered_buffer)
 
-	-- subsequent renders triggered by data changes on component
-	layout:on_change(function()
-		rendered_buffer = ascii_renderer:render(layout) -- assign variable to have change the referenced value
-		window:update(rendered_buffer)
-	end)
+	if is_component then
+		-- subsequent renders triggered by data changes on component
+		layout:on_change(function()
+			rendered_buffer = ascii_renderer:render(layout) -- assign variable to have change the referenced value
+			window:update(rendered_buffer)
+		end)
+	else
+		EventListener:listen("state_change", function()
+			rendered_buffer = ascii_renderer:render(_layout()) -- assign variable to have change the referenced value
+			window:update(rendered_buffer)
+		end)
+	end
 
 	-- binds to user interaction
 	user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
@@ -129,8 +142,10 @@ function M.mount(layout)
 			logger.info("Detached buffer from user interactions")
 
 			-- destroy our component
-			layout:destroy()
-			logger.info("Destroyed component")
+			if is_component then
+				layout:destroy()
+				logger.info("Destroyed component")
+			end
 
 			window:close()
 			logger.info("Closed window")

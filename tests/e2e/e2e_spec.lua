@@ -4,6 +4,8 @@ pcall(require, "luacov")
 local ui = require("ascii-ui")
 local Options = require("ascii-ui.components.select")
 local it = require("plenary.async.tests").it
+local eq = assert.are.same
+local EventListener = require("ascii-ui.events")
 
 local function feed(keys)
 	vim.api.nvim_feedkeys(keys, "mtx", true)
@@ -76,6 +78,43 @@ describe("ascii-ui", function()
 
 			feed("ll")
 			assert(buffer_contains(bufnr, "40%"))
+		end)
+
+		--- @generic T
+		--- @param value T
+		--- @return fun(): T getValue
+		--- @return fun(value: T) setValue
+		local useState = function(value)
+			local _value = value
+			local setValue = function(newValue)
+				_value = newValue
+				EventListener:trigger("state_change")
+			end
+			local getValue = function()
+				return _value
+			end
+
+			return getValue, setValue
+		end
+
+		it("functional", function()
+			local Paragraph = ui.components.paragraph.fun
+			local content, setContent = useState("hola mundo")
+
+			local bufnr = ui.mount(Paragraph({ content = content }))
+			assert(buffer_contains(bufnr, "hola mundo"))
+
+			setContent("lemon juice")
+			assert(buffer_contains(bufnr, "lemon juice"))
+		end)
+
+		it("useState", function()
+			local counter, setCounter = useState(0)
+
+			eq(0, counter())
+			setCounter(1)
+
+			eq(1, counter())
 		end)
 	end)
 end)
