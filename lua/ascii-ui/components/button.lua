@@ -38,4 +38,13 @@ function Button:render()
 	}
 end
 
+--- @param props ascii-ui.ButtonComponent.Props
+--- @return fun(): ascii-ui.BufferLine[]
+function Button.fun(props)
+	return function()
+		local button = Button:new(props)
+		return button:render()
+	end
+end
+
 return Button

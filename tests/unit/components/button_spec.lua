@@ -6,29 +6,15 @@ local highlights = require("ascii-ui.highlights")
 local Buffer = require("ascii-ui.buffer")
 local Button = require("ascii-ui.components.button")
 
-describe("Paragraph", function()
-	it("should create", function()
-		Button:new({ label = "hello world!" })
-	end)
-
-	it("should render", function()
-		local content = "Send"
-		local button = Button:new({ label = content })
-
+describe("Button", function()
+	it("functional", function()
+		local bufferlines = Button.fun({ label = "Send" })()
 		---@return string
 		local lines = function()
-			return Buffer:new(unpack(button:render())):to_string()
+			return Buffer:new(unpack(bufferlines))
 		end
-		eq([[Send]], lines())
-	end)
 
-	it("has background color", function()
-		local content = "Send"
-		local button = Button:new({ label = content })
-
-		local line = button:render()[1]
-		local fragment = line.elements[1]
-
-		eq(highlights.BUTTON, fragment.highlight)
+		eq([[Send]], lines():to_string())
+		eq(highlights.BUTTON, lines().lines[1].elements[1].highlight)
 	end)
 end)

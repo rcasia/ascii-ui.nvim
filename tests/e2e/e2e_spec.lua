@@ -5,7 +5,7 @@ local ui = require("ascii-ui")
 local Options = require("ascii-ui.components.select")
 local it = require("plenary.async.tests").it
 local eq = assert.are.same
-local EventListener = require("ascii-ui.events")
+local useState = require("ascii-ui.hooks.state")
 
 local function feed(keys)
 	vim.api.nvim_feedkeys(keys, "mtx", true)
@@ -79,23 +79,6 @@ describe("ascii-ui", function()
 			feed("ll")
 			assert(buffer_contains(bufnr, "40%"))
 		end)
-
-		--- @generic T
-		--- @param value T
-		--- @return fun(): T getValue
-		--- @return fun(value: T) setValue
-		local useState = function(value)
-			local _value = value
-			local setValue = function(newValue)
-				_value = newValue
-				EventListener:trigger("state_change")
-			end
-			local getValue = function()
-				return _value
-			end
-
-			return getValue, setValue
-		end
 
 		it("functional", function()
 			local Paragraph = ui.components.paragraph.fun
