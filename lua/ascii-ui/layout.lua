@@ -48,7 +48,7 @@ function Layout:render()
 end
 
 --- @param ... fun(): ascii-ui.BufferLine[]
---- @return fun(components: ascii-ui.Component[]): ascii-ui.BufferLine[]
+--- @return fun(): ascii-ui.BufferLine[]
 function Layout.fun(...)
 	local components = { ... }
 

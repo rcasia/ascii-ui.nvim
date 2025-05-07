@@ -2,7 +2,7 @@ local Component = require("ascii-ui.components.component")
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 
---- @alias ascii-ui.ParagraphComponent.Props { content?: string }
+--- @alias ascii-ui.ParagraphComponent.Props { content?: ascii-ui.ComponentProp<string> }
 
 ---@class ascii-ui.ParagraphComponent : ascii-ui.Component
 ---@field content string
@@ -25,7 +25,7 @@ function Paragraph:render()
 	return { Element:new(self.content):wrap() }
 end
 
---- @param props ascii-ui.ParagraphComponent.Props | { content: fun(): string }
+--- @param props ascii-ui.ParagraphComponent.Props
 --- @return fun(): ascii-ui.BufferLine[]
 function Paragraph.fun(props)
 	local content = function()
