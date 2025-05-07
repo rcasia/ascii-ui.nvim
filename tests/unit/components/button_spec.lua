@@ -1,5 +1,6 @@
 pcall(require, "luacov")
 ---@module "luassert"
+
 local eq = assert.are.same
 
 local highlights = require("ascii-ui.highlights")
@@ -8,8 +9,7 @@ local Button = require("ascii-ui.components.button")
 
 describe("Button", function()
 	it("functional", function()
-		local bufferlines = Button.fun({ label = "Send" })()
-		---@return string
+		local bufferlines = Button({ label = "Send" })()
 		local lines = function()
 			return Buffer:new(unpack(bufferlines))
 		end

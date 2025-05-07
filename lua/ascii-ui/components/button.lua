@@ -49,4 +49,4 @@ function Button.fun(props)
 	end
 end
 
-return Button
+return Button.fun

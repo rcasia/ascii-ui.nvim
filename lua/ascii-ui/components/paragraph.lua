@@ -37,4 +37,4 @@ function Paragraph.fun(props)
 	end
 end
 
-return Paragraph
+return Paragraph.fun

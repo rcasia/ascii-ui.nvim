@@ -4,7 +4,7 @@ pcall(require, "luacov")
 local ui = require("ascii-ui")
 local Options = require("ascii-ui.components.select")
 local it = require("plenary.async.tests").it
-local Paragraph = ui.components.paragraph.fun
+local Paragraph = ui.components.paragraph
 local useState = require("ascii-ui.hooks.use_state")
 
 local function feed(keys)
