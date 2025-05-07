@@ -20,20 +20,13 @@ function Paragraph:new(props)
 	return Component:extend(self, state)
 end
 
----@return ascii-ui.BufferLine[]
-function Paragraph:render()
-	return { Element:new(self.content):wrap() }
-end
-
 --- @param props ascii-ui.ParagraphComponent.Props
 --- @return fun(): ascii-ui.BufferLine[]
 function Paragraph.fun(props)
-	local content = function()
-		return type(props.content) == "string" and props.content or props.content()
-	end
 	return function()
-		local component = Paragraph:new({ content = content() })
-		return component:render()
+		local content = type(props.content) == "string" and props.content or props.content()
+
+		return { Element:new(content):wrap() }
 	end
 end
 
