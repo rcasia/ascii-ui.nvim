@@ -42,7 +42,9 @@ end
 --- @return fun(): ascii-ui.BufferLine[]
 function Button.fun(props)
 	return function()
-		local button = Button:new(props)
+		local label = type(props.label) == "function" and props.label() or props.label
+		local on_press = props.on_press
+		local button = Button:new({ label = label, on_press = on_press })
 		return button:render()
 	end
 end

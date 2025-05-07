@@ -28,8 +28,11 @@ end
 --- @param props ascii-ui.ParagraphComponent.Props | { content: fun(): string }
 --- @return fun(): ascii-ui.BufferLine[]
 function Paragraph.fun(props)
+	local content = function()
+		return type(props.content) == "string" and props.content or props.content()
+	end
 	return function()
-		local component = Paragraph:new({ content = props.content() })
+		local component = Paragraph:new({ content = content() })
 		return component:render()
 	end
 end

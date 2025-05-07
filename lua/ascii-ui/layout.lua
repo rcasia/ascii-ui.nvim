@@ -37,12 +37,34 @@ function Layout:render()
 		if idx ~= 1 then
 			bufferlines[#bufferlines + 1] = BufferLine:new()
 		end
+		---@param line ascii-ui.BufferLine
 		vim.iter(component:render()):each(function(line)
+			print(vim.inspect(line:to_string()))
 			bufferlines[#bufferlines + 1] = line
 		end)
 	end
 
 	return Buffer:new(unpack(vim.iter(bufferlines):totable()))
+end
+
+--- @param ... fun(): ascii-ui.BufferLine[]
+--- @return fun(components: ascii-ui.Component[]): ascii-ui.BufferLine[]
+function Layout.fun(...)
+	local components = { ... }
+
+	return function()
+		local bufferlines = {}
+		for idx, component in ipairs(components) do
+			if idx ~= 1 then
+				bufferlines[#bufferlines + 1] = BufferLine:new()
+			end
+			vim.iter(component()):each(function(line)
+				bufferlines[#bufferlines + 1] = line
+			end)
+		end
+
+		return bufferlines
+	end
 end
 
 return Layout

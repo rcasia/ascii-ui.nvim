@@ -23,6 +23,13 @@ local create_dummy_component = function()
 		return { BufferLine:new(Element:new("dummy_render")) }
 	end
 
+	---@return fun(): ascii-ui.BufferLine[]
+	function DummyComponent.fun()
+		return function()
+			return { BufferLine:new(Element:new("dummy_render")) }
+		end
+	end
+
 	return DummyComponent:new({ dummy_check = true })
 end
 
