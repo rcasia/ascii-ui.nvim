@@ -117,4 +117,12 @@ function Select:render()
 	return bufferlines
 end
 
-return Select
+--- @param props ascii-ui.SelectComponentOpts
+function Select.fun(props)
+	return function()
+		local select = Select:new(props)
+		return select:render()
+	end
+end
+
+return Select.fun
