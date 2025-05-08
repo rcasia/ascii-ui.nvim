@@ -1,87 +1,62 @@
-local Component = require("ascii-ui.components.component")
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 local interaction_type = require("ascii-ui.interaction_type")
 local global_config = require("ascii-ui.config")
+local useReducer = require("ascii-ui.hooks.use_reducer")
 
----@class ascii-ui.Slider : ascii-ui.Component
----@field value integer current value of the slider, from 0 to 100
----@field step integer how much to move the slider by
----@field title? string title of the slider
----@field on_change fun(self: ascii-ui.Slider, f : fun(component: ascii-ui.Slider, key: ascii-ui.Slider.Fields, value: any))
-local Slider = {
-	__name = "SliderComponent",
-}
-
----@param value? integer | { title: string, value: integer }
----@return ascii-ui.Slider
-function Slider:new(value)
-	local title = nil
-	if type(value) == "table" then
-		title = value.title or nil
-		value = value.value or 0
-	end
-
-	--- @enum (key) ascii-ui.Slider.Fields
-	local state = {
-		value = value or 0,
-		step = 10,
-		title = title,
-	}
-
-	return Component:extend(self, state)
-end
-
-function Slider:move_right()
-	if self.value >= 100 - self.step then
-		self.value = 100
-	else
-		self.value = self.value + 10
-	end
-end
-
-function Slider:move_left()
-	if self.value <= self.step then
-		self.value = 0
-	else
-		self.value = self.value - 10
-	end
-end
-
----@param value integer
-function Slider:slide_to(value)
-	self.value = value
-end
-
----@param config ascii-ui.Config
+--- @param props? { title?: string, value?: integer, config?: ascii-ui.Config }
 ---@return ascii-ui.BufferLine[]
-function Slider:render(config)
-	config = config or {}
+local function render(props)
+	local _props, dispatch = useReducer(function(state, action)
+		if action == "move_right" then
+			state.value = math.min(state.value + 10, 100)
+		end
+
+		if action == "move_left" then
+			state.value = math.max(state.value - 10, 0)
+		end
+
+		return state
+	end, props)
+
 	-- override default config
-	config = vim.tbl_extend("force", global_config, config)
+	local config = vim.tbl_extend("force", global_config, props.config)
 	local cc = config.characters
 
 	local interactions = {
 		[interaction_type.CURSOR_MOVE_RIGHT] = function()
-			self:move_right()
+			dispatch("move_right")
 		end,
 		[interaction_type.CURSOR_MOVE_LEFT] = function()
-			self:move_left()
+			dispatch("move_left")
 		end,
 	}
 
+	props = _props()
+
 	local width = 10
-	local knob_position = math.floor(width * self.value / 100)
+	local knob_position = math.floor(width * props.value / 100)
 
 	return {
-		self.title and Element:new(self.title, false):wrap(),
+		props.title ~= "" and Element:new(props.title, false):wrap() or nil,
 		Bufferline:new(
 			Element:new(cc.horizontal:rep(knob_position), false, interactions),
 			Element:new(cc.thumb, true, interactions),
 			Element:new(cc.horizontal:rep(width - knob_position), false, interactions),
-			Element:new((" %d%%"):format(self.value))
+			Element:new((" %d%%"):format(props.value))
 		),
 	}
+end
+
+--- @param props? { title?: string, value?: integer, config?: ascii-ui.Config }
+function Slider(props)
+	return function()
+		props = props or {}
+		props.value = props.value or 0
+		props.config = props.config or {}
+		props.title = props.title or ""
+		return render(props)
+	end
 end
 
 return Slider

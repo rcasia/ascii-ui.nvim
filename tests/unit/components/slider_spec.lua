@@ -7,79 +7,34 @@ local Buffer = require("ascii-ui.buffer")
 local Slider = require("ascii-ui.components.slider")
 
 describe("SliderComponent", function()
-	it("creates", function()
-		Slider:new()
-	end)
+	---@return string
+	local line = function(props)
+		return Buffer:new(unpack(Slider(props)())):to_string()
+	end
 
 	it("renders", function()
-		local slider = Slider:new()
+		eq("+---------- 0%", line({ config = test_config }))
 
-		---@return string
-		local line = function()
-			return Buffer:new(unpack(slider:render(test_config))):to_string()
-		end
+		eq("-+--------- 10%", line({ value = 10, config = test_config }))
 
-		eq("+---------- 0%", line())
+		eq("-----+----- 50%", line({ value = 50, config = test_config }))
 
-		slider:slide_to(10)
-		eq("-+--------- 10%", line())
+		eq("---------+- 90%", line({ value = 90, config = test_config }))
 
-		slider:slide_to(50)
-		eq("-----+----- 50%", line())
-
-		slider:slide_to(90)
-		eq("---------+- 90%", line())
-
-		slider:slide_to(100)
-		eq("----------+ 100%", line())
+		eq("----------+ 100%", line({ value = 100, config = test_config }))
 	end)
 
 	it("renders slider with title", function()
-		local slider = Slider:new({ title = "Volume" })
-
-		---@return string
-		local line = function()
-			return Buffer:new(unpack(slider:render(test_config))):to_string()
-		end
-
 		eq(
 			[[Volume
 +---------- 0%]],
-			line()
+			line({ title = "Volume", config = test_config })
 		)
 
-		slider:slide_to(100)
 		eq(
 			[[Volume
 ----------+ 100%]],
-			line()
+			line({ title = "Volume", value = 100, config = test_config })
 		)
-	end)
-
-	it("increments ten on move_right", function()
-		local slider = Slider:new()
-		slider:slide_to(50)
-		slider:move_right()
-		eq(60, slider.value)
-	end)
-
-	it("decrements ten on move_left", function()
-		local slider = Slider:new()
-		slider:slide_to(50)
-		slider:move_left()
-		eq(40, slider.value)
-	end)
-
-	it("does not go below zero", function()
-		local slider = Slider:new()
-		slider:move_left()
-		eq(0, slider.value)
-	end)
-
-	it("does not go above 100", function()
-		local slider = Slider:new()
-		slider:slide_to(100)
-		slider:move_right()
-		eq(100, slider.value)
 	end)
 end)

@@ -5,6 +5,7 @@ local ui = require("ascii-ui")
 local Options = require("ascii-ui.components.select")
 local it = require("plenary.async.tests").it
 local Paragraph = ui.components.paragraph
+local Silder = ui.components.slider
 local useState = require("ascii-ui.hooks.use_state")
 
 local function feed(keys)
@@ -56,10 +57,10 @@ describe("ascii-ui", function()
 
 	describe("sliders", function()
 		it("silders slide", function()
-			local bufnr = ui.mount(ui.layout:new(
+			local bufnr = ui.mount(ui.layout.fun(
 				--
-				ui.components.slider:new(),
-				ui.components.slider:new()
+				Slider(),
+				Slider()
 			))
 
 			assert(buffer_contains(bufnr, "0%"))
