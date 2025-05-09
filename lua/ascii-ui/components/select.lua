@@ -30,7 +30,7 @@ local function from(option_names)
 end
 
 --- @param props ascii-ui.SelectComponentOpts
-function Select(props)
+local function Select(props)
 	local options, dispatch = useReducer(function(options, action)
 		local new_options = options
 		if action.type == "select" then
