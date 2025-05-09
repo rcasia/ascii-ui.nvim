@@ -1,5 +1,6 @@
 pcall(require, "luacov")
 local create_dummy_component = require("tests.util.dummy_component")
+local DummyComponent = require("tests.util.dummy_functional_component")
 local eq = assert.are.same
 
 local Layout = require("ascii-ui.layout")
@@ -9,14 +10,14 @@ describe("Layout", function()
 	it("render components in layout vertical by default", function()
 		local layout = Layout.fun(
 			--
-			create_dummy_component().fun(),
-			create_dummy_component().fun()
+			DummyComponent(),
+			DummyComponent()
 		)
 
 		eq({
-			"dummy_render",
+			"dummy_render 1",
 			"",
-			"dummy_render",
+			"dummy_render 2",
 		}, Buffer:new(unpack(layout())):to_lines())
 	end)
 
