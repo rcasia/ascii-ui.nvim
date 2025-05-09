@@ -12,9 +12,10 @@ local ComponentCreator = {}
 ComponentCreator.components = {}
 
 --- Crea un componente personalizado y lo registra
+--- @generic T: function
 --- @param name string Nombre del componente
---- @param renderFunction ascii-ui.FunctionalComponent: table (La función que define el componente)
---- @return function: function (El closure que renderiza el componente)
+--- @param renderFunction T
+--- @return T: function (El closure que renderiza el componente)
 function ComponentCreator.createComponent(name, renderFunction)
 	-- Validar que el nombre sea único
 	if ComponentCreator.components[name] then
