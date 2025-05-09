@@ -7,7 +7,7 @@ local createComponent = require("ascii-ui.components.functional-component")
 
 --- @type ascii-ui.FunctionalComponent<ascii-ui.ButtonComponent.Props>
 --- @return ascii-ui.Renderable
-function Button(props)
+local function Button(props)
 	return function()
 		local label = type(props.label) == "function" and props.label() or props.label
 		return {

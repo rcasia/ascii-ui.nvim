@@ -1,5 +1,4 @@
 local Component = require("ascii-ui.components.component")
-local BufferLine = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 
 ---@class ascii-ui.Checkbox : ascii-ui.Component

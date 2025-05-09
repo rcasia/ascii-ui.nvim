@@ -1,4 +1,3 @@
-local interaction_type = require("ascii-ui.interaction_type")
 ---@class ascii-ui.UserInteractions
 ---@field private singleton_instance ascii-ui.UserInteractions | nil
 ---@field private buffers table<integer, ascii-ui.Buffer>

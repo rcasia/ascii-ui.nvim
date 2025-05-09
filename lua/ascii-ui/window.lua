@@ -1,5 +1,3 @@
-local logger = require("ascii-ui.logger")
-
 local highlights = require("ascii-ui.highlights")
 ---@alias ascii-ui.WindowOpts { width?: integer, height?: integer }
 

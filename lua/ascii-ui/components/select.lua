@@ -55,8 +55,7 @@ local function Select(props)
 		logger.info("Rendering select with options: " .. vim.inspect(o))
 		local bufferlines = vim.iter(o)
 			:map(function(option)
-				local content = ""
-				local highlight
+				local content, highlight
 
 				if option.selected then
 					content = ("[x] %s"):format(option.name)

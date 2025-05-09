@@ -19,7 +19,7 @@ local create_dummy_component = function()
 		self.dummy_check = not self.dummy_check
 	end
 
-	function DummyComponent:render()
+	function DummyComponent.render()
 		return { BufferLine:new(Element:new("dummy_render")) }
 	end
 

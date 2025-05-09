@@ -216,8 +216,8 @@ describe("buffer", function()
 
 		it("returns nil when not found", function()
 			local b = Buffer:new(
+				--
 				BufferLine:new(Element:new("some element A")),
-				BufferLine:new(element_before_target, target_a),
 				BufferLine:new(Element:new("some element C"))
 			)
 
