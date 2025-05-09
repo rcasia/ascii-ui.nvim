@@ -3,21 +3,25 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 local useReducer = require("ascii-ui.hooks.use_reducer")
+local EventListener = require("ascii-ui.events")
 
 describe("useReducer", function()
-	it("useReducer", function()
+	it("just works", function()
 		local reducer = function(state, action)
-			if action == "increment" then
-				state = state + 1
+			if action.type == "increment" then
+				state.value = state.value + 1
 			end
 
 			return state
 		end
-		local counter, dispatch = useReducer(reducer, 0)
+		local my_obj = { value = 0 }
+		local counter, dispatch = useReducer(reducer, my_obj)
 
-		eq(0, counter())
+		eq(my_obj, counter())
 
-		dispatch("increment")
-		eq(1, counter())
+		EventListener:listen("state_change", function()
+			eq({ value = 1 }, counter())
+		end)
+		dispatch({ type = "increment" })
 	end)
 end)
