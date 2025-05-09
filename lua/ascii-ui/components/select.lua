@@ -48,6 +48,9 @@ function Select(props)
 				return Element:new(content, true, {
 					[interation_type.SELECT] = function()
 						setSelectedId(option.id)
+						if props.on_select then
+							props.on_select(option.name)
+						end
 					end,
 				}, highlight)
 			end)

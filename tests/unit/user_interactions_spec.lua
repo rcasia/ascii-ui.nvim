@@ -20,7 +20,7 @@ describe("UserInteractions", function()
 		local buffer_id = 1
 
 		local buffer = Buffer:new(Bufferline:new(Element:new("my text here", false, {
-			on_select = function()
+			SELECT = function()
 				has_called.on_select = true
 			end,
 			on_hover = function()
