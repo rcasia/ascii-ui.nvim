@@ -50,7 +50,7 @@ local function render(props)
 end
 
 --- @param props? { title?: string, value?: integer, config?: ascii-ui.Config }
-function Slider(props)
+local function Slider(props)
 	return function()
 		props = props or {}
 		props.value = props.value or 0

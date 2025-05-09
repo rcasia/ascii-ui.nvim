@@ -5,7 +5,7 @@ local ui = require("ascii-ui")
 local Options = require("ascii-ui.components.select")
 local it = require("plenary.async.tests").it
 local Paragraph = ui.components.paragraph
-local Silder = ui.components.slider
+local Slider = ui.components.slider
 local useState = require("ascii-ui.hooks.use_state")
 
 local function feed(keys)
@@ -58,7 +58,7 @@ describe("ascii-ui", function()
 			local bufnr = ui.mount(ui.layout.fun(
 				--
 				Slider(),
-				Slider()
+				Slider({ _id = 1 }) -- FIX: when two components have the same parameters they share state, which is bad
 			))
 
 			assert(buffer_contains(bufnr, "0%"))
