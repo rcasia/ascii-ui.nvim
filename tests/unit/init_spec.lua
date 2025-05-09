@@ -17,8 +17,7 @@ end
 describe("ascii-ui", function()
 	it("ui.render() should render component", function()
 		local expected_msg = "Hello World!"
-		local component = Box:new()
-		component:set_child(expected_msg)
+		local component = Box({ content = expected_msg })
 
 		vim.schedule(function()
 			local bufnr = ui.mount(component)
