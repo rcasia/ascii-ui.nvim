@@ -1,3 +1,5 @@
+local logger = require("ascii-ui.logger")
+
 local highlights = require("ascii-ui.highlights")
 ---@alias ascii-ui.WindowOpts { width?: integer, height?: integer }
 
@@ -84,6 +86,10 @@ end
 
 ---@param buffer ascii-ui.Buffer
 function Window:update(buffer)
+	if not self:is_open() then
+		logger.error("Window is not open")
+		return
+	end
 	vim.schedule(function()
 		-- buffer content
 		vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
