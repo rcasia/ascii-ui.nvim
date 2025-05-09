@@ -87,8 +87,7 @@ end
 ---@param buffer ascii-ui.Buffer
 function Window:update(buffer)
 	if not self:is_open() then
-		logger.error("Window is not open")
-		return
+		error("Window is not open")
 	end
 	vim.schedule(function()
 		-- buffer content

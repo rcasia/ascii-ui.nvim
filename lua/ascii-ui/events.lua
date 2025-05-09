@@ -1,3 +1,5 @@
+local logger = require("ascii-ui.logger")
+
 --- @class ascii-ui.Events
 local EventListenter = {}
 
@@ -21,7 +23,10 @@ function EventListenter:trigger(ev_type)
 	end
 
 	for _, fn in ipairs(self[ev_type]) do
-		fn()
+		local ok, err = pcall(fn)
+		if not ok then
+			logger.error("Error while executing event listener " .. ev_type .. ": " .. err)
+		end
 	end
 end
 
