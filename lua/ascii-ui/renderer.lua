@@ -22,6 +22,9 @@ function Renderer:render(component)
 	if vim.isarray(component) then
 		return Buffer:new(unpack(component))
 	end
+	if type(component) == "function" then
+		return Buffer:new(unpack(component()))
+	end
 
 	-- TODO:retire this custom render
 	if component.type == "box" then

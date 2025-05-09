@@ -17,19 +17,16 @@ M.components = components
 --- This contains the layout class
 M.layout = Layout
 
----@param layout ascii-ui.Component | fun(): ascii-ui.BufferLine[]
+---@param component ascii-ui.FunctionalComponent
 ---@return integer bufnr
-function M.mount(layout)
+function M.mount(component)
 	logger.set_level("DEBUG")
-	local _layout
-	if type(layout) == "function" then
-		_layout = layout
-		layout = layout()
+	if type(component) ~= "function" then
+		error("should be a functional component")
 	end
-	local is_component = layout.__name ~= nil
 
 	-- does first render
-	local rendered_buffer = ascii_renderer:render(layout)
+	local rendered_buffer = ascii_renderer:render(component())
 
 	-- spawns a window
 	local window = Window:new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
@@ -38,18 +35,11 @@ function M.mount(layout)
 	-- updates the window with the rendered buffer
 	window:update(rendered_buffer)
 
-	if is_component then
-		-- subsequent renders triggered by data changes on component
-		layout:on_change(function()
-			rendered_buffer = ascii_renderer:render(layout) -- assign variable to have change the referenced value
-			window:update(rendered_buffer)
-		end)
-	else
-		EventListener:listen("state_change", function()
-			rendered_buffer = ascii_renderer:render(_layout()) -- assign variable to have change the referenced value
-			window:update(rendered_buffer)
-		end)
-	end
+	EventListener:listen("state_change", function()
+		logger.info("Triggerd render by state_change")
+		rendered_buffer = ascii_renderer:render(component()) -- assign variable to have change the referenced value
+		window:update(rendered_buffer)
+	end)
 
 	-- binds to user interaction
 	user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
@@ -140,12 +130,6 @@ function M.mount(layout)
 			user_interations:instance():detach_buffer(window.bufnr)
 			vim.on_key(nil, window.ns_id)
 			logger.info("Detached buffer from user interactions")
-
-			-- destroy our component
-			if is_component then
-				layout:destroy()
-				logger.info("Destroyed component")
-			end
 
 			window:close()
 			logger.info("Closed window")
