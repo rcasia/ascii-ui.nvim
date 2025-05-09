@@ -20,9 +20,12 @@ return {
 ```lua
 
 local ui = require("ascii-ui")
+local Layout = ui.layout.fun
+local Select = ui.components.select
+local Slider = ui.components.slider
 
-ui.mount(ui.layout:new(
- ui.components.options:new({
+ui.mount(Layout(
+ Select({
   title = "Project",
   options = {
    "Gradle - Groovy",
@@ -30,7 +33,7 @@ ui.mount(ui.layout:new(
    "Maven",
   },
  }),
- ui.components.options:new({
+ Select({
   title = "Language",
   options = {
    "Java",
@@ -38,7 +41,7 @@ ui.mount(ui.layout:new(
    "Groovy",
   },
  }),
- ui.components.options:new({
+ Select({
   title = "Spring Boot",
   options = {
    "3.5.0 (SNAPSHOT)",
@@ -46,7 +49,7 @@ ui.mount(ui.layout:new(
    "3.3.10",
   },
  }),
- ui.components.slider:new(50)
+ Slider({ value = 50 })
 ))
 
 ```
