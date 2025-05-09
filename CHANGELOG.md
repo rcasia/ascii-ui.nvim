@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.1.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.0.1...v0.1.0) (2025-05-09)
+
+
+### Features
+
+* add logo ([80560b5](https://github.com/rcasia/ascii-ui.nvim/commit/80560b54ca3ff7782f872071709df2c691ff030d))
+* add simple logger ([b5319d8](https://github.com/rcasia/ascii-ui.nvim/commit/b5319d8130cddd28b833739ba80ba48b5d9cc793))
+* **button:** add on_press function ([41ad7f0](https://github.com/rcasia/ascii-ui.nvim/commit/41ad7f0d8ff34b1ac0b3f2b05501d5dc7e15a3bb))
+* **button:** better buttom colors ([ebf45f4](https://github.com/rcasia/ascii-ui.nvim/commit/ebf45f4287d487afec42c340200fc1694fc784be))
+* **button:** create new button component ([f00fc30](https://github.com/rcasia/ascii-ui.nvim/commit/f00fc30f5ce8af6b1ed408acb1b51b05948a2b39))
+* **button:** expose button component ([3ed2f5e](https://github.com/rcasia/ascii-ui.nvim/commit/3ed2f5e00865dd9e369351a095f2955638550ca2))
+* **button:** make it a focusable element ([1887660](https://github.com/rcasia/ascii-ui.nvim/commit/188766019b8a6691e859227499835c2a3b82f847))
+* **button:** render button with colored background ([48fa65b](https://github.com/rcasia/ascii-ui.nvim/commit/48fa65b3361b18edce3dbddcb47dbf0b4745543b))
+* **component:** removes on_change callback when it fails ([927cc22](https://github.com/rcasia/ascii-ui.nvim/commit/927cc2243942466db7a5ae0e207a7dc3441192ed))
+* ensure the log dir exists ([71c77fb](https://github.com/rcasia/ascii-ui.nvim/commit/71c77fb9985594b48476e45b8d0a3b544cfef565))
+* expose public components through api ([5121b0b](https://github.com/rcasia/ascii-ui.nvim/commit/5121b0b4bddef99064a1f2354672476bd2fa70b4))
+* **options:** accepts on_select function on creation ([d1080bc](https://github.com/rcasia/ascii-ui.nvim/commit/d1080bc228e7919ed87f86e4394fd52454e45f6b))
+* **options:** add on_select method for easier user interaction handling ([466cc55](https://github.com/rcasia/ascii-ui.nvim/commit/466cc55fa820c20b6b8a99251a4f108237cea85b))
+* **paragraph:** create paragraph component ([e6b4739](https://github.com/rcasia/ascii-ui.nvim/commit/e6b47391b1268e4e5f359df9c02d08ed3a59cb35))
+* **slider:** render slider with title ([89b42f2](https://github.com/rcasia/ascii-ui.nvim/commit/89b42f277111cc8b011bf571ad82d4f5d99559cf))
+* **state:** introduce global state handler ([8b8efd9](https://github.com/rcasia/ascii-ui.nvim/commit/8b8efd98fa03f0cdc0a37326586514f9b7a33fe8))
+
+
+### Bug Fixes
+
+* calculate next position from the next column in the same line ([d4c6996](https://github.com/rcasia/ascii-ui.nvim/commit/d4c6996e14bd07331413aa63c4a82c99adad67aa))
+* **component:** pass state change params ([b862296](https://github.com/rcasia/ascii-ui.nvim/commit/b86229618378c0930b55b2ca8a82c2fcbba67f11))
+* **docstring:** ignore diagnostic for inject-field ([7de36ce](https://github.com/rcasia/ascii-ui.nvim/commit/7de36ce2d349af905e965e0e35a6cc457cfa7210))
+* **layout:** rename subscribe -&gt; on_change ([270720d](https://github.com/rcasia/ascii-ui.nvim/commit/270720d9aacf469110a9edff72db58dbefcaa1e3))
+* move just one focusable down at a time ([b0fdfc3](https://github.com/rcasia/ascii-ui.nvim/commit/b0fdfc3c9efb2dff5033e1e1238ef89775d831af))
+* write logs into the plugin data folder ([79c7353](https://github.com/rcasia/ascii-ui.nvim/commit/79c73532d11d695f454b75e4eacd0df191f3a3a0))
+
 ## [0.0.1](https://github.com/rcasia/ascii-ui.nvim/compare/v0.0.0...v0.0.1) (2025-04-03)
 
 
