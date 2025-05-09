@@ -1,7 +1,7 @@
 local ui = require("ascii-ui")
-local Paragraph = ui.components.paragraph
+local Paragraph = ui.components.Paragraph
 local Layout = ui.layout.fun
-local Button = ui.components.button
+local Button = ui.components.Button
 local useState = ui.hooks.useState
 
 --- @type ascii-ui.FunctionalComponent

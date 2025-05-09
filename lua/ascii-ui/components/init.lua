@@ -1,8 +1,8 @@
 local Components = {
-	select = require("ascii-ui.components.select"),
-	slider = require("ascii-ui.components.slider"),
-	paragraph = require("ascii-ui.components.paragraph"),
-	button = require("ascii-ui.components.button"),
+	Select = require("ascii-ui.components.select"),
+	Slider = require("ascii-ui.components.slider"),
+	Paragraph = require("ascii-ui.components.paragraph"),
+	Button = require("ascii-ui.components.button"),
 }
 
 return Components
