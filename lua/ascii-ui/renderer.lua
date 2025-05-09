@@ -32,9 +32,6 @@ function Renderer:render(component)
 	end
 	assert(component.render)
 
-	if component.__name == "Layout" then
-		return component:render()
-	end
 	return Buffer:new(unpack(component:render()))
 end
 
