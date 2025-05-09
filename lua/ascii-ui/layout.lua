@@ -1,5 +1,4 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
-local createComponent = require("ascii-ui.components.functional-component").createComponent
 
 --- @param ... fun(): ascii-ui.BufferLine[]
 --- @return fun(): ascii-ui.BufferLine[]

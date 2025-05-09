@@ -1,5 +1,5 @@
 local Element = require("ascii-ui.buffer.element")
-local createComponent = require("ascii-ui.components.functional-component").createComponent
+local createComponent = require("ascii-ui.components.functional-component")
 
 --- @alias ascii-ui.ParagraphComponent.Props { content?: ascii-ui.ComponentProp<string> }
 

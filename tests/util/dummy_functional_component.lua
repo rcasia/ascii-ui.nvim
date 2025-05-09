@@ -2,7 +2,7 @@ local BufferLine = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 local useState = require("ascii-ui.hooks.use_state")
 
-local createComponent = require("ascii-ui.components.functional-component").createComponent
+local createComponent = require("ascii-ui.components.functional-component")
 
 ---@return fun(): ascii-ui.BufferLine[]
 local function DummyComponent()

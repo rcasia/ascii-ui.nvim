@@ -1,7 +1,7 @@
 local Element = require("ascii-ui.buffer.element")
 local highlights = require("ascii-ui.highlights")
 local interaction_type = require("ascii-ui.interaction_type")
-local createComponent = require("ascii-ui.components.functional-component").createComponent
+local createComponent = require("ascii-ui.components.functional-component")
 
 --- @alias ascii-ui.ButtonComponent.Props { label: string, on_press?: fun() }
 
