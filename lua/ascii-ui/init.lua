@@ -5,6 +5,7 @@ local config = require("ascii-ui.config")
 local Layout = require("ascii-ui.layout")
 local components = require("ascii-ui.components")
 local logger = require("ascii-ui.logger")
+local EventListener = require("ascii-ui.events")
 
 local M = {}
 
@@ -16,14 +17,16 @@ M.components = components
 --- This contains the layout class
 M.layout = Layout
 
----@param layout ascii-ui.Layout | ascii-ui.Component
+---@param component ascii-ui.FunctionalComponent
 ---@return integer bufnr
-function M.mount(layout)
+function M.mount(component)
 	logger.set_level("DEBUG")
-	logger.info("Mounting layout/component " .. layout.__name)
+	if type(component) ~= "function" then
+		error("should be a functional component")
+	end
 
 	-- does first render
-	local rendered_buffer = ascii_renderer:render(layout)
+	local rendered_buffer = ascii_renderer:render(component())
 
 	-- spawns a window
 	local window = Window:new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
@@ -32,9 +35,9 @@ function M.mount(layout)
 	-- updates the window with the rendered buffer
 	window:update(rendered_buffer)
 
-	-- subsequent renders triggered by data changes on component
-	layout:on_change(function()
-		rendered_buffer = ascii_renderer:render(layout) -- assign variable to have change the referenced value
+	EventListener:listen("state_change", function()
+		logger.info("Triggerd render by state_change")
+		rendered_buffer = ascii_renderer:render(component()) -- assign variable to have change the referenced value
 		window:update(rendered_buffer)
 	end)
 
@@ -127,10 +130,6 @@ function M.mount(layout)
 			user_interations:instance():detach_buffer(window.bufnr)
 			vim.on_key(nil, window.ns_id)
 			logger.info("Detached buffer from user interactions")
-
-			-- destroy our component
-			layout:destroy()
-			logger.info("Destroyed component")
 
 			window:close()
 			logger.info("Closed window")

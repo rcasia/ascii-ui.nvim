@@ -1,41 +1,26 @@
-local Component = require("ascii-ui.components.component")
-local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 local highlights = require("ascii-ui.highlights")
 local interaction_type = require("ascii-ui.interaction_type")
+local createComponent = require("ascii-ui.components.functional-component").createComponent
 
 --- @alias ascii-ui.ButtonComponent.Props { label: string, on_press?: fun() }
 
----@class ascii-ui.ButtonComponent : ascii-ui.Component
---- @field label string
---- @field private on_press function
-local Button = {
-	__name = "ButtonComponent",
-}
-
----@param props ascii-ui.ButtonComponent.Props
----@return ascii-ui.ButtonComponent
-function Button:new(props)
-	props = props or {}
-	local state = {
-		label = props.label or "",
-		on_press = props.on_press,
-	}
-	return Component:extend(self, state)
+--- @type ascii-ui.FunctionalComponent<ascii-ui.ButtonComponent.Props>
+--- @return ascii-ui.Renderable
+function Button(props)
+	return function()
+		local label = type(props.label) == "function" and props.label() or props.label
+		return {
+			Element:new({
+				content = label,
+				highlight = highlights.BUTTON,
+				is_focusable = true,
+				interactions = {
+					[interaction_type.SELECT] = props.on_press,
+				},
+			}):wrap(),
+		}
+	end
 end
 
----@return ascii-ui.BufferLine[]
-function Button:render()
-	return {
-		Element:new({
-			content = self.label,
-			highlight = highlights.BUTTON,
-			is_focusable = true,
-			interactions = {
-				[interaction_type.SELECT] = self.on_press,
-			},
-		}):wrap(),
-	}
-end
-
-return Button
+return createComponent("Button", Button)

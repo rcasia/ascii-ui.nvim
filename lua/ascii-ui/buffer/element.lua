@@ -1,10 +1,10 @@
 local interaction_type = require("ascii-ui.interaction_type")
 
----@alias ascii-ui.ElementProps { content: string, is_focusable?: boolean, interactions?: table<string, function>, highlight?: string }
+---@alias ascii-ui.ElementProps { content: string, is_focusable?: boolean, interactions?: table<ascii-ui.UserInteractions.InteractionType, function>, highlight?: string }
 
 ---@class ascii-ui.Element
 ---@field content string
----@field interactions table<string, function>
+---@field interactions table<ascii-ui.UserInteractions.InteractionType, function>
 ---@field highlight? string
 ---@field private focusable boolean
 local Element = {}

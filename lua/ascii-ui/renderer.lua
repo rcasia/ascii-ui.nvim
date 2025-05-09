@@ -16,9 +16,16 @@ function Renderer:new(config)
 	return state
 end
 
----@param component ascii-ui.Component
+---@param component ascii-ui.Component | ascii-ui.BufferLine[]
 ---@return ascii-ui.Buffer
 function Renderer:render(component)
+	if vim.isarray(component) then
+		return Buffer:new(unpack(component))
+	end
+	if type(component) == "function" then
+		return Buffer:new(unpack(component()))
+	end
+
 	-- TODO:retire this custom render
 	if component.type == "box" then
 		return Buffer.from_lines(self:render_box(component))

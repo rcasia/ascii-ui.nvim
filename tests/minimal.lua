@@ -33,4 +33,8 @@ vim.cmd([[
 require("plenary.busted")
 
 vim.cmd("runtime plugin/plenary.vim")
+
+local logger = require("ascii-ui.logger")
+logger.set_level("DEBUG")
+
 return M
