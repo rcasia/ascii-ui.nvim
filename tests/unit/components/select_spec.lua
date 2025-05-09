@@ -28,6 +28,17 @@ describe("SelectComponent", function()
 		eq(Hightlights.SELECTION, selected_element.highlight)
 		eq(nil, Buffer:new(unpack(options())):find_element_by_position({ line = 2, col = 1 }).highlight)
 		eq(nil, Buffer:new(unpack(options())):find_element_by_position({ line = 3, col = 1 }).highlight)
+
+		local second_selected_element =
+			assert(Buffer:new(unpack(options())):find_element_by_position({ line = 2, col = 1 }))
+
+		second_selected_element.interactions["SELECT"]()
+
+		-- Re-renderiza para reflejar el nuevo estado
+		local new_render = Buffer:new(unpack(options()))
+
+		local newly_selected = assert(new_render:find_element_by_position({ line = 2, col = 1 }))
+		eq(Hightlights.SELECTION, newly_selected.highlight)
 	end)
 
 	it("uses the user defined function on select", function()
