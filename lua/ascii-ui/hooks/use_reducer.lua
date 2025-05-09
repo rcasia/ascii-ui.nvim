@@ -9,11 +9,10 @@ local useState = require("ascii-ui.hooks.use_state")
 local useReducer = function(reducer, value)
 	local state, setState = useState(value)
 
-	return state,
-		function(action)
-			local new_state = reducer(state(), action)
-			setState(new_state)
-		end
+	return state, function(action)
+		local new_state = reducer(state(), action)
+		setState(new_state)
+	end
 end
 
 return useReducer
