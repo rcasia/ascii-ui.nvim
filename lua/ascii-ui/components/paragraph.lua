@@ -1,6 +1,7 @@
 local Component = require("ascii-ui.components.component")
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
+local createComponent = require("ascii-ui.components.functional-component").createComponent
 
 --- @alias ascii-ui.ParagraphComponent.Props { content?: ascii-ui.ComponentProp<string> }
 
@@ -30,4 +31,4 @@ function Paragraph.fun(props)
 	end
 end
 
-return Paragraph.fun
+return createComponent("Paragraph", Paragraph.fun)

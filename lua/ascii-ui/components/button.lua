@@ -1,8 +1,7 @@
-local Component = require("ascii-ui.components.component")
-local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 local highlights = require("ascii-ui.highlights")
 local interaction_type = require("ascii-ui.interaction_type")
+local createComponent = require("ascii-ui.components.functional-component").createComponent
 
 --- @alias ascii-ui.ButtonComponent.Props { label: string, on_press?: fun() }
 
@@ -24,4 +23,4 @@ function Button(props)
 	end
 end
 
-return Button
+return createComponent("Button", Button)
