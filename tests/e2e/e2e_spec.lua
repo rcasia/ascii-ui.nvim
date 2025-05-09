@@ -6,8 +6,7 @@ local Options = require("ascii-ui.components.select")
 local it = require("plenary.async.tests").it
 local Paragraph = ui.components.Paragraph
 local Slider = ui.components.Slider
-local useState = require("ascii-ui.hooks.use_state")
-
+local useState = ui.hooks.useState
 local function feed(keys)
 	vim.api.nvim_feedkeys(keys, "mtx", true)
 end
@@ -55,7 +54,7 @@ describe("ascii-ui", function()
 
 	describe("sliders", function()
 		it("silders slide", function()
-			local bufnr = ui.mount(ui.layout.fun(
+			local bufnr = ui.mount(ui.layout(
 				--
 				Slider(),
 				Slider({ _id = 1 }) -- FIX: when two components have the same parameters they share state, which is bad

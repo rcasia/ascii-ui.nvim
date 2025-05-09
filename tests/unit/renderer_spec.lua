@@ -7,7 +7,7 @@ local eq = assert.are.same
 
 local create_dummy_component = require("tests.util.dummy_component")
 local DummyComponent = require("tests.util.dummy_functional_component")
-local Layout = require("ascii-ui.layout").fun
+local Layout = require("ascii-ui.layout")
 
 describe("renderer", function()
 	local config = {
