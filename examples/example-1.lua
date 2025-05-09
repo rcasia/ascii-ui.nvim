@@ -2,7 +2,7 @@ local ui = require("ascii-ui")
 local Paragraph = ui.components.paragraph
 local Layout = ui.layout.fun
 local Button = ui.components.button
-local useState = require("ascii-ui.hooks.use_state")
+local useState = ui.hooks.useState
 
 --- @type ascii-ui.FunctionalComponent
 local function App()
