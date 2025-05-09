@@ -1,5 +1,5 @@
 local ui = require("ascii-ui")
-local Layout = ui.layout.fun
+local Layout = ui.layout
 local Select = ui.components.Select
 local Slider = ui.components.Slider
 
