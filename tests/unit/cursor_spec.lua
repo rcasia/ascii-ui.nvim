@@ -2,6 +2,8 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local Cursor = require("ascii-ui.cursor")
+local EventListener = require("ascii-ui.events")
+
 local eq = assert.are.same
 
 local mocked_cursor_position = { line = 1, col = 1 }
@@ -16,45 +18,62 @@ describe("Cursor", function()
 	after_each(function()
 		-- Cleanup code after each test
 		Cursor._current_position = require("ascii-ui.cursor")._current_position
+		EventListener:clear()
 	end)
 
 	it("detects south movement", function()
+		local event_recieved = false
+		EventListener:listen("CursorMovedSouth", function()
+			event_recieved = true
+		end)
 		mocked_cursor_position = { line = 1, col = 1 }
 		Cursor.trigger_move_event()
 
 		mocked_cursor_position = { line = 2, col = 1 }
 		Cursor.trigger_move_event()
 
-		eq(Cursor.DIRECTION.SOUTH, Cursor.last_movement_direction())
+		eq(true, event_recieved)
 	end)
 
 	it("detects north movement", function()
+		local event_recieved = false
+		EventListener:listen("CursorMovedNorth", function()
+			event_recieved = true
+		end)
 		mocked_cursor_position = { line = 2, col = 1 }
 		Cursor.trigger_move_event()
 
 		mocked_cursor_position = { line = 1, col = 1 }
 		Cursor.trigger_move_event()
 
-		eq(Cursor.DIRECTION.NORTH, Cursor.last_movement_direction())
+		eq(true, event_recieved)
 	end)
 
 	it("detects EAST movement", function()
+		local event_recieved = false
+		EventListener:listen("CursorMovedEast", function()
+			event_recieved = true
+		end)
 		mocked_cursor_position = { line = 1, col = 1 }
 		Cursor.trigger_move_event()
 
 		mocked_cursor_position = { line = 1, col = 2 }
 		Cursor.trigger_move_event()
 
-		eq(Cursor.DIRECTION.EAST, Cursor.last_movement_direction())
+		eq(true, event_recieved)
 	end)
 
 	it("detects WEST movement", function()
+		local event_recieved = false
+		EventListener:listen("CursorMovedWest", function()
+			event_recieved = true
+		end)
 		mocked_cursor_position = { line = 1, col = 2 }
 		Cursor.trigger_move_event()
 
 		mocked_cursor_position = { line = 1, col = 1 }
 		Cursor.trigger_move_event()
 
-		eq(Cursor.DIRECTION.WEST, Cursor.last_movement_direction())
+		eq(true, event_recieved)
 	end)
 end)

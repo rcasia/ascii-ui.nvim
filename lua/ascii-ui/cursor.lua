@@ -1,5 +1,6 @@
 local logger = require("ascii-ui.logger")
 local nvim_win_get_cursor = vim.api.nvim_win_get_cursor
+local EventListener = require("ascii-ui.events")
 
 --- @class ascii-ui.Cursor
 --- @field buffers table<number, boolean>
@@ -13,6 +14,12 @@ local Cursor = {
 		NORTH = "NORTH",
 		EAST = "EAST",
 		WEST = "WEST",
+	},
+	EVENTS = {
+		SOUTH = "CursorMovedSouth",
+		NORTH = "CursorMovedNorth",
+		EAST = "CursorMovedEast",
+		WEST = "CursorMovedWest",
 	},
 	_current_position = nil,
 	last_position = nil,
@@ -31,6 +38,8 @@ end
 function Cursor.trigger_move_event()
 	Cursor.last_position = Cursor._current_position or Cursor.current_position()
 	Cursor._current_position = Cursor.current_position()
+
+	EventListener:trigger(Cursor.EVENTS[Cursor.last_movement_direction()])
 
 	logger.debug("CursorMoved to %s", vim.inspect(Cursor._current_position))
 end

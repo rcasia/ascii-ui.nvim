@@ -6,6 +6,10 @@ local EventListenter = {}
 --- @enum (key) ascii-ui.EventType
 local EventType = {
 	state_change = "state.change",
+	CursorMovedSouth = "CursorMovedSouth",
+	CursorMovedNorth = "CursorMovedNorth",
+	CursorMovedEast = "CursorMovedEast",
+	CursorMovedWest = "CursorMovedWest",
 }
 
 --- @param ev_type ascii-ui.EventType
