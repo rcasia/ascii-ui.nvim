@@ -10,6 +10,7 @@ local Cursor = {
 	buffers = {},
 	--- @enum (key) ascii-ui.CursorDirection
 	DIRECTION = {
+		NONE = "NONE",
 		SOUTH = "SOUTH",
 		NORTH = "NORTH",
 		EAST = "EAST",
@@ -26,8 +27,8 @@ local Cursor = {
 }
 
 --- @class ascii-ui.CursorPosition
---- @field line number
---- @field col number
+--- @field line integer
+--- @field col integer
 
 --- @return ascii-ui.CursorPosition
 function Cursor.current_position()
@@ -39,6 +40,12 @@ function Cursor.trigger_move_event()
 	Cursor.last_position = Cursor._current_position or Cursor.current_position()
 	Cursor._current_position = Cursor.current_position()
 
+	local last_movement_direction = Cursor.last_movement_direction()
+
+	if last_movement_direction == "NONE" then
+		return
+	end
+
 	EventListener:trigger(Cursor.EVENTS[Cursor.last_movement_direction()])
 
 	logger.debug("CursorMoved to %s", vim.inspect(Cursor._current_position))
@@ -48,6 +55,13 @@ function Cursor.attach_buffer(bufnr)
 	Cursor.buffers[bufnr] = true
 end
 
+--- @param position ascii-ui.CursorPosition
+function Cursor.move_to(position)
+	vim.api.nvim_win_set_cursor(0, { position.line, position.col })
+	Cursor.last_position = Cursor._current_position or Cursor.current_position()
+	Cursor._current_position = Cursor.current_position()
+end
+
 --- @return ascii-ui.CursorDirection
 function Cursor.last_movement_direction()
 	if Cursor.last_position.line == Cursor._current_position.line then
@@ -55,7 +69,11 @@ function Cursor.last_movement_direction()
 			return Cursor.DIRECTION.EAST
 		end
 
-		return Cursor.DIRECTION.WEST
+		if Cursor.last_position.col > Cursor._current_position.col then
+			return Cursor.DIRECTION.WEST
+		end
+
+		return Cursor.DIRECTION.NONE
 	end
 
 	if Cursor.last_position.line > Cursor._current_position.line then
@@ -63,6 +81,10 @@ function Cursor.last_movement_direction()
 	end
 
 	return Cursor.DIRECTION.SOUTH
+end
+
+function Cursor.clear()
+	Cursor.buffers = {}
 end
 
 -- binds to window close event
