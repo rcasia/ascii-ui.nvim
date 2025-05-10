@@ -25,9 +25,15 @@ function EventListenter:trigger(ev_type)
 	for _, fn in ipairs(self[ev_type]) do
 		local ok, err = pcall(fn)
 		if not ok then
-			logger.error("Error while executing event listener " .. ev_type .. ": " .. err)
+			logger.error("Error while executing event listener for [" .. ev_type .. "]: " .. err)
+		else
+			logger.info("function run on " .. ev_type)
 		end
 	end
+end
+
+function EventListenter:clear()
+	self.state_change = nil
 end
 
 return EventListenter

@@ -38,7 +38,7 @@ function M.mount(component)
 	window:update(rendered_buffer)
 
 	EventListener:listen("state_change", function()
-		logger.info("Triggerd render by state_change")
+		logger.info("Rendering triggered by state_change")
 		rendered_buffer = ascii_renderer:render(component()) -- assign variable to have change the referenced value
 		window:update(rendered_buffer)
 	end)
@@ -135,6 +135,9 @@ function M.mount(component)
 
 			window:close()
 			logger.info("Closed window")
+
+			logger.info("Cleared event listeners")
+			EventListener:clear()
 		end,
 	})
 
