@@ -1,3 +1,5 @@
+local logger = require("ascii-ui.logger")
+
 ---@class ascii-ui.UserInteractions
 ---@field private singleton_instance ascii-ui.UserInteractions | nil
 ---@field private buffers table<integer, ascii-ui.Buffer>
@@ -36,7 +38,7 @@ function UserInteractions:interact(opts)
 	local element = buffer:find_element_by_position(opts.position)
 
 	if not element then
-		print("no se encontro el elemento en el buffer" .. vim.inspect(buffer))
+		logger.warn("element not found in buffer" .. vim.inspect(buffer))
 		return -- there is no element to interact with
 	end
 
