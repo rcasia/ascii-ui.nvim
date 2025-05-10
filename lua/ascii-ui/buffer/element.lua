@@ -64,6 +64,10 @@ function Element:is_colored()
 	return self.highlight ~= nil
 end
 
+function Element:is_inputable()
+	return self.interactions[interaction_type.ON_INPUT] ~= nil
+end
+
 --- Wraps the element in a ascii-ui.Bufferline object
 ---@return ascii-ui.BufferLine
 function Element:wrap()

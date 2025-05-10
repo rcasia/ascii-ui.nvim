@@ -10,6 +10,14 @@ return ui.createComponent("Input", function(props)
 	props.value = props.value or ""
 
 	return function()
-		return { Element:new({ content = props.value }):wrap() }
+		return {
+			Element:new({
+				content = props.value,
+				is_focusable = true,
+				interactions = {
+					ON_INPUT = function() end,
+				},
+			}):wrap(),
+		}
 	end
 end)

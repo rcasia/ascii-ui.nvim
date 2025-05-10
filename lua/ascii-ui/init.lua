@@ -4,6 +4,7 @@ local i = require("ascii-ui.interaction_type")
 local config = require("ascii-ui.config")
 local logger = require("ascii-ui.logger")
 local EventListener = require("ascii-ui.events")
+local Cursor = require("ascii-ui.cursor")
 
 local M = {}
 
@@ -143,6 +144,27 @@ function M.mount(component)
 		end,
 	})
 
+	vim.api.nvim_create_autocmd("CursorMoved", {
+		callback = function(args)
+			local win_id = tonumber(args.match)
+
+			if win_id ~= window.winid then
+				return -- not our window
+			end
+
+			logger.debug("hola")
+			local element = rendered_buffer:find_element_by_position(Cursor.current_position())
+			if not element then
+				return
+			end
+
+			if element:is_inputable() then
+				window:enable_edits()
+			else
+				window:disable_edits()
+			end
+		end,
+	})
 	return window.bufnr
 end
 

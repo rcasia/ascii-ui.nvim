@@ -6,6 +6,7 @@ local INTERACTION_TYPE = {
 	CURSOR_MOVE_LEFT = "on_cursor_move_left",
 	CURSOR_MOVE_DOWN = "cursor_move_down",
 	CURSOR_MOVE_UP = "cursor_move_up",
+	ON_INPUT = "ON_INPUT",
 }
 
 return INTERACTION_TYPE

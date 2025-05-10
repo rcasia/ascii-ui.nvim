@@ -32,6 +32,7 @@ function Window:new(opts)
 		bufnr = nil,
 		ns_id = ns_id,
 		opts = opts,
+		edits_enabled = false,
 	}
 
 	setmetatable(state, self)
@@ -69,6 +70,18 @@ function Window:open()
 	self.bufnr = buf
 end
 
+function Window:enable_edits()
+	logger.debug("Window/Buffer edits are enabled")
+	self.edits_enabled = true
+	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
+end
+
+function Window:disable_edits()
+	logger.debug("Window/Buffer edits are disabled")
+	self.edits_enabled = false
+	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+end
+
 ---@return boolean
 function Window:is_open()
 	return self.winid ~= nil and self.bufnr ~= nil
@@ -92,9 +105,14 @@ function Window:update(buffer)
 	end
 	vim.schedule(function()
 		-- buffer content
-		vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
+		if not self.edits_enabled then
+			vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
+		end
 		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer:to_lines())
-		vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+
+		if not self.edits_enabled then
+			vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+		end
 
 		-- resize window
 		vim.api.nvim_win_set_config(self.winid, {
