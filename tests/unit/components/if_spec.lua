@@ -11,11 +11,9 @@ local If = require("ascii-ui.components.if")
 describe("If", function()
 	local component = ui.createComponent("DummyComponent", function(props)
 		props = props or {}
-		local counter, setCounter = ui.hooks.useState(0)
 
 		return function()
-			setCounter(counter() + 1)
-			return { Element:new((props.content or "dummy_render ") .. tostring(counter())):wrap() }
+			return { Element:new(props.content):wrap() }
 		end
 	end)
 
@@ -25,7 +23,7 @@ describe("If", function()
 				return true
 			end,
 
-			child = component,
+			child = component({ content = "dummy_render" }),
 
 			fallback = function() end,
 		})
@@ -34,7 +32,7 @@ describe("If", function()
 		local lines = function()
 			return Buffer:new(unpack(if_component())):to_string()
 		end
-		eq([[dummy_render 1]], lines())
+		eq([[dummy_render]], lines())
 	end)
 
 	it("renders empty when condition is false and there is no fallback", function()
@@ -43,9 +41,7 @@ describe("If", function()
 				return false
 			end,
 
-			child = component,
-
-			fallback = function() end,
+			child = component({ content = "dummy_render" }),
 		})
 
 		---@return string
@@ -53,5 +49,23 @@ describe("If", function()
 			return Buffer:new(unpack(if_component())):to_string()
 		end
 		eq([[]], lines())
+	end)
+
+	it("renders fallback when condition is false", function()
+		local if_component = If({
+			condition = function()
+				return false
+			end,
+
+			child = component(),
+
+			fallback = component({ content = "I am the fallback" }),
+		})
+
+		---@return string
+		local lines = function()
+			return Buffer:new(unpack(if_component())):to_string()
+		end
+		eq([[I am the fallback]], lines())
 	end)
 end)
