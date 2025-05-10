@@ -13,4 +13,4 @@ local function Paragraph(props)
 	end
 end
 
-return createComponent("Paragraph", Paragraph)
+return createComponent("Paragraph", Paragraph, { avoid_memoize = true })

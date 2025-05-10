@@ -56,4 +56,4 @@ local function Box(props)
 	end
 end
 
-return createComponent("Box", Box)
+return createComponent("Box", Box, { avoid_memoize = true })
