@@ -18,7 +18,7 @@ local function App()
 					setContent("changed content")
 				end,
 			})
-		)()
+		)
 	end
 end
 

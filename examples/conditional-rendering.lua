@@ -26,7 +26,7 @@ local function App()
 					setShouldShow(not shouldShow())
 				end,
 			})
-		)()
+		)
 	end
 end
 
