@@ -11,15 +11,13 @@ end
 --- @return fun(): ascii-ui.BufferLine[]
 local function If(props)
 	return function()
+		local fallback = props.fallback or empty
+
 		if props.condition() then
 			return props.child()
 		end
 
-		if not not props.fallback then
-			print("hola desde fallback")
-			return props.fallback()
-		end
-		return empty()
+		return fallback()
 	end
 end
 
