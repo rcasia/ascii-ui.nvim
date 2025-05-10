@@ -96,6 +96,12 @@ function Window:update(buffer)
 		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer:to_lines())
 		vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
 
+		-- resize window
+		vim.api.nvim_win_set_config(self.winid, {
+			width = buffer:width(),
+			height = buffer:height(),
+		})
+
 		-- coloring
 		local function apply_highlight()
 			vim.api.nvim_buf_clear_namespace(self.bufnr, self.ns_id, 0, -1)
