@@ -14,7 +14,7 @@ local components = {}
 --- @generic T: function
 --- @param name string Nombre del componente
 --- @param renderFunction T
---- @param opts { avoid_memoize: boolean}
+--- @param opts? { avoid_memoize: boolean}
 --- @return T: function (El closure que renderiza el componente)
 local function createComponent(name, renderFunction, opts)
 	opts = opts or {}
