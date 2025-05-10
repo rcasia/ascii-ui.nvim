@@ -25,6 +25,7 @@ end
 
 -- Internal function to write a message to file
 local function write_log(level, msg, ...)
+	msg = ... and string.format(msg, ...) or msg
 	if not level or not msg then
 		return
 	end
@@ -33,7 +34,7 @@ local function write_log(level, msg, ...)
 	local file = io.open(log_path, "a")
 	if file then
 		local time = os.date("%Y-%m-%d %H:%M:%S")
-		file:write(string.format("[%s] [%s] %s\n", time, level, string.format(msg, ...)))
+		file:write(string.format("[%s] [%s] %s\n", time, level, msg))
 		file:close()
 	end
 end
