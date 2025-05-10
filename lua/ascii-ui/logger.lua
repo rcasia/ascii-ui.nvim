@@ -11,7 +11,7 @@ local levels = {
 }
 
 -- Set default log level
-M.level = levels.INFO
+M.level = levels.DEBUG
 
 -- Get log file path
 local log_dir = vim.fn.stdpath("data") .. "/ascii-ui"
@@ -24,7 +24,7 @@ local function ensure_log_dir()
 end
 
 -- Internal function to write a message to file
-local function write_log(level, msg)
+local function write_log(level, msg, ...)
 	if not level or not msg then
 		return
 	end
@@ -33,32 +33,32 @@ local function write_log(level, msg)
 	local file = io.open(log_path, "a")
 	if file then
 		local time = os.date("%Y-%m-%d %H:%M:%S")
-		file:write(string.format("[%s] [%s] %s\n", time, level, msg))
+		file:write(string.format("[%s] [%s] %s\n", time, level, string.format(msg, ...)))
 		file:close()
 	end
 end
 
 -- Public log functions
-function M.debug(msg)
+function M.debug(msg, ...)
 	if M.level == levels.DEBUG then
-		write_log(levels.DEBUG, msg)
+		write_log(levels.DEBUG, msg, ...)
 	end
 end
 
-function M.info(msg)
+function M.info(msg, ...)
 	if M.level == levels.DEBUG or M.level == levels.INFO then
-		write_log(levels.INFO, msg)
+		write_log(levels.INFO, msg, ...)
 	end
 end
 
-function M.warn(msg)
+function M.warn(msg, ...)
 	if M.level ~= levels.ERROR then
-		write_log(levels.WARN, msg)
+		write_log(levels.WARN, msg, ...)
 	end
 end
 
-function M.error(msg)
-	write_log(levels.ERROR, msg)
+function M.error(msg, ...)
+	write_log(levels.ERROR, msg, ...)
 end
 
 -- Optional: set log level

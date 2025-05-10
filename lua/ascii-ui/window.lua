@@ -1,3 +1,4 @@
+local logger = require("ascii-ui.logger")
 local highlights = require("ascii-ui.highlights")
 ---@alias ascii-ui.WindowOpts { width?: integer, height?: integer }
 
@@ -84,6 +85,8 @@ end
 
 ---@param buffer ascii-ui.Buffer
 function Window:update(buffer)
+	logger.debug("Updating window with id %s and bufnr %s", self.winid, self.bufnr)
+
 	if not self:is_open() then
 		error("Window is not open")
 	end

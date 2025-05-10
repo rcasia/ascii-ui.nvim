@@ -1,7 +1,6 @@
 local Element = require("ascii-ui.buffer.element")
 local highlights = require("ascii-ui.highlights")
 local interation_type = require("ascii-ui.interaction_type")
-local logger = require("ascii-ui.logger")
 
 local useReducer = require("ascii-ui.hooks.use_reducer")
 local createComponent = require("ascii-ui.components.functional-component")
@@ -44,16 +43,11 @@ local function Select(props)
 				end)
 				:totable()
 		end
-		logger.info("Dispatching action: " .. vim.inspect(action))
-		logger.info("Old options: " .. vim.inspect(options))
-		logger.info("New options: " .. vim.inspect(new_options))
 		return new_options
 	end, from(props.options))
 
 	return function()
-		local o = options()
-		logger.info("Rendering select with options: " .. vim.inspect(o))
-		local bufferlines = vim.iter(o)
+		local bufferlines = vim.iter(options())
 			:map(function(option)
 				local content, highlight
 
@@ -64,12 +58,8 @@ local function Select(props)
 					content = ("[ ] %s"):format(option.name)
 				end
 
-				logger.info("rendering option" .. vim.inspect(option) .. " with highlight" .. vim.inspect(highlight))
-
 				return Element:new(content, true, {
 					[interation_type.SELECT] = function()
-						logger.info("selected option" .. vim.inspect(option))
-
 						if props.on_select then
 							props.on_select(option.name)
 						end

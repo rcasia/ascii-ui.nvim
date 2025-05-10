@@ -22,7 +22,9 @@ M.layout = require("ascii-ui.layout")
 ---@param component ascii-ui.FunctionalComponent
 ---@return integer bufnr
 function M.mount(component)
-	logger.set_level("DEBUG")
+	logger.info("------------------")
+	logger.info("Mounting component")
+	logger.info("------------------")
 	if type(component) ~= "function" then
 		error("should be a functional component")
 	end
@@ -147,6 +149,7 @@ end
 setmetatable(M, {
 	__call = function(_, opts)
 		opts = opts or {}
+
 		return M
 	end,
 })
