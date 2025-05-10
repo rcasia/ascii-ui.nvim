@@ -18,8 +18,8 @@ describe("If", function()
 			return { Element:new((props.content or "dummy_render ") .. tostring(counter())):wrap() }
 		end
 	end)
-	it("should render", function()
-		local content = "hello world!"
+
+	it("renders child component when condition is true", function()
 		local if_component = If({
 			condition = function()
 				return true
@@ -27,9 +27,7 @@ describe("If", function()
 
 			child = component,
 
-			fallback = function()
-				return "fallback"
-			end,
+			fallback = function() end,
 		})
 
 		---@return string
@@ -37,5 +35,23 @@ describe("If", function()
 			return Buffer:new(unpack(if_component())):to_string()
 		end
 		eq([[dummy_render 1]], lines())
+	end)
+
+	it("renders empty when condition is false and there is no fallback", function()
+		local if_component = If({
+			condition = function()
+				return false
+			end,
+
+			child = component,
+
+			fallback = function() end,
+		})
+
+		---@return string
+		local lines = function()
+			return Buffer:new(unpack(if_component())):to_string()
+		end
+		eq([[]], lines())
 	end)
 end)

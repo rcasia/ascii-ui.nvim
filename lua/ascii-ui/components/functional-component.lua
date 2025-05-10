@@ -14,8 +14,11 @@ local components = {}
 --- @generic T: function
 --- @param name string Nombre del componente
 --- @param renderFunction T
+--- @param opts { avoid_memoize: boolean}
 --- @return T: function (El closure que renderiza el componente)
-local function createComponent(name, renderFunction)
+local function createComponent(name, renderFunction, opts)
+	opts = opts or {}
+
 	-- Validar que el nombre sea único
 	if components[name] then
 		logger.error(("El componente con nombre '%s' ya está registrado."):format(name))
@@ -31,6 +34,10 @@ local function createComponent(name, renderFunction)
 		__call = function(_, props)
 			local factory = function()
 				return renderFunction(props)
+			end
+
+			if opts.avoid_memoize then
+				return factory()
 			end
 
 			return memoize(factory, props)
