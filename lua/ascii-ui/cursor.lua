@@ -11,6 +11,8 @@ local Cursor = {
 	DIRECTION = {
 		SOUTH = "SOUTH",
 		NORTH = "NORTH",
+		EAST = "EAST",
+		WEST = "WEST",
 	},
 	_current_position = nil,
 	last_position = nil,
@@ -39,10 +41,18 @@ end
 
 --- @return ascii-ui.CursorDirection
 function Cursor.last_movement_direction()
-	print(Cursor.last_position.line, Cursor._current_position.line)
+	if Cursor.last_position.line == Cursor._current_position.line then
+		if Cursor.last_position.col < Cursor._current_position.col then
+			return Cursor.DIRECTION.EAST
+		end
+
+		return Cursor.DIRECTION.WEST
+	end
+
 	if Cursor.last_position.line > Cursor._current_position.line then
 		return Cursor.DIRECTION.NORTH
 	end
+
 	return Cursor.DIRECTION.SOUTH
 end
 
