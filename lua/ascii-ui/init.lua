@@ -5,6 +5,7 @@ local config = require("ascii-ui.config")
 local logger = require("ascii-ui.logger")
 local EventListener = require("ascii-ui.events")
 local Cursor = require("ascii-ui.cursor")
+local Buffer = require("ascii-ui.buffer")
 
 local M = {}
 
@@ -50,10 +51,51 @@ function M.mount(component)
 	user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
 	logger.info("Attached buffer to user interactions")
 
+	vim.api.nvim_create_autocmd("CursorMoved", {
+		callback = function(args)
+			local win_id = tonumber(args.match)
+
+			if win_id ~= window.winid then
+				return -- not our window
+			end
+
+			logger.debug("CursorMoved inside ASCII-UI")
+			local element = rendered_buffer:find_element_by_position(Cursor.current_position())
+			if not element then
+				return
+			end
+
+			if element:is_inputable() then
+				window:enable_edits()
+			else
+				window:disable_edits()
+			end
+		end,
+	})
+
+	vim.keymap.set("n", "i", function(args)
+		logger.debug("InsertEnter inside ASCII-UI")
+		local element = rendered_buffer:find_element_by_position(Cursor.current_position())
+		if not element then
+			return
+		end
+
+		if element:is_inputable() then
+			local input_window =
+				Window:new({ min_width = 40, min_height = 1, col = 0, line = 0, relative = "cursor", editable = true })
+			input_window:open()
+			input_window:update(Buffer:new(element:wrap()))
+			input_window:enable_edits()
+			--- @param window ascii-ui.Window
+			input_window:on_close(function(window)
+				element.interactions.ON_INPUT("SUCESS")
+			end)
+		else
+			logger.debug("Element is not inputable: %s", vim.inspect(element))
+		end
+	end)
+
 	-- initialize keymaps
-	vim.keymap.set("n", config.keymaps.quit, function()
-		window:close()
-	end, { buffer = window.bufnr, noremap = true, silent = true })
 
 	vim.keymap.set("n", config.keymaps.select, function()
 		local bufnr = vim.api.nvim_get_current_buf()
@@ -144,27 +186,6 @@ function M.mount(component)
 		end,
 	})
 
-	vim.api.nvim_create_autocmd("CursorMoved", {
-		callback = function(args)
-			local win_id = tonumber(args.match)
-
-			if win_id ~= window.winid then
-				return -- not our window
-			end
-
-			logger.debug("hola")
-			local element = rendered_buffer:find_element_by_position(Cursor.current_position())
-			if not element then
-				return
-			end
-
-			if element:is_inputable() then
-				window:enable_edits()
-			else
-				window:disable_edits()
-			end
-		end,
-	})
 	return window.bufnr
 end
 

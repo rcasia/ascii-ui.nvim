@@ -1,6 +1,8 @@
 local logger = require("ascii-ui.logger")
 local highlights = require("ascii-ui.highlights")
----@alias ascii-ui.WindowOpts { width?: integer, height?: integer }
+local config = require("ascii-ui.config")
+
+---@alias ascii-ui.WindowOpts { width?: integer, height?: integer, relative?: string, editable?: boolean, min_width?: integer, min_height?: integer, col?: integer, line?: integer }
 
 ---@class ascii-ui.Window
 ---@field winid integer
@@ -9,7 +11,7 @@ local highlights = require("ascii-ui.highlights")
 ---@field opts ascii-ui.WindowOpts
 local Window = {
 	---@type ascii-ui.WindowOpts
-	default_opts = { width = 40, height = 20 },
+	default_opts = { width = 40, height = 20, relative = "editor", min_width = 40, min_height = 20, editable = false },
 }
 
 ---@param opts? ascii-ui.WindowOpts
@@ -41,6 +43,10 @@ function Window:new(opts)
 	return state
 end
 
+function Window:on_close(fn)
+	self.on_close_fn = fn
+end
+
 function Window:open()
 	-- Create a new unlisted, scratch buffer
 	local buf = vim.api.nvim_create_buf(false, true)
@@ -52,22 +58,23 @@ function Window:open()
 
 	-- Open a floating window with the new buffer
 	local win = vim.api.nvim_open_win(buf, true, {
-		relative = "editor",
+		relative = self.opts.relative,
 		width = self.opts.width,
 		height = self.opts.height,
-		col = center.col - math.floor(self.opts.width / 2),
-		row = center.line - math.floor(self.opts.height / 2),
+		col = self.opts.col or center.col - math.floor(self.opts.width / 2),
+		row = self.opts.line or center.line - math.floor(self.opts.height / 2),
 		style = "minimal",
 		border = "rounded",
 	})
 
 	vim.api.nvim_win_get_buf(win)
 
-	-- Assume `buf` is the buffer ID associated with your window.
-	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
-
 	self.winid = win
 	self.bufnr = buf
+
+	vim.keymap.set("n", config.keymaps.quit, function()
+		self:close()
+	end, { buffer = self.bufnr, noremap = true, silent = true })
 end
 
 function Window:enable_edits()
@@ -79,7 +86,7 @@ end
 function Window:disable_edits()
 	logger.debug("Window/Buffer edits are disabled")
 	self.edits_enabled = false
-	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+	vim.api.nvim_set_option_value("modifiable", self.opts.editable or false, { buf = self.bufnr })
 end
 
 ---@return boolean
@@ -92,8 +99,11 @@ function Window:close()
 	self.winid = nil
 	self.bufnr = nil
 
-	-- restore modifiable for the bufnr
-	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
+	if self.on_close_fn then
+		vim.schedule(function()
+			self:on_close_fn()
+		end)
+	end
 end
 
 ---@param buffer ascii-ui.Buffer
@@ -105,19 +115,17 @@ function Window:update(buffer)
 	end
 	vim.schedule(function()
 		-- buffer content
-		if not self.edits_enabled then
-			vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
-		end
+		vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
 		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer:to_lines())
 
 		if not self.edits_enabled then
-			vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+			vim.api.nvim_set_option_value("modifiable", self.opts.editable or false, { buf = self.bufnr })
 		end
 
 		-- resize window
 		vim.api.nvim_win_set_config(self.winid, {
-			width = buffer:width(),
-			height = buffer:height(),
+			width = math.max(buffer:width(), self.opts.min_width),
+			height = math.max(buffer:height(), self.opts.min_height),
 		})
 
 		-- coloring
