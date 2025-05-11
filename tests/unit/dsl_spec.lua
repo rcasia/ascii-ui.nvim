@@ -35,20 +35,22 @@ describe("DSL", function()
 
 		local actual_2 = renderer:render([[
 		<Layout>
-			<Paragraph content="Hello World!" />
+			<Paragraph content="Hello from level 1!" />
 			<Layout>
-				<Paragraph content="Hello World!" />
-				<Paragraph content="Hello World!" />
+				<Paragraph content="Hello from level 2!" />
+				<Layout>
+					<Paragraph content="Hello from level 3!" />
+				</Layout>
 			</Layout>
 		</Layout>
     ]])
 
 		eq(
-			[[Hello World!
+			[[Hello from level 1!
 
-Hello World!
+Hello from level 2!
 
-Hello World!]],
+Hello from level 3!]],
 			actual_2:to_string()
 		)
 	end)
