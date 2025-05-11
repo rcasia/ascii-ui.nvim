@@ -69,11 +69,8 @@ function Renderer:render_xml(xml_content)
 	local tag_name = result._name
 
 	local props = result._attr
-	if tag_name == "Layout"
-		then
-
-		local sub_components = vim.
-		self:render_by_tag("Layout", props)
+	if tag_name == "Layout" then
+		local sub_components = vim.self:render_by_tag("Layout", props)
 	end
 
 	return self:render_by_tag(tag_name, props)
