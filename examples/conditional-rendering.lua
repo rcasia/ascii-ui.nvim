@@ -10,24 +10,22 @@ local If = require("ascii-ui.components.if")
 local function App()
 	local shouldShow, setShouldShow = useState(true)
 
-	return function()
-		return Layout(
-			If({
-				condition = function()
-					return shouldShow()
-				end,
-				child = Paragraph({ content = "this is my content" }),
-				fallback = Paragraph({ content = "hidden" }),
-			}),
+	return Layout(
+		If({
+			condition = function()
+				return shouldShow()
+			end,
+			child = Paragraph({ content = "this is my content" }),
+			fallback = Paragraph({ content = "hidden" }),
+		}),
 
-			Button({
-				label = "change",
-				on_press = function()
-					setShouldShow(not shouldShow())
-				end,
-			})
-		)
-	end
+		Button({
+			label = "change",
+			on_press = function()
+				setShouldShow(not shouldShow())
+			end,
+		})
+	)
 end
 
 ui.mount(App())

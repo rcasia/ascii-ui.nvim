@@ -30,7 +30,6 @@ describe("renderer", function()
 		local App = function()
 			return Layout(DummyComponent())
 		end
-		eq({ "dummy_render 1" }, renderer:render(App()):to_lines())
-		eq({ "dummy_render 2" }, renderer:render(App()):to_lines())
+		eq({ "dummy_render" }, renderer:render(App()):to_lines())
 	end)
 end)

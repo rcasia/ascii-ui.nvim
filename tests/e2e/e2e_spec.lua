@@ -57,7 +57,7 @@ describe("ascii-ui", function()
 			local bufnr = ui.mount(ui.layout(
 				--
 				Slider(),
-				Slider({ _id = 1 }) -- FIX: when two components have the same parameters they share state, which is bad
+				Slider()
 			))
 
 			assert(buffer_contains(bufnr, "0%"))

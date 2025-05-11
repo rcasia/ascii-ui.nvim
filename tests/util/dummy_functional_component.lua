@@ -6,11 +6,8 @@ local createComponent = require("ascii-ui.components.functional-component")
 
 ---@return fun(): ascii-ui.BufferLine[]
 local function DummyComponent()
-	local counter, setCounter = useState(0)
-
 	return function()
-		setCounter(counter() + 1)
-		return { BufferLine:new(Element:new("dummy_render " .. tostring(counter()))) }
+		return { BufferLine:new(Element:new("dummy_render")) }
 	end
 end
 return createComponent("DummyComponent", DummyComponent)

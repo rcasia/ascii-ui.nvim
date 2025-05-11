@@ -4,6 +4,8 @@ local Select = ui.components.Select
 local Slider = ui.components.Slider
 
 ui.mount(Layout(
+	Slider({ value = 50 }),
+	Slider({ value = 50 }),
 	Select({
 		title = "Project",
 		options = {
@@ -27,6 +29,5 @@ ui.mount(Layout(
 			"3.4.3",
 			"3.3.10",
 		},
-	}),
-	Slider({ value = 50 })
+	})
 ))

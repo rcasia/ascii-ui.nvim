@@ -14,9 +14,9 @@ describe("Layout", function()
 		)
 
 		eq({
-			"dummy_render 1",
+			"dummy_render",
 			"",
-			"dummy_render 2",
+			"dummy_render",
 		}, Buffer:new(unpack(layout())):to_lines())
 	end)
 end)
