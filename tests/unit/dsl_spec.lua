@@ -32,5 +32,24 @@ describe("DSL", function()
     ]])
 
 		eq([[Hello World!]], actual:to_string())
+
+		local actual_2 = renderer:render([[
+		<Layout>
+			<Paragraph content="Hello World!" />
+			<Layout>
+				<Paragraph content="Hello World!" />
+				<Paragraph content="Hello World!" />
+			</Layout>
+		</Layout>
+    ]])
+
+		eq(
+			[[Hello World!
+
+Hello World!
+
+Hello World!]],
+			actual_2:to_string()
+		)
 	end)
 end)
