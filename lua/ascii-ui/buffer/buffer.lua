@@ -27,9 +27,7 @@ function Buffer:width()
 		:map(function(line)
 			return line:len()
 		end)
-		:fold(0, function(acc, len)
-			return math.max(acc, len)
-		end)
+		:fold(0, math.max)
 end
 
 function Buffer:height()
