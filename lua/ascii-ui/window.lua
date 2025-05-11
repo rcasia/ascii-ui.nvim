@@ -40,6 +40,10 @@ function Window:new(opts)
 	setmetatable(state, self)
 	self.__index = self
 
+	if not opts.editable then
+		self:disable_edits()
+	end
+
 	return state
 end
 
@@ -72,6 +76,8 @@ function Window:open()
 	self.winid = win
 	self.bufnr = buf
 
+	vim.bo[buf].buftype = "nofile"
+
 	vim.keymap.set("n", config.keymaps.quit, function()
 		self:close()
 	end, { buffer = self.bufnr, noremap = true, silent = true })
@@ -86,7 +92,7 @@ end
 function Window:disable_edits()
 	logger.debug("Window/Buffer edits are disabled")
 	self.edits_enabled = false
-	vim.api.nvim_set_option_value("modifiable", self.opts.editable or false, { buf = self.bufnr })
+	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
 end
 
 ---@return boolean
@@ -95,15 +101,18 @@ function Window:is_open()
 end
 
 function Window:close()
+	self:enable_edits()
+	if self.on_close_fn then
+		self:on_close_fn()
+	end
 	vim.api.nvim_win_close(self.winid, true)
 	self.winid = nil
 	self.bufnr = nil
+end
 
-	if self.on_close_fn then
-		vim.schedule(function()
-			self:on_close_fn()
-		end)
-	end
+--- @return string[]
+function Window:read_buffer()
+	return vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, false)
 end
 
 ---@param buffer ascii-ui.Buffer
@@ -115,11 +124,11 @@ function Window:update(buffer)
 	end
 	vim.schedule(function()
 		-- buffer content
-		vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
+		self:enable_edits()
 		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer:to_lines())
 
-		if not self.edits_enabled then
-			vim.api.nvim_set_option_value("modifiable", self.opts.editable or false, { buf = self.bufnr })
+		if not self.opts.editable then
+			self:disable_edits()
 		end
 
 		-- resize window
@@ -152,6 +161,20 @@ function Window:update(buffer)
 
 		apply_highlight()
 	end)
+end
+
+function Window:on_autocommand(autocommand, fn)
+	if not self:is_open() then
+		error("Window is not open")
+	end
+
+	vim.api.nvim_create_autocmd(autocommand, {
+		group = vim.api.nvim_create_augroup("ascii-ui", { clear = true }),
+		buffer = self.bufnr,
+		callback = function()
+			fn(self)
+		end,
+	})
 end
 
 return Window

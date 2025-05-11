@@ -72,28 +72,55 @@ function M.mount(component)
 			end
 		end,
 	})
+	local function enter_insert(key)
+		logger.debug("Intercepted: %s ", key)
 
-	vim.keymap.set("n", "i", function(args)
-		logger.debug("InsertEnter inside ASCII-UI")
 		local element = rendered_buffer:find_element_by_position(Cursor.current_position())
 		if not element then
 			return
 		end
 
 		if element:is_inputable() then
-			local input_window =
-				Window:new({ min_width = 40, min_height = 1, col = 0, line = 0, relative = "cursor", editable = true })
+			local input_window = Window:new({
+				min_width = 40,
+				min_height = 1,
+				col = 0,
+				line = 0,
+				relative = "cursor",
+				editable = true,
+			})
 			input_window:open()
 			input_window:update(Buffer:new(element:wrap()))
 			input_window:enable_edits()
-			--- @param window ascii-ui.Window
-			input_window:on_close(function(window)
-				element.interactions.ON_INPUT("SUCESS")
+			--- @param w ascii-ui.Window
+			input_window:on_close(function(w)
+				element.interactions.ON_INPUT(w:read_buffer()[1])
+			end)
+
+			input_window:on_autocommand("InsertLeave", function()
+				input_window:close()
+			end)
+
+			vim.schedule(function()
+				vim.api.nvim_feedkeys(key, "n", false)
 			end)
 		else
 			logger.debug("Element is not inputable: %s", vim.inspect(element))
 		end
-	end)
+	end
+
+	vim.keymap.set("n", "i", function()
+		enter_insert("i")
+	end, { buffer = window.bufnr })
+	vim.keymap.set("n", "I", function()
+		enter_insert("I")
+	end, { buffer = window.bufnr })
+	vim.keymap.set("n", "a", function()
+		enter_insert("a")
+	end, { buffer = window.bufnr })
+	vim.keymap.set("n", "A", function()
+		enter_insert("A")
+	end, { buffer = window.bufnr })
 
 	-- initialize keymaps
 
