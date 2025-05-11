@@ -1,5 +1,6 @@
 local memoize = require("ascii-ui.utils.memoize")
 local logger = require("ascii-ui.logger")
+local Renderer = require("ascii-ui.renderer")
 
 --- @generic T
 --- @generic P : ascii-ui.ComponentProps
@@ -29,6 +30,10 @@ local function createComponent(name, renderFunction, opts)
 		render = renderFunction,
 	}
 
+	if not Renderer.component_tags[name] then
+		Renderer.component_tags[name] = renderFunction
+	end
+
 	-- Generar la pseudofunción del componente
 	return setmetatable({}, {
 		__call = function(_, props)
@@ -39,6 +44,8 @@ local function createComponent(name, renderFunction, opts)
 			if opts.avoid_memoize then
 				return factory()
 			end
+
+			logger.info("Componente registrado: " .. name)
 
 			return memoize(factory, props)
 		end,

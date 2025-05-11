@@ -1,44 +1,28 @@
 pcall(require, "luacov")
 ---@module "luassert"
-local renderer = require("ascii-ui.renderer")
-local Paragraph = require("ascii-ui.components.paragraph")
+local ui = require("ascii-ui")
+local config = require("ascii-ui.config")
+local renderer = require("ascii-ui.renderer"):new(config)
 local logger = require("ascii-ui.logger")
-local xml = require("tests.util.xml2lua")
-local dom = require("tests.util.dom-handler")
 
 local eq = assert.are.same
 
 ---@alias XmlNode { _type: "ROOT" | "ELEMENT", _name: string, _children: string, _attr: table<string, string> }
 
---- @return XmlNode
-local function xml_parse(dsl)
-	local parser = xml.parser(dom)
-	parser:parse(dsl)
-	return vim.deepcopy(dom.root._children[3])
-end
-
-local function undertest(dsl)
-	local result = xml_parse(dsl)
-	logger.info(vim.inspect(result))
-
-	local tag_name = result._name
-	if tag_name ~= "Paragrapgh" then
-		error("tag_name not recognized: " .. vim.inspect(tag_name))
-	end
-
-	local props = result._attr
-
-	return renderer:render(Paragraph(props)()):to_lines()
-end
-
 describe("DSL", function()
 	it("translates from simple dsl to buffer", function()
-		local expected = renderer:render(Paragraph({ content = "Hello World!" })()):to_lines()
-
-		local actual = undertest([[
-    <Paragrapgh content="Hello World!" />
+		local actual = renderer:render_xml([[
+    <Slider content="s" />
     ]])
 
-		eq(expected, actual)
+		eq([[●────────── 0%]], actual:to_string())
+	end)
+
+	it("translates from simple dsl to buffer", function()
+		local actual = renderer:render_xml([[
+    <Paragraph content="Hello World!" />
+    ]])
+
+		eq([[Hello World!]], actual:to_string())
 	end)
 end)
