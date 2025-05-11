@@ -36,18 +36,25 @@ local function createComponent(name, renderFunction, opts)
 
 	-- Generar la pseudofunción del componente
 	return setmetatable({}, {
-		__call = function(_, props)
-			local factory = function()
-				return renderFunction(props)
+		__call = function(_, ...)
+			local args = { ... }
+			local factory
+
+			if #args == 1 and type(args[1]) == "table" then
+				factory = function()
+					return renderFunction(args[1])
+				end
+			else
+				factory = function()
+					return renderFunction(unpack(args))
+				end
 			end
 
 			if opts.avoid_memoize then
 				return factory()
 			end
 
-			logger.info("Componente registrado: " .. name)
-
-			return memoize(factory, props)
+			return memoize(factory, args)
 		end,
 	})
 end

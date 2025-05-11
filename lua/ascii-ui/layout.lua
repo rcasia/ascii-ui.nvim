@@ -1,13 +1,21 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
+local createComponent = require("ascii-ui.components.functional-component")
 
 --- @param ... fun(): ascii-ui.BufferLine[]
 --- @return fun(): ascii-ui.BufferLine[]
 local function Layout(...)
-	local components = { ... }
+	local component_closures = { ... }
+
+	vim.iter(component_closures):each(function(c)
+		assert(
+			type(c) == "function",
+			"Layout should recieve component closures. Recieved: " .. type(c) .. vim.inspect(component_closures)
+		)
+	end)
 
 	return function()
 		local bufferlines = {}
-		for idx, component in ipairs(components) do
+		for idx, component in ipairs(component_closures) do
 			if idx ~= 1 then
 				bufferlines[#bufferlines + 1] = BufferLine:new()
 			end
@@ -20,4 +28,4 @@ local function Layout(...)
 	end
 end
 
-return Layout
+return createComponent("Layout", Layout, { avoid_memoize = true })

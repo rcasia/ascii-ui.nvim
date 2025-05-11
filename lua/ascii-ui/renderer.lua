@@ -39,21 +39,38 @@ function Renderer:render(renderable)
 	return Buffer:new(unpack(renderable:render()))
 end
 
-function Renderer:render_by_tag(tag_name, props)
-	local component = self.component_tags[tag_name]
-	if not component then
-		error("Component not found for tag: " .. tag_name)
-	end
+--- @return ascii-ui.BufferLine[]
+function Renderer:render_by_tag(tag_name, props, children)
+	logger.info("Rendering tag: " .. tag_name)
+	local instance
+	if tag_name == "Layout" then
+		local child_components = vim.iter(children)
+			:map(function(child)
+				return self:render_by_tag(child._name, child._attr)
+			end)
+			:totable()
 
-	local instance = component(props)
+		local component = assert(self.component_tags[tag_name], "Component not found for tag: " .. tag_name)
+
+		instance = component(unpack(child_components))
+	else
+		local component = self.component_tags[tag_name]
+		if not component then
+			error("Component not found for tag: " .. tag_name)
+		end
+
+		instance = component(props)
+	end
 
 	if type(instance) == "function" then
-		return Buffer:new(unpack(instance()))
+		return instance
 	end
 
-	return Buffer:new(unpack(instance:render()))
+	error("not expected")
 end
 
+--- @param xml_content string
+--- @return ascii-ui.Buffer
 function Renderer:render_xml(xml_content)
 	--- @return XmlNode
 	local function xml_parse(dsl)
@@ -69,11 +86,10 @@ function Renderer:render_xml(xml_content)
 	local tag_name = result._name
 
 	local props = result._attr
-	if tag_name == "Layout" then
-		local sub_components = vim.self:render_by_tag("Layout", props)
-	end
 
-	return self:render_by_tag(tag_name, props)
+	local component_closure = self:render_by_tag(tag_name, props, result._children)
+
+	return Buffer:new(unpack(component_closure()))
 end
 
 return Renderer

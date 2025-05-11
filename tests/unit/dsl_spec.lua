@@ -16,11 +16,19 @@ describe("DSL", function()
     ]])
 
 		eq([[●────────── 0%]], actual:to_string())
+
+		local actual_render = renderer:render([[
+    <Paragraph content="Hello World!" />
+    ]])
+
+		eq([[Hello World!]], actual_render:to_string())
 	end)
 
-	it("translates from simple dsl to buffer", function()
+	it("translates from composed dsl to buffer", function()
 		local actual = renderer:render([[
-    <Paragraph content="Hello World!" />
+		<Layout>
+			<Paragraph content="Hello World!" />
+		</Layout>
     ]])
 
 		eq([[Hello World!]], actual:to_string())
