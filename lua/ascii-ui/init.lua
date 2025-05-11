@@ -42,14 +42,19 @@ function M.mount(component)
 	window:update(rendered_buffer)
 
 	EventListener:listen("state_change", function()
-		logger.info("Rendering triggered by state_change")
+		local rerender_start = vim.loop.hrtime()
+
+		logger.info("Rerendering on state change for window %d and buffer %d", window.winid, window.bufnr)
 		rendered_buffer = ascii_renderer:render(component()) -- assign variable to have change the referenced value
 		window:update(rendered_buffer)
+
+		local rerender_elapsed_ns = vim.loop.hrtime() - rerender_start
+		logger.info("Rerendering time: %.3f ms", rerender_elapsed_ns / 1e6)
 	end)
 
 	-- binds to user interaction
 	user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
-	logger.info("Attached buffer to user interactions")
+	logger.info("Attached buffer %s to user interactions", window.bufnr)
 
 	-- initialize keymaps
 	vim.keymap.set("n", config.keymaps.quit, function()
@@ -135,12 +140,11 @@ function M.mount(component)
 			-- detach from user interactions
 			user_interations:instance():detach_buffer(window.bufnr)
 			vim.on_key(nil, window.ns_id)
-			logger.info("Detached buffer from user interactions")
+			logger.info("Detached buffer %s from user interactions", window.bufnr)
 
 			window:close()
-			logger.info("Closed window")
+			logger.info("Closed window %d", win_id)
 
-			logger.info("Cleared event listeners")
 			EventListener:clear()
 		end,
 	})
@@ -167,7 +171,7 @@ function M.mount(component)
 	})
 
 	local elapsed_ns = vim.loop.hrtime() - start
-	logger.info("Rendering time: %.3f ms", elapsed_ns / 1e6)
+	logger.info("First render time: %.3f ms", elapsed_ns / 1e6)
 	return window.bufnr
 end
 

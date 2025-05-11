@@ -30,13 +30,12 @@ function EventListenter:trigger(ev_type)
 		local ok, err = pcall(fn)
 		if not ok then
 			logger.error("Error while executing event listener for [" .. ev_type .. "]: " .. err)
-		else
-			logger.info("function run on " .. ev_type)
 		end
 	end
 end
 
 function EventListenter:clear()
+	logger.info("Cleared event listeners")
 	self.state_change = nil
 end
 
