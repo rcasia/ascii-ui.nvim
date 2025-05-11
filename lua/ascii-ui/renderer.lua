@@ -21,22 +21,22 @@ function Renderer:new(config)
 	return state
 end
 
----@param component ascii-ui.Component | ascii-ui.BufferLine[]
+---@param renderable ascii-ui.Component | ascii-ui.BufferLine[] | string
 ---@return ascii-ui.Buffer
-function Renderer:render(component)
-	if type(component) == "string" then
-		return self:render_xml(component)
+function Renderer:render(renderable)
+	if type(renderable) == "string" then
+		return self:render_xml(renderable)
 	end
-	if vim.isarray(component) then
-		return Buffer:new(unpack(component))
+	if vim.isarray(renderable) then
+		return Buffer:new(unpack(renderable))
 	end
-	if type(component) == "function" then
-		return Buffer:new(unpack(component()))
+	if type(renderable) == "function" then
+		return Buffer:new(unpack(renderable()))
 	end
 
-	assert(component.render)
+	assert(renderable.render)
 
-	return Buffer:new(unpack(component:render()))
+	return Buffer:new(unpack(renderable:render()))
 end
 
 function Renderer:render_by_tag(tag_name, props)

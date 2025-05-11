@@ -11,15 +11,15 @@ local eq = assert.are.same
 
 describe("DSL", function()
 	it("translates from simple dsl to buffer", function()
-		local actual = renderer:render_xml([[
-    <Slider content="s" />
+		local actual = renderer:render([[
+    <Slider />
     ]])
 
 		eq([[●────────── 0%]], actual:to_string())
 	end)
 
 	it("translates from simple dsl to buffer", function()
-		local actual = renderer:render_xml([[
+		local actual = renderer:render([[
     <Paragraph content="Hello World!" />
     ]])
 
