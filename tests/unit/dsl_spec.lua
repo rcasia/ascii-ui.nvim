@@ -1,7 +1,7 @@
 pcall(require, "luacov")
 ---@module "luassert"
 local renderer = require("ascii-ui.renderer")
-local paragraph = require("ascii-ui.components.paragraph")
+local Paragraph = require("ascii-ui.components.paragraph")
 local logger = require("ascii-ui.logger")
 local xml = require("tests.util.xml2lua")
 local dom = require("tests.util.dom-handler")
@@ -28,12 +28,12 @@ local function undertest(dsl)
 
 	local props = result._attr
 
-	return renderer:render(paragraph:new(props)):to_lines()
+	return renderer:render(Paragraph(props)()):to_lines()
 end
 
 describe("DSL", function()
 	it("translates from simple dsl to buffer", function()
-		local expected = renderer:render(paragraph:new({ content = "Hello World!" })):to_lines()
+		local expected = renderer:render(Paragraph({ content = "Hello World!" })()):to_lines()
 
 		local actual = undertest([[
     <Paragrapgh content="Hello World!" />
