@@ -28,4 +28,18 @@ describe("useEffect", function()
 		setValue("B")
 		eq(2, fn_invocations)
 	end)
+
+	it("does not invoke function when a non observed value changes", function()
+		local value, _ = useState("A")
+		local _, setOtherValue = useState("A")
+		local fn_invocations = 0
+		local fn = function()
+			fn_invocations = fn_invocations + 1
+		end
+
+		useEffect(fn, { value })
+
+		setOtherValue("B")
+		eq(1, fn_invocations)
+	end)
 end)
