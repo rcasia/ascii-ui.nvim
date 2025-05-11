@@ -23,6 +23,7 @@ M.layout = require("ascii-ui.layout")
 ---@param component ascii-ui.FunctionalComponent
 ---@return integer bufnr
 function M.mount(component)
+	local start = vim.loop.hrtime()
 	logger.info("------------------")
 	logger.info("Mounting component")
 	logger.info("------------------")
@@ -152,7 +153,6 @@ function M.mount(component)
 				return -- not our window
 			end
 
-			logger.debug("hola")
 			local element = rendered_buffer:find_element_by_position(Cursor.current_position())
 			if not element then
 				return
@@ -165,6 +165,9 @@ function M.mount(component)
 			end
 		end,
 	})
+
+	local elapsed_ns = vim.loop.hrtime() - start
+	logger.info("Rendering time: %.3f ms", elapsed_ns / 1e6)
 	return window.bufnr
 end
 
