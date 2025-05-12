@@ -1,6 +1,9 @@
 include = {
    "lua%/",
 }
+exclude = {
+   "lua%/ascii-ui%/lib%/",
+}
 includeuntestedfiles = {
   "lua/"
 }
