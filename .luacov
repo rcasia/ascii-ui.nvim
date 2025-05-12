@@ -2,7 +2,7 @@ include = {
    "lua%/",
 }
 exclude = {
-   "lua%/ascii-ui%/lib%/",
+   "lua/ascii-ui/lib",
 }
 includeuntestedfiles = {
   "lua/"
