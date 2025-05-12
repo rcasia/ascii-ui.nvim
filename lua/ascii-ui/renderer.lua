@@ -1,5 +1,5 @@
-local xml = require("tests.util.xml2lua")
-local dom = require("tests.util.dom-handler")
+local xml = require("ascii-ui.lib.xml2lua")
+local dom = require("ascii-ui.lib.dom-handler")
 local logger = require("ascii-ui.logger")
 local Buffer = require("ascii-ui.buffer")
 ---@class ascii-ui.Renderer

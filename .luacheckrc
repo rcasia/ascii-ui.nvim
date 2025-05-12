@@ -7,4 +7,6 @@ read_globals = {
 	"it",
 	"assert",
 }
-exclude_files = {}
+exclude_files = {
+	"lua/lib/**",
+}
