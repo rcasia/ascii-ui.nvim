@@ -1,10 +1,12 @@
 local EventListener = require("ascii-ui.events")
+local logger = require("ascii-ui.logger")
 
 --- @generic T
 --- @param value T
 --- @return fun(): T getValue
 --- @return fun(value: T) setValue
 local useState = function(value)
+	logger.debug("useState created")
 	local _value = value
 	local setValue = function(newValue)
 		_value = newValue

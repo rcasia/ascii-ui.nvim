@@ -1,4 +1,5 @@
 local useState = require("ascii-ui.hooks.use_state")
+local logger = require("ascii-ui.logger")
 
 --- @alias ascii-ui.ReducerAction {type: string, params: any }
 --- @generic T
@@ -7,6 +8,7 @@ local useState = require("ascii-ui.hooks.use_state")
 --- @return fun(): T getValue
 --- @return fun(action: ascii-ui.ReducerAction) dispatch
 local useReducer = function(reducer, value)
+	logger.debug("useReducer created")
 	local state, setState = useState(value)
 
 	return state, function(action)
