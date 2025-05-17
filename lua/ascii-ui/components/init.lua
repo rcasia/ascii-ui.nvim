@@ -1,3 +1,4 @@
+--- @class ascii-ui.Components
 local Components = {
 	Select = require("ascii-ui.components.select"),
 	Slider = require("ascii-ui.components.slider"),

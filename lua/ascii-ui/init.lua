@@ -6,6 +6,11 @@ local logger = require("ascii-ui.logger")
 local EventListener = require("ascii-ui.events")
 local Cursor = require("ascii-ui.cursor")
 
+--- @class ascii-ui.AsciiUI
+--- @field components ascii-ui.Components
+--- @field layout function
+--- @field createComponent function
+--- @field hooks ascii-ui.Hooks
 local M = {}
 
 local ascii_renderer = require("ascii-ui.renderer"):new(config)
