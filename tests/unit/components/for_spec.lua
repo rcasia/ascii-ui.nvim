@@ -17,9 +17,29 @@ describe("For", function()
 		end
 	end)
 
-	it("renders child component when condition is true", function()
+	it("renders a list of components based on a list of props", function()
 		local component_closure =
 			For({ props = { { content = "t-shirt 1" }, { content = "t-shirt 2" } }, component = DummyComponent })
+
+		---@return string
+		local lines = function()
+			return Buffer:new(unpack(component_closure())):to_string()
+		end
+		eq(
+			[[t-shirt 1
+t-shirt 2]],
+			lines()
+		)
+	end)
+
+	it("renders a list of components based on a list of items, transformed to props", function()
+		local component_closure = For({
+			items = { "t-shirt 1", "t-shirt 2" },
+			transform = function(item)
+				return { content = item }
+			end,
+			component = DummyComponent,
+		})
 
 		---@return string
 		local lines = function()
