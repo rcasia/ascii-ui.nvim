@@ -48,6 +48,9 @@ function M.mount(component)
 		rendered_buffer = ascii_renderer:render(component()) -- assign variable to have change the referenced value
 		window:update(rendered_buffer)
 
+		-- rebind the buffer to the window
+		user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
+
 		local rerender_elapsed_ns = vim.loop.hrtime() - rerender_start
 		logger.info("Rerendering time: %.3f ms", rerender_elapsed_ns / 1e6)
 	end)

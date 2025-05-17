@@ -9,18 +9,19 @@ local function For(props)
 	props = props or {}
 	local inner_props = props.props or {}
 
-	if props.items then
-		inner_props = vim.iter(props.items)
-			:map(function(item)
-				if props.transform then
-					return props.transform(item)
-				end
-				return item
-			end)
-			:totable()
-	end
-
 	return function()
+		local items = type(props.items) == "function" and props.items() or props.items
+		if items then
+			inner_props = vim.iter(items)
+				:map(function(item)
+					if props.transform then
+						return props.transform(item)
+					end
+					return item
+				end)
+				:totable()
+		end
+
 		return vim.iter(inner_props)
 			:map(function(_props)
 				return props.component(_props)
