@@ -50,11 +50,32 @@ function M.mount(component)
 		local rerender_start = vim.loop.hrtime()
 
 		logger.info("Rerendering on state change for window %d and buffer %d", window.winid, window.bufnr)
+		local current_lines_count = rendered_buffer:height()
 		rendered_buffer = ascii_renderer:render(component()) -- assign variable to have change the referenced value
+		local new_lines_count = rendered_buffer:height()
 		window:update(rendered_buffer)
 
 		-- rebind the buffer to the window
 		user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
+
+		if current_lines_count ~= new_lines_count then
+			logger.info("Window %d resized from %d to %d lines", window.winid, current_lines_count, new_lines_count)
+
+			-- TODO: this will not work for all cases
+			local current_element = rendered_buffer:find_element_by_position(Cursor.current_position())
+			logger.debug("Current element: %s", vim.inspect(current_element))
+			if not current_element or not current_element:is_focusable() then
+				logger.debug("Current element is not focusable, moving to next focusable element")
+				local position = Cursor.current_position()
+				local result = rendered_buffer:find_position_of_the_next_focusable(position)
+
+				logger.debug("next position: %s", vim.inspect(result))
+				local next_position = result.pos
+				vim.schedule(function()
+					vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
+				end)
+			end
+		end
 
 		local rerender_elapsed_ns = vim.loop.hrtime() - rerender_start
 		logger.info("Rerendering time: %.3f ms", rerender_elapsed_ns / 1e6)
