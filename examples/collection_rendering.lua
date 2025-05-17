@@ -11,6 +11,7 @@ local function App()
 		if action.type == "add" then
 			return vim.list_extend(state, { "this is " .. #state + 1 })
 		end
+		return state
 	end, { "this is 1", "this is 2" })
 
 	return Layout(
