@@ -9,7 +9,7 @@ local Element = require("ascii-ui.buffer.element")
 local For = require("ascii-ui.components.for")
 
 describe("For", function()
-	local component = ui.createComponent("DummyComponent", function(props)
+	local DummyComponent = ui.createComponent("DummyComponent", function(props)
 		props = props or {}
 
 		return function()
@@ -18,12 +18,17 @@ describe("For", function()
 	end)
 
 	it("renders child component when condition is true", function()
-		local component_closure = For({})
+		local component_closure =
+			For({ props = { { content = "t-shirt 1" }, { content = "t-shirt 2" } }, component = DummyComponent })
 
 		---@return string
 		local lines = function()
 			return Buffer:new(unpack(component_closure())):to_string()
 		end
-		eq([[]], lines())
+		eq(
+			[[t-shirt 1
+t-shirt 2]],
+			lines()
+		)
 	end)
 end)
