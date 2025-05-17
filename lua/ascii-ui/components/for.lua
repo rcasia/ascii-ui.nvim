@@ -2,7 +2,7 @@ local createComponent = require("ascii-ui.components.functional-component")
 
 --- @class ascii-ui.ForComponentProps
 --- @field props table[]
---- @field items any[]
+--- @field items any[] | fun(): any[]
 --- @field component ascii-ui.FunctionalComponent
 --- @field transform fun(item: any): table
 
