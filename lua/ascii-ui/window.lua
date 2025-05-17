@@ -119,6 +119,16 @@ function Window:update(buffer)
 			width = buffer:width(),
 			height = buffer:height(),
 		})
+		-- adjust scroll
+		vim.api.nvim_win_call(0, function()
+			local win = vim.api.nvim_get_current_win()
+			local curpos = vim.api.nvim_win_get_cursor(win)
+
+			-- Move cursor to top, scroll, restore
+			vim.api.nvim_win_set_cursor(win, { 1, 0 })
+			vim.cmd("normal! zt")
+			vim.api.nvim_win_set_cursor(win, curpos)
+		end)
 
 		-- coloring
 		local function apply_highlight()
