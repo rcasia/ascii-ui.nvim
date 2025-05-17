@@ -1,6 +1,10 @@
 local createComponent = require("ascii-ui.components.functional-component")
 
---- @alias ascii-ui.ForComponentProps { props?: table<string, any>[], items?: any, component: ascii-ui.FunctionalComponent , transform?: fun(item: any): any}
+--- @class ascii-ui.ForComponentProps
+--- @field props table[]
+--- @field items any[]
+--- @field component ascii-ui.FunctionalComponent
+--- @field transform fun(item: any): table
 
 --- @param props ascii-ui.ForComponentProps
 --- @return fun(): ascii-ui.BufferLine[]
