@@ -205,9 +205,7 @@ function M.mount(component)
 end
 
 setmetatable(M, {
-	__call = function(_, opts)
-		opts = opts or {}
-
+	__call = function(_, _) -- (self, opts)
 		return M
 	end,
 })

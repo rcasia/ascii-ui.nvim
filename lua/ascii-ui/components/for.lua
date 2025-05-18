@@ -26,9 +26,7 @@ local function For(props)
 		end
 
 		return vim.iter(inner_props)
-			:map(function(_props)
-				return props.component(_props)
-			end)
+			:map(props.component)
 			:map(function(closure)
 				return closure()
 			end)

@@ -34,7 +34,7 @@ require("plenary.busted")
 
 vim.cmd("runtime plugin/plenary.vim")
 
-local ascii_ui = require("ascii-ui")
+local _ = require("ascii-ui")
 local logger = require("ascii-ui.logger")
 logger.set_level("DEBUG")
 

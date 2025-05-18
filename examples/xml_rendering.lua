@@ -6,7 +6,7 @@ local function App()
 		return [[
 
 		<Layout>
-		 	<Paragraph content="Hello World" />
+			<Paragraph content="Hello World" />
 			<Layout>
 				<Button label="Click me" />
 			</Layout>

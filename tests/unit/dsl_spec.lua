@@ -1,9 +1,8 @@
 pcall(require, "luacov")
 ---@module "luassert"
-local ui = require("ascii-ui")
+
 local config = require("ascii-ui.config")
 local renderer = require("ascii-ui.renderer"):new(config)
-local logger = require("ascii-ui.logger")
 
 local eq = assert.are.same
 

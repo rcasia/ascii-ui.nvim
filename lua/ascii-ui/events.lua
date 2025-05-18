@@ -4,7 +4,7 @@ local logger = require("ascii-ui.logger")
 local EventListenter = {}
 
 --- @enum (key) ascii-ui.EventType
-local EventType = {
+local _ = {
 	state_change = "state.change",
 	CursorMovedSouth = "CursorMovedSouth",
 	CursorMovedNorth = "CursorMovedNorth",

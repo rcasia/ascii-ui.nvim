@@ -1,6 +1,5 @@
 local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
-local Slider = ui.components.Slider
 local Layout = ui.layout
 local Button = ui.components.Button
 local useState = ui.hooks.useState
