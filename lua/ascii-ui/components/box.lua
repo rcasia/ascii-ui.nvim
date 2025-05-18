@@ -56,4 +56,4 @@ local function Box(props)
 	end
 end
 
-return createComponent("Box", Box, { width = "integer", height = "integer", content = "string", __config = "table" })
+return createComponent("Box", Box, { width = "number", height = "number", content = "string", __config = "table" })
