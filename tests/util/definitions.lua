@@ -14,4 +14,4 @@
 ---@field has_error fun(f: function, msg?: string): nil
 
 ---@type BustedAssert
-local _ = assert
+assert = assert
