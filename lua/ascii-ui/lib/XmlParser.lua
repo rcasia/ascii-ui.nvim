@@ -1,3 +1,4 @@
+---@diagnostic disable
 --- @module Class providing the actual XML parser.
 --  Available options are:
 --      * stripWS   

@@ -1,3 +1,5 @@
+
+---@diagnostic disable
 local function init()
 	return {
 		options = { commentNode = 1, piNode = 1, dtdNode = 1, declNode = 1 },
