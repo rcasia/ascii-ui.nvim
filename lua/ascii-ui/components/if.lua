@@ -1,5 +1,5 @@
-local createComponent = require("ascii-ui.components.functional-component")
 local Bufferline = require("ascii-ui.buffer.bufferline")
+local createComponent = require("ascii-ui.components.functional-component")
 
 local function empty()
 	return { Bufferline:new() }

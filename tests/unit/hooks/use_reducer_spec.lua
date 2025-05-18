@@ -2,8 +2,8 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local eq = assert.are.same
-local useReducer = require("ascii-ui.hooks.use_reducer")
 local EventListener = require("ascii-ui.events")
+local useReducer = require("ascii-ui.hooks.use_reducer")
 
 describe("useReducer", function()
 	it("just works", function()

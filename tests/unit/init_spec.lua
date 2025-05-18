@@ -1,8 +1,8 @@
 pcall(require, "luacov")
 ---@module "luassert"
 
-local ui = require("ascii-ui")
 local Box = require("ascii-ui.components.box")
+local ui = require("ascii-ui")
 
 ---@param bufnr integer
 ---@param pattern string

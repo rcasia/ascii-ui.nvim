@@ -1,6 +1,6 @@
-local memoize = require("ascii-ui.utils.memoize")
-local logger = require("ascii-ui.logger")
 local Renderer = require("ascii-ui.renderer")
+local logger = require("ascii-ui.logger")
+local memoize = require("ascii-ui.utils.memoize")
 
 --- @generic T
 --- @generic P : ascii-ui.ComponentProps

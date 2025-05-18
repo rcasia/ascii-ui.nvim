@@ -3,10 +3,10 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local ui = require("ascii-ui")
 local Buffer = require("ascii-ui.buffer")
 local Element = require("ascii-ui.buffer.element")
 local If = require("ascii-ui.components.if")
+local ui = require("ascii-ui")
 
 describe("If", function()
 	local component = ui.createComponent("DummyComponent", function(props)

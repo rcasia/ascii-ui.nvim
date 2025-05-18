@@ -2,8 +2,8 @@ local Element = require("ascii-ui.buffer.element")
 local highlights = require("ascii-ui.highlights")
 local interation_type = require("ascii-ui.interaction_type")
 
-local useReducer = require("ascii-ui.hooks.use_reducer")
 local createComponent = require("ascii-ui.components.functional-component")
+local useReducer = require("ascii-ui.hooks.use_reducer")
 
 ---@alias ascii-ui.SelectComponentOpts { options: string[], title?: string, on_select? : fun(selected_option: string) }
 

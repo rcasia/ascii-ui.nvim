@@ -2,9 +2,9 @@ pcall(require, "luacov")
 ---@module "luassert"
 local eq = assert.are.same
 
-local Select = require("ascii-ui.components.select")
 local Buffer = require("ascii-ui.buffer")
 local Hightlights = require("ascii-ui.highlights")
+local Select = require("ascii-ui.components.select")
 
 describe("SelectComponent", function()
 	it("renders elements", function()

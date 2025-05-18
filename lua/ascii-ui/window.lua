@@ -1,5 +1,5 @@
-local logger = require("ascii-ui.logger")
 local highlights = require("ascii-ui.highlights")
+local logger = require("ascii-ui.logger")
 ---@alias ascii-ui.WindowOpts { width?: integer, height?: integer }
 
 ---@class ascii-ui.Window

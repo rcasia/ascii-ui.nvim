@@ -1,7 +1,7 @@
-local xml = require("ascii-ui.lib.xml2lua")
+local Buffer = require("ascii-ui.buffer")
 local dom = require("ascii-ui.lib.dom-handler")
 local logger = require("ascii-ui.logger")
-local Buffer = require("ascii-ui.buffer")
+local xml = require("ascii-ui.lib.xml2lua")
 ---@class ascii-ui.Renderer
 local Renderer = {}
 

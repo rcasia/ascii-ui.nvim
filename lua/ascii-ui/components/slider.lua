@@ -1,9 +1,9 @@
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
-local interaction_type = require("ascii-ui.interaction_type")
-local global_config = require("ascii-ui.config")
-local useReducer = require("ascii-ui.hooks.use_reducer")
 local createComponent = require("ascii-ui.components.functional-component")
+local global_config = require("ascii-ui.config")
+local interaction_type = require("ascii-ui.interaction_type")
+local useReducer = require("ascii-ui.hooks.use_reducer")
 
 --- @param props? { title?: string, value?: integer, config?: ascii-ui.Config }
 ---@return ascii-ui.BufferLine[]

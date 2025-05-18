@@ -1,5 +1,5 @@
-local Component = require("ascii-ui.components.component")
 local BufferLine = require("ascii-ui.buffer.bufferline")
+local Component = require("ascii-ui.components.component")
 local Element = require("ascii-ui.buffer.element")
 
 local create_dummy_component = function()

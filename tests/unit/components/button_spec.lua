@@ -3,9 +3,9 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local highlights = require("ascii-ui.highlights")
 local Buffer = require("ascii-ui.buffer")
 local Button = require("ascii-ui.components.button")
+local highlights = require("ascii-ui.highlights")
 
 describe("Button", function()
 	it("functional", function()

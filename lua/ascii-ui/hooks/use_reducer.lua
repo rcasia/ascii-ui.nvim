@@ -1,5 +1,5 @@
-local useState = require("ascii-ui.hooks.use_state")
 local logger = require("ascii-ui.logger")
+local useState = require("ascii-ui.hooks.use_state")
 
 --- @alias ascii-ui.ReducerAction {type: string, params: any }
 --- @generic T

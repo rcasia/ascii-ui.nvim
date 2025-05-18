@@ -1,6 +1,6 @@
 pcall(require, "luacov")
-local Window = require("ascii-ui.window")
 local Buffer = require("ascii-ui.buffer")
+local Window = require("ascii-ui.window")
 
 describe("window", function()
 	it("should open and close", function()

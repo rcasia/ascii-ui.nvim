@@ -1,5 +1,5 @@
-local ui = require("ascii-ui")
 local Element = require("ascii-ui.buffer.element")
+local ui = require("ascii-ui")
 
 --- @alias ascii-ui.InputProps { value?: string }
 
