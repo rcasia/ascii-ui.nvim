@@ -1,4 +1,3 @@
 #!/bin/bash
 
-make check
-make test
+make check && make test
