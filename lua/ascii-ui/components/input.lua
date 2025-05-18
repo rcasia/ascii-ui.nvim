@@ -20,4 +20,4 @@ return ui.createComponent("Input", function(props)
 			}):wrap(),
 		}
 	end
-end)
+end, { value = "string" })

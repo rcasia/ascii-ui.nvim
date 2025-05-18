@@ -81,7 +81,9 @@ describe("ascii-ui", function()
 		it("functional", function()
 			local content, setContent = useState("hola mundo")
 
-			local bufnr = ui.mount(Paragraph({ content = content }))
+			local bufnr = ui.mount(function()
+				return Paragraph({ content = content })
+			end)
 			assert(buffer_contains(bufnr, "hola mundo"))
 
 			setContent("lemon juice")

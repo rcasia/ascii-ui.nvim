@@ -79,4 +79,4 @@ local function Select(props)
 	end
 end
 
-return createComponent("Select", Select)
+return createComponent("Select", Select, { options = "table", title = "string", on_select = "function" })

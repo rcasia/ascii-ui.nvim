@@ -15,7 +15,7 @@ describe("For", function()
 		return function()
 			return { Element:new(props.content):wrap() }
 		end
-	end)
+	end, { content = "string" })
 
 	it("renders a list of components based on a list of props", function()
 		local component_closure =

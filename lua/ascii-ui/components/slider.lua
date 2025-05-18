@@ -60,4 +60,4 @@ local function Slider(props)
 	end
 end
 
-return createComponent("Slider", Slider)
+return createComponent("Slider", Slider, { title = "string", value = "string", config = "table" })

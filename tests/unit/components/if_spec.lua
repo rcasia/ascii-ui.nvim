@@ -15,7 +15,7 @@ describe("If", function()
 		return function()
 			return { Element:new(props.content):wrap() }
 		end
-	end)
+	end, { content = "string" })
 
 	it("renders child component when condition is true", function()
 		local if_component = If({

@@ -21,4 +21,8 @@ local function If(props)
 	end
 end
 
-return createComponent("If", If, { avoid_memoize = true })
+return createComponent("If", If, {
+	condition = "function",
+	child = "function",
+	fallback = "function",
+})

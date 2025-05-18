@@ -23,4 +23,4 @@ local function Button(props)
 	end
 end
 
-return createComponent("Button", Button, { avoid_memoize = true })
+return createComponent("Button", Button, { label = "string", on_press = "function" })
