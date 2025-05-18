@@ -1,0 +1,20 @@
+package = "ascii-ui.nvim"
+version = "0.2.0"
+lua = ">=5.1"
+
+[description]
+summary = "A WIP extensible ui framework with no non-sense apis (hopefully) for nvim."
+maintainer = "rcasia"
+labels = []
+license = "MIT"
+
+[dependencies]
+# Add your dependencies here
+# `busted = ">=2.0"`
+
+[run]
+args = ["src/main.lua"]
+
+[build]
+type = "builtin"
+

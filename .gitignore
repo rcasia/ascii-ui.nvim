@@ -42,3 +42,4 @@ luac.out
 test/xdg/local/state/nvim
 .tests/site/pack/deps/start/plenary.nvim/plenary.nvim
 .tests/site/pack/deps/start/plenary.nvim
+.lux
