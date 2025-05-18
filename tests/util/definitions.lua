@@ -1,3 +1,5 @@
+---@diagnostic disable: assign-type-mismatch
+
 ---@meta
 
 ---@class BustedAssertAre
@@ -12,4 +14,4 @@
 ---@field has_error fun(f: function, msg?: string): nil
 
 ---@type BustedAssert
-assert = assert
+local _ = assert
