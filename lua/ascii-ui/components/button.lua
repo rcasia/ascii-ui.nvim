@@ -9,10 +9,9 @@ local interaction_type = require("ascii-ui.interaction_type")
 --- @return ComponentClosure
 local function Button(props)
 	return function()
-		local label = type(props.label) == "function" and props.label() or props.label
 		return {
 			Element:new({
-				content = label,
+				content = props.label,
 				highlight = highlights.BUTTON,
 				is_focusable = true,
 				interactions = {
