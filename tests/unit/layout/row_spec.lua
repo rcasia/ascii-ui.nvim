@@ -15,12 +15,12 @@ describe("Row", function()
 			return {
 				Element:new(props.content):wrap(),
 				Element:new(props.content):wrap(),
-				Element:new(props.content):wrap(),
+				Element:new("smol txt"):wrap(),
 			}
 		end
 	end, { content = "string" })
 
-	it("should render a components in a row", function()
+	it("should render components in a row", function()
 		local row = Row(
 			--
 			DummyComponent({ content = "component 1" }),
@@ -31,7 +31,7 @@ describe("Row", function()
 		eq({
 			"component 1 component 2 component 3",
 			"component 1 component 2 component 3",
-			"component 1 component 2 component 3",
+			"smol txt    smol txt    smol txt",
 		}, Buffer:new(unpack(row())):to_lines())
 	end)
 end)
