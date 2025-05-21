@@ -16,7 +16,11 @@ local function Row(...)
 	end)
 
 	return function()
-		return { component_closures[1]()[1]:append(component_closures[2]()[1], Element:new(" ")) }
+		local bufferline = BufferLine:new()
+		for i, component_closure in ipairs(component_closures) do
+			bufferline:append(component_closure()[1], Element:new(" "))
+		end
+		return { bufferline }
 	end
 end
 

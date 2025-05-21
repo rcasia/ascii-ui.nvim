@@ -11,11 +11,12 @@ describe("Row", function()
 		local row = Row(
 			--
 			DummyComponent(),
+			DummyComponent(),
 			DummyComponent()
 		)
 
 		eq({
-			"dummy_render dummy_render",
+			"dummy_render dummy_render dummy_render",
 		}, Buffer:new(unpack(row())):to_lines())
 	end)
 end)

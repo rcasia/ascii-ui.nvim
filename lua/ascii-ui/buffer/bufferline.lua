@@ -95,7 +95,7 @@ end
 function BufferLine:append(other_bufferline, delimiter)
 	local elements = self.elements
 
-	if delimiter then
+	if delimiter and #self.elements > 0 then
 		elements[#elements + 1] = delimiter
 	end
 	vim.iter(other_bufferline.elements):each(function(element)
