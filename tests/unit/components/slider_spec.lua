@@ -9,7 +9,7 @@ local Slider = require("ascii-ui.components.slider")
 describe("SliderComponent", function()
 	---@return string
 	local line = function(props)
-		return Buffer:new(unpack(Slider(props)())):to_string()
+		return Buffer.new(unpack(Slider(props)())):to_string()
 	end
 
 	it("renders", function()

@@ -18,8 +18,8 @@ local function merge_bufferlines(bufferlines, other_bufferlines)
 
 	local merged_bufferlines = {}
 	for i = 1, max_index, 1 do
-		local left_bufferline = bufferlines[i] or BufferLine:new()
-		local right_bufferline = other_bufferlines[i] or BufferLine:new()
+		local left_bufferline = bufferlines[i] or BufferLine.new()
+		local right_bufferline = other_bufferlines[i] or BufferLine.new()
 
 		local spacing_cols_count = max_bufferline_width - left_bufferline:len() + 1
 

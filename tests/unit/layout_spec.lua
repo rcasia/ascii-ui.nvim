@@ -17,6 +17,6 @@ describe("Column", function()
 			"dummy_render",
 			"",
 			"dummy_render",
-		}, Buffer:new(unpack(layout())):to_lines())
+		}, Buffer.new(unpack(layout())):to_lines())
 	end)
 end)

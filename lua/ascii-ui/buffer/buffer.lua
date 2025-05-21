@@ -6,17 +6,17 @@ local BufferLine = require("ascii-ui.buffer.bufferline")
 ---@class ascii-ui.Buffer
 ---@field lines ascii-ui.BufferLine[]
 local Buffer = {}
+Buffer.__index = Buffer
 
 ---@param ...? ascii-ui.BufferLine
 ---@return ascii-ui.Buffer
-function Buffer:new(...)
+function Buffer.new(...)
 	local lines = { ... }
 	local state = {
 		lines = lines or {},
 	}
 
-	setmetatable(state, self)
-	self.__index = self
+	setmetatable(state, Buffer)
 
 	return state
 end
@@ -181,7 +181,7 @@ function Buffer.from_lines(lines)
 			return BufferLine.from_string(line)
 		end)
 		:totable()
-	return Buffer:new(unpack(bufferlines))
+	return Buffer.new(unpack(bufferlines))
 end
 
 ---@return string[]

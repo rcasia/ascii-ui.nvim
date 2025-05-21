@@ -28,15 +28,15 @@ function Renderer:render(renderable)
 		return self:render_xml(renderable)
 	end
 	if vim.isarray(renderable) then
-		return Buffer:new(unpack(renderable))
+		return Buffer.new(unpack(renderable))
 	end
 	if type(renderable) == "function" then
-		return Buffer:new(unpack(renderable()))
+		return Buffer.new(unpack(renderable()))
 	end
 
 	assert(renderable.render)
 
-	return Buffer:new(unpack(renderable:render()))
+	return Buffer.new(unpack(renderable:render()))
 end
 
 --- @return ascii-ui.BufferLine[]
@@ -89,7 +89,7 @@ function Renderer:render_xml(xml_content)
 
 	local component_closure = self:render_by_tag(tag_name, props, result._children)
 
-	return Buffer:new(unpack(component_closure()))
+	return Buffer.new(unpack(component_closure()))
 end
 
 return Renderer

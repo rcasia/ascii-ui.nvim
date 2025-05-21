@@ -19,7 +19,7 @@ describe("UserInteractions", function()
 		local position = { line = 1, col = 1 }
 		local buffer_id = 1
 
-		local buffer = Buffer:new(Bufferline:new(Element:new("my text here", false, {
+		local buffer = Buffer.new(Bufferline.new(Element:new("my text here", false, {
 			SELECT = function()
 				has_called.on_select = true
 			end,
@@ -52,7 +52,7 @@ describe("UserInteractions", function()
 		local position = { line = math.huge, col = math.huge }
 		local type = INTERACTION_TYPE.SELECT
 
-		local buffer = Buffer:new(Bufferline:new(Element:new("my text here", false, {
+		local buffer = Buffer.new(Bufferline.new(Element:new("my text here", false, {
 			on_select = function()
 				is_called = true
 			end,

@@ -40,7 +40,7 @@ local function render(props)
 
 	return {
 		props.title ~= "" and Element:new(props.title, false):wrap() or nil,
-		Bufferline:new(
+		Bufferline.new(
 			Element:new(cc.horizontal:rep(knob_position), false, interactions),
 			Element:new(cc.thumb, true, interactions),
 			Element:new(cc.horizontal:rep(width - knob_position), false, interactions),

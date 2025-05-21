@@ -17,7 +17,7 @@ local function Layout(...)
 		local bufferlines = {}
 		for idx, component in ipairs(component_closures) do
 			if idx ~= 1 then
-				bufferlines[#bufferlines + 1] = BufferLine:new()
+				bufferlines[#bufferlines + 1] = BufferLine.new()
 			end
 			vim.iter(component()):each(function(line)
 				bufferlines[#bufferlines + 1] = line

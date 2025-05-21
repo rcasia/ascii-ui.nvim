@@ -23,7 +23,7 @@ describe("For", function()
 
 		---@return string
 		local lines = function()
-			return Buffer:new(unpack(component_closure())):to_string()
+			return Buffer.new(unpack(component_closure())):to_string()
 		end
 		eq(
 			[[t-shirt 1
@@ -43,7 +43,7 @@ t-shirt 2]],
 
 		---@return string
 		local lines = function()
-			return Buffer:new(unpack(component_closure())):to_string()
+			return Buffer.new(unpack(component_closure())):to_string()
 		end
 		eq(
 			[[t-shirt 1

@@ -63,7 +63,7 @@ ascii-ui.BufferLine                                        *ascii-ui.BufferLine*
         {elements}  (ascii-ui.Element[])
 
 
-BufferLine:new({...})                                           *BufferLine:new*
+BufferLine.new({...})                                           *BufferLine.new*
 
     Parameters: ~
         {...}  (ascii-ui.Element)

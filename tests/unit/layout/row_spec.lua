@@ -32,6 +32,6 @@ describe("Row", function()
 			"component 1 component 2 component 3",
 			"component 1 component 2 component 3",
 			"smol txt    smol txt    smol txt",
-		}, Buffer:new(unpack(row())):to_lines())
+		}, Buffer.new(unpack(row())):to_lines())
 	end)
 end)

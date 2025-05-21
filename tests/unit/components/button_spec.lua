@@ -11,7 +11,7 @@ describe("Button", function()
 	it("functional", function()
 		local bufferlines = Button({ label = "Send" })()
 		local lines = function()
-			return Buffer:new(unpack(bufferlines))
+			return Buffer.new(unpack(bufferlines))
 		end
 
 		eq([[Send]], lines():to_string())

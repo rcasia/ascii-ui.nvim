@@ -72,7 +72,7 @@ end
 ---@return ascii-ui.BufferLine
 function Element:wrap()
 	local Bufferline = require("ascii-ui.buffer.bufferline")
-	return Bufferline:new(self)
+	return Bufferline.new(self)
 end
 
 return Element

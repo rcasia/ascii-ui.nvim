@@ -12,7 +12,7 @@ describe("Paragraph", function()
 
 		---@return string
 		local lines = function()
-			return Buffer:new(unpack(paragraph)):to_string()
+			return Buffer.new(unpack(paragraph)):to_string()
 		end
 		eq([[hello world!]], lines())
 	end)

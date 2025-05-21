@@ -2,7 +2,7 @@ local Bufferline = require("ascii-ui.buffer.bufferline")
 local createComponent = require("ascii-ui.components.functional-component")
 
 local function empty()
-	return { Bufferline:new() }
+	return { Bufferline.new() }
 end
 
 --- @alias ascii-ui.IfComponentProps { child: function, fallback: function, condition: fun(): boolean }

@@ -30,7 +30,7 @@ describe("If", function()
 
 		---@return string
 		local lines = function()
-			return Buffer:new(unpack(if_component())):to_string()
+			return Buffer.new(unpack(if_component())):to_string()
 		end
 		eq([[dummy_render]], lines())
 	end)
@@ -46,7 +46,7 @@ describe("If", function()
 
 		---@return string
 		local lines = function()
-			return Buffer:new(unpack(if_component())):to_string()
+			return Buffer.new(unpack(if_component())):to_string()
 		end
 		eq([[]], lines())
 	end)
@@ -64,7 +64,7 @@ describe("If", function()
 
 		---@return string
 		local lines = function()
-			return Buffer:new(unpack(if_component())):to_string()
+			return Buffer.new(unpack(if_component())):to_string()
 		end
 		eq([[I am the fallback]], lines())
 	end)

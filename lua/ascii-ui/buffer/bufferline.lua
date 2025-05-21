@@ -3,18 +3,18 @@ local Element = require("ascii-ui.buffer.element")
 ---@class ascii-ui.BufferLine
 ---@field elements ascii-ui.Element[]
 local BufferLine = {}
+BufferLine.__index = BufferLine
 
 ---@param ... ascii-ui.Element
 ---@return ascii-ui.BufferLine
-function BufferLine:new(...)
+function BufferLine.new(...)
 	local elements = { ... }
 
 	local state = {
 		elements = elements,
 	}
 
-	setmetatable(state, self)
-	self.__index = self
+	setmetatable(state, BufferLine)
 
 	return state
 end
@@ -75,7 +75,7 @@ end
 
 ---@param str string
 function BufferLine.from_string(str)
-	return BufferLine:new(Element:new(str))
+	return BufferLine.new(Element:new(str))
 end
 
 ---@return string
@@ -102,7 +102,7 @@ function BufferLine:append(other_bufferline, delimiter)
 		elements[#elements + 1] = element
 	end)
 
-	return BufferLine:new(unpack(elements))
+	return BufferLine.new(unpack(elements))
 end
 
 return BufferLine

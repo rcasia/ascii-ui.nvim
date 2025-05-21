@@ -18,7 +18,7 @@ describe("ComponentCreator.createComponent", function()
 	---@param closure function
 	---@return string
 	local lines = function(closure)
-		return Buffer:new(unpack(closure())):to_string()
+		return Buffer.new(unpack(closure())):to_string()
 	end
 
 	it("creates a component that can take props either as function or its simple type", function()
