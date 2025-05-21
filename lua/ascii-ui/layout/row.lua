@@ -1,7 +1,6 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 local createComponent = require("ascii-ui.components.functional-component")
-local logger = require("ascii-ui.logger")
 
 --- @param bufferlines ascii-ui.BufferLine[]
 --- @param other_bufferlines ascii-ui.BufferLine[]
@@ -26,7 +25,6 @@ local function merge_bufferlines(bufferlines, other_bufferlines)
 		merged_bufferlines[i] = left_bufferline:append(right_bufferline, Element:new((" "):rep(spacing_cols_count)))
 	end
 
-	logger.debug("merge_bufferlines: %s", vim.inspect(merged_bufferlines))
 	return merged_bufferlines
 end
 
@@ -34,7 +32,6 @@ end
 --- @return fun(): ascii-ui.BufferLine[]
 local function Row(...)
 	local component_closures = { ... }
-	local Column = require("ascii-ui.layout.column")
 
 	vim.iter(component_closures):each(function(c)
 		assert(
@@ -45,11 +42,8 @@ local function Row(...)
 
 	return function()
 		return vim.iter(component_closures)
-			:map(function(component_closure)
-				return Column(component_closure)
-			end)
-			:map(function(layout_closure)
-				return layout_closure()
+			:map(function(closure)
+				return closure()
 			end)
 			:fold({}, function(acc, curr)
 				return merge_bufferlines(acc, curr)
