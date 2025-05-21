@@ -1,6 +1,6 @@
 local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
-local Layout = ui.layout
+local Column = ui.layout.Column
 local Button = ui.components.Button
 local useState = ui.hooks.useState
 local If = ui.directives.If
@@ -9,7 +9,7 @@ local If = ui.directives.If
 local function App()
 	local shouldShow, setShouldShow = useState(true)
 
-	return Layout(
+	return Column(
 		If({
 			condition = function()
 				return shouldShow()

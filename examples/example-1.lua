@@ -1,6 +1,6 @@
 local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
-local Layout = ui.layout
+local Column = ui.layout.Column
 local Button = ui.components.Button
 local useState = ui.hooks.useState
 
@@ -8,7 +8,7 @@ local useState = ui.hooks.useState
 local function App()
 	local content, setContent = useState("initial content")
 
-	return Layout(
+	return Column(
 		--
 		Paragraph({ content = content }),
 		Button({

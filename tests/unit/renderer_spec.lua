@@ -4,8 +4,8 @@ pcall(require, "luacov")
 local Renderer = require("ascii-ui.renderer")
 local eq = assert.are.same
 
+local Column = require("ascii-ui.layout.column")
 local DummyComponent = require("tests.util.dummy_functional_component")
-local Layout = require("ascii-ui.layout")
 local create_dummy_component = require("tests.util.dummy_component")
 
 describe("renderer", function()
@@ -28,7 +28,7 @@ describe("renderer", function()
 
 	it("should render a custom component", function()
 		local App = function()
-			return Layout(DummyComponent())
+			return Column(DummyComponent())
 		end
 		eq({ "dummy_render" }, renderer:render(App()):to_lines())
 	end)

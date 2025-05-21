@@ -3,11 +3,11 @@ local DummyComponent = require("tests.util.dummy_functional_component")
 local eq = assert.are.same
 
 local Buffer = require("ascii-ui.buffer")
-local Layout = require("ascii-ui.layout")
+local Column = require("ascii-ui.layout.column")
 
-describe("Layout", function()
+describe("Column", function()
 	it("render components in layout vertical by default", function()
-		local layout = Layout(
+		local layout = Column(
 			--
 			DummyComponent(),
 			DummyComponent()

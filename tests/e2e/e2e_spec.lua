@@ -2,6 +2,7 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local ui = require("ascii-ui")
+local Column = ui.layout.Column
 local Options = ui.components.Select
 local it = require("plenary.async.tests").it
 local Paragraph = ui.components.Paragraph
@@ -54,7 +55,7 @@ describe("ascii-ui", function()
 
 	describe("sliders", function()
 		it("silders slide", function()
-			local bufnr = ui.mount(ui.layout(
+			local bufnr = ui.mount(Column(
 				--
 				Slider(),
 				Slider()

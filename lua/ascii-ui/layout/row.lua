@@ -1,6 +1,5 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
-local Layout = require("ascii-ui.layout")
 local createComponent = require("ascii-ui.components.functional-component")
 local logger = require("ascii-ui.logger")
 
@@ -35,6 +34,7 @@ end
 --- @return fun(): ascii-ui.BufferLine[]
 local function Row(...)
 	local component_closures = { ... }
+	local Column = require("ascii-ui.layout.column")
 
 	vim.iter(component_closures):each(function(c)
 		assert(
@@ -44,11 +44,9 @@ local function Row(...)
 	end)
 
 	return function()
-		local bufferline = BufferLine:new()
-
 		return vim.iter(component_closures)
 			:map(function(component_closure)
-				return Layout(component_closure)
+				return Column(component_closure)
 			end)
 			:map(function(layout_closure)
 				return layout_closure()
@@ -59,4 +57,4 @@ local function Row(...)
 	end
 end
 
-return createComponent("Layout", Row, {})
+return createComponent("Row", Row, {})

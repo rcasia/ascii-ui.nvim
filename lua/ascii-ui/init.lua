@@ -7,10 +7,6 @@ local logger = require("ascii-ui.logger")
 local user_interations = require("ascii-ui.user_interactions")
 
 --- @class ascii-ui.AsciiUI
---- @field components ascii-ui.Components
---- @field layout function
---- @field createComponent function
---- @field hooks ascii-ui.Hooks
 local M = {}
 
 local ascii_renderer = require("ascii-ui.renderer"):new(config)

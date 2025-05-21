@@ -1,6 +1,6 @@
 local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
-local Layout = ui.layout
+local Column = ui.layout.Column
 local Button = ui.components.Button
 local For = ui.directives.For
 
@@ -13,7 +13,7 @@ local function App()
 		return state
 	end, { "this is 1", "this is 2" })
 
-	return Layout(
+	return Column(
 		For({
 			items = items,
 			transform = function(item)

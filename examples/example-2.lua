@@ -1,9 +1,9 @@
 local ui = require("ascii-ui")
-local Layout = ui.layout
+local Column = ui.layout.Column
 local Select = ui.components.Select
 local Slider = ui.components.Slider
 
-ui.mount(Layout(
+ui.mount(Column(
 	Slider({ value = 50 }),
 	Slider({ value = 50 }),
 	Select({
