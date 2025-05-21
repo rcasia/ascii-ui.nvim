@@ -2,7 +2,7 @@ local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
 local Layout = ui.layout
 local Button = ui.components.Button
-local For = require("ascii-ui.directives.for")
+local For = ui.directives.For
 
 --- @type ascii-ui.FunctionalComponent
 local function App()
