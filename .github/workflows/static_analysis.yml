@@ -10,6 +10,7 @@ on:
 
 jobs:
   lua-typecheck:
+    if: github.ref != 'refs/heads/release-please--branches--main'
     runs-on: ubuntu-latest
     name: Lua Typecheck
     steps:
@@ -19,6 +20,7 @@ jobs:
         uses: mrcjkb/lua-typecheck-action@v1.1.0
 
   luacheck:
+    if: github.ref != 'refs/heads/release-please--branches--main'
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -27,6 +29,7 @@ jobs:
         uses: lunarmodules/luacheck@v1.2.0
 
   stylua:
+    if: github.ref != 'refs/heads/release-please--branches--main'
     runs-on: ubuntu-latest
     steps:
       - name: checkout
