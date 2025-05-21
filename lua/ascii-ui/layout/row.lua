@@ -21,8 +21,15 @@ local function merge_bufferlines(bufferlines, other_bufferlines)
 		local right_bufferline = other_bufferlines[i] or BufferLine.new()
 
 		local spacing_cols_count = max_bufferline_width - left_bufferline:len() + 1
+		if #bufferlines == 0 then
+			spacing_cols_count = 0
+		end
 
-		merged_bufferlines[i] = left_bufferline:append(right_bufferline, Element:new((" "):rep(spacing_cols_count)))
+		if left_bufferline:is_empty() and i == 1 then
+			merged_bufferlines[i] = left_bufferline:append(right_bufferline)
+		else
+			merged_bufferlines[i] = left_bufferline:append(right_bufferline, Element:new((" "):rep(spacing_cols_count)))
+		end
 	end
 
 	return merged_bufferlines
