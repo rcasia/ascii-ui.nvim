@@ -10,7 +10,6 @@ on:
 
 jobs:
   test:
-    if: github.ref_name != 'release-please--branches--main'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
