@@ -89,4 +89,20 @@ function BufferLine:to_string()
 		:join("")
 end
 
+--- @param other_bufferline ascii-ui.BufferLine
+--- @param delimiter? ascii-ui.Element
+--- @return ascii-ui.BufferLine
+function BufferLine:append(other_bufferline, delimiter)
+	local elements = self.elements
+
+	if delimiter then
+		elements[#elements + 1] = delimiter
+	end
+	vim.iter(other_bufferline.elements):each(function(element)
+		elements[#elements + 1] = element
+	end)
+
+	return BufferLine:new(unpack(elements))
+end
+
 return BufferLine
