@@ -1,8 +1,8 @@
 pcall(require, "luacov")
 ---@module "luassert"
 
-local Options = require("ascii-ui.components.select")
 local ui = require("ascii-ui")
+local Options = ui.components.Select
 local it = require("plenary.async.tests").it
 local Paragraph = ui.components.Paragraph
 local Slider = ui.components.Slider

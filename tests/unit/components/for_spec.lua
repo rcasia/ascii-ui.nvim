@@ -5,7 +5,7 @@ local eq = assert.are.same
 
 local Buffer = require("ascii-ui.buffer")
 local Element = require("ascii-ui.buffer.element")
-local For = require("ascii-ui.components.for")
+local For = require("ascii-ui.directives.for")
 local ui = require("ascii-ui")
 
 describe("For", function()

@@ -3,7 +3,7 @@ local Paragraph = ui.components.Paragraph
 local Layout = ui.layout
 local Button = ui.components.Button
 local useState = ui.hooks.useState
-local If = require("ascii-ui.components.if")
+local If = require("ascii-ui.directives.if")
 
 --- @type ascii-ui.FunctionalComponent
 local function App()

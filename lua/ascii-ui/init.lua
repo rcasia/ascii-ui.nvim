@@ -18,6 +18,8 @@ local ascii_renderer = require("ascii-ui.renderer"):new(config)
 --- This contains all the components available in the library
 M.components = require("ascii-ui.components")
 
+M.directives = require("ascii-ui.directives")
+
 M.createComponent = require("ascii-ui.components.functional-component")
 
 M.hooks = require("ascii-ui.hooks")

@@ -5,7 +5,7 @@ local eq = assert.are.same
 
 local Buffer = require("ascii-ui.buffer")
 local Element = require("ascii-ui.buffer.element")
-local If = require("ascii-ui.components.if")
+local If = require("ascii-ui.directives.if")
 local ui = require("ascii-ui")
 
 describe("If", function()
