@@ -10,4 +10,5 @@ read_globals = {
 exclude_files = {
 	"**/lib/**",
 	"**/.tests/**",
+	".lux/**",
 }
