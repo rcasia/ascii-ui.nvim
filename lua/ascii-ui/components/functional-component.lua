@@ -68,10 +68,10 @@ local components = {}
 --- Crea un componente personalizado y lo registra
 --- @generic ascii-ui.ComponentClosure, T
 --- @param name string Nombre del componente
---- @param component_closure fun(props: T)
+--- @param functional_component fun(props: T)
 --- @param types table<string, ascii-ui.PropsType> Tipos de los props del componente
 --- @return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
-local function createComponent(name, component_closure, types)
+local function createComponent(name, functional_component, types)
 	types = types or {}
 	-- Validar que el nombre sea único
 	if components[name] then
@@ -80,11 +80,11 @@ local function createComponent(name, component_closure, types)
 
 	-- Registro del componente con su renderFunction
 	components[name] = {
-		render = component_closure,
+		render = functional_component,
 	}
 
 	if not Renderer.component_tags[name] then
-		Renderer.component_tags[name] = component_closure
+		Renderer.component_tags[name] = functional_component
 	end
 
 	-- Generar la pseudofunción del componente
@@ -105,11 +105,11 @@ local function createComponent(name, component_closure, types)
 					vim.inspect(props)
 				)
 				factory = function()
-					return component_closure(props)
+					return functional_component(props)
 				end
 			else
 				factory = function()
-					return component_closure(unpack(args))
+					return functional_component(unpack(args))
 				end
 			end
 
