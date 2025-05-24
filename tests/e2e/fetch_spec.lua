@@ -13,34 +13,13 @@ local function fetch(url)
 	return vim.json.decode(result.stdout)
 end
 
--- execute only on linux
-if vim.fn.has("linux") == 0 then
-	pending("fetch tests only run on linux")
-	it = pending
-end
-
 describe("fetch", function()
-	before_each(function()
-		local result = vim.system({ "docker", "compose", "up", "-d", "--wait" }):wait()
-		assert(result.code == 0, "could not spin up docker: " .. vim.inspect(result))
-
-		vim.system({ "sleep", "3" }):wait()
-	end)
-
-	after_each(function()
-		vim.system({ "docker", "compose", "down" }):wait()
-	end)
-
 	it("executes GET request", function()
-		local response_body
-		vim.wait(200, function()
-			response_body = fetch("http://localhost:8080/ping")
-			return response_body ~= nil
-		end)
+		local url = "https://httpbin.org/get"
+		local response_body = fetch(url)
 
-		assert.not_nil(response_body)
+		assert(response_body, "Response body should not be nil")
 
-		local path_params = vim.tbl_values(response_body.request.params)
-		eq({ "/ping" }, path_params)
+		eq(url, response_body.url)
 	end)
 end)
