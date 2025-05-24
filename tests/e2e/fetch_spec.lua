@@ -2,12 +2,7 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local eq = assert.are.same
-
--- execute only on linux
-if vim.fn.has("linux") == 0 then
-	pending("This test is only for Linux")
-	return
-end
+local it = it
 
 --- @param url string
 local function fetch(url)
@@ -16,6 +11,12 @@ local function fetch(url)
 		return nil
 	end
 	return vim.json.decode(result.stdout)
+end
+
+-- execute only on linux
+if vim.fn.has("linux") == 0 then
+	pending("fetch tests only run on linux")
+	it = pending
 end
 
 describe("fetch", function()
