@@ -1,18 +1,20 @@
 local ui = require("ascii-ui")
 
---- @type ascii-ui.FunctionalComponent
 local function App()
+	local message, set_message = ui.hooks.useState("Hello World")
+	local ref = ui.hooks.useFunctionRegistry(function()
+		set_message("Button Clicked!")
+	end)
+
 	return function()
-		return [[
+		return ([[
 
 		<Layout>
-			<Paragraph content="Hello World" />
-			<Layout>
-				<Button label="Click me" />
-			</Layout>
+			<Paragraph content="%s" />
+			<Button label="Click me" on_press="%s" />
 		</Layout>
 
-		]]
+		]]):format(message(), ref)
 	end
 end
 

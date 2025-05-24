@@ -55,6 +55,11 @@ local function from_function_prop(props, types)
 			if indicated_type ~= "function" and type(props[key]) == "function" then
 				return key, props[key]()
 			end
+			if indicated_type == "function" and type(props[key]) == "string" then
+				logger.debug("Resolving function reference for key '%s': %s", key, props[key])
+				local fn = assert(_G.ascii_ui_function_registry[props[key]], "Function not found: " .. props[key])
+				return key, fn
+			end
 			return key, props[key]
 		end)
 		:fold({}, function(acc, key, value)
@@ -83,12 +88,8 @@ local function createComponent(name, functional_component, types)
 		render = functional_component,
 	}
 
-	if not Renderer.component_tags[name] then
-		Renderer.component_tags[name] = functional_component
-	end
-
 	-- Generar la pseudofunción del componente
-	return setmetatable({}, {
+	local component_function = setmetatable({}, {
 		__call = function(_, ...)
 			local closure_id = tostring({})
 			logger.debug("Creating closure for component '%s' with id %s", name, closure_id)
@@ -116,6 +117,12 @@ local function createComponent(name, functional_component, types)
 			return memoize(factory, { chache_key = closure_id })
 		end,
 	})
+
+	if not Renderer.component_tags[name] then
+		Renderer.component_tags[name] = component_function
+	end
+
+	return component_function
 end
 
 return createComponent
