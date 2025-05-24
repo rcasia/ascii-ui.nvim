@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.2.0...v0.3.0) (2025-05-24)
+
+
+### Features
+
+* **dsl:** function references can be passed to components in xml ([064c3af](https://github.com/rcasia/ascii-ui.nvim/commit/064c3afe42c8d426d1747550c6dd9097bdb76b1a))
+* **hooks:** create useFunctionRegistry hook ([52af8e7](https://github.com/rcasia/ascii-ui.nvim/commit/52af8e7b05039e4ec698cf0d6e8e3a3088b4c622))
+* **hooks:** expose api for useEffect and useFunctionRegistry ([7f501fd](https://github.com/rcasia/ascii-ui.nvim/commit/7f501fdc1b71a5c1204cbe8449beb1afd96339ba))
+* pass the config in the component closure param ([ede9faa](https://github.com/rcasia/ascii-ui.nvim/commit/ede9faa0f7d9906f388a19194a306b6060907d20))
+* renderer recieves a function that returns a function, bufferlines or a xml string ([a52c4ce](https://github.com/rcasia/ascii-ui.nvim/commit/a52c4ce6b5e9c3ce5f68595b74982b03eb7b6f0a))
+
 ## [0.2.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.1.0...v0.2.0) (2025-05-21)
 
 
