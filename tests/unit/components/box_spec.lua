@@ -28,7 +28,7 @@ describe("renderer", function()
 					".             .",
 					"...............",
 				},
-				renderer:render(box()):to_lines()
+				renderer:render(box):to_lines()
 			)
 		end)
 
@@ -41,7 +41,7 @@ describe("renderer", function()
 			it(("should render a box with width %s"):format(box_props), function()
 				local box = Box(box_props)
 
-				local result = renderer:render(box()):to_lines()
+				local result = renderer:render(box):to_lines()
 
 				eq(box_props.width, result[1]:len())
 				eq(box_props.height, #result)
@@ -57,7 +57,7 @@ describe("renderer", function()
 				".     Hello!    .",
 				".               .",
 				".................",
-			}, renderer:render(box_hello()):to_lines())
+			}, renderer:render(box_hello):to_lines())
 
 			local box_world = Box({ width = 17, height = 5, content = "World!", __config = config })
 
@@ -67,7 +67,7 @@ describe("renderer", function()
 				".     World!    .",
 				".               .",
 				".................",
-			}, renderer:render(box_world()):to_lines())
+			}, renderer:render(box_world):to_lines())
 		end)
 	end)
 end)

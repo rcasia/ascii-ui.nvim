@@ -3,13 +3,13 @@ local dom = require("ascii-ui.lib.dom-handler")
 local logger = require("ascii-ui.logger")
 local xml = require("ascii-ui.lib.xml2lua")
 ---@class ascii-ui.Renderer
+--- @field config ascii-ui.Config
 local Renderer = {}
 
 Renderer.component_tags = {}
 
 ---@param config { characters: { top_left: string, top_right: string,
 --- bottom_left: string, bottom_right: string, horizontal: string, vertical: string } }
---- @field config ascii-ui.Config
 --- @return ascii-ui.Renderer
 function Renderer:new(config)
 	local state = {
@@ -29,11 +29,22 @@ function Renderer:render(renderable)
 		return self:render_xml(renderable)
 	end
 	if vim.isarray(renderable) then
+		error("I am array")
 		return Buffer.new(unpack(renderable))
 	end
 	if type(renderable) == "function" then
-		return Buffer.new(unpack(renderable(self.config)))
+		local rendered = renderable(self.config)
+		if vim.isarray(rendered) then
+			-- If the renderable is an array, we assume it's a list of BufferLines
+			return Buffer.new(unpack(rendered))
+		end
+
+		if type(rendered) == "string" then
+			return self:render_xml(rendered)
+		end
+		return Buffer.new(unpack(rendered(self.config)))
 	end
+	error("I am unknown type: " .. type(renderable))
 
 	assert(renderable.render)
 
@@ -90,7 +101,7 @@ function Renderer:render_xml(xml_content)
 
 	local component_closure = self:render_by_tag(tag_name, props, result._children)
 
-	return Buffer.new(unpack(component_closure()))
+	return Buffer.new(unpack(component_closure(self.config)))
 end
 
 return Renderer

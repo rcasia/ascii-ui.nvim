@@ -1,13 +1,12 @@
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 local createComponent = require("ascii-ui.components.functional-component")
-local global_config = require("ascii-ui.config")
 local interaction_type = require("ascii-ui.interaction_type")
 local useReducer = require("ascii-ui.hooks.use_reducer")
 
 --- @param props? { title?: string, value?: integer, config?: ascii-ui.Config }
 ---@return ascii-ui.BufferLine[]
-local function render(props)
+local function render(props, config)
 	local _props, dispatch = useReducer(function(state, action)
 		if action == "move_right" then
 			state.value = math.min(state.value + 10, 100)
@@ -20,8 +19,6 @@ local function render(props)
 		return state
 	end, props)
 
-	-- override default config
-	local config = vim.tbl_extend("force", global_config, props.config)
 	local cc = config.characters
 
 	local interactions = {
@@ -49,14 +46,13 @@ local function render(props)
 	}
 end
 
---- @param props? { title?: string, value?: integer, config?: ascii-ui.Config }
+--- @param props? { title?: string, value?: integer }
 local function Slider(props)
-	return function()
+	return function(config)
 		props = props or {}
 		props.value = props.value or 0
-		props.config = props.config or {}
 		props.title = props.title or ""
-		return render(props)
+		return render(props, config)
 	end
 end
 

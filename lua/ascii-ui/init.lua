@@ -35,7 +35,8 @@ function M.mount(component)
 	end
 
 	-- does first render
-	local rendered_buffer = ascii_renderer:render(component())
+	-- FIX: Config should be set in renderer
+	local rendered_buffer = ascii_renderer:render(component)
 
 	-- spawns a window
 	local window = Window:new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
@@ -49,7 +50,7 @@ function M.mount(component)
 
 		logger.info("Rerendering on state change for window %d and buffer %d", window.winid, window.bufnr)
 		local current_lines_count = rendered_buffer:height()
-		rendered_buffer = ascii_renderer:render(component()) -- assign variable to have change the referenced value
+		rendered_buffer = ascii_renderer:render(component) -- assign variable to have change the referenced value
 		local new_lines_count = rendered_buffer:height()
 		window:update(rendered_buffer)
 
