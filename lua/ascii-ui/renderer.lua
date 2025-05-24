@@ -22,33 +22,30 @@ function Renderer:new(config)
 	return state
 end
 
----@param renderable ascii-ui.Component | ascii-ui.BufferLine[] | string
+---@param renderable string
+---| fun(config: ascii-ui.Config): string
+---| fun(config: ascii-ui.Config): ascii-ui.BufferLine[]
+---| fun(config: ascii-ui.Config): fun(config: ascii-ui.Config):  ascii-ui.BufferLine[]
 ---@return ascii-ui.Buffer
 function Renderer:render(renderable)
 	if type(renderable) == "string" then
 		return self:render_xml(renderable)
 	end
-	if vim.isarray(renderable) then
-		error("I am array")
-		return Buffer.new(unpack(renderable))
-	end
 	if type(renderable) == "function" then
 		local rendered = renderable(self.config)
-		if vim.isarray(rendered) then
-			-- If the renderable is an array, we assume it's a list of BufferLines
+
+		if type(rendered) == "table" and vim.isarray(rendered) then
 			return Buffer.new(unpack(rendered))
 		end
 
 		if type(rendered) == "string" then
 			return self:render_xml(rendered)
 		end
+
 		return Buffer.new(unpack(rendered(self.config)))
 	end
-	error("I am unknown type: " .. type(renderable))
 
-	assert(renderable.render)
-
-	return Buffer.new(unpack(renderable:render()))
+	error("Cannot render: " .. vim.inspect(renderable))
 end
 
 --- @return ascii-ui.BufferLine[]
