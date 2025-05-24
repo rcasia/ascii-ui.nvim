@@ -3,6 +3,12 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
+-- execute only on linux
+if vim.fn.has("linux") == 0 then
+	pending("This test is only for Linux")
+	return
+end
+
 --- @param url string
 local function fetch(url)
 	local result = vim.system({ "curl", "-s", url }):wait()
@@ -13,12 +19,6 @@ local function fetch(url)
 end
 
 describe("fetch", function()
-	-- execute only on linux
-	if vim.fn.has("linux") == 0 then
-		pending("This test is only for Linux")
-		return
-	end
-
 	before_each(function()
 		local result = vim.system({ "docker", "compose", "up", "-d", "--wait" }):wait()
 		assert(result.code == 0, "could not spin up docker: " .. vim.inspect(result))
