@@ -9,6 +9,7 @@ Renderer.component_tags = {}
 
 ---@param config { characters: { top_left: string, top_right: string,
 --- bottom_left: string, bottom_right: string, horizontal: string, vertical: string } }
+--- @field config ascii-ui.Config
 --- @return ascii-ui.Renderer
 function Renderer:new(config)
 	local state = {
@@ -31,7 +32,7 @@ function Renderer:render(renderable)
 		return Buffer.new(unpack(renderable))
 	end
 	if type(renderable) == "function" then
-		return Buffer.new(unpack(renderable()))
+		return Buffer.new(unpack(renderable(self.config)))
 	end
 
 	assert(renderable.render)

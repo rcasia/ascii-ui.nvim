@@ -6,6 +6,7 @@ local eq = assert.are.same
 
 local Column = require("ascii-ui.layout.column")
 local DummyComponent = require("tests.util.dummy_functional_component")
+local Row = require("ascii-ui.layout.row")
 local create_dummy_component = require("tests.util.dummy_component")
 
 describe("renderer", function()
@@ -31,5 +32,21 @@ describe("renderer", function()
 			return Column(DummyComponent())
 		end
 		eq({ "dummy_render" }, renderer:render(App()):to_lines())
+	end)
+
+	it("puts config in closure function first param", function()
+		local actual_config
+		local ExampleComponent = function()
+			return function(c)
+				actual_config = c
+				return {}
+			end
+		end
+		local App = function()
+			return Column(Row(ExampleComponent()))
+		end
+		renderer:render(App())
+
+		eq(config, actual_config)
 	end)
 end)
