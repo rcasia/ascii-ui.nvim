@@ -9,10 +9,8 @@ local function Box(props)
 	props.width = props.width or 15
 	props.height = props.height or 3
 	props.content = props.content or ""
-	local config = props.__config or require("ascii-ui.config")
-	-- TODO: merge custom config with default
 
-	return function()
+	return function(config)
 		local cc = config.characters
 		local width = props.width
 

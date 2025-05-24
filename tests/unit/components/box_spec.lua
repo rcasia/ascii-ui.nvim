@@ -20,7 +20,7 @@ describe("renderer", function()
 
 	describe("Box", function()
 		it("should render a box", function()
-			local box = Box({ __config = config })
+			local box = Box()
 			eq(
 				--
 				{
@@ -33,10 +33,10 @@ describe("renderer", function()
 		end)
 
 		for _, box_props in ipairs({
-			{ width = 10, height = 5, __config = config },
-			{ width = 15, height = 3, __config = config },
-			{ width = 20, height = 4, __config = config },
-			{ width = 25, height = 10, __config = config },
+			{ width = 10, height = 5 },
+			{ width = 15, height = 3 },
+			{ width = 20, height = 4 },
+			{ width = 25, height = 10 },
 		}) do
 			it(("should render a box with width %s"):format(box_props), function()
 				local box = Box(box_props)
@@ -49,7 +49,7 @@ describe("renderer", function()
 		end
 
 		it("should render a box with simple text", function()
-			local box_hello = Box({ width = 17, height = 5, content = "Hello!", __config = config })
+			local box_hello = Box({ width = 17, height = 5, content = "Hello!" })
 
 			eq({
 				".................",
@@ -59,7 +59,7 @@ describe("renderer", function()
 				".................",
 			}, renderer:render(box_hello):to_lines())
 
-			local box_world = Box({ width = 17, height = 5, content = "World!", __config = config })
+			local box_world = Box({ width = 17, height = 5, content = "World!" })
 
 			eq({
 				".................",
