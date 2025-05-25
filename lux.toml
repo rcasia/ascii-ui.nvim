@@ -12,9 +12,5 @@ license = "MIT"
 # Add your dependencies here
 # `busted = ">=2.0"`
 
-[run]
-args = ["src/main.lua"]
-
 [build]
 type = "builtin"
-
