@@ -8,10 +8,11 @@ local Renderer = {}
 
 Renderer.component_tags = {}
 
----@param config { characters: { top_left: string, top_right: string,
+---@param config? { characters: { top_left: string, top_right: string,
 --- bottom_left: string, bottom_right: string, horizontal: string, vertical: string } }
 --- @return ascii-ui.Renderer
 function Renderer:new(config)
+	config = config or {}
 	local state = {
 		config = config,
 	}
