@@ -1,26 +1,837 @@
 ==============================================================================
 ------------------------------------------------------------------------------
-                                                                             *M*
-                                      `M`
+@class ascii-ui.ForComponentProps
+@field props? table[]
+@field items? any[] | fun(): any[]
+@field component ascii-ui.FunctionalComponent
+@field transform? fun(item: any): table
+
+------------------------------------------------------------------------------
+                                                                         *For()*
+                                 `For`({props})
+@param props ascii-ui.ForComponentProps
+@return fun(): ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                    *Directives*
+                                  `Directives`
+@class ascii-ui.Directives
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@alias ascii-ui.IfComponentProps { child: function, fallback: function, condition: fun(): boolean }
+
+------------------------------------------------------------------------------
+                                                                          *If()*
+                                 `If`({props})
+@param props ascii-ui.IfComponentProps
+@return fun(): ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *Cursor*
+                                    `Cursor`
+@class ascii-ui.Cursor
+@field buffers table<number, boolean>
+@field last_position ascii-ui.CursorPosition | nil
+@field _current_position ascii-ui.CursorPosition | nil
+
+------------------------------------------------------------------------------
+@class ascii-ui.CursorPosition
+@field line integer
+@field col integer
+
+------------------------------------------------------------------------------
+                                                     *Cursor.current_position()*
+                          `Cursor.current_position`()
+@return ascii-ui.CursorPosition
+
+------------------------------------------------------------------------------
+                                                              *Cursor.move_to()*
+                          `Cursor.move_to`({position})
+@param position ascii-ui.CursorPosition
+
+------------------------------------------------------------------------------
+                                              *Cursor.last_movement_direction()*
+                       `Cursor.last_movement_direction`()
+@return ascii-ui.CursorDirection
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *Logger*
+                                    `Logger`
+@class ascii-ui.Logger
+
+------------------------------------------------------------------------------
+                                                                        *levels*
+                                    `levels`
+@enum ascii-ui.Logger.LogLevel
+
+------------------------------------------------------------------------------
+                                                            *Logger.set_level()*
+                        `Logger.set_level`({new_level})
+@param new_level ascii-ui.Logger.LogLevel
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                       *AsciiUI*
+                                   `AsciiUI`
 @class ascii-ui.AsciiUI
 
 ------------------------------------------------------------------------------
-                                                                  *M.components*
-                                 `M.components`
+                                                            *AsciiUI.components*
+                              `AsciiUI.components`
 This contains all the components available in the library
 
 ------------------------------------------------------------------------------
-                                                                      *M.layout*
-                                   `M.layout`
+                                                                *AsciiUI.layout*
+                                `AsciiUI.layout`
 This contains the layout class
 
 ------------------------------------------------------------------------------
-                                                                     *M.mount()*
-                             `M.mount`({component})
+                                                               *AsciiUI.mount()*
+                          `AsciiUI.mount`({component})
 Parameters ~
 {component} `(ascii)`-ui.FunctionalComponent
 Return ~
 `(integer)` bufnr
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                      *Renderer*
+                                   `Renderer`
+Class ~
+{ascii-ui.Renderer}
+@field config ascii-ui.Config
+
+------------------------------------------------------------------------------
+                                                                *Renderer:new()*
+                            `Renderer:new`({config})
+Parameters ~
+{config} { `(characters)`: { top_left: string, top_right: string,
+bottom_left: string, bottom_right: string, horizontal: string, vertical: string } }
+@return ascii-ui.Renderer
+
+------------------------------------------------------------------------------
+                                                             *Renderer:render()*
+                        `Renderer:render`({renderable})
+Parameters ~
+{renderable} `(string)`
+fun(config: ascii-ui.Config): string
+fun(config: ascii-ui.Config): ascii-ui.BufferLine[]
+fun(config: ascii-ui.Config): fun(config: ascii-ui.Config):  ascii-ui.BufferLine[]
+Return ~
+`(ascii)`-ui.Buffer
+
+------------------------------------------------------------------------------
+                                                      *Renderer:render_by_tag()*
+           `Renderer:render_by_tag`({tag_name}, {props}, {children})
+@return ascii-ui.BufferLine[]
+
+------------------------------------------------------------------------------
+                                                         *Renderer:render_xml()*
+                      `Renderer:render_xml`({xml_content})
+@param xml_content string
+@return ascii-ui.Buffer
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                              *UserInteractions*
+                               `UserInteractions`
+Class ~
+{ascii-ui.UserInteractions}
+Fields ~
+{private} `(singleton_instance)` ascii-ui.UserInteractions | nil
+{private} `(buffers)` table<integer, ascii-ui.Buffer>
+
+------------------------------------------------------------------------------
+                                                        *UserInteractions:new()*
+                            `UserInteractions:new`()
+Return ~
+`(ascii)`-ui.UserInteractions
+
+------------------------------------------------------------------------------
+                                                   *UserInteractions:interact()*
+                      `UserInteractions:interact`({opts})
+Parameters ~
+{opts} `({ buffer_id: integer, position: table, interaction_type: ascii-ui.UserInteractions.InteractionType | string })`
+
+------------------------------------------------------------------------------
+                                              *UserInteractions:attach_buffer()*
+            `UserInteractions:attach_buffer`({buffer}, {buffer_id})
+Parameters ~
+{buffer} `(ascii)`-ui.Buffer
+{buffer_id} `(integer)`
+
+------------------------------------------------------------------------------
+                                              *UserInteractions:detach_buffer()*
+                 `UserInteractions:detach_buffer`({buffer_id})
+Parameters ~
+{buffer_id} `(integer)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *Layout*
+                                    `Layout`
+@class ascii-ui.Layout
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                           *merge_bufferlines()*
+            `merge_bufferlines`({bufferlines}, {other_bufferlines})
+@param bufferlines ascii-ui.BufferLine[]
+@param other_bufferlines ascii-ui.BufferLine[]
+@return ascii-ui.BufferLine[]
+
+------------------------------------------------------------------------------
+                                                                         *Row()*
+                                  `Row`({...})
+@param ... fun(): ascii-ui.BufferLine[]
+@return fun(): ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                      *Layout()*
+                                `Layout`({...})
+@param ... fun(): ascii-ui.BufferLine[]
+@return fun(): ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                *EventListenter*
+                                `EventListenter`
+@class ascii-ui.Events
+
+------------------------------------------------------------------------------
+                                                                             *_*
+                                      `_`
+@enum (key) ascii-ui.EventType
+
+------------------------------------------------------------------------------
+                                                       *EventListenter:listen()*
+                    `EventListenter:listen`({ev_type}, {fn})
+@param ev_type ascii-ui.EventType
+@param fn function
+
+------------------------------------------------------------------------------
+                                                      *EventListenter:trigger()*
+                      `EventListenter:trigger`({ev_type})
+@param ev_type ascii-ui.EventType
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                 *generateKey()*
+                             `generateKey`({props})
+Genera una clave única basada en las propiedades
+
+------------------------------------------------------------------------------
+                                                                   *M.memoize()*
+                        `M.memoize`({factory}, {props})
+Memoiza un closure basado en sus propiedades
+@param factory function Función que genera el closure
+@param props table Propiedades del componente
+@return function Memoized closure
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *config*
+                                    `config`
+@class ascii-ui.Config
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                      *render()*
+                          `render`({props}, {config})
+@param props? { title?: string, value?: integer, config?: ascii-ui.Config }
+Return ~
+`(ascii)`-ui.BufferLine[]
+
+------------------------------------------------------------------------------
+                                                                      *Slider()*
+                               `Slider`({props})
+@param props? { title?: string, value?: integer }
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                    *Components*
+                                  `Components`
+@class ascii-ui.Components
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@alias ascii-ui.ParagraphComponent.Props { content?: string }
+
+------------------------------------------------------------------------------
+                                                                   *Paragraph()*
+                              `Paragraph`({props})
+@param props ascii-ui.ParagraphComponent.Props
+@return fun(): ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                     *Component*
+                                  `Component`
+Class ~
+{ascii-ui.Component}
+Fields ~
+{render} `(fun(): ascii-ui.BufferLine[])`
+
+------------------------------------------------------------------------------
+                                                               *Component:new()*
+                       `Component:new`({component_name})
+@param component_name? string
+@return ascii-ui.Component
+
+------------------------------------------------------------------------------
+                                                            *Component:extend()*
+                `Component:extend`({custom_component}, {props})
+@generic T
+@param custom_component T
+@param props? table<string, any>
+@return T
+
+------------------------------------------------------------------------------
+                                                         *Component:on_change()*
+                          `Component:on_change`({cb})
+Adds a callback to be called when a property changes.
+Cleared either when:
+ - the callback function fails
+ - the component is destroyed
+
+@see Component.destroy
+@see Component.clear_subscriptions
+
+@param cb fun(component: table, key: string, value: any)
+
+
+==============================================================================
+------------------------------------------------------------------------------
+Class ~
+{ascii-ui.SelectComponent.Option}
+Fields ~
+{id} `(integer)`
+{name} `(string)`
+{selected} `(boolean)`
+
+------------------------------------------------------------------------------
+                                                                        *from()*
+                             `from`({option_names})
+Parameters ~
+{option_names} `(string[])`
+Return ~
+`(ascii)`-ui.SelectComponent.Option[]
+
+------------------------------------------------------------------------------
+                                                                      *Select()*
+                               `Select`({props})
+@param props { options: string[], title?: string, on_select? : fun(selected_option: string) }
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@alias ascii-ui.InputProps { value?: string }
+
+------------------------------------------------------------------------------
+@param props? ascii-ui.InputProps
+@return fun(): ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                      *Checkbox*
+                                   `Checkbox`
+Class ~
+{ascii-ui.Checkbox} : ascii-ui.Component
+Fields ~
+{checked} `(boolean)`
+{label} `(string)`
+
+------------------------------------------------------------------------------
+                                                                *Checkbox:new()*
+                             `Checkbox:new`({opts})
+Parameters ~
+{opts} `(optional)` `({ checked?: boolean, label?: string })`
+Return ~
+`(ascii)`-ui.Checkbox
+
+------------------------------------------------------------------------------
+                                                             *Checkbox:render()*
+                              `Checkbox:render`()
+Return ~
+`(ascii)`-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                         *Box()*
+                                 `Box`({props})
+Parameters ~
+{props} `({ width: integer, height: integer, content: string })`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@generic T
+@generic P : ascii-ui.ComponentProps
+@alias ComponentClosure fun(): ascii-ui.BufferLine[]
+@alias ascii-ui.ComponentProp<T> T | fun(): T
+@alias ascii-ui.ComponentProps table<string, ascii-ui.ComponentProp<any>>
+@alias ascii-ui.FunctionalComponent<P> fun(props: P): ComponentClosure
+
+------------------------------------------------------------------------------
+@alias ascii-ui.PropsType
+"nil"
+"number"
+"string"
+"boolean"
+"table"
+"function"
+
+------------------------------------------------------------------------------
+                                                              *validate_props()*
+                       `validate_props`({props}, {types})
+@param props table<string, any>
+@param types table<string, ascii-ui.PropsType>
+
+------------------------------------------------------------------------------
+                                                          *from_function_prop()*
+                     `from_function_prop`({props}, {types})
+@param props table<string, any>
+@param types table<string, ascii-ui.PropsType>
+@return table<string, any>
+
+------------------------------------------------------------------------------
+                                                             *createComponent()*
+           `createComponent`({name}, {functional_component}, {types})
+Crea un componente personalizado y lo registra
+@generic ascii-ui.ComponentClosure, T
+@param name string Nombre del componente
+@param functional_component fun(props: T)
+@param types table<string, ascii-ui.PropsType> Tipos de los props del componente
+@return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@alias ascii-ui.ButtonComponent.Props { label: string, on_press?: fun() }
+
+------------------------------------------------------------------------------
+                                                                      *Button()*
+                               `Button`({props})
+@type ascii-ui.FunctionalComponent<ascii-ui.ButtonComponent.Props>
+@return ComponentClosure
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                              *INTERACTION_TYPE*
+                               `INTERACTION_TYPE`
+(key) ascii-ui.UserInteractions.InteractionType
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *Window*
+                                    `Window`
+Class ~
+{ascii-ui.Window}
+Fields ~
+{winid} `(integer)`
+{bufnr} `(integer)`
+{ns_id} `(integer)`
+{opts} `({ width?: integer, height?: integer })`
+
+------------------------------------------------------------------------------
+                                                                  *Window.new()*
+                              `Window.new`({opts})
+Parameters ~
+{opts} `(optional)` `({ width?: integer, height?: integer })`
+Return ~
+`(ascii)`-ui.Window
+
+------------------------------------------------------------------------------
+                                                              *Window:is_open()*
+                               `Window:is_open`()
+Return ~
+`(boolean)`
+
+------------------------------------------------------------------------------
+                                                               *Window:update()*
+                           `Window:update`({buffer})
+Parameters ~
+{buffer} `(ascii)`-ui.Buffer
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                         *Hooks*
+                                    `Hooks`
+@class ascii-ui.Hooks
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                    *useState()*
+                              `useState`({value})
+@generic T
+@param value T
+@return fun(): T getValue
+@return fun(value: T) setValue
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                         *useFunctionRegistry()*
+                          `useFunctionRegistry`({fn})
+@param fn function
+@return string reference
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                  *useReducer()*
+                        `useReducer`({reducer}, {value})
+@alias ascii-ui.ReducerAction {type: string, params: any }
+@generic T
+@param reducer fun(value: T, action: ascii-ui.ReducerAction): T
+@param value T
+@return fun(): T getValue
+@return fun(action: ascii-ui.ReducerAction) dispatch
+
+
+==============================================================================
+------------------------------------------------------------------------------
+the decimal code of a character to its corresponding char
+
+------------------------------------------------------------------------------
+the hexadecimal code of a character to its corresponding char
+
+------------------------------------------------------------------------------
+Instantiates a XmlParser object.
+
+------------------------------------------------------------------------------
+if a function/field exists in a table or in its metatable
+
+------------------------------------------------------------------------------
+                                                                     *stripWS()*
+                             `stripWS`({self}, {s})
+Removes whitespaces
+
+------------------------------------------------------------------------------
+Parses a string representing a tag.
+
+------------------------------------------------------------------------------
+Parse a Normal tag
+
+------------------------------------------------------------------------------
+Get next tag (first pass - fix exceptions below).
+
+
+==============================================================================
+------------------------------------------------------------------------------
+prints a table in an easy-to-ready format
+
+------------------------------------------------------------------------------
+a XmlParser object to parse a XML string
+
+------------------------------------------------------------------------------
+prints a table in an easy-to-ready format
+
+------------------------------------------------------------------------------
+to generate a string prepresentation of a table
+
+------------------------------------------------------------------------------
+Loads an XML file from a specified path
+
+------------------------------------------------------------------------------
+an _attr element from a table that represents the attributes of an XML tag,
+
+------------------------------------------------------------------------------
+                                                              *getSingleChild()*
+                             `getSingleChild`({tb})
+the first key of a given table
+
+------------------------------------------------------------------------------
+                                                               *getFirstValue()*
+                             `getFirstValue`({tb})
+the first value of a given table
+
+------------------------------------------------------------------------------
+a Lua table to a XML String representation.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *init()*
+                                    `init`()
+
+------------------------------------------------------------------------------
+@module Handler to generate a DOM-like node tree structure with
+
+------------------------------------------------------------------------------
+a new handler object.
+
+------------------------------------------------------------------------------
+a start tag.
+
+------------------------------------------------------------------------------
+an end tag.
+
+------------------------------------------------------------------------------
+a tag content.
+
+------------------------------------------------------------------------------
+a comment tag.
+
+------------------------------------------------------------------------------
+Parses a XML processing instruction (PI) tag
+
+------------------------------------------------------------------------------
+the XML declaration line (the line that indicates the XML version).
+
+------------------------------------------------------------------------------
+a DTD tag.
+
+------------------------------------------------------------------------------
+XML escape characters for a TEXT node.
+
+------------------------------------------------------------------------------
+return a string of XML attributes
+
+------------------------------------------------------------------------------
+return a XML formatted string of @p node.
+
+------------------------------------------------------------------------------
+a string in XML format from the dom root object @p node.
+
+------------------------------------------------------------------------------
+                                                                     *dom.cdata*
+                                  `dom.cdata`
+CDATA tag content.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                    *Highligths*
+                                  `Highligths`
+(key) ascii-ui.Highligths
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                       *Element*
+                                   `Element`
+Class ~
+{ascii-ui.Element}
+Fields ~
+{content} `(string)`
+{interactions} `(table<ascii-ui.UserInteractions.InteractionType, function>)`
+{highlight} `(optional)` `(string)`
+{private} `(focusable)` boolean
+
+------------------------------------------------------------------------------
+                                                                 *Element:new()*
+                              `Element:new`({...})
+Parameters ~
+{...} `({ content: string, is_focusable?: boolean, interactions?: table<ascii-ui.UserInteractions.InteractionType, function>, highlight?: string }  | string)`
+Return ~
+`(ascii)`-ui.Element
+
+------------------------------------------------------------------------------
+                                                                 *Element:len()*
+                                `Element:len`()
+Return ~
+`(integer)`
+
+------------------------------------------------------------------------------
+                                                        *Element:is_focusable()*
+                            `Element:is_focusable`()
+Return ~
+`(boolean)`
+
+------------------------------------------------------------------------------
+                                                                *Element:wrap()*
+                                `Element:wrap`()
+Wraps the element in a ascii-ui.Bufferline object
+Return ~
+`(ascii)`-ui.BufferLine
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *Buffer*
+                                    `Buffer`
+Class ~
+{ascii-ui.Buffer}
+Fields ~
+{lines} `(ascii)`-ui.BufferLine[]
+
+------------------------------------------------------------------------------
+                                                                  *Buffer.new()*
+                              `Buffer.new`({...})
+Parameters ~
+{...} `(optional)` `(ascii)`-ui.BufferLine
+Return ~
+`(ascii)`-ui.Buffer
+
+------------------------------------------------------------------------------
+                                                                *Buffer:width()*
+                                `Buffer:width`()
+Return ~
+`(integer)` width
+
+------------------------------------------------------------------------------
+                                                       *Buffer:find_focusable()*
+                           `Buffer:find_focusable`()
+Return ~
+`(ascii)`-ui.Element | nil
+
+------------------------------------------------------------------------------
+                                  *Buffer:find_position_of_the_next_focusable()*
+            `Buffer:find_position_of_the_next_focusable`({position})
+Parameters ~
+{position} `(optional)` `({ line: integer, col: integer })`
+Return ~
+`({ found: boolean, pos: { line: integer, col: integer } })`
+
+------------------------------------------------------------------------------
+                                  *Buffer:find_position_of_the_last_focusable()*
+            `Buffer:find_position_of_the_last_focusable`({position})
+Parameters ~
+{position} `({ line: integer, col: integer })`
+Return ~
+`({ found: boolean, pos: { line: integer, col: integer } })`
+
+------------------------------------------------------------------------------
+                                                      *Buffer:iter_focusables()*
+                           `Buffer:iter_focusables`()
+Return ~
+`(fun(): ascii-ui.Element | nil)`
+
+------------------------------------------------------------------------------
+                                                *Buffer:iter_colored_elements()*
+                        `Buffer:iter_colored_elements`()
+Return ~
+`(fun(): { element: ascii-ui.Element, position: { line: integer, col: integer } } | nil)`
+
+------------------------------------------------------------------------------
+                                                           *Buffer.from_lines()*
+                          `Buffer.from_lines`({lines})
+Parameters ~
+{lines} `(string[])`
+Return ~
+`(ascii)`-ui.Buffer
+
+------------------------------------------------------------------------------
+                                                             *Buffer:to_lines()*
+                              `Buffer:to_lines`()
+Return ~
+`(string[])`
+
+------------------------------------------------------------------------------
+                                                   *Buffer:find_element_by_id()*
+                       `Buffer:find_element_by_id`({id})
+Parameters ~
+{id} `(string)`
+Return ~
+`(ascii)`-ui.Element | nil
+
+------------------------------------------------------------------------------
+                                             *Buffer:find_element_by_position()*
+                 `Buffer:find_element_by_position`({position})
+Parameters ~
+{position} `({ line: integer, col: integer })`
+Return ~
+`(ascii)`-ui.Element | nil
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                    *BufferLine*
+                                  `BufferLine`
+Class ~
+{ascii-ui.BufferLine}
+Fields ~
+{elements} `(ascii)`-ui.Element[]
+
+------------------------------------------------------------------------------
+                                                              *BufferLine.new()*
+                            `BufferLine.new`({...})
+Parameters ~
+{...} `(ascii)`-ui.Element
+Return ~
+`(ascii)`-ui.BufferLine
+
+------------------------------------------------------------------------------
+                                                   *BufferLine:find_focusable()*
+                         `BufferLine:find_focusable`()
+
+Return ~
+`(ascii)`-ui.Element | nil
+Return ~
+`(number)` col returns 0 when not found
+
+------------------------------------------------------------------------------
+                                                  *BufferLine:find_focusable2()*
+                         `BufferLine:find_focusable2`()
+Return ~
+`(number)` col returns 0 when not found
+
+------------------------------------------------------------------------------
+                                              *BufferLine:find_element_by_col()*
+                    `BufferLine:find_element_by_col`({col})
+Parameters ~
+{col} `(number)`
+Return ~
+`(ascii)`-ui.Element | nil
+
+------------------------------------------------------------------------------
+                                                              *BufferLine:len()*
+                               `BufferLine:len`()
+Return ~
+`(integer)` length
+
+------------------------------------------------------------------------------
+                                                      *BufferLine.from_string()*
+                        `BufferLine.from_string`({str})
+Parameters ~
+{str} `(string)`
+
+------------------------------------------------------------------------------
+                                                        *BufferLine:to_string()*
+                            `BufferLine:to_string`()
+Return ~
+`(string)`
+
+------------------------------------------------------------------------------
+                                                           *BufferLine:append()*
+              `BufferLine:append`({other_bufferline}, {delimiter})
+@param other_bufferline ascii-ui.BufferLine
+@param delimiter? ascii-ui.Element
+@return ascii-ui.BufferLine
+
+------------------------------------------------------------------------------
+                                                         *BufferLine:is_empty()*
+                            `BufferLine:is_empty`()
+@return boolean
 
 
  vim:tw=78:ts=8:noet:ft=help:norl:
