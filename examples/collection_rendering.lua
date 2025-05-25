@@ -3,10 +3,11 @@ local Paragraph = ui.components.Paragraph
 local Column = ui.layout.Column
 local Button = ui.components.Button
 local For = ui.directives.For
+local useReducer = ui.hooks.useReducer
 
 --- @type ascii-ui.FunctionalComponent
 local function App()
-	local items, dispatch = ui.hooks.useReducer(function(state, action)
+	local items, dispatch = useReducer(function(state, action)
 		if action.type == "add" then
 			return vim.list_extend(state, { "this is " .. #state + 1 })
 		end
