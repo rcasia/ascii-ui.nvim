@@ -83,17 +83,12 @@ ascii-ui.nvim-table-of-contents	ascii-ui.nvim.txt	/*ascii-ui.nvim-table-of-conte
 ascii-ui.nvim.txt	ascii-ui.nvim.txt	/*ascii-ui.nvim.txt*
 config	ascii-ui.txt	/*config*
 createComponent()	ascii-ui.txt	/*createComponent()*
-dom.cdata	ascii-ui.txt	/*dom.cdata*
 from()	ascii-ui.txt	/*from()*
 from_function_prop()	ascii-ui.txt	/*from_function_prop()*
 generateKey()	ascii-ui.txt	/*generateKey()*
-getFirstValue()	ascii-ui.txt	/*getFirstValue()*
-getSingleChild()	ascii-ui.txt	/*getSingleChild()*
-init()	ascii-ui.txt	/*init()*
 levels	ascii-ui.txt	/*levels*
 merge_bufferlines()	ascii-ui.txt	/*merge_bufferlines()*
 render()	ascii-ui.txt	/*render()*
-stripWS()	ascii-ui.txt	/*stripWS()*
 useFunctionRegistry()	ascii-ui.txt	/*useFunctionRegistry()*
 useReducer()	ascii-ui.txt	/*useReducer()*
 useState()	ascii-ui.txt	/*useState()*
