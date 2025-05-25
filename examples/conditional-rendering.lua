@@ -9,22 +9,24 @@ local If = ui.directives.If
 local function App()
 	local shouldShow, setShouldShow = useState(true)
 
-	return Column(
-		If({
-			condition = function()
-				return shouldShow()
-			end,
-			child = Paragraph({ content = "this is my content" }),
-			fallback = Paragraph({ content = "hidden" }),
-		}),
+	return function()
+		return Column(
+			If({
+				condition = function()
+					return shouldShow()
+				end,
+				child = Paragraph({ content = "this is my content" }),
+				fallback = Paragraph({ content = "hidden" }),
+			}),
 
-		Button({
-			label = "change",
-			on_press = function()
-				setShouldShow(not shouldShow())
-			end,
-		})
-	)
+			Button({
+				label = "change",
+				on_press = function()
+					setShouldShow(not shouldShow())
+				end,
+			})
+		)
+	end
 end
 
 ui.mount(App())
