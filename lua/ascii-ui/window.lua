@@ -11,12 +11,13 @@ local Window = {
 	---@type ascii-ui.WindowOpts
 	default_opts = { width = 40, height = 20 },
 }
+Window.__index = Window
 
 ---@param opts? ascii-ui.WindowOpts
 ---@return ascii-ui.Window
-function Window:new(opts)
+function Window.new(opts)
 	opts = opts or {}
-	opts = vim.tbl_extend("force", self.default_opts, opts)
+	opts = vim.tbl_extend("force", Window.default_opts, opts)
 
 	-- set default color
 	local hl = vim.api.nvim_get_hl(0, { name = "Normal" })
@@ -35,8 +36,7 @@ function Window:new(opts)
 		edits_enabled = false,
 	}
 
-	setmetatable(state, self)
-	self.__index = self
+	setmetatable(state, Window)
 
 	return state
 end
@@ -71,13 +71,13 @@ function Window:open()
 end
 
 function Window:enable_edits()
-	logger.debug("Window/Buffer edits are enabled")
+	logger.debug("Edits are enabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = true
 	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
 end
 
 function Window:disable_edits()
-	logger.debug("Window/Buffer edits are disabled")
+	logger.debug("Edits are disabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = false
 	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
 end
