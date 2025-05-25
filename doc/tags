@@ -76,6 +76,10 @@ Window.new()	ascii-ui.txt	/*Window.new()*
 Window:is_open()	ascii-ui.txt	/*Window:is_open()*
 Window:update()	ascii-ui.txt	/*Window:update()*
 _	ascii-ui.txt	/*_*
+ascii-ui.hooks.useEffect()	ascii-ui.txt	/*ascii-ui.hooks.useEffect()*
+ascii-ui.hooks.useFunctionRegistry()	ascii-ui.txt	/*ascii-ui.hooks.useFunctionRegistry()*
+ascii-ui.hooks.useReducer()	ascii-ui.txt	/*ascii-ui.hooks.useReducer()*
+ascii-ui.hooks.useState()	ascii-ui.txt	/*ascii-ui.hooks.useState()*
 ascii-ui.nvim-ascii-ui.nvim	ascii-ui.nvim.txt	/*ascii-ui.nvim-ascii-ui.nvim*
 ascii-ui.nvim-ascii-ui.nvim-example	ascii-ui.nvim.txt	/*ascii-ui.nvim-ascii-ui.nvim-example*
 ascii-ui.nvim-links	ascii-ui.nvim.txt	/*ascii-ui.nvim-links*
@@ -89,6 +93,7 @@ generateKey()	ascii-ui.txt	/*generateKey()*
 levels	ascii-ui.txt	/*levels*
 merge_bufferlines()	ascii-ui.txt	/*merge_bufferlines()*
 render()	ascii-ui.txt	/*render()*
+useEffect()	ascii-ui.txt	/*useEffect()*
 useFunctionRegistry()	ascii-ui.txt	/*useFunctionRegistry()*
 useReducer()	ascii-ui.txt	/*useReducer()*
 useState()	ascii-ui.txt	/*useState()*

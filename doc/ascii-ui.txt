@@ -489,32 +489,138 @@ Parameters ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
+ascii-ui.hooks.useState() *ascii-ui.hooks.useState()*
+
+------------------------------------------------------------------------------
                                                                     *useState()*
                               `useState`({value})
+
+Provides local state management within a component.
+Returns getter and setter functions for a value, triggering UI updates on change.
+
+Example:
+```
+local function MyComponent()
+  local count, setCount = useState(0)
+  return function()
+    return ui.layout.Column(
+      ui.components.Paragraph({ content = function() return ("Count: %d"):format(count()) end }),
+      ui.components.Button({
+        label = "Increment",
+        on_press = function() setCount(count() + 1) end
+      })
+    )
+  end
+end
+```
+
 @generic T
-@param value T
-@return fun(): T getValue
-@return fun(value: T) setValue
+@param value T The initial state value.
+@return fun(): T getValue Returns the current state value when called.
+@return fun(value: T) setValue Sets the state to a new value and triggers a state change event.
 
 
 ==============================================================================
+------------------------------------------------------------------------------
+ascii-ui.hooks.useFunctionRegistry() *ascii-ui.hooks.useFunctionRegistry()*
+
 ------------------------------------------------------------------------------
                                                          *useFunctionRegistry()*
                           `useFunctionRegistry`({fn})
-@param fn function
-@return string reference
+Registers a Lua function and returns a string key reference to be used in ascii-ui component markup or as an indirect callback.
+This allows the UI runtime to invoke the function later.
+
+Example:
+```
+local function MyComponent()
+  local ref = ui.hooks.useFunctionRegistry(function()
+    print("Button pressed!")
+  end)
+  return function()
+    return ui.components.Button({ label = "Click Me", on_press = ref })
+  end
+end
+```
+
+@param fn function The Lua function to register in the global registry.
+@return string reference String key that can be used to retrieve and call the function.
 
 
 ==============================================================================
 ------------------------------------------------------------------------------
+ascii-ui.hooks.useReducer() *ascii-ui.hooks.useReducer()*
+
+------------------------------------------------------------------------------
+@alias ascii-ui.ReducerAction {type: string, params: any}
+
+------------------------------------------------------------------------------
                                                                   *useReducer()*
                         `useReducer`({reducer}, {value})
-@alias ascii-ui.ReducerAction {type: string, params: any }
+
+Manages complex state logic by applying a reducer function to the current state and dispatched actions within an ascii-ui component.
+Returns getter and dispatch functions for the state.
+
+Example:
+```
+local function reducer(state, action)
+  if action.type == "increment" then
+    return state + 1
+  end
+  return state
+end
+
+local function MyComponent()
+  local count, dispatch = ascii-ui.hooks.useReducer(reducer, 0)
+  return function()
+    return ui.components.Button({
+      label = "Count: " .. count(),
+      on_press = function() dispatch({type="increment"}) end
+    })
+  end
+end
+```
+
 @generic T
-@param reducer fun(value: T, action: ascii-ui.ReducerAction): T
-@param value T
-@return fun(): T getValue
-@return fun(action: ascii-ui.ReducerAction) dispatch
+@param reducer fun(value: T, action: ascii-ui.ReducerAction): T The reducer function to compute new state.
+@param value T The initial state value.
+@return fun(): T getValue Returns the current state value when called.
+@return fun(action: ascii-ui.ReducerAction) dispatch Dispatches an action to update the state.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+ascii-ui.hooks.useEffect() *ascii-ui.hooks.useEffect()*
+
+------------------------------------------------------------------------------
+                                                                   *useEffect()*
+                      `useEffect`({fn}, {observed_values})
+
+Runs a side-effect function after component render and when specified observed values change, inside an ascii-ui component.
+
+Example (runs effect on every render):
+```
+local function MyComponent()
+  local count, setCount = ui.hooks.useState(0)
+  ui.hooks.useEffect(function()
+    print("Rendered!")
+  end)
+  -- component render logic ...
+end
+```
+
+Example (runs effect only when count changes):
+```
+local function MyComponent()
+  local count, setCount = ui.hooks.useState(0)
+  ui.hooks.useEffect(function()
+    print("Count changed to", count())
+  end, { count })
+  -- component render logic ...
+end
+```
+
+@param fn function The callback to run as a side effect.
+@param observed_values? function[] Optional table of state getter functions to observe. If provided, the effect re-runs only when any observed value changes.
 
 
 ==============================================================================
