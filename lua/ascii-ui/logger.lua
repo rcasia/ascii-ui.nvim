@@ -1,5 +1,5 @@
 --- @class ascii-ui.Logger
-local M = {}
+local Logger = {}
 
 -- Define log levels
 --- @enum ascii-ui.Logger.LogLevel
@@ -11,7 +11,7 @@ local levels = {
 }
 
 -- Set default log level
-M.level = levels.DEBUG
+Logger.level = levels.DEBUG
 
 -- Get log file path
 local log_dir = vim.fn.stdpath("data") .. "/ascii-ui"
@@ -40,34 +40,34 @@ local function write_log(level, msg, ...)
 end
 
 -- Public log functions
-function M.debug(msg, ...)
-	if M.level == levels.DEBUG then
+function Logger.debug(msg, ...)
+	if Logger.level == levels.DEBUG then
 		write_log(levels.DEBUG, msg, ...)
 	end
 end
 
-function M.info(msg, ...)
-	if M.level == levels.DEBUG or M.level == levels.INFO then
+function Logger.info(msg, ...)
+	if Logger.level == levels.DEBUG or Logger.level == levels.INFO then
 		write_log(levels.INFO, msg, ...)
 	end
 end
 
-function M.warn(msg, ...)
-	if M.level ~= levels.ERROR then
+function Logger.warn(msg, ...)
+	if Logger.level ~= levels.ERROR then
 		write_log(levels.WARN, msg, ...)
 	end
 end
 
-function M.error(msg, ...)
+function Logger.error(msg, ...)
 	write_log(levels.ERROR, msg, ...)
 end
 
 -- Optional: set log level
 --- @param new_level ascii-ui.Logger.LogLevel
-function M.set_level(new_level)
+function Logger.set_level(new_level)
 	if levels[new_level] then
-		M.level = levels[new_level]
+		Logger.level = levels[new_level]
 	end
 end
 
-return M
+return Logger

@@ -7,25 +7,25 @@ local logger = require("ascii-ui.logger")
 local user_interations = require("ascii-ui.user_interactions")
 
 --- @class ascii-ui.AsciiUI
-local M = {}
+local AsciiUI = {}
 
 local ascii_renderer = require("ascii-ui.renderer"):new(config)
 
 --- This contains all the components available in the library
-M.components = require("ascii-ui.components")
+AsciiUI.components = require("ascii-ui.components")
 
-M.directives = require("ascii-ui.directives")
+AsciiUI.directives = require("ascii-ui.directives")
 
-M.createComponent = require("ascii-ui.components.functional-component")
+AsciiUI.createComponent = require("ascii-ui.components.functional-component")
 
-M.hooks = require("ascii-ui.hooks")
+AsciiUI.hooks = require("ascii-ui.hooks")
 
 --- This contains the layout class
-M.layout = require("ascii-ui.layout")
+AsciiUI.layout = require("ascii-ui.layout")
 
 ---@param component ascii-ui.FunctionalComponent
 ---@return integer bufnr
-function M.mount(component)
+function AsciiUI.mount(component)
 	local start = vim.loop.hrtime()
 	logger.info("------------------")
 	logger.info("Mounting component")
@@ -205,10 +205,10 @@ function M.mount(component)
 	return window.bufnr
 end
 
-setmetatable(M, {
+setmetatable(AsciiUI, {
 	__call = function(_, _) -- (self, opts)
-		return M
+		return AsciiUI
 	end,
 })
 
-return M
+return AsciiUI
