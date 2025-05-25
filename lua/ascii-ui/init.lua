@@ -158,28 +158,7 @@ function AsciiUI.mount(component)
 		end)
 	end, window.ns_id)
 
-	-- binds to window close event
-	vim.api.nvim_create_autocmd("WinClosed", {
-		callback = function(args)
-			local win_id = tonumber(args.match)
-
-			if win_id ~= window.winid then
-				return -- not our window
-			end
-
-			-- detach from user interactions
-			user_interations:instance():detach_buffer(window.bufnr)
-			vim.on_key(nil, window.ns_id)
-			logger.info("Detached buffer %s from user interactions", window.bufnr)
-
-			window:close()
-			logger.info("Closed window %d", win_id)
-
-			EventListener:clear()
-		end,
-	})
-
-	vim.api.nvim_create_autocmd("CursorMoved", {
+	local autocommand_id = vim.api.nvim_create_autocmd("CursorMoved", {
 		callback = function(args)
 			local win_id = tonumber(args.match)
 
@@ -197,6 +176,28 @@ function AsciiUI.mount(component)
 			else
 				window:disable_edits()
 			end
+		end,
+	})
+
+	-- binds to window close event
+	vim.api.nvim_create_autocmd("WinClosed", {
+		callback = function(args)
+			local win_id = tonumber(args.match)
+
+			if win_id ~= window.winid then
+				return -- not our window
+			end
+
+			-- detach from user interactions
+			user_interations:instance():detach_buffer(window.bufnr)
+			vim.on_key(nil, window.ns_id)
+			vim.api.nvim_del_autocmd(autocommand_id)
+			logger.info("Detached buffer %s from user interactions", window.bufnr)
+
+			window:close()
+			logger.info("Closed window %d", win_id)
+
+			EventListener:clear()
 		end,
 	})
 

@@ -71,9 +71,8 @@ function Window:open()
 end
 
 function Window:enable_edits()
-	if not self.winid or not self.bufnr then
-		logger.error("Cannot enable edits: window or buffer is not open")
-		return
+	if self:is_close() then
+		error("Cannot enable edits: window or buffer is not open")
 	end
 	logger.debug("Edits are enabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = true
@@ -81,9 +80,8 @@ function Window:enable_edits()
 end
 
 function Window:disable_edits()
-	if not self.winid or not self.bufnr then
-		logger.error("Cannot disable edits: window or buffer is not open")
-		return
+	if self:is_close() then
+		error("Cannot disable edits: window or buffer is not open")
 	end
 	logger.debug("Edits are disabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = false
@@ -92,7 +90,11 @@ end
 
 ---@return boolean
 function Window:is_open()
-	return self.winid ~= nil and self.bufnr ~= nil
+	return self.winid ~= nil or self.bufnr ~= nil
+end
+
+function Window:is_close()
+	return not self:is_open()
 end
 
 function Window:close()
