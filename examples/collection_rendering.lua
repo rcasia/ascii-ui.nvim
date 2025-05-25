@@ -13,22 +13,29 @@ local function App()
 		return state
 	end, { "this is 1", "this is 2" })
 
-	return Column(
-		For({
-			items = items,
-			transform = function(item)
-				return { content = item }
-			end,
-			component = Paragraph,
-		}),
+	return function()
+		return Column(
+			Paragraph({
+				content = function()
+					return "There are " .. #items() .. " items in the list"
+				end,
+			}),
+			For({
+				items = items,
+				transform = function(item)
+					return { content = item }
+				end,
+				component = Paragraph,
+			}),
 
-		Button({
-			label = "Add more",
-			on_press = function()
-				dispatch({ type = "add" })
-			end,
-		})
-	)
+			Button({
+				label = "Add more",
+				on_press = function()
+					dispatch({ type = "add" })
+				end,
+			})
+		)
+	end
 end
 
 ui.mount(App())
