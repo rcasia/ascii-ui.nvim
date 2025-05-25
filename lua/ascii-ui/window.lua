@@ -71,12 +71,20 @@ function Window:open()
 end
 
 function Window:enable_edits()
+	if not self.winid or not self.bufnr then
+		logger.error("Cannot enable edits: window or buffer is not open")
+		return
+	end
 	logger.debug("Edits are enabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = true
 	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
 end
 
 function Window:disable_edits()
+	if not self.winid or not self.bufnr then
+		logger.error("Cannot disable edits: window or buffer is not open")
+		return
+	end
 	logger.debug("Edits are disabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = false
 	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
