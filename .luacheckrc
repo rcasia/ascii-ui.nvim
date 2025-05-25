@@ -11,4 +11,5 @@ exclude_files = {
 	"**/lib/**",
 	"**/.tests/**",
 	".lux/**",
+	".deps/**",
 }
