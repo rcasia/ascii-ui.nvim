@@ -8,16 +8,18 @@ local useState = ui.hooks.useState
 local function App()
 	local content, setContent = useState("initial content")
 
-	return Column(
-		--
-		Paragraph({ content = content }),
-		Button({
-			label = "change",
-			on_press = function()
-				setContent("changed content")
-			end,
-		})
-	)
+	return function()
+		return Column(
+			--
+			Paragraph({ content = content }),
+			Button({
+				label = "change",
+				on_press = function()
+					setContent("changed content")
+				end,
+			})
+		)
+	end
 end
 
 ui.mount(App())
