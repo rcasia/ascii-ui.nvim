@@ -1,4 +1,4 @@
-*ascii-ui.nvim.txt*             For Neovim            Last change: 2025 May 24
+*ascii-ui.nvim.txt*             For Neovim            Last change: 2025 May 25
 
 ==============================================================================
 Table of Contents                            *ascii-ui.nvim-table-of-contents*
@@ -38,18 +38,20 @@ EXAMPLE                                  *ascii-ui.nvim-ascii-ui.nvim-example*
     
     --- @type ascii-ui.FunctionalComponent
     local function App()
-        local content, setContent = useState("initial content")
+     local content, setContent = useState("initial content")
     
-        return Column(
-            --
-            Paragraph({ content = content }),
-            Button({
-                label = "change",
-                on_press = function()
-                    setContent("changed content")
-                end,
-            })
-        )
+     return function()
+      return Column(
+       --
+       Paragraph({ content = content }),
+       Button({
+        label = "change",
+        on_press = function()
+         setContent("changed content")
+        end,
+       })
+      )
+     end
     end
     
     ui.mount(App())
