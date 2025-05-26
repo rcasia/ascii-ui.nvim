@@ -23,4 +23,14 @@ describe("useState", function()
 		end)
 		eq(1, counter())
 	end)
+
+	it("does not take the initial value for mutation", function()
+		local my_table = { a = "a" }
+		local data, setData = useState(my_table)
+
+		eq(my_table, data())
+
+		setData({ b = "b" })
+		eq({ a = "a" }, my_table)
+	end)
 end)

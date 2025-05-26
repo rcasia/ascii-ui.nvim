@@ -29,16 +29,19 @@ local logger = require("ascii-ui.logger")
 --- @return fun(value: T | fun(value: T): T) setValue Sets the state to a new value and triggers a state change event.
 local useState = function(value)
 	logger.debug("useState created")
-	local _value = value
-	local setValue = function(newValue)
-		if type(newValue) == "function" then
-			newValue = newValue(_value)
+
+	local setValue = function(new_value)
+		if type(new_value) == "function" then
+			value = new_value(value)
+		else
+			value = new_value
 		end
-		_value = newValue
+
 		EventListener:trigger("state_change")
 	end
+
 	local getValue = function()
-		return _value
+		return value
 	end
 
 	return getValue, setValue
