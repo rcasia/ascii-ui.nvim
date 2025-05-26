@@ -26,11 +26,14 @@ local logger = require("ascii-ui.logger")
 --- @generic T
 --- @param value T The initial state value.
 --- @return fun(): T getValue Returns the current state value when called.
---- @return fun(value: T) setValue Sets the state to a new value and triggers a state change event.
+--- @return fun(value: T | fun(value: T): T) setValue Sets the state to a new value and triggers a state change event.
 local useState = function(value)
 	logger.debug("useState created")
 	local _value = value
 	local setValue = function(newValue)
+		if type(newValue) == "function" then
+			newValue = newValue(_value)
+		end
 		_value = newValue
 		EventListener:trigger("state_change")
 	end
