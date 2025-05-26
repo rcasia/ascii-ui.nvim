@@ -32,5 +32,11 @@ describe("useState", function()
 
 		setData({ b = "b" })
 		eq({ a = "a" }, my_table)
+
+		setData(function(value)
+			value.b = "b"
+			return value
+		end)
+		eq({ a = "a" }, my_table)
 	end)
 end)
