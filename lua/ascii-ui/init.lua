@@ -35,11 +35,10 @@ function AsciiUI.mount(component)
 	end
 
 	-- does first render
-	-- FIX: Config should be set in renderer
 	local rendered_buffer = ascii_renderer:render(component)
 
 	-- spawns a window
-	local window = Window:new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
+	local window = Window.new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
 	window:open()
 
 	-- updates the window with the rendered buffer
