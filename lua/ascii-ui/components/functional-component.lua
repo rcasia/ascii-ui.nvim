@@ -99,12 +99,6 @@ local function createComponent(name, functional_component, types)
 			if #args == 1 and type(args[1]) == "table" then
 				local props = from_function_prop(args[1], types)
 				validate_props(props, types)
-				logger.debug(
-					"Creating closure for component '%s' with id %s and props %s",
-					name,
-					closure_id,
-					vim.inspect(props)
-				)
 				factory = function()
 					return functional_component(props)
 				end
