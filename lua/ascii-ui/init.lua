@@ -6,22 +6,18 @@ local i = require("ascii-ui.interaction_type")
 local logger = require("ascii-ui.logger")
 local user_interations = require("ascii-ui.user_interactions")
 
---- @class ascii-ui.AsciiUI
-local AsciiUI = {}
-
 local ascii_renderer = require("ascii-ui.renderer"):new(config)
 
---- This contains all the components available in the library
-AsciiUI.components = require("ascii-ui.components")
-
-AsciiUI.directives = require("ascii-ui.directives")
-
-AsciiUI.createComponent = require("ascii-ui.components.functional-component")
-
-AsciiUI.hooks = require("ascii-ui.hooks")
-
---- This contains the layout class
-AsciiUI.layout = require("ascii-ui.layout")
+--- @class ascii-ui.AsciiUI
+local AsciiUI = {
+	--- This contains all the components available in the library
+	components = require("ascii-ui.components"),
+	directives = require("ascii-ui.directives"),
+	createComponent = require("ascii-ui.components.functional-component"),
+	hooks = require("ascii-ui.hooks"),
+	--- This contains the layout class
+	layout = require("ascii-ui.layout"),
+}
 
 ---@param component ascii-ui.FunctionalComponent
 ---@return integer bufnr
