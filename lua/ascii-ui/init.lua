@@ -84,16 +84,6 @@ function AsciiUI.mount(component)
 	user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
 	logger.info("Attached buffer %s to user interactions", window.bufnr)
 
-	-- initialize keymaps
-	vim.keymap.set("n", config.keymaps.select, function()
-		logger.debug("Select key pressed, interacting with user interactions")
-		local bufnr = vim.api.nvim_get_current_buf()
-		local cursor = vim.api.nvim_win_get_cursor(0)
-		local position = { line = cursor[1], col = cursor[2] }
-
-		user_interations:instance():interact({ buffer_id = bufnr, position = position, interaction_type = i.SELECT })
-	end, { buffer = window.bufnr, noremap = true, silent = true })
-
 	vim.on_key(function(key, _)
 		local bufnr = vim.api.nvim_get_current_buf()
 		local cursor = vim.api.nvim_win_get_cursor(0)
