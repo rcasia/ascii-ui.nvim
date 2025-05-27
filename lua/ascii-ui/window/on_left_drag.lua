@@ -2,10 +2,10 @@ local logger = require("ascii-ui.logger")
 
 local on_left_drag = function(window)
 	--- @type ascii-ui.Position
-	local mouse_win_relative_position
+	local mouse_cursor_offset
 	vim.keymap.set("n", "<LeftMouse>", function()
 		local mouse_pos = vim.fn.getmousepos()
-		mouse_win_relative_position = {
+		mouse_cursor_offset = {
 			line = mouse_pos.screenrow - window:position().line,
 			col = mouse_pos.screencol - window:position().col,
 		}
@@ -24,8 +24,8 @@ local on_left_drag = function(window)
 
 		-- consider the offset
 		local new_position = {
-			line = window_pos.line - mouse_win_relative_position.line + movement_vector.line,
-			col = window_pos.col - mouse_win_relative_position.col + movement_vector.col,
+			line = window_pos.line - mouse_cursor_offset.line + movement_vector.line,
+			col = window_pos.col - mouse_cursor_offset.col + movement_vector.col,
 		}
 
 		window:move_to(new_position)
