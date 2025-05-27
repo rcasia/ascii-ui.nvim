@@ -12,7 +12,6 @@ local ascii_renderer = require("ascii-ui.renderer"):new(config)
 local AsciiUI = {
 	--- This contains all the components available in the library
 	components = require("ascii-ui.components"),
-	directives = require("ascii-ui.directives"),
 	createComponent = require("ascii-ui.components.functional-component"),
 	hooks = require("ascii-ui.hooks"),
 	--- This contains the layout class

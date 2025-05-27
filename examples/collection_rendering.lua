@@ -2,7 +2,7 @@ local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
 local Column = ui.layout.Column
 local Button = ui.components.Button
-local For = ui.directives.For
+local For = ui.components.For
 local useReducer = ui.hooks.useReducer
 
 --- @type ascii-ui.FunctionalComponent
