@@ -1,4 +1,3 @@
-
 local function strict_throttle(fn, delay)
 	local running = false
 	local queued_args = nil

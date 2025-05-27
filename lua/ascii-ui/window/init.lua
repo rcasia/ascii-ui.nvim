@@ -72,7 +72,6 @@ function Window:open()
 	self.bufnr = buf
 
 	initialize_window_keymaps(self)
-
 end
 
 --- Get the position of the window
