@@ -85,11 +85,6 @@ function AsciiUI.mount(component)
 	logger.info("Attached buffer %s to user interactions", window.bufnr)
 
 	-- initialize keymaps
-	vim.keymap.set("n", config.keymaps.quit, function()
-		logger.debug("Quit key pressed")
-		window:close()
-	end, { buffer = window.bufnr, noremap = true, silent = true })
-
 	vim.keymap.set("n", config.keymaps.select, function()
 		logger.debug("Select key pressed, interacting with user interactions")
 		local bufnr = vim.api.nvim_get_current_buf()
