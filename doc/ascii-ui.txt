@@ -85,16 +85,6 @@
 @class ascii-ui.AsciiUI
 
 ------------------------------------------------------------------------------
-                                                            *AsciiUI.components*
-                              `AsciiUI.components`
-This contains all the components available in the library
-
-------------------------------------------------------------------------------
-                                                                *AsciiUI.layout*
-                                `AsciiUI.layout`
-This contains the layout class
-
-------------------------------------------------------------------------------
                                                                *AsciiUI.mount()*
                           `AsciiUI.mount`({component})
 Parameters ~
@@ -115,7 +105,7 @@ Class ~
                                                                 *Renderer:new()*
                             `Renderer:new`({config})
 Parameters ~
-{config} { `(characters)`: { top_left: string, top_right: string,
+{config} `(optional)` { `(characters)`: { top_left: string, top_right: string,
 bottom_left: string, bottom_right: string, horizontal: string, vertical: string } }
 @return ascii-ui.Renderer
 
@@ -287,43 +277,6 @@ Return ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
-                                                                     *Component*
-                                  `Component`
-Class ~
-{ascii-ui.Component}
-Fields ~
-{render} `(fun(): ascii-ui.BufferLine[])`
-
-------------------------------------------------------------------------------
-                                                               *Component:new()*
-                       `Component:new`({component_name})
-@param component_name? string
-@return ascii-ui.Component
-
-------------------------------------------------------------------------------
-                                                            *Component:extend()*
-                `Component:extend`({custom_component}, {props})
-@generic T
-@param custom_component T
-@param props? table<string, any>
-@return T
-
-------------------------------------------------------------------------------
-                                                         *Component:on_change()*
-                          `Component:on_change`({cb})
-Adds a callback to be called when a property changes.
-Cleared either when:
- - the callback function fails
- - the component is destroyed
-
-@see Component.destroy
-@see Component.clear_subscriptions
-
-@param cb fun(component: table, key: string, value: any)
-
-
-==============================================================================
-------------------------------------------------------------------------------
 Class ~
 {ascii-ui.SelectComponent.Option}
 Fields ~
@@ -356,27 +309,10 @@ Return ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
-                                                                      *Checkbox*
-                                   `Checkbox`
-Class ~
-{ascii-ui.Checkbox} : ascii-ui.Component
-Fields ~
-{checked} `(boolean)`
-{label} `(string)`
-
-------------------------------------------------------------------------------
-                                                                *Checkbox:new()*
-                             `Checkbox:new`({opts})
+                                                                    *Checkbox()*
+                              `Checkbox`({props})
 Parameters ~
-{opts} `(optional)` `({ checked?: boolean, label?: string })`
-Return ~
-`(ascii)`-ui.Checkbox
-
-------------------------------------------------------------------------------
-                                                             *Checkbox:render()*
-                              `Checkbox:render`()
-Return ~
-`(ascii)`-ui.BufferLine[]
+{props} `({ active?: boolean, label?: string })`
 
 
 ==============================================================================
@@ -449,39 +385,6 @@ Crea un componente personalizado y lo registra
 
 ==============================================================================
 ------------------------------------------------------------------------------
-                                                                        *Window*
-                                    `Window`
-Class ~
-{ascii-ui.Window}
-Fields ~
-{winid} `(integer)`
-{bufnr} `(integer)`
-{ns_id} `(integer)`
-{opts} `({ width?: integer, height?: integer })`
-
-------------------------------------------------------------------------------
-                                                                  *Window.new()*
-                              `Window.new`({opts})
-Parameters ~
-{opts} `(optional)` `({ width?: integer, height?: integer })`
-Return ~
-`(ascii)`-ui.Window
-
-------------------------------------------------------------------------------
-                                                              *Window:is_open()*
-                               `Window:is_open`()
-Return ~
-`(boolean)`
-
-------------------------------------------------------------------------------
-                                                               *Window:update()*
-                           `Window:update`({buffer})
-Parameters ~
-{buffer} `(ascii)`-ui.Buffer
-
-
-==============================================================================
-------------------------------------------------------------------------------
                                                                          *Hooks*
                                     `Hooks`
 @class ascii-ui.Hooks
@@ -517,7 +420,7 @@ end
 @generic T
 @param value T The initial state value.
 @return fun(): T getValue Returns the current state value when called.
-@return fun(value: T) setValue Sets the state to a new value and triggers a state change event.
+@return fun(value: T | fun(value: T): T) setValue Sets the state to a new value and triggers a state change event.
 
 
 ==============================================================================
@@ -625,6 +528,51 @@ end
 
 ==============================================================================
 ------------------------------------------------------------------------------
+                                                                        *Window*
+                                    `Window`
+Class ~
+{ascii-ui.Window}
+Fields ~
+{winid} `(integer)`
+{bufnr} `(integer)`
+{ns_id} `(integer)`
+{opts} `({ width?: integer, height?: integer })`
+
+------------------------------------------------------------------------------
+                                                                  *Window.new()*
+                              `Window.new`({opts})
+Parameters ~
+{opts} `(optional)` `({ width?: integer, height?: integer })`
+Return ~
+`(ascii)`-ui.Window
+
+------------------------------------------------------------------------------
+                                                             *Window:position()*
+                              `Window:position`()
+Get the position of the window
+@return ascii-ui.Position
+
+------------------------------------------------------------------------------
+                                                              *Window:move_to()*
+                          `Window:move_to`({position})
+Move the window to a specific position
+@param position ascii-ui.Position
+
+------------------------------------------------------------------------------
+                                                              *Window:is_open()*
+                               `Window:is_open`()
+Return ~
+`(boolean)`
+
+------------------------------------------------------------------------------
+                                                               *Window:update()*
+                           `Window:update`({buffer})
+Parameters ~
+{buffer} `(ascii)`-ui.Buffer
+
+
+==============================================================================
+------------------------------------------------------------------------------
                                                                     *Highligths*
                                   `Highligths`
 (key) ascii-ui.Highligths
@@ -632,10 +580,10 @@ end
 
 ==============================================================================
 ------------------------------------------------------------------------------
-                                                                       *Element*
-                                   `Element`
+                                                                       *Segment*
+                                   `Segment`
 Class ~
-{ascii-ui.Element}
+{ascii-ui.Segment}
 Fields ~
 {content} `(string)`
 {interactions} `(table<ascii-ui.UserInteractions.InteractionType, function>)`
@@ -643,28 +591,28 @@ Fields ~
 {private} `(focusable)` boolean
 
 ------------------------------------------------------------------------------
-                                                                 *Element:new()*
-                              `Element:new`({...})
+                                                                 *Segment:new()*
+                              `Segment:new`({...})
 Parameters ~
 {...} `({ content: string, is_focusable?: boolean, interactions?: table<ascii-ui.UserInteractions.InteractionType, function>, highlight?: string }  | string)`
 Return ~
-`(ascii)`-ui.Element
+`(ascii)`-ui.Segment
 
 ------------------------------------------------------------------------------
-                                                                 *Element:len()*
-                                `Element:len`()
+                                                                 *Segment:len()*
+                                `Segment:len`()
 Return ~
 `(integer)`
 
 ------------------------------------------------------------------------------
-                                                        *Element:is_focusable()*
-                            `Element:is_focusable`()
+                                                        *Segment:is_focusable()*
+                            `Segment:is_focusable`()
 Return ~
 `(boolean)`
 
 ------------------------------------------------------------------------------
-                                                                *Element:wrap()*
-                                `Element:wrap`()
+                                                                *Segment:wrap()*
+                                `Segment:wrap`()
 Wraps the element in a ascii-ui.Bufferline object
 Return ~
 `(ascii)`-ui.BufferLine
