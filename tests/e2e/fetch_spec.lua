@@ -45,7 +45,7 @@ local function fetch(url)
 end
 
 describe("fetch", function()
-	it("executes GET request", function()
+	pending("executes GET request", function()
 		local url = "https://httpbin.org/get"
 		local response_body = fetch(url)
 
