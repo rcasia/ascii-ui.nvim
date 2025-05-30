@@ -51,7 +51,10 @@ local useEffect = function(fn, observed_values)
 
 		local has_changes = not vim.deep_equal(last_seen_values, current_seen_values)
 		if has_changes then
-			fn()
+			local clean_up_fn = fn()
+			if type(clean_up_fn) == "function" then
+				clean_up_fn()
+			end
 		end
 	end)
 end

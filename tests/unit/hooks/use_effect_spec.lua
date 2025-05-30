@@ -42,4 +42,19 @@ describe("useEffect", function()
 		setOtherValue("B")
 		eq(1, fn_invocations)
 	end)
+
+	it("runs clean up function when dependencies change", function()
+		local value, setValue = useState("A")
+		local clean_up_invocations = 0
+		useEffect(function()
+			-- clean up function
+			return function()
+				clean_up_invocations = clean_up_invocations + 1
+			end
+		end, { value })
+
+		setValue("B")
+		setValue("C")
+		eq(2, clean_up_invocations)
+	end)
 end)
