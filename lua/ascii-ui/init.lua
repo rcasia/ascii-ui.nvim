@@ -79,6 +79,10 @@ function AsciiUI.mount(component)
 	logger.info("Attached buffer %s to user interactions", window.bufnr)
 
 	vim.on_key(function(key, _)
+		if not window:is_focused() then
+			return
+		end
+
 		local bufnr = vim.api.nvim_get_current_buf()
 		local cursor = vim.api.nvim_win_get_cursor(0)
 		local position = { line = cursor[1], col = cursor[2] }

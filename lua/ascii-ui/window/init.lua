@@ -193,4 +193,11 @@ function Window:update(buffer)
 	end)
 end
 
+--- @return boolean is_focused
+function Window:is_focused()
+	local cur_win = vim.api.nvim_get_current_win()
+
+	return self.winid == cur_win
+end
+
 return Window
