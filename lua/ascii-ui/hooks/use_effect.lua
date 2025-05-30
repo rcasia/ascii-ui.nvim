@@ -30,7 +30,13 @@ local EventListener = require("ascii-ui.events")
 --- @param fn function The callback to run as a side effect.
 --- @param observed_values? function[] Optional table of state getter functions to observe. If provided, the effect re-runs only when any observed value changes.
 local useEffect = function(fn, observed_values)
-	fn()
+	local clean_up_fn = fn()
+
+	EventListener:listen("ui_close", function()
+		if type(clean_up_fn) == "function" then
+			clean_up_fn()
+		end
+	end)
 
 	if not observed_values then
 		return
@@ -51,7 +57,7 @@ local useEffect = function(fn, observed_values)
 
 		local has_changes = not vim.deep_equal(last_seen_values, current_seen_values)
 		if has_changes then
-			local clean_up_fn = fn()
+			clean_up_fn = fn()
 			if type(clean_up_fn) == "function" then
 				clean_up_fn()
 			end

@@ -2,6 +2,7 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local eq = assert.are.same
+local EventListener = require("ascii-ui.events")
 local useEffect = require("ascii-ui.hooks.use_effect")
 local useState = require("ascii-ui.hooks.use_state")
 
@@ -56,5 +57,18 @@ describe("useEffect", function()
 		setValue("B")
 		setValue("C")
 		eq(2, clean_up_invocations)
+	end)
+
+	it("runs clean up function on ui.close event", function()
+		local clean_up_invocations = 0
+		useEffect(function()
+			-- clean up function
+			return function()
+				clean_up_invocations = clean_up_invocations + 1
+			end
+		end)
+
+		EventListener:trigger("ui_close")
+		eq(1, clean_up_invocations)
 	end)
 end)

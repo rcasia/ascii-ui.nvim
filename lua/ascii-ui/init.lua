@@ -166,6 +166,7 @@ function AsciiUI.mount(component)
 			if win_id ~= window.winid then
 				return -- not our window
 			end
+			EventListener:trigger("ui_close")
 
 			-- detach from user interactions
 			user_interations:instance():detach_buffer(window.bufnr)
