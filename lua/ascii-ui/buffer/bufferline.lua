@@ -5,10 +5,14 @@ local Segment = require("ascii-ui.buffer.element")
 local BufferLine = {}
 BufferLine.__index = BufferLine
 
----@param ... ascii-ui.Segment
+---@param ... ascii-ui.Segment | boolean
 ---@return ascii-ui.BufferLine
 function BufferLine.new(...)
-	local elements = { ... }
+	local elements = vim.iter({ ... })
+		:filter(function(segment)
+			return type(segment) == "table"
+		end)
+		:totable()
 
 	local state = {
 		elements = elements,

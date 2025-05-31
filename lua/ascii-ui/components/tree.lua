@@ -1,3 +1,4 @@
+local BufferLine = require("ascii-ui.buffer.bufferline")
 local Segment = require("ascii-ui.buffer.element")
 local createComponent = require("ascii-ui.components.functional-component")
 local useState = require("ascii-ui.hooks.use_state")
@@ -27,6 +28,7 @@ local function Tree(props)
 		props.is_last = props.is_last or false
 		local children_count = props.tree.children and #props.tree.children or 0
 		local has_children_siblings = children_count > 1
+		local is_head = props.level == 0
 
 		-- if is leaf node
 		local has_children = props.tree and props.tree.children and #props.tree.children > 0
@@ -37,13 +39,25 @@ local function Tree(props)
 			elseif props.level > 0 then
 				prefix = "├─ "
 			end
-			return { Segment:new({ content = prefix .. props.tree.text }):wrap() }
+			return {
+				BufferLine.new(
+					Segment:new({ content = prefix }),
+					Segment:new({ content = props.tree.text, is_focusable = true })
+				),
+			}
 		end
 
 		if not is_expanded() then
 			-- if node is not expanded, render only the node text
-			local prefix = props.is_last and "╰─ ▸ " or "├─ ▸ "
-			return { Segment:new({ content = prefix .. props.tree.text }):wrap() }
+			local prefix = props.is_last and "╰─ " or "├─ "
+			return {
+				BufferLine.new(
+					Segment:new({ content = prefix }),
+					Segment:new({ content = "▸ ", is_focusable = true }),
+					Segment:new({ content = props.tree.text, is_focusable = true })
+				),
+			}
+			-- return { Segment:new({ content = prefix .. props.tree.text, is_focusable = true }):wrap() }
 		end
 
 		-- when has children
@@ -65,10 +79,13 @@ local function Tree(props)
 			end)
 			:totable()
 
-		local prefix = props.level > 0 and "╰╮▾ " or ""
-
 		return {
-			Segment:new({ content = prefix .. props.tree.text }):wrap(),
+
+			BufferLine.new(
+				not is_head and Segment:new({ content = "╰╮" }),
+				not is_head and Segment:new({ content = "▾ ", is_focusable = true }),
+				Segment:new({ content = props.tree.text, is_focusable = true })
+			),
 			unpack(lines),
 		}
 	end
