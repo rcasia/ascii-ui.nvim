@@ -63,20 +63,20 @@ describe("ascii-ui", function()
 
 			assert(buffer_contains(bufnr, "0%"))
 
-			feed("llllll")
-			assert(buffer_contains(bufnr, "60%"))
+			feed("lll")
+			assert(buffer_contains(bufnr, "30%"), "no encuentra 30%")
 
 			feed("hhh")
-			assert(buffer_contains(bufnr, "30%"))
+			assert(buffer_contains(bufnr, "0%"), "no encuentra 0%")
 
 			feed("j")
-			assert(cursor_is_in_line(3))
+			assert(cursor_is_in_line(3), "no está en 3")
 
 			feed("ll")
-			assert(buffer_contains(bufnr, "20%"))
+			assert(buffer_contains(bufnr, "20%"), "no encuentra 20%")
 
-			feed("ll")
-			assert(buffer_contains(bufnr, "40%"))
+			feed("lll")
+			assert(buffer_contains(bufnr, "50%"))
 		end)
 
 		it("functional", function()
