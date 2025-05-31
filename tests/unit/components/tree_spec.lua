@@ -23,16 +23,16 @@ describe("Tree Component", function()
 		local tree = {
 			text = "node-1",
 			children = {
-				{
-					text = "node-1-1",
-				},
+				{ text = "node-1-1" },
+				{ text = "node-1-2" },
 			},
 		}
 		local closure = Tree({ tree = tree })
 
 		eq(
 			vim.trim([[node-1
-╰╮ node-1-1]]),
+╰╮  node-1-1
+ ├─ node-1-2]]),
 			renderer:render(closure):to_string()
 		)
 	end)
