@@ -10,8 +10,30 @@ describe("Tree Component", function()
 	local renderer = Renderer:new({})
 
 	it("renders just top node", function()
-		local closure = Tree({})
+		local tree = {
+			text = "dummy_treenode",
+		}
+		local closure = Tree({ tree = tree })
 
 		eq([[dummy_treenode]], renderer:render(closure):to_string())
+	end)
+
+	it("renders just top node and its children", function()
+		--- @type ascii-ui.TreeComponentProps.TreeNode
+		local tree = {
+			text = "node-1",
+			children = {
+				{
+					text = "node-1-1",
+				},
+			},
+		}
+		local closure = Tree({ tree = tree })
+
+		eq(
+			vim.trim([[node-1
+╰╮ node-1-1]]),
+			renderer:render(closure):to_string()
+		)
 	end)
 end)
