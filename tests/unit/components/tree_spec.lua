@@ -50,7 +50,7 @@ describe("Tree Component", function()
 
 		eq(
 			vim.trim([[node-1
- ╰╮ node-1-1
+ ╰╮▾ node-1-1
  │╰─ node-1-1-1
  ╰─ node-1-2]]),
 			renderer:render(closure):to_string()
@@ -74,12 +74,10 @@ describe("Tree Component", function()
 			[[node-1
  ├─ node-1-1
  ├─ node-1-2
- ╰╮ node-1-3
-  ╰╮ node-1-3-1
+ ╰╮▾ node-1-3
+  ╰╮▾ node-1-3-1
    ╰─ node-1-3-1-1]],
 			result
 		)
-
-		print(result)
 	end)
 end)

@@ -52,7 +52,7 @@ local function Tree(props)
 			end)
 			:totable()
 
-		local prefix = props.level > 0 and "╰╮ " or ""
+		local prefix = props.level > 0 and "╰╮▾ " or ""
 
 		return {
 			Segment:new({ content = prefix .. props.tree.text }):wrap(),
