@@ -15,6 +15,24 @@ local function generate_id()
 	return last_incremental_id
 end
 
+local function unicode_len(s)
+	local i, len = 1, 0
+	while i <= #s do
+		local c = s:byte(i)
+		if c < 0x80 then
+			i = i + 1
+		elseif c < 0xE0 then
+			i = i + 2
+		elseif c < 0xF0 then
+			i = i + 3
+		else
+			i = i + 4
+		end
+		len = len + 1
+	end
+	return len
+end
+
 ---@param ... ascii-ui.SegmentOpts  | string
 ---@return ascii-ui.Segment
 function Segment:new(...)
@@ -48,7 +66,7 @@ end
 
 ---@return integer
 function Segment:len()
-	return string.len(self.content)
+	return unicode_len(self.content)
 end
 
 function Segment:to_string()
