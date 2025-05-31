@@ -46,11 +46,13 @@ local function Tree(props)
 			end)
 			:flatten()
 			:map(function(child)
-				return Segment:new({ content = props.has_siblings and "│" or " " }):wrap():append(child)
+				return Segment:new({ content = props.has_siblings and not props.is_last and "│" or " " })
+					:wrap()
+					:append(child)
 			end)
 			:totable()
 
-		local prefix = props.level > 0 and "╰╮  " or ""
+		local prefix = props.level > 0 and "╰╮ " or ""
 
 		return {
 			Segment:new({ content = prefix .. props.tree.text }):wrap(),
