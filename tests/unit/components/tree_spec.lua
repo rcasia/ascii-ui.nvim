@@ -80,4 +80,30 @@ describe("Tree Component", function()
 			result
 		)
 	end)
+
+	it("renders nodes that are not expanded", function()
+		--- @type ascii-ui.TreeComponentProps.TreeNode
+		local tree = {
+			text = "node-1",
+			children = {
+				{ text = "node-1-1" },
+				{ text = "node-1-2", expanded = false, children = { { text = "node-1-2-1" } } },
+				{
+					text = "node-1-3",
+					expanded = false,
+					children = { { text = "node-1-3-1", children = { { text = "node-1-3-1-1" } } } },
+				},
+			},
+		}
+		local closure = Tree({ tree = tree })
+		local result = renderer:render(closure):to_string()
+
+		eq(
+			[[node-1
+ ├─ node-1-1
+ ├─ ▸ node-1-2
+ ╰─ ▸ node-1-3]],
+			result
+		)
+	end)
 end)
