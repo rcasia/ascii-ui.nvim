@@ -93,6 +93,8 @@ end
 --- @param delimiter? ascii-ui.Element
 --- @return ascii-ui.BufferLine
 function BufferLine:append(other_bufferline, delimiter)
+	assert(other_bufferline, "other_bufferline cannot be nil")
+
 	local elements = self.elements
 
 	if delimiter then
