@@ -32,7 +32,7 @@ describe("Tree Component", function()
 		eq(
 			vim.trim([[node-1
  ├─ node-1-1
- ├─ node-1-2]]),
+ ╰─ node-1-2]]),
 			renderer:render(closure):to_string()
 		)
 	end)
@@ -51,8 +51,8 @@ describe("Tree Component", function()
 		eq(
 			vim.trim([[node-1
  ╰╮  node-1-1
- │├─ node-1-1-1
- ├─ node-1-2]]),
+ │╰─ node-1-1-1
+ ╰─ node-1-2]]),
 			renderer:render(closure):to_string()
 		)
 	end)
