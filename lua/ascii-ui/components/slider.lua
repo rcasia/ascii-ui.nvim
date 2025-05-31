@@ -38,10 +38,14 @@ local function render(props, config)
 	return {
 		props.title ~= "" and Element:new(props.title, false):wrap() or nil,
 		Bufferline.new(
-			Element:new(cc.horizontal:rep(knob_position), false, interactions),
-			Element:new(cc.thumb, true, interactions),
-			Element:new(cc.horizontal:rep(width - knob_position), false, interactions),
-			Element:new((" %d%%"):format(props.value))
+			Element:new({
+				content = cc.horizontal:rep(knob_position),
+				interactions = interactions,
+			}),
+
+			Element:new({ content = cc.thumb, is_focusable = true, interactions = interactions }),
+			Element:new({ content = cc.horizontal:rep(width - knob_position), interactions = interactions }),
+			Element:new({ content = (" %d%%"):format(props.value) })
 		),
 	}
 end
