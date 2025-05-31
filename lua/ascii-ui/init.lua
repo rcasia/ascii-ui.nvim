@@ -83,9 +83,7 @@ function AsciiUI.mount(component)
 			return
 		end
 
-		local bufnr = vim.api.nvim_get_current_buf()
-		local cursor = vim.api.nvim_win_get_cursor(0)
-		local position = { line = cursor[1], col = cursor[2] }
+		local position = Cursor.current_position()
 
 		local interaction
 		if key == "l" then
@@ -106,7 +104,7 @@ function AsciiUI.mount(component)
 
 		if interaction then
 			user_interations:instance():interact({
-				buffer_id = bufnr,
+				buffer_id = window.bufnr,
 				position = position,
 				interaction_type = interaction,
 			})
@@ -133,7 +131,7 @@ function AsciiUI.mount(component)
 				})
 
 				local next_position = result.pos
-				vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
+				Cursor.move_to(next_position, window.winid)
 				logger.debug(
 					"Cursor moved to last focusable position: " .. next_position.line .. ", " .. next_position.col
 				)

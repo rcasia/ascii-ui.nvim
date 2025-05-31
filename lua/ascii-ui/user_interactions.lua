@@ -30,6 +30,7 @@ end
 ---@alias ascii-ui.UserInteractions.InteractionOpts { buffer_id: integer, position: table, interaction_type: ascii-ui.UserInteractions.InteractionType | string }
 ---@param opts ascii-ui.UserInteractions.InteractionOpts
 function UserInteractions:interact(opts)
+	assert(opts.buffer_id, "buffer_id cannot be nil")
 	local buffer = self.buffers[opts.buffer_id]
 	if not buffer then
 		return -- buffer has not been found

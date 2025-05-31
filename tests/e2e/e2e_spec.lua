@@ -63,8 +63,8 @@ describe("ascii-ui", function()
 
 			assert(buffer_contains(bufnr, "0%"))
 
-			feed("lll")
-			assert(buffer_contains(bufnr, "30%"), "no encuentra 30%")
+			feed("llllll")
+			assert(buffer_contains(bufnr, "60%"), "no encuentra 60%")
 
 			feed("hhh")
 			assert(buffer_contains(bufnr, "0%"), "no encuentra 0%")
