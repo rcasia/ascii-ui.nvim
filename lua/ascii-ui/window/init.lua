@@ -1,3 +1,4 @@
+local Cursor = require("ascii-ui.cursor")
 local highlights = require("ascii-ui.highlights")
 local initialize_window_keymaps = require("ascii-ui.window.keymaps")
 local logger = require("ascii-ui.logger")
@@ -159,12 +160,13 @@ function Window:update(buffer)
 		-- adjust scroll
 		vim.api.nvim_win_call(0, function()
 			local win = vim.api.nvim_get_current_win()
-			local curpos = vim.api.nvim_win_get_cursor(win)
+			local curpos = Cursor.current_position()
 
 			-- Move cursor to top, scroll, restore
 			vim.api.nvim_win_set_cursor(win, { 1, 0 })
+			Cursor.move_to({ line = 1, col = 0 }, win)
 			vim.cmd("normal! zt")
-			vim.api.nvim_win_set_cursor(win, curpos)
+			Cursor.move_to(curpos, win)
 		end)
 
 		-- coloring

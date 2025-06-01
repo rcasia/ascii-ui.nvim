@@ -65,7 +65,7 @@ function AsciiUI.mount(component)
 				logger.debug("next position: %s", vim.inspect(result))
 				local next_position = result.pos
 				vim.schedule(function()
-					vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
+					Cursor.move_to(next_position, window.winid)
 				end)
 			end
 		end
@@ -118,7 +118,7 @@ function AsciiUI.mount(component)
 				})
 
 				local next_position = result.pos
-				vim.api.nvim_win_set_cursor(window.winid, { next_position.line, next_position.col })
+				Cursor.move_to(next_position, window.winid)
 				logger.debug(
 					"Cursor moved to next focusable position: " .. next_position.line .. ", " .. next_position.col
 				)

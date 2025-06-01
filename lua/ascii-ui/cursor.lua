@@ -58,7 +58,10 @@ end
 
 --- @param position ascii-ui.Position
 function Cursor.move_to(position, winid)
-	vim.api.nvim_win_set_cursor(winid or 0, { position.line, position.col })
+	local line = vim.api.nvim_buf_get_lines(0, position.line, position.line + 1, false)[1] or ""
+	local byte_col = vim.str_byteindex(line, "utf-32", position.col)
+
+	vim.api.nvim_win_set_cursor(winid or 0, { position.line, byte_col })
 
 	Cursor.last_position = Cursor._current_position or Cursor.current_position()
 	Cursor._current_position = Cursor.current_position()
