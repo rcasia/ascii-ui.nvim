@@ -73,7 +73,7 @@ local components = {}
 --- Crea un componente personalizado y lo registra
 --- @generic ascii-ui.ComponentClosure, T
 --- @param name string Nombre del componente
---- @param functional_component fun(props: T)
+--- @param functional_component fun(props: T): fun(config: ascii-ui.Config): ascii-ui.BufferLine[]
 --- @param types table<string, ascii-ui.PropsType> Tipos de los props del componente
 --- @return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
 local function createComponent(name, functional_component, types)
@@ -108,7 +108,16 @@ local function createComponent(name, functional_component, types)
 				end
 			end
 
-			return memoize(factory, { chache_key = closure_id })
+			return memoize(factory, { chache_key = closure_id }),
+				{
+					name = name,
+					type = name,
+					props = args[1],
+					closure = function()
+						return functional_component(args[1])
+					end,
+					output = nil,
+				}
 		end,
 	})
 
