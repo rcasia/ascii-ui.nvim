@@ -12,6 +12,7 @@ local render = _fiber.render
 local useState = _fiber.useState
 local commitWork = _fiber.commitWork
 local workLoop = _fiber.workLoop
+local debugPrint = _fiber.debugPrint
 
 --- @class ascii-ui.FiberNode
 --- @field type "Root" | string
@@ -36,8 +37,10 @@ end, {})
 
 describe("Fiber", function()
 	it("renderiza MyComponent en una sola línea", function()
-		local lines = render(App)
-		eq({ "Hello World" }, lines:to_lines())
+		local buffer, fiber = render(App)
+		eq({ "Hello World" }, buffer:to_lines())
+
+		debugPrint(fiber)
 	end)
 
 	it("renderiza List en dos líneas", function()
@@ -49,8 +52,10 @@ describe("Fiber", function()
 				}
 			end
 		end, {})
-		local lines = render(List)
+		local lines, fiber = render(List)
 		eq({ "Línea 1", "Línea 2" }, lines:to_lines())
+
+		debugPrint(fiber)
 	end)
 
 	it("soporta useState y re-renderiza al actualizar", function()
@@ -83,5 +88,7 @@ describe("Fiber", function()
 		-- tras el setState, el propio hook habrá vuelto a renderizar
 		local lines2 = rootFiber.lastRendered:to_lines()
 		eq({ "c:5", "b:true" }, lines2)
+
+		debugPrint(rootFiber)
 	end)
 end)

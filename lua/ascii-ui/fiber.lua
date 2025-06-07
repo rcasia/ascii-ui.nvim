@@ -92,7 +92,7 @@ local function render(Component)
 	workLoop(root)
 	local buffer = Buffer.new()
 	commitWork(root, buffer)
-	return buffer
+	return buffer, root
 end
 
 local function useState(initial)
@@ -126,9 +126,42 @@ local function useState(initial)
 	return get, set
 end
 
+---
+--- Debug: Imprime el árbol de Fibers con indentación y valores de hooks
+---
+local function debugPrint(fiber)
+	local function traverse(node, prefix, isLast)
+		-- Construye línea con prefijo gráfico
+		local branch = isLast and "└─ " or "├─ "
+		local line = prefix .. branch .. (node.type or "<buffer>")
+		-- Agrega estados de hooks si existen
+		if node.hooks and #node.hooks > 0 then
+			local parts = {}
+			for i, h in ipairs(node.hooks) do
+				parts[#parts + 1] = tostring(h)
+			end
+			line = line .. " [hooks=" .. table.concat(parts, ",") .. "]"
+		end
+		print(line)
+		-- Recorre hijos
+		local children = {}
+		local child = node.child
+		while child do
+			children[#children + 1] = child
+			child = child.sibling
+		end
+		-- Recurse
+		for i, c in ipairs(children) do
+			local last = (i == #children)
+			traverse(c, prefix .. (isLast and "   " or "│  "), last)
+		end
+	end
+	traverse(fiber, "", true)
+end
 return {
 	render = render,
 	useState = useState,
 	workLoop = workLoop,
 	commitWork = commitWork,
+	debugPrint = debugPrint,
 }
