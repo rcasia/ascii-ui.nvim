@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.3.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.2.0...v0.3.0) (2025-06-01)
+
+
+### Features
+
+* **dsl:** function references can be passed to components in xml ([064c3af](https://github.com/rcasia/ascii-ui.nvim/commit/064c3afe42c8d426d1747550c6dd9097bdb76b1a))
+* **hooks:** create useFunctionRegistry hook ([52af8e7](https://github.com/rcasia/ascii-ui.nvim/commit/52af8e7b05039e4ec698cf0d6e8e3a3088b4c622))
+* **hooks:** expose api for useEffect and useFunctionRegistry ([7f501fd](https://github.com/rcasia/ascii-ui.nvim/commit/7f501fdc1b71a5c1204cbe8449beb1afd96339ba))
+* **hooks:** useEffect runs clean up function on ui close event ([30de36d](https://github.com/rcasia/ascii-ui.nvim/commit/30de36d92b2bd2f1c07f2dccef74c689173d89a4))
+* **hooks:** useEffect runs clean up function when dependencies change ([b8b75e8](https://github.com/rcasia/ascii-ui.nvim/commit/b8b75e846e0b75cf5a9b47d8e4d8c2066580cc71))
+* **hooks:** useState accepts a function parameter on the setter function ([e62a3c7](https://github.com/rcasia/ascii-ui.nvim/commit/e62a3c78d0a245e0c6dd66c3a1acd8be785d33e7))
+* pass the config in the component closure param ([ede9faa](https://github.com/rcasia/ascii-ui.nvim/commit/ede9faa0f7d9906f388a19194a306b6060907d20))
+* renderer recieves a function that returns a function, bufferlines or a xml string ([a52c4ce](https://github.com/rcasia/ascii-ui.nvim/commit/a52c4ce6b5e9c3ce5f68595b74982b03eb7b6f0a))
+* **segment:** count length taking into account unicode characters ([926a225](https://github.com/rcasia/ascii-ui.nvim/commit/926a225686e6709c730522c628137d4b0daa5a4d))
+* **tree:** created tree component ([e695605](https://github.com/rcasia/ascii-ui.nvim/commit/e6956056dd4e905d896f959b21f8af8566ec59df))
+* **tree:** renders a last leaf node with ending prefix ([593df5c](https://github.com/rcasia/ascii-ui.nvim/commit/593df5cd1f20f3c82ed64d4fae4a85835366fc69))
+* **tree:** renders a tree with only one child ([90b6f68](https://github.com/rcasia/ascii-ui.nvim/commit/90b6f6899294fad568f565c58ba51966671a1562))
+* **tree:** renders a tree with two children ([96d3c34](https://github.com/rcasia/ascii-ui.nvim/commit/96d3c3485c5ab27008a78241bea51ce9f730bcd1))
+* **tree:** renders a tree with two children having a third level ([11133f5](https://github.com/rcasia/ascii-ui.nvim/commit/11133f529807e5073ad1af8a07105a3535bed213))
+* **tree:** renders character to signal there are collapsed nodes ([c969d40](https://github.com/rcasia/ascii-ui.nvim/commit/c969d40b6cc74ee71b55c87352639542d1c84a60))
+* **tree:** renders character to signal there are expanded nodes ([d6f4134](https://github.com/rcasia/ascii-ui.nvim/commit/d6f41340583ba36a1049708ad9eedaf73453136d))
+* **tree:** renders last level one node with space before its children ([73be798](https://github.com/rcasia/ascii-ui.nvim/commit/73be798b1b73602f7b76745fa229e59ed7a39b09))
+* **tree:** set focusable segments in a tree ([adbda8b](https://github.com/rcasia/ascii-ui.nvim/commit/adbda8b1f9b0c420ddc56164590403fb8d28c834))
+* use cursor nvim api functions just in Cursor module ([727c3d6](https://github.com/rcasia/ascii-ui.nvim/commit/727c3d6c75c8aa18835879520aae88124dd94083))
+* **window:** make the floating window draggable ([90ee93f](https://github.com/rcasia/ascii-ui.nvim/commit/90ee93f7d9d0df7dd1ebb25c3d3be149b4208498))
+
+
+### Bug Fixes
+
+* don't listen key interactions when no on ui window ([b82420e](https://github.com/rcasia/ascii-ui.nvim/commit/b82420ea2ff1dceefc30f64636d9ceb4ca32baf5))
+* get current position without counting extra unicode bytes ([11d649f](https://github.com/rcasia/ascii-ui.nvim/commit/11d649fad3253b07f99889c06f6200a43f7062b1))
+* prevent changing modifiable attribute when window has no winid or burnr ([c45bad5](https://github.com/rcasia/ascii-ui.nvim/commit/c45bad5fcdc4d9ffe3e86a59ddb70db338027fe3))
+* remove autocommand when components are unmounted ([a01ada0](https://github.com/rcasia/ascii-ui.nvim/commit/a01ada07938b4f1dde1a49f57f06ffc00300b297)), closes [#25](https://github.com/rcasia/ascii-ui.nvim/issues/25)
+
+
+### Performance Improvements
+
+* throttle window drag updates ([4fc6a69](https://github.com/rcasia/ascii-ui.nvim/commit/4fc6a69df7888f0f3502c5389936c34e1e40ae5c))
+
 ## [0.2.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.1.0...v0.2.0) (2025-05-21)
 
 
