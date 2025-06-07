@@ -110,13 +110,15 @@ local function createComponent(name, functional_component, types)
 
 			return memoize(factory, { chache_key = closure_id }),
 				{
-					name = name,
-					type = name,
-					props = args[1],
-					closure = function()
-						return functional_component(args[1])
-					end,
-					output = nil,
+					{
+						name = name,
+						type = name,
+						props = args[1],
+						closure = function()
+							return functional_component(args[1])
+						end,
+						output = nil,
+					},
 				}
 		end,
 	})
