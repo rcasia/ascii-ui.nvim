@@ -82,15 +82,18 @@ function Renderer:render_by_tag(tag_name, props, children)
 
 		instance = component(unpack(child_components))
 	else
-		local component = self.component_tags[tag_name]
-		if not component then
+		local Component = self.component_tags[tag_name]
+		if not Component then
 			error("Component not found for tag: " .. tag_name)
 		end
 
-		instance = component(props)
+		local XmlApp = require("ascii-ui").createComponent("XMlApp", function()
+			return Component(props)
+		end)
+		instance = XmlApp
 	end
 
-	if type(instance) == "function" then
+	if is_callable(instance) then
 		return instance
 	end
 
@@ -115,9 +118,9 @@ function Renderer:render_xml(xml_content)
 
 	local props = result._attr
 
-	local component_closure = self:render_by_tag(tag_name, props, result._children)
+	local component = self:render_by_tag(tag_name, props, result._children)
 
-	return Buffer.new(unpack(component_closure(self.config)))
+	return fiber.render(component)
 end
 
 return Renderer
