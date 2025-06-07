@@ -60,11 +60,14 @@ end
 
 --- @param props? { title?: string, value?: integer }
 local function Slider(props)
-	local config = config or require("ascii-ui.config")
+	local config = require("ascii-ui.config")
 	props = props or {}
 	props.value = props.value or 0
 	props.title = props.title or ""
-	return render(props, config)
+
+	return function()
+		return render(props, config)
+	end
 end
 
 return createComponent("Slider", Slider, { title = "string", value = "number", config = "table" })

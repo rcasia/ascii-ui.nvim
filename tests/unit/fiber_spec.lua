@@ -2,7 +2,6 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local eq = assert.are.same
-local logger = require("ascii-ui.logger")
 
 local Buffer = require("ascii-ui.buffer")
 local Element = require("ascii-ui.buffer.element")
@@ -26,11 +25,15 @@ local debugPrint = _fiber.debugPrint
 --- @field hooks table[]
 
 local MyComponent = ui.createComponent("MyComponent", function()
-	return { Element:new({ content = "Hello World" }):wrap() }
+	return function()
+		return { Element:new({ content = "Hello World" }):wrap() }
+	end
 end, {})
 
 local App = ui.createComponent("App", function()
-	return MyComponent()
+	return function()
+		return MyComponent()
+	end
 end, {})
 
 describe("Fiber", function()
@@ -43,10 +46,12 @@ describe("Fiber", function()
 
 	it("renderiza List en dos líneas", function()
 		local List = ui.createComponent("List", function()
-			return {
-				Element:new({ content = "Línea 1" }):wrap(),
-				Element:new({ content = "Línea 2" }):wrap(),
-			}
+			return function()
+				return {
+					Element:new({ content = "Línea 1" }):wrap(),
+					Element:new({ content = "Línea 2" }):wrap(),
+				}
+			end
 		end, {})
 		local lines, fiber = render(List)
 		eq({ "Línea 1", "Línea 2" }, lines:to_lines())
@@ -59,12 +64,14 @@ describe("Fiber", function()
 		local count, setCount
 		local active, setActive
 		local Counter = ui.createComponent("Counter", function()
-			count, setCount = useState(0)
-			active, setActive = useState(false)
-			return {
-				Element:new({ content = "c:" .. count() }):wrap(),
-				Element:new({ content = "b:" .. tostring(active()) }):wrap(),
-			}
+			return function()
+				count, setCount = useState(0)
+				active, setActive = useState(false)
+				return {
+					Element:new({ content = "c:" .. count() }):wrap(),
+					Element:new({ content = "b:" .. tostring(active()) }):wrap(),
+				}
+			end
 		end, {})
 
 		-- render inicial

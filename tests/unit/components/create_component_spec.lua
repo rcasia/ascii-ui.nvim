@@ -53,16 +53,4 @@ describe("ComponentCreator.createComponent", function()
 			DummyComponent({ content = 2 })
 		end, "Invalid prop type for 'content'. Expected 'string', got 'number'.")
 	end)
-
-	it("accepts plain function", function()
-		local MyComponent = ui.createComponent("MyComponent", function()
-			return {
-				Element:new({ content = "Hello World" }):wrap(),
-			}
-		end)
-
-		local closure, fiber = MyComponent()
-		eq("Hello World", lines(closure))
-		eq("MyComponent", fiber[1].type)
-	end)
 end)
