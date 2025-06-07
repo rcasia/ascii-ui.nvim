@@ -1,9 +1,57 @@
 local Buffer = require("ascii-ui.buffer")
 local EventListener = require("ascii-ui.events")
 local config = require("ascii-ui.config")
+local unpack = unpack or table.unpack
 
 local logger = require("ascii-ui.logger")
 
+--- @class ascii-ui.FiberNode
+--- @field type "Root" | string
+--- @field closure fun(): function, ascii-ui.FiberNode[]
+--- @field output ascii-ui.FiberNode[] | ascii-ui.BufferLine[] | nil
+--- @field root ascii-ui.FiberNode | nil
+--- @field child ascii-ui.FiberNode | nil
+--- @field sibling ascii-ui.FiberNode | nil
+--- @field parent ascii-ui.FiberNode | nil
+--- @field hookIndex integer
+--- @field hooks any[]
+--- @field effects function[]
+--- @field effectIndex integer
+--- @field pendingEffects? function[]
+--- @field prevDeps? any[]
+--- @field cleanups? fn[]
+
+--- @type ascii-ui.FiberNode | nil
+local currentFiber
+
+--- @param root ascii-ui.FiberNode
+local function unmount(root)
+	local function traverse(fiber)
+		-- 1) Primero descendemos a todos los hijos (post-order)
+		local children = {}
+		local child = fiber.child
+		while child do
+			children[#children + 1] = child
+			child = child.sibling
+		end
+		for _, c in ipairs(children) do
+			traverse(c)
+		end
+
+		-- 2) Luego ejecutamos los cleanups de este fiber en orden inverso (LIFO)
+		if fiber.cleanups then
+			for i = #fiber.cleanups, 1, -1 do
+				local cleanup = fiber.cleanups[i]
+				if type(cleanup) == "function" then
+					cleanup()
+				end
+			end
+			fiber.cleanups = nil
+		end
+	end
+
+	traverse(root)
+end
 local function reconcileChildren(parent, output)
 	assert(type(output) == "table", "output should be a table, got: " .. type(output))
 	parent.child = nil
@@ -20,16 +68,17 @@ local function reconcileChildren(parent, output)
 	end
 end
 
-local currentFiber
-
 --- @param fiber ascii-ui.FiberNode
 local function performUnitOfWork(fiber)
 	assert(fiber, "Fiber cannot be nil")
 
 	currentFiber = fiber
+	fiber.effects = fiber.effects or {}
 	fiber.hookIndex = 1
+	fiber.effectIndex = 1
 	fiber.hooks = fiber.hooks or {}
 	fiber.root = fiber
+	fiber.root.pendingEffects = {}
 
 	if fiber.closure then
 		local lines, result = fiber.closure(config)
@@ -72,6 +121,11 @@ local function commitWork(fiber, buffer)
 		commitWork(child, buffer)
 		child = child.sibling
 	end
+
+	for _, eff in ipairs(fiber.root.pendingEffects) do
+		eff()
+	end
+	fiber.root.pendingEffects = {}
 end
 
 --- añade esta función para obtener el siguiente Fiber en recorrido depth-first
@@ -98,16 +152,22 @@ local function workLoop(root)
 		performUnitOfWork(nextFiber)
 		nextFiber = getNextFiber(nextFiber)
 	end
-
-	logger.debug("llegó")
 end
 -- helper de alto nivel: recibe un componente y devuelve las líneas del buffer
 local function render(Component)
 	local _, fiberArr = Component()
 	local root = fiberArr[1] --- @cast root ascii-ui.FiberNode
+	-- first phase: reconcile
 	workLoop(root)
 	local buffer = Buffer.new()
+	-- second phase: commit
 	commitWork(root, buffer)
+
+	-- third phase: execute pending effects
+	for _, eff in ipairs(root.pendingEffects) do
+		eff()
+	end
+	root.pendingEffects = {}
 	return buffer, root
 end
 
@@ -115,17 +175,26 @@ end
 --- @param root ascii-ui.FiberNode
 --- @return ascii-ui.Buffer buffer con las líneas renderizadas
 local function rerender(root)
-	-- Vuelve a procesar todos los units of work
+	unmount(root)
+
+	root.pendingEffects = {}
+
 	workLoop(root)
-	-- Genera un nuevo buffer con el commit de toda la estructura
 	local buf = Buffer.new()
+
 	commitWork(root, buf)
-	-- Guarda el resultado en root para posibles inspecciones
 	root.lastRendered = buf
+
+	for _, eff in ipairs(root.pendingEffects) do
+		eff()
+	end
+	root.pendingEffects = {}
+
 	return buf
 end
 
 local function useState(initial)
+	assert(currentFiber, "cannot call useState out of context")
 	local fiber = currentFiber
 
 	assert(fiber.root, "fiber should have root: " .. vim.inspect(fiber))
@@ -139,6 +208,11 @@ local function useState(initial)
 	end
 
 	local function set(value)
+		local oldCleanup = fiber.cleanups and fiber.cleanups[idx]
+		if oldCleanup then
+			oldCleanup()
+		end
+
 		if type(value) == "function" then
 			fiber.hooks[idx] = value(fiber.hooks[idx])
 		else
@@ -156,6 +230,64 @@ local function useState(initial)
 
 	fiber.hookIndex = idx + 1
 	return get, set
+end
+
+--- @param fn function
+--- @param deps? any[]
+local function useEffect(fn, deps)
+	assert(currentFiber, "cannot call useEffect out of the component scope")
+	assert(type(deps) == "nil" or vim.isarray(deps), "deps should be an array or nil")
+
+	local fiber = currentFiber
+	fiber.effectIndex = fiber.effectIndex or 1
+	fiber.effects = fiber.effects or {}
+	fiber.prevDeps = fiber.prevDeps or {}
+	fiber.cleanups = fiber.cleanups or {}
+
+	local idx = fiber.effectIndex
+	local prev = fiber.prevDeps[idx]
+	local shouldRun = false
+
+	if deps == nil then
+		logger.debug("nada: %s", vim.inspect(deps))
+
+		-- Sin array de deps: ejecutar en cada render y rerender
+		shouldRun = true
+	elseif #deps == 0 then
+		logger.debug("vacío")
+		-- Array vacío: sólo montaje
+		shouldRun = (prev == nil)
+	else
+		if not prev then
+			shouldRun = true
+		else
+			-- Shallow compare
+			if #deps ~= #prev then
+				shouldRun = true
+			else
+				for i = 1, #deps do
+					if deps[i] ~= prev[i] then
+						shouldRun = true
+						break
+					end
+				end
+			end
+		end
+	end
+
+	if shouldRun then
+		table.insert(fiber.root.pendingEffects, function()
+			local newCleanUp = fn()
+			if type(newCleanUp) == "function" then
+				fiber.cleanups[idx] = newCleanUp
+			else
+				fiber.cleanups[idx] = nil
+			end
+		end)
+	end
+
+	fiber.prevDeps[idx] = deps and { unpack(deps) } or nil
+	fiber.effectIndex = fiber.effectIndex + 1
 end
 
 ---
@@ -195,8 +327,11 @@ end
 return {
 	render = render,
 	rerender = rerender,
-	useState = useState,
+	unmount = unmount,
 	workLoop = workLoop,
 	commitWork = commitWork,
 	debugPrint = debugPrint,
+	-- hooks
+	useState = useState,
+	useEffect = useEffect,
 }

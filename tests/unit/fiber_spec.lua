@@ -5,24 +5,14 @@ local eq = assert.are.same
 
 local Buffer = require("ascii-ui.buffer")
 local Element = require("ascii-ui.buffer.element")
-local _fiber = require("ascii-ui.fiber")
+local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
-local render = _fiber.render
-local useState = _fiber.useState
-local commitWork = _fiber.commitWork
-local workLoop = _fiber.workLoop
-local debugPrint = _fiber.debugPrint
-
---- @class ascii-ui.FiberNode
---- @field type "Root" | string
---- @field closure fun(): function, ascii-ui.FiberNode[]
---- @field output ascii-ui.FiberNode[] | ascii-ui.BufferLine[] | nil
---- @field root ascii-ui.FiberNode | nil
---- @field child ascii-ui.FiberNode | nil
---- @field sibling ascii-ui.FiberNode | nil
---- @field parent ascii-ui.FiberNode | nil
---- @field hookIndex integer
---- @field hooks table[]
+local render = fiber.render
+local useState = fiber.useState
+local useEffect = fiber.useEffect
+local commitWork = fiber.commitWork
+local workLoop = fiber.workLoop
+local debugPrint = fiber.debugPrint
 
 local MyComponent = ui.createComponent("MyComponent", function()
 	return function()
@@ -38,10 +28,10 @@ end, {})
 
 describe("Fiber", function()
 	it("renderiza MyComponent en una sola línea", function()
-		local buffer, fiber = render(App)
+		local buffer, rootFiber = render(App)
 		eq({ "Hello World" }, buffer:to_lines())
 
-		debugPrint(fiber)
+		debugPrint(rootFiber)
 	end)
 
 	it("renderiza List en dos líneas", function()
@@ -53,10 +43,10 @@ describe("Fiber", function()
 				}
 			end
 		end, {})
-		local lines, fiber = render(List)
+		local lines, rootFiber = render(List)
 		eq({ "Línea 1", "Línea 2" }, lines:to_lines())
 
-		debugPrint(fiber)
+		debugPrint(rootFiber)
 	end)
 
 	it("soporta useState y re-renderiza al actualizar", function()
@@ -75,8 +65,8 @@ describe("Fiber", function()
 		end, {})
 
 		-- render inicial
-		local _, fiber = Counter()
-		local rootFiber = fiber[1]
+		local _, _rootFiber = Counter()
+		local rootFiber = _rootFiber[1]
 		workLoop(rootFiber)
 		local buf1 = Buffer.new()
 		commitWork(rootFiber, buf1)
@@ -91,5 +81,161 @@ describe("Fiber", function()
 		eq({ "c:5", "b:true" }, lines2)
 
 		debugPrint(rootFiber)
+	end)
+
+	it("debe ejecutar el efecto una vez tras el primer render", function()
+		local invocations = 0
+
+		local Test = ui.createComponent("Test", function()
+			-- efecto sin deps ({}): se ejecuta siempre una vez
+			return function()
+				useEffect(function()
+					invocations = invocations + 1
+				end, {})
+
+				return { Element:new({ content = "foo" }):wrap() }
+			end
+		end)
+
+		-- primer render
+		local _, fiberRoot = fiber.render(Test)
+		eq(1, invocations, "useEffect debió ejecutarse una vez después del render inicial")
+
+		-- un rerender sin cambios de estado no debe volver a ejecutarlo
+		local _ = fiber.rerender(fiberRoot)
+		eq(1, invocations, "useEffect sin deps no debe reejecutarse en rerender")
+	end)
+
+	it("solo se vuelve a ejecutar cuando cambian las dependencias", function()
+		local runs = {}
+		local count, setCount
+		local Counter = ui.createComponent("Counter", function()
+			return function()
+				count, setCount = useState(0)
+
+				-- efecto con arreglo de deps = { count() }
+				useEffect(function()
+					-- registramos cada ejecución junto con el valor actual de count
+					runs[#runs + 1] = count()
+				end, { count() })
+				return { Element:new({ content = tostring(count()) }):wrap() }
+			end
+		end, {})
+
+		-- render inicial
+		local _, root = fiber.render(Counter)
+		eq({ 0 }, runs, "Debe ejecutarse con count=0 en el mount")
+
+		-- rerender sin cambio de estado
+		fiber.rerender(root)
+		eq({ 0 }, runs, "Sin cambio de deps no debe reejecutarse")
+
+		-- actualizamos estado a 1
+		setCount(1)
+		eq({ 0, 1 }, runs, "Se reejecuta al cambiar count a 1")
+
+		-- otra vez a 1: no debe reejecutar
+		setCount(1)
+		eq({ 0, 1 }, runs, "Mismo valor de dep no dispara efecto")
+
+		-- cambiamos a 2: sí
+		setCount(2)
+		eq({ 0, 1, 2 }, runs, "Se reejecuta al cambiar count a 2")
+	end)
+	it("debe llamar al cleanup antes de reejecutar el effect", function()
+		local logs = {}
+
+		local count, setCount
+		local Counter = ui.createComponent("Counter", function()
+			return function()
+				count, setCount = useState(0)
+
+				useEffect(function()
+					-- efecto: registramos la ejecución
+					logs[#logs + 1] = "run:" .. count()
+					return function()
+						-- cleanup: registramos también
+						logs[#logs + 1] = "cleanup:" .. count()
+					end
+				end, { count() })
+
+				return { Element:new({ content = tostring(count()) }):wrap() }
+			end
+		end, {})
+
+		-- primer render: effect se ejecuta, no hay cleanup aún
+		local _, _ = fiber.render(Counter)
+		eq({ "run:0" }, logs)
+
+		-- primer cambio de estado a 1: debe correrse cleanup(0) antes de run(1)
+		setCount(1)
+		eq({ "run:0", "cleanup:0", "run:1" }, logs)
+
+		-- otro cambio a 2: cleanup(1) y run(2)
+		setCount(2)
+		eq({ "run:0", "cleanup:0", "run:1", "cleanup:1", "run:2" }, logs)
+	end)
+	it("debe ejecutar el cleanup al desmontar el componente", function()
+		local log = {}
+
+		local Test = ui.createComponent("Test", function()
+			return function()
+				useEffect(function()
+					log[#log + 1] = "mounted"
+					return function()
+						log[#log + 1] = "unmounted"
+					end
+				end)
+
+				return { Element:new({ content = "foo" }):wrap() }
+			end
+		end, {})
+
+		-- Mount
+		local _, root = fiber.render(Test)
+		eq({ "mounted" }, log, "solo debería haber corrido el efecto")
+
+		-- Unmount (lo que vamos a implementar)
+		fiber.unmount(root)
+		eq({ "mounted", "unmounted" }, log, "el cleanup debe ejecutarse al unmount")
+	end)
+
+	it("ejecuta efectos en orden y cleanups en orden inverso", function()
+		local log = {}
+
+		local Test = ui.createComponent("Test", function()
+			return function()
+				-- primer efecto
+				useEffect(function()
+					log[#log + 1] = "effect1"
+					return function()
+						log[#log + 1] = "cleanup1"
+					end
+				end)
+
+				-- segundo efecto
+				useEffect(function()
+					log[#log + 1] = "effect2"
+					return function()
+						log[#log + 1] = "cleanup2"
+					end
+				end)
+
+				return { Element:new({ content = "foo" }):wrap() }
+			end
+		end, {})
+
+		-- mount inicial
+		local _, root = fiber.render(Test)
+		eq({ "effect1", "effect2" }, log, "Los efectos deben correrse en orden declarado")
+
+		-- rerender genérico (sin deps, así siempre both effects vuelven a correr)
+		log = {}
+		fiber.rerender(root)
+		eq(
+			{ "cleanup2", "cleanup1", "effect1", "effect2" },
+			log,
+			"Los cleanups se ejecutan en orden inverso, luego los efectos en orden"
+		)
 	end)
 end)
