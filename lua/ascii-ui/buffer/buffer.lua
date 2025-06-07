@@ -224,4 +224,17 @@ function Buffer:find_element_by_position(position)
 	return self.lines[position.line]:find_element_by_col(position.col)
 end
 
+--- @param ... ascii-ui.BufferLine
+--- @return ascii-ui.Buffer
+function Buffer:add(...)
+	local lines = { ... }
+	if #lines == 0 then
+		return self
+	end
+
+
+	vim.list_extend(self.lines, lines)
+	return self
+end
+
 return Buffer
