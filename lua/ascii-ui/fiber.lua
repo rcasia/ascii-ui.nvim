@@ -38,7 +38,11 @@ local function performUnitOfWork(fiber)
 			if lines and type(lines) == "function" then
 				-- Si lines es una función, la ejecutamos para obtener el resultado
 				local result2 = lines(config)
-				fiber.output = result2()
+				if type(result2) ~= "function" then
+					fiber.output = result2
+				else
+					fiber.output = result2()
+				end
 			else
 				assert(type(lines) == "table", "lines should be a table or a function, got: " .. type(lines))
 				fiber.output = lines
@@ -47,8 +51,6 @@ local function performUnitOfWork(fiber)
 		assert(type(fiber.output) == "table", "Expected fiber.output to return a table, got: " .. type(fiber.output))
 
 		reconcileChildren(fiber, fiber.output)
-	else
-		-- error("fiber.closure cannot be nil on: " .. vim.inspect(fiber))
 	end
 end
 
@@ -168,7 +170,7 @@ local function debugPrint(fiber, print_fn)
 		-- Agrega estados de hooks si existen
 		if node.hooks and #node.hooks > 0 then
 			local parts = {}
-			for i, h in ipairs(node.hooks) do
+			for _, h in ipairs(node.hooks) do
 				parts[#parts + 1] = tostring(h)
 			end
 			line = line .. " [hooks=" .. table.concat(parts, ",") .. "]"

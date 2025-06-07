@@ -5,6 +5,8 @@ local createComponent = require("ascii-ui.components.functional-component")
 
 ---@return ascii-ui.BufferLine[]
 local function DummyComponent()
-	return { BufferLine.new(Element:new("dummy_render")) }
+	return function()
+		return { BufferLine.new(Element:new("dummy_render")) }
+	end
 end
 return createComponent("DummyComponent", DummyComponent)

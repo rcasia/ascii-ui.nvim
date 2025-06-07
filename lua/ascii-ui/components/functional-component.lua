@@ -73,7 +73,7 @@ local components = {}
 --- Crea un componente personalizado y lo registra
 --- @generic ascii-ui.ComponentClosure, T
 --- @param name string Nombre del componente
---- @param functional_component fun(props: T): ascii-ui.BufferLine[]
+--- @param functional_component fun(props: T): fun(): ascii-ui.BufferLine[]
 --- @param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
 --- @return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
 local function createComponent(name, functional_component, types)
@@ -99,17 +99,9 @@ local function createComponent(name, functional_component, types)
 			if #args == 1 and type(args[1]) == "table" then
 				props = from_function_prop(args[1], types)
 				validate_props(props, types)
-				local component_closure = functional_component(props)
-				if type(component_closure) == "function" then
-					factory = component_closure
-				elseif type(component_closure) == "table" then
-					factory = function()
-						return functional_component(props)
-					end
-				else
-					error(
-						("Component %s must return a function or a table, got %s"):format(name, type(component_closure))
-					)
+				function factory()
+					-- dentro del workLoop, currentFiber ya está seteado
+					return functional_component(props)
 				end
 			else
 				factory = function()
@@ -117,16 +109,15 @@ local function createComponent(name, functional_component, types)
 				end
 			end
 
-			return factory,
+			local closure = memoize(factory, { closure_id = closure_id, props = props })
+
+			return closure,
 				{
 					{
 						name = name,
 						type = name,
 						props = props or args[1],
-						closure = function()
-							return functional_component(args[1])
-						end,
-						output = nil,
+						closure = closure,
 					},
 				}
 		end,

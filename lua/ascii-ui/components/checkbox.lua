@@ -3,7 +3,9 @@ local createComponent = require("ascii-ui.components.functional-component")
 
 ---@param props { active?: boolean, label?: string }
 local function Checkbox(props)
-	return { Element:new(("[%s] %s"):format(props.active and "x" or " ", props.label or "")):wrap() }
+	return function()
+		return { Element:new(("[%s] %s"):format(props.active and "x" or " ", props.label or "")):wrap() }
+	end
 end
 
 return createComponent("Checkbox", Checkbox, { active = "boolean", label = "string" })
