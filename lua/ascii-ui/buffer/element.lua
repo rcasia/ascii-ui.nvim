@@ -43,7 +43,7 @@ function Segment:new(...)
 	else
 		props = props[1]
 	end
-	assert(type(props) == "table", "Element props must be a table")
+	assert(type(props) == "table", "Element props must be a table. Found: " .. type(props) .. " " .. debug.traceback())
 
 	vim.validate({ content = { props.content, "string" } })
 	local state = {
