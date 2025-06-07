@@ -12,8 +12,12 @@ local ui = require("ascii-ui")
 --- @field type "Root" | string
 --- @field closure fun(): function, ascii-ui.FiberNode[]
 --- @field output ascii-ui.FiberNode[] | ascii-ui.BufferLine[] | nil
+--- @field root ascii-ui.FiberNode | nil
 --- @field child ascii-ui.FiberNode | nil
 --- @field sibling ascii-ui.FiberNode | nil
+--- @field parent ascii-ui.FiberNode | nil
+--- @field hookIndex integer
+--- @field hooks table[]
 
 local MyComponent = ui.createComponent("MyComponent", function()
 	return function()
@@ -35,6 +39,7 @@ describe("Fiber", function()
 		local prevSibling
 		for i, node in ipairs(output) do
 			node.parent = parent
+			node.root = parent.root or parent
 			if i == 1 then
 				parent.child = node
 			else
@@ -44,9 +49,17 @@ describe("Fiber", function()
 		end
 	end
 
+	local currentFiber
+
 	--- @param fiber ascii-ui.FiberNode
 	local function performUnitOfWork(fiber)
 		assert(fiber, "Fiber cannot be nil")
+
+		currentFiber = fiber
+		fiber.hookIndex = 1
+		fiber.hooks = fiber.hooks or {}
+		fiber.root = fiber
+
 		if fiber.closure then
 			local lines, result = fiber.closure()
 			fiber.output = result or lines()
@@ -59,6 +72,9 @@ describe("Fiber", function()
 	--- @param fiber ascii-ui.FiberNode
 	--- @param buffer ascii-ui.Buffer
 	local function commitWork(fiber, buffer)
+		if not fiber then
+			return
+		end
 		if type(fiber) == "table" and fiber.elements then --- @cast fiber ascii-ui.BufferLine
 			buffer:add(fiber)
 			return
@@ -75,7 +91,9 @@ describe("Fiber", function()
 		end
 	end
 
-	-- añade esta función para obtener el siguiente Fiber en recorrido depth-first
+	--- añade esta función para obtener el siguiente Fiber en recorrido depth-first
+	--- @param fiber ascii-ui.FiberNode
+	--- @return ascii-ui.FiberNode | nil
 	local function getNextFiber(fiber)
 		if fiber.child then
 			return fiber.child
@@ -108,6 +126,37 @@ describe("Fiber", function()
 		return buffer
 	end
 
+	local function useState(initial)
+		local fiber = currentFiber
+
+		assert(fiber.root, "fiber should have root: " .. vim.inspect(fiber))
+		local idx = fiber.hookIndex
+		if fiber.hooks[idx] == nil then
+			fiber.hooks[idx] = initial
+		end
+
+		local function get()
+			return fiber.hooks[idx]
+		end
+
+		local function set(value)
+			if type(value) == "function" then
+				fiber.hooks[idx] = value(fiber.hooks[idx])
+			else
+				fiber.hooks[idx] = value
+			end
+			-- re-render completo sobre el mismo root
+			workLoop(fiber.root)
+			local buf = Buffer.new()
+			commitWork(fiber.root, buf)
+			assert(buf, "buf cannot be nil")
+			fiber.root.lastRendered = buf
+		end
+
+		fiber.hookIndex = idx + 1
+		return get, set
+	end
+
 	it("renderiza MyComponent en una sola línea", function()
 		local lines = render(App)
 		eq({ "Hello World" }, lines:to_lines())
@@ -124,5 +173,31 @@ describe("Fiber", function()
 		end, {})
 		local lines = render(List)
 		eq({ "Línea 1", "Línea 2" }, lines:to_lines())
+	end)
+
+	it("soporta useState y re-renderiza al actualizar", function()
+		-- componente con contador
+		local count, setCount
+		local Counter = ui.createComponent("Counter", function()
+			return function()
+				count, setCount = useState(0)
+				return { Element:new({ content = "c:" .. count() }):wrap() }
+			end
+		end, {})
+
+		-- render inicial
+		local _, fiber = Counter()
+		local rootFiber = fiber[1]
+		workLoop(rootFiber)
+		local buf1 = Buffer.new()
+		commitWork(rootFiber, buf1)
+		eq({ "c:0" }, buf1:to_lines())
+
+		-- disparar actualización
+		setCount(5)
+
+		-- tras el setState, el propio hook habrá vuelto a renderizar
+		local lines2 = rootFiber.lastRendered:to_lines()
+		eq({ "c:5" }, lines2)
 	end)
 end)
