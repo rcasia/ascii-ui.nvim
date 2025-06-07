@@ -73,8 +73,8 @@ local components = {}
 --- Crea un componente personalizado y lo registra
 --- @generic ascii-ui.ComponentClosure, T
 --- @param name string Nombre del componente
---- @param functional_component fun(props: T): fun(config: ascii-ui.Config): ascii-ui.BufferLine[]
---- @param types table<string, ascii-ui.PropsType> Tipos de los props del componente
+--- @param functional_component fun(props: T): ascii-ui.BufferLine[]
+--- @param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
 --- @return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
 local function createComponent(name, functional_component, types)
 	types = types or {}
@@ -99,8 +99,17 @@ local function createComponent(name, functional_component, types)
 			if #args == 1 and type(args[1]) == "table" then
 				local props = from_function_prop(args[1], types)
 				validate_props(props, types)
-				factory = function()
-					return functional_component(props)
+				local component_closure = functional_component(props)
+				if type(component_closure) == "function" then
+					factory = component_closure
+				elseif type(component_closure) == "table" then
+					factory = function()
+						return functional_component(props)
+					end
+				else
+					error(
+						("Component %s must return a function or a table, got %s"):format(name, type(component_closure))
+					)
 				end
 			else
 				factory = function()
@@ -108,7 +117,7 @@ local function createComponent(name, functional_component, types)
 				end
 			end
 
-			return memoize(factory, { chache_key = closure_id }),
+			return factory,
 				{
 					{
 						name = name,
