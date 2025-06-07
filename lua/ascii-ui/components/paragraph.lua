@@ -4,10 +4,10 @@ local createComponent = require("ascii-ui.components.functional-component")
 --- @alias ascii-ui.ParagraphComponent.Props { content?: string }
 
 --- @param props ascii-ui.ParagraphComponent.Props
---- @return fun(): ascii-ui.BufferLine[]
+--- @return ascii-ui.BufferLine[]
 local function Paragraph(props)
 	return function()
-		return { Element:new(props.content):wrap() }
+		return { Element:new({ content = props.content }):wrap() }
 	end
 end
 

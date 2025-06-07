@@ -8,7 +8,6 @@ local ui = require("ascii-ui")
 return ui.createComponent("Input", function(props)
 	props = props or {}
 	props.value = props.value or ""
-
 	return function()
 		return {
 			Element:new({

@@ -1,7 +1,9 @@
 local Buffer = require("ascii-ui.buffer")
 local dom = require("ascii-ui.lib.dom-handler")
+local fiber = require("ascii-ui.fiber")
 local logger = require("ascii-ui.logger")
 local xml = require("ascii-ui.lib.xml2lua")
+
 ---@class ascii-ui.Renderer
 --- @field config ascii-ui.Config
 local Renderer = {}
@@ -23,15 +25,31 @@ function Renderer:new(config)
 	return state
 end
 
+local function is_callable(obj)
+	if type(obj) == "function" then
+		return true
+	elseif type(obj) == "table" then
+		local mt = getmetatable(obj)
+		return type(mt and mt.__call) == "function"
+	else
+		return false
+	end
+end
+
 ---@param renderable string
 ---| fun(config: ascii-ui.Config): string
 ---| fun(config: ascii-ui.Config): ascii-ui.BufferLine[]
 ---| fun(config: ascii-ui.Config): fun(config: ascii-ui.Config):  ascii-ui.BufferLine[]
 ---@return ascii-ui.Buffer
+---@return ascii-ui.FiberNode?
 function Renderer:render(renderable)
 	if type(renderable) == "string" then
 		return self:render_xml(renderable)
 	end
+	if is_callable(renderable) then
+		return fiber.render(renderable)
+	end
+
 	if type(renderable) == "function" then
 		local rendered = renderable(self.config)
 
