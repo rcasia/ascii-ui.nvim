@@ -4,32 +4,20 @@ pcall(require, "luacov")
 local eq = assert.are.same
 
 local Input = require("ascii-ui.components.input")
-
---- @param bufferlines ascii-ui.BufferLine[]
---- @return string
-local function bufferlines_to_string(bufferlines)
-	return vim
-		.iter(bufferlines)
-		--- @param line ascii-ui.BufferLine
-		:map(function(line)
-			return line:to_string()
-		end)
-		:join("\n")
-end
+local renderer = require("ascii-ui.renderer"):new()
+local ui = require("ascii-ui")
 
 describe("Input", function()
 	it("renders", function()
-		local input_closure = Input()
-		local result = bufferlines_to_string(input_closure())
-
-		eq("", result)
+		eq("", renderer:render(Input):to_string())
 	end)
 
 	it("renders with initial value", function()
 		local initial_value = "hello world!"
-		local input_closure = Input({ value = initial_value })
-		local result = bufferlines_to_string(input_closure())
+		local App = ui.createComponent("App", function()
+			return Input({ value = initial_value })
+		end)
 
-		eq(initial_value, result)
+		eq(initial_value, renderer:render(App):to_string())
 	end)
 end)

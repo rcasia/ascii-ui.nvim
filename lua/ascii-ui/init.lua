@@ -32,24 +32,23 @@ local function is_callable(obj)
 	end
 end
 
----@param Component ascii-ui.FunctionalComponent
+---@param AppComponent ascii-ui.FunctionalComponent
 ---@return integer bufnr
-function AsciiUI.mount(Component)
+function AsciiUI.mount(AppComponent)
 	local start = vim.loop.hrtime()
 	logger.info("------------------")
 	logger.info("Mounting component")
 	logger.info("------------------")
-	if not is_callable(Component) then
-		error(vim.inspect(Component))
-		error("should be a functional component. Found: " .. type(Component))
+	if not is_callable(AppComponent) then
+		error(vim.inspect(AppComponent))
+		error("should be a functional component. Found: " .. type(AppComponent))
 	end
 
 	-- does first render
 	-- local rendered_buffer = ascii_renderer:render(component)
-	local rendered_buffer, fiberRoot = render(Component)
+	local rendered_buffer, fiberRoot = render(AppComponent)
 
 	assert(fiberRoot, "fiberRoot cannot be nil")
-	logger.debug("buffer: %s ", vim.inspect(rendered_buffer))
 	fiber.debugPrint(fiberRoot, logger.debug)
 
 	-- spawns a window
@@ -66,7 +65,7 @@ function AsciiUI.mount(Component)
 		local current_lines_count = rendered_buffer:height()
 		-- rendered_buffer = ascii_renderer:render(Component) -- assign variable to have change the referenced value
 		rendered_buffer = rerender(fiberRoot)
-		logger.debug("new buffer: %s", vim.inspect(rendered_buffer))
+		fiber.debugPrint(fiberRoot, logger.debug)
 		local new_lines_count = rendered_buffer:height()
 		window:update(rendered_buffer)
 

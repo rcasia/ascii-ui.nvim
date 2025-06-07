@@ -94,10 +94,10 @@ local function createComponent(name, functional_component, types)
 			local closure_id = tostring({})
 			logger.debug("Creating closure for component '%s' with id %s", name, closure_id)
 			local args = { ... }
-			local factory
+			local factory, props
 
 			if #args == 1 and type(args[1]) == "table" then
-				local props = from_function_prop(args[1], types)
+				props = from_function_prop(args[1], types)
 				validate_props(props, types)
 				local component_closure = functional_component(props)
 				if type(component_closure) == "function" then
@@ -122,7 +122,7 @@ local function createComponent(name, functional_component, types)
 					{
 						name = name,
 						type = name,
-						props = args[1],
+						props = props or args[1],
 						closure = function()
 							return functional_component(args[1])
 						end,

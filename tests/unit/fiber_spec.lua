@@ -26,9 +26,7 @@ local debugPrint = _fiber.debugPrint
 --- @field hooks table[]
 
 local MyComponent = ui.createComponent("MyComponent", function()
-	return function()
-		return { Element:new({ content = "Hello World" }):wrap() }
-	end
+	return { Element:new({ content = "Hello World" }):wrap() }
 end, {})
 
 local App = ui.createComponent("App", function()
@@ -45,12 +43,10 @@ describe("Fiber", function()
 
 	it("renderiza List en dos líneas", function()
 		local List = ui.createComponent("List", function()
-			return function()
-				return {
-					Element:new({ content = "Línea 1" }):wrap(),
-					Element:new({ content = "Línea 2" }):wrap(),
-				}
-			end
+			return {
+				Element:new({ content = "Línea 1" }):wrap(),
+				Element:new({ content = "Línea 2" }):wrap(),
+			}
 		end, {})
 		local lines, fiber = render(List)
 		eq({ "Línea 1", "Línea 2" }, lines:to_lines())
@@ -63,14 +59,12 @@ describe("Fiber", function()
 		local count, setCount
 		local active, setActive
 		local Counter = ui.createComponent("Counter", function()
-			return function()
-				count, setCount = useState(0)
-				active, setActive = useState(false)
-				return {
-					Element:new({ content = "c:" .. count() }):wrap(),
-					Element:new({ content = "b:" .. tostring(active()) }):wrap(),
-				}
-			end
+			count, setCount = useState(0)
+			active, setActive = useState(false)
+			return {
+				Element:new({ content = "c:" .. count() }):wrap(),
+				Element:new({ content = "b:" .. tostring(active()) }):wrap(),
+			}
 		end, {})
 
 		-- render inicial

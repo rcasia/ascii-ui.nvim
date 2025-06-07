@@ -1,5 +1,3 @@
-local MAX_RECURSION_LIMIT = 20
-local current_recursion = 0
 local Buffer = require("ascii-ui.buffer")
 local EventListener = require("ascii-ui.events")
 local config = require("ascii-ui.config")
@@ -7,7 +5,7 @@ local config = require("ascii-ui.config")
 local logger = require("ascii-ui.logger")
 
 local function reconcileChildren(parent, output)
-	assert(output, "output cannot be nil")
+	assert(type(output) == "table", "output should be a table, got: " .. type(output))
 	parent.child = nil
 	local prevSibling
 	for i, node in ipairs(output) do
@@ -37,10 +35,16 @@ local function performUnitOfWork(fiber)
 		local lines, result = fiber.closure(config)
 		fiber.output = result
 		if not fiber.output then
-			local inner_lines, result2 = lines(config)
-			fiber.output = result2 or inner_lines
-			logger.debug("fiber.output: %s", vim.inspect({ a = inner_lines, ouput = fiber.output }))
+			if lines and type(lines) == "function" then
+				-- Si lines es una función, la ejecutamos para obtener el resultado
+				local result2 = lines(config)
+				fiber.output = result2()
+			else
+				assert(type(lines) == "table", "lines should be a table or a function, got: " .. type(lines))
+				fiber.output = lines
+			end
 		end
+		assert(type(fiber.output) == "table", "Expected fiber.output to return a table, got: " .. type(fiber.output))
 
 		reconcileChildren(fiber, fiber.output)
 	else
@@ -51,7 +55,6 @@ end
 --- @param fiber ascii-ui.FiberNode | ascii-ui.BufferLine
 --- @param buffer ascii-ui.Buffer
 local function commitWork(fiber, buffer)
-	logger.debug("commitWork: %s", vim.inspect(fiber))
 	if not fiber then
 		return
 	end
@@ -64,8 +67,6 @@ local function commitWork(fiber, buffer)
 	end
 	local child = fiber.child
 	while child do
-		assert(current_recursion < MAX_RECURSION_LIMIT, "MAX_RECURSION_LIMIT reached")
-		current_recursion = current_recursion + 1
 		commitWork(child, buffer)
 		child = child.sibling
 	end
@@ -92,7 +93,6 @@ end
 local function workLoop(root)
 	local nextFiber = root
 	while nextFiber do
-		logger.debug("nextFiber: %s", vim.inspect(nextFiber))
 		performUnitOfWork(nextFiber)
 		nextFiber = getNextFiber(nextFiber)
 	end

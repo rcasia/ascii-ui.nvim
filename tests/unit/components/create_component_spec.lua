@@ -61,7 +61,8 @@ describe("ComponentCreator.createComponent", function()
 			}
 		end)
 
-		local closure, _ = MyComponent()
+		local closure, fiber = MyComponent()
 		eq("Hello World", lines(closure))
+		eq("MyComponent", fiber[1].type)
 	end)
 end)
