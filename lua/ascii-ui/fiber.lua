@@ -38,7 +38,7 @@ local function performUnitOfWork(fiber)
 	end
 end
 
---- @param fiber ascii-ui.FiberNode
+--- @param fiber ascii-ui.FiberNode | ascii-ui.BufferLine
 --- @param buffer ascii-ui.Buffer
 local function commitWork(fiber, buffer)
 	if not fiber then

@@ -38,7 +38,13 @@ end
 --- @param ... fun(): ascii-ui.BufferLine[]
 --- @return fun(): ascii-ui.BufferLine[]
 local function Row(...)
-	local component_closures = { ... }
+	local component_closures = vim
+		.iter({ ... })
+		-- TODO: this just ignores FiberNodes, remove when totally supported
+		:filter(function(item)
+			return type(item) ~= "table"
+		end)
+		:totable()
 
 	vim.iter(component_closures):each(function(c)
 		assert(
