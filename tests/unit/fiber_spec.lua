@@ -178,10 +178,15 @@ describe("Fiber", function()
 	it("soporta useState y re-renderiza al actualizar", function()
 		-- componente con contador
 		local count, setCount
+		local active, setActive
 		local Counter = ui.createComponent("Counter", function()
 			return function()
 				count, setCount = useState(0)
-				return { Element:new({ content = "c:" .. count() }):wrap() }
+				active, setActive = useState(false)
+				return {
+					Element:new({ content = "c:" .. count() }):wrap(),
+					Element:new({ content = "b:" .. tostring(active()) }):wrap(),
+				}
 			end
 		end, {})
 
@@ -191,13 +196,14 @@ describe("Fiber", function()
 		workLoop(rootFiber)
 		local buf1 = Buffer.new()
 		commitWork(rootFiber, buf1)
-		eq({ "c:0" }, buf1:to_lines())
+		eq({ "c:0", "b:false" }, buf1:to_lines())
 
 		-- disparar actualización
 		setCount(5)
+		setActive(true)
 
 		-- tras el setState, el propio hook habrá vuelto a renderizar
 		local lines2 = rootFiber.lastRendered:to_lines()
-		eq({ "c:5" }, lines2)
+		eq({ "c:5", "b:true" }, lines2)
 	end)
 end)
