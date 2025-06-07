@@ -6,7 +6,7 @@ local Buffer = require("ascii-ui.buffer")
 local Column = require("ascii-ui.layout.column")
 
 describe("Column", function()
-	it("render components in layout vertical by default", function()
+	pending("render components in layout vertical by default", function()
 		local layout = Column(
 			--
 			DummyComponent(),

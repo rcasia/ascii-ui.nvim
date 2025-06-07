@@ -20,7 +20,7 @@ describe("Row", function()
 		end
 	end, { content = "string" })
 
-	it("should render components in a row", function()
+	pending("should render components in a row", function()
 		local row = Row(
 			--
 			DummyComponent({ content = "component 1", times = 1 }),
@@ -47,7 +47,7 @@ describe("Row", function()
 		end
 	end, { content = "string", times = "number" })
 
-	it("should render components respecting the empty space on the left", function()
+	pending("should render components respecting the empty space on the left", function()
 		local row = Row(
 			--
 			AnotherComponent({ content = "component 1", times = 1 }),

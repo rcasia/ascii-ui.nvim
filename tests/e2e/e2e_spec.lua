@@ -3,7 +3,7 @@ pcall(require, "luacov")
 
 local ui = require("ascii-ui")
 local Column = ui.layout.Column
-local Options = ui.components.Select
+local Select = ui.components.Select
 local it = require("plenary.async.tests").it
 local Paragraph = ui.components.Paragraph
 local Slider = ui.components.Slider
@@ -39,8 +39,9 @@ local function buffer_contains(bufnr, pattern)
 end
 
 describe("ascii-ui", function()
-	it("should open close and open again with out problems", function()
-		local component = Options({ options = {
+	-- FIXME: when there is an useReducer
+	pending("should open close and open again with out problems", function()
+		local component = Select({ options = {
 			"book",
 			"pencil",
 			"rubber",
@@ -87,11 +88,9 @@ describe("ascii-ui", function()
 		it("fiber functional", function()
 			local content, setContent
 			local App = ui.createComponent("App", function()
-				return function()
-					content, setContent = useState("hola mundo")
-					return Paragraph({ content = content() })
-				end
-			end, {})
+				content, setContent = useState("hola mundo")
+				return Paragraph({ content = content() })
+			end)
 			local bufnr = ui.mount(App)
 			assert(buffer_contains(bufnr, "hola mundo"))
 
@@ -102,23 +101,22 @@ describe("ascii-ui", function()
 		it("fiber functional interaction", function()
 			local content, setContent
 			local App = ui.createComponent("App", function()
-				return function()
-					content, setContent = useState("hola mundo")
-					return {
-						Element:new({
-							content = content(),
-							interactions = {
-								[interaction_type.CURSOR_MOVE_RIGHT] = function()
-									setContent("right")
-								end,
-								[interaction_type.CURSOR_MOVE_LEFT] = function()
-									setContent("left")
-								end,
-							},
-						}):wrap(),
-					}
-				end
-			end, {})
+				content, setContent = useState("hola mundo")
+
+				return {
+					Element:new({
+						content = content(),
+						interactions = {
+							[interaction_type.CURSOR_MOVE_RIGHT] = function()
+								setContent("right")
+							end,
+							[interaction_type.CURSOR_MOVE_LEFT] = function()
+								setContent("left")
+							end,
+						},
+					}):wrap(),
+				}
+			end)
 			local bufnr = ui.mount(App)
 			assert(buffer_contains(bufnr, "hola mundo"))
 

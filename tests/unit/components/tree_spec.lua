@@ -5,17 +5,19 @@ local eq = assert.are.same
 
 local Renderer = require("ascii-ui.renderer")
 local Tree = require("ascii-ui.components.tree")
+local fiber = require("ascii-ui.fiber")
+local ui = require("ascii-ui")
 
 describe("Tree Component", function()
 	local renderer = Renderer:new({})
 
 	it("renders just top node", function()
-		local tree = {
-			text = "dummy_treenode",
-		}
-		local closure = Tree({ tree = tree })
+		local App = ui.createComponent("App", function()
+			return Tree({ tree = { text = "dummy_treenode" } })
+		end, {})
+		local buffer = fiber.render(App)
 
-		eq([[dummy_treenode]], renderer:render(closure):to_string())
+		eq([[dummy_treenode]], buffer:to_string())
 	end)
 
 	it("renders just top node and its children", function()
@@ -27,13 +29,15 @@ describe("Tree Component", function()
 				{ text = "node-1-2" },
 			},
 		}
-		local closure = Tree({ tree = tree })
+		local App = ui.createComponent("App", function()
+			return Tree({ tree = tree })
+		end, {})
 
 		eq(
 			vim.trim([[node-1
  ├─ node-1-1
  ╰─ node-1-2]]),
-			renderer:render(closure):to_string()
+			renderer:render(App):to_string()
 		)
 	end)
 
@@ -46,14 +50,16 @@ describe("Tree Component", function()
 				{ text = "node-1-2" },
 			},
 		}
-		local closure = Tree({ tree = tree })
+		local App = ui.createComponent("App", function()
+			return Tree({ tree = tree })
+		end, {})
 
 		eq(
 			vim.trim([[node-1
  ╰╮▾ node-1-1
  │╰─ node-1-1-1
  ╰─ node-1-2]]),
-			renderer:render(closure):to_string()
+			renderer:render(App):to_string()
 		)
 	end)
 
@@ -67,8 +73,10 @@ describe("Tree Component", function()
 				{ text = "node-1-3", children = { { text = "node-1-3-1", children = { { text = "node-1-3-1-1" } } } } },
 			},
 		}
-		local closure = Tree({ tree = tree })
-		local result = renderer:render(closure):to_string()
+		local App = ui.createComponent("App", function()
+			return Tree({ tree = tree })
+		end, {})
+		local result = renderer:render(App):to_string()
 
 		eq(
 			[[node-1
@@ -95,8 +103,10 @@ describe("Tree Component", function()
 				},
 			},
 		}
-		local closure = Tree({ tree = tree })
-		local result = renderer:render(closure):to_string()
+		local App = ui.createComponent("App", function()
+			return Tree({ tree = tree })
+		end, {})
+		local result = renderer:render(App):to_string()
 
 		eq(
 			[[node-1
