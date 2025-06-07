@@ -1,6 +1,10 @@
 local MAX_RECURSION_LIMIT = 20
 local current_recursion = 0
 local Buffer = require("ascii-ui.buffer")
+local EventListener = require("ascii-ui.events")
+local config = require("ascii-ui.config")
+
+local logger = require("ascii-ui.logger")
 
 local function reconcileChildren(parent, output)
 	assert(output, "output cannot be nil")
@@ -30,8 +34,14 @@ local function performUnitOfWork(fiber)
 	fiber.root = fiber
 
 	if fiber.closure then
-		local lines, result = fiber.closure()
-		fiber.output = result or lines()
+		local lines, result = fiber.closure(config)
+		fiber.output = result
+		if not fiber.output then
+			local inner_lines, result2 = lines(config)
+			fiber.output = result2 or inner_lines
+			logger.debug("fiber.output: %s", vim.inspect({ a = inner_lines, ouput = fiber.output }))
+		end
+
 		reconcileChildren(fiber, fiber.output)
 	else
 		-- error("fiber.closure cannot be nil on: " .. vim.inspect(fiber))
@@ -41,6 +51,7 @@ end
 --- @param fiber ascii-ui.FiberNode | ascii-ui.BufferLine
 --- @param buffer ascii-ui.Buffer
 local function commitWork(fiber, buffer)
+	logger.debug("commitWork: %s", vim.inspect(fiber))
 	if not fiber then
 		return
 	end
@@ -81,9 +92,12 @@ end
 local function workLoop(root)
 	local nextFiber = root
 	while nextFiber do
+		logger.debug("nextFiber: %s", vim.inspect(nextFiber))
 		performUnitOfWork(nextFiber)
 		nextFiber = getNextFiber(nextFiber)
 	end
+
+	logger.debug("llegó")
 end
 -- helper de alto nivel: recibe un componente y devuelve las líneas del buffer
 local function render(Component)
@@ -93,6 +107,20 @@ local function render(Component)
 	local buffer = Buffer.new()
 	commitWork(root, buffer)
 	return buffer, root
+end
+
+--- Re-renderiza el árbol de fibers a partir de la raíz dada
+--- @param root ascii-ui.FiberNode
+--- @return ascii-ui.Buffer buffer con las líneas renderizadas
+local function rerender(root)
+	-- Vuelve a procesar todos los units of work
+	workLoop(root)
+	-- Genera un nuevo buffer con el commit de toda la estructura
+	local buf = Buffer.new()
+	commitWork(root, buf)
+	-- Guarda el resultado en root para posibles inspecciones
+	root.lastRendered = buf
+	return buf
 end
 
 local function useState(initial)
@@ -120,6 +148,8 @@ local function useState(initial)
 		commitWork(fiber.root, buf)
 		assert(buf, "buf cannot be nil")
 		fiber.root.lastRendered = buf
+
+		EventListener:trigger("state_change")
 	end
 
 	fiber.hookIndex = idx + 1
@@ -129,8 +159,9 @@ end
 ---
 --- Debug: Imprime el árbol de Fibers con indentación y valores de hooks
 ---
-local function debugPrint(fiber)
+local function debugPrint(fiber, print_fn)
 	local function traverse(node, prefix, isLast)
+		local print = print_fn or print
 		-- Construye línea con prefijo gráfico
 		local branch = isLast and "└─ " or "├─ "
 		local line = prefix .. branch .. (node.type or "<buffer>")
@@ -158,8 +189,10 @@ local function debugPrint(fiber)
 	end
 	traverse(fiber, "", true)
 end
+
 return {
 	render = render,
+	rerender = rerender,
 	useState = useState,
 	workLoop = workLoop,
 	commitWork = commitWork,

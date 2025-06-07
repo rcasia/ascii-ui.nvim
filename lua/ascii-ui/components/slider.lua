@@ -53,6 +53,7 @@ end
 --- @param props? { title?: string, value?: integer }
 local function Slider(props)
 	return function(config)
+		config = config or require("ascii-ui.config")
 		props = props or {}
 		props.value = props.value or 0
 		props.title = props.title or ""
