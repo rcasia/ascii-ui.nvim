@@ -5,10 +5,9 @@ local Button = ui.components.Button
 local useState = ui.hooks.useState
 
 --- @type ascii-ui.FunctionalComponent
-local function App()
-	local content, setContent = useState("initial content")
-
+local App = ui.createComponent("App", function()
 	return function()
+		local content, setContent = useState("initial content")
 		return Column(
 			--
 			Paragraph({ content = content }),
@@ -20,6 +19,6 @@ local function App()
 			})
 		)
 	end
-end
+end)
 
-ui.mount(App())
+ui.mount(App)
