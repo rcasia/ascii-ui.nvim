@@ -1,10 +1,11 @@
 pcall(require, "luacov")
 
-local Element = require("ascii-ui.buffer.element")
-local ui = require("ascii-ui")
 local eq = assert.are.same
 
-local Buffer = require("ascii-ui.buffer")
+local Element = require("ascii-ui.buffer.element")
+local renderer = require("ascii-ui.renderer"):new()
+local ui = require("ascii-ui")
+
 local Row = require("ascii-ui.layout.row")
 
 describe("Row", function()
@@ -21,18 +22,19 @@ describe("Row", function()
 	end, { content = "string" })
 
 	it("should render components in a row", function()
-		local row = Row(
-			--
-			DummyComponent({ content = "component 1", times = 1 }),
-			DummyComponent({ content = "component 2", times = 2 }),
-			DummyComponent({ content = "component 3", times = 3 })
-		)
+		local App = ui.createComponent("DummyApp", function()
+			return Row(
+				DummyComponent({ content = "component 1" }),
+				DummyComponent({ content = "component 2" }),
+				DummyComponent({ content = "component 3" })
+			)
+		end)
 
 		eq({
 			"component 1 component 2 component 3",
 			"component 1 component 2 component 3",
 			"smol txt    smol txt    smol txt",
-		}, Buffer.new(unpack(row())):to_lines())
+		}, renderer:render(App):to_lines())
 	end)
 
 	local AnotherComponent = ui.createComponent("DummyComponent", function(props)
@@ -48,17 +50,18 @@ describe("Row", function()
 	end, { content = "string", times = "number" })
 
 	it("should render components respecting the empty space on the left", function()
-		local row = Row(
-			--
-			AnotherComponent({ content = "component 1", times = 1 }),
-			AnotherComponent({ content = "component 2", times = 2 }),
-			AnotherComponent({ content = "component 3", times = 3 })
-		)
+		local App = ui.createComponent("DummyApp", function()
+			return Row(
+				AnotherComponent({ content = "component 1", times = 1 }),
+				AnotherComponent({ content = "component 2", times = 2 }),
+				AnotherComponent({ content = "component 3", times = 3 })
+			)
+		end)
 
 		eq({
 			"component 1 component 2 component 3",
 			"            component 2 component 3",
 			"                        component 3",
-		}, Buffer.new(unpack(row())):to_lines())
+		}, renderer:render(App):to_lines())
 	end)
 end)

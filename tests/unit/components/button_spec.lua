@@ -3,18 +3,20 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local Buffer = require("ascii-ui.buffer")
 local Button = require("ascii-ui.components.button")
+local Renderer = require("ascii-ui.renderer")
 local highlights = require("ascii-ui.highlights")
+local ui = require("ascii-ui")
 
 describe("Button", function()
 	it("functional", function()
-		local bufferlines = Button({ label = "Send" })()
-		local lines = function()
-			return Buffer.new(unpack(bufferlines))
-		end
+		local App = ui.createComponent("App", function()
+			return Button({ label = "Send" })
+		end)
 
-		eq([[Send]], lines():to_string())
-		eq(highlights.BUTTON, lines().lines[1].elements[1].highlight)
+		local buffer = Renderer:new():render(App)
+
+		eq([[Send]], buffer:to_string())
+		eq(highlights.BUTTON, buffer.lines[1].elements[1].highlight)
 	end)
 end)

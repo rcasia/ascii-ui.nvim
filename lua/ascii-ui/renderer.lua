@@ -1,7 +1,9 @@
 local Buffer = require("ascii-ui.buffer")
 local dom = require("ascii-ui.lib.dom-handler")
+local fiber = require("ascii-ui.fiber")
 local logger = require("ascii-ui.logger")
 local xml = require("ascii-ui.lib.xml2lua")
+
 ---@class ascii-ui.Renderer
 --- @field config ascii-ui.Config
 local Renderer = {}
@@ -23,15 +25,31 @@ function Renderer:new(config)
 	return state
 end
 
+local function is_callable(obj)
+	if type(obj) == "function" then
+		return true
+	elseif type(obj) == "table" then
+		local mt = getmetatable(obj)
+		return type(mt and mt.__call) == "function"
+	else
+		return false
+	end
+end
+
 ---@param renderable string
 ---| fun(config: ascii-ui.Config): string
 ---| fun(config: ascii-ui.Config): ascii-ui.BufferLine[]
 ---| fun(config: ascii-ui.Config): fun(config: ascii-ui.Config):  ascii-ui.BufferLine[]
 ---@return ascii-ui.Buffer
+---@return ascii-ui.FiberNode?
 function Renderer:render(renderable)
 	if type(renderable) == "string" then
 		return self:render_xml(renderable)
 	end
+	if is_callable(renderable) then
+		return fiber.render(renderable)
+	end
+
 	if type(renderable) == "function" then
 		local rendered = renderable(self.config)
 
@@ -64,15 +82,18 @@ function Renderer:render_by_tag(tag_name, props, children)
 
 		instance = component(unpack(child_components))
 	else
-		local component = self.component_tags[tag_name]
-		if not component then
+		local Component = self.component_tags[tag_name]
+		if not Component then
 			error("Component not found for tag: " .. tag_name)
 		end
 
-		instance = component(props)
+		local XmlApp = require("ascii-ui").createComponent("XMlApp", function()
+			return Component(props)
+		end)
+		instance = XmlApp
 	end
 
-	if type(instance) == "function" then
+	if is_callable(instance) then
 		return instance
 	end
 
@@ -97,9 +118,9 @@ function Renderer:render_xml(xml_content)
 
 	local props = result._attr
 
-	local component_closure = self:render_by_tag(tag_name, props, result._children)
+	local component = self:render_by_tag(tag_name, props, result._children)
 
-	return Buffer.new(unpack(component_closure(self.config)))
+	return fiber.render(component)
 end
 
 return Renderer

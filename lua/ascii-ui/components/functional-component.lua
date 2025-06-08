@@ -1,3 +1,4 @@
+local FiberNode = require("ascii-ui.fibernode")
 local Renderer = require("ascii-ui.renderer")
 local logger = require("ascii-ui.logger")
 local memoize = require("ascii-ui.utils.memoize")
@@ -73,8 +74,8 @@ local components = {}
 --- Crea un componente personalizado y lo registra
 --- @generic ascii-ui.ComponentClosure, T
 --- @param name string Nombre del componente
---- @param functional_component fun(props: T)
---- @param types table<string, ascii-ui.PropsType> Tipos de los props del componente
+--- @param functional_component fun(props: T): fun(): ascii-ui.BufferLine[]
+--- @param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
 --- @return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
 local function createComponent(name, functional_component, types)
 	types = types or {}
@@ -94,12 +95,13 @@ local function createComponent(name, functional_component, types)
 			local closure_id = tostring({})
 			logger.debug("Creating closure for component '%s' with id %s", name, closure_id)
 			local args = { ... }
-			local factory
+			local factory, props
 
 			if #args == 1 and type(args[1]) == "table" then
-				local props = from_function_prop(args[1], types)
+				props = from_function_prop(args[1], types)
 				validate_props(props, types)
-				factory = function()
+				function factory()
+					-- dentro del workLoop, currentFiber ya está seteado
 					return functional_component(props)
 				end
 			else
@@ -108,7 +110,16 @@ local function createComponent(name, functional_component, types)
 				end
 			end
 
-			return memoize(factory, { chache_key = closure_id })
+			local closure = memoize(factory, { closure_id = closure_id, props = props })
+
+			return {
+				FiberNode.new({
+					name = name,
+					type = name,
+					props = props or args[1],
+					closure = closure,
+				}),
+			}
 		end,
 	})
 

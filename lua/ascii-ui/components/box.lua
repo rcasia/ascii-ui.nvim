@@ -5,12 +5,13 @@ local createComponent = require("ascii-ui.components.functional-component")
 
 ---@param props ascii-ui.BoxProps
 local function Box(props)
-	props = props or {}
-	props.width = props.width or 15
-	props.height = props.height or 3
-	props.content = props.content or ""
+	return function()
+		local config = require("ascii-ui.config")
+		props = props or {}
+		props.width = props.width or 15
+		props.height = props.height or 3
+		props.content = props.content or ""
 
-	return function(config)
 		local cc = config.characters
 		local width = props.width
 

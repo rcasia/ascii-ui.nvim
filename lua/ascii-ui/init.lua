@@ -1,12 +1,15 @@
 local Cursor = require("ascii-ui.cursor")
 local EventListener = require("ascii-ui.events")
 local Window = require("ascii-ui.window")
-local config = require("ascii-ui.config")
+-- local config = require("ascii-ui.config")
 local i = require("ascii-ui.interaction_type")
 local logger = require("ascii-ui.logger")
 local user_interations = require("ascii-ui.user_interactions")
 
-local ascii_renderer = require("ascii-ui.renderer"):new(config)
+-- local ascii_renderer = require("ascii-ui.renderer"):new(config)
+local fiber = require("ascii-ui.fiber")
+local render = fiber.render
+local rerender = fiber.rerender
 
 --- @class ascii-ui.AsciiUI
 local AsciiUI = {
@@ -18,19 +21,35 @@ local AsciiUI = {
 	layout = require("ascii-ui.layout"),
 }
 
----@param component ascii-ui.FunctionalComponent
+local function is_callable(obj)
+	if type(obj) == "function" then
+		return true
+	elseif type(obj) == "table" then
+		local mt = getmetatable(obj)
+		return type(mt and mt.__call) == "function"
+	else
+		return false
+	end
+end
+
+---@param AppComponent ascii-ui.FunctionalComponent
 ---@return integer bufnr
-function AsciiUI.mount(component)
+function AsciiUI.mount(AppComponent)
 	local start = vim.loop.hrtime()
 	logger.info("------------------")
 	logger.info("Mounting component")
 	logger.info("------------------")
-	if type(component) ~= "function" then
-		error("should be a functional component")
+	if not is_callable(AppComponent) then
+		error(vim.inspect(AppComponent))
+		error("should be a functional component. Found: " .. type(AppComponent))
 	end
 
 	-- does first render
-	local rendered_buffer = ascii_renderer:render(component)
+	-- local rendered_buffer = ascii_renderer:render(component)
+	local rendered_buffer, fiberRoot = render(AppComponent)
+
+	assert(fiberRoot, "fiberRoot cannot be nil")
+	fiber.debugPrint(fiberRoot, logger.debug)
 
 	-- spawns a window
 	local window = Window.new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
@@ -44,7 +63,9 @@ function AsciiUI.mount(component)
 
 		logger.info("Rerendering on state change for window %d and buffer %d", window.winid, window.bufnr)
 		local current_lines_count = rendered_buffer:height()
-		rendered_buffer = ascii_renderer:render(component) -- assign variable to have change the referenced value
+		-- rendered_buffer = ascii_renderer:render(Component) -- assign variable to have change the referenced value
+		rendered_buffer = rerender(fiberRoot)
+		fiber.debugPrint(fiberRoot, logger.debug)
 		local new_lines_count = rendered_buffer:height()
 		window:update(rendered_buffer)
 

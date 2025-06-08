@@ -30,23 +30,23 @@ end
 
 --- @param props ascii-ui.SelectComponentOpts
 local function Select(props)
-	local options, dispatch = useReducer(function(options, action)
-		local new_options = options
-		if action.type == "select" then
-			new_options = vim.iter(options)
-				:map(function(opt)
-					return {
-						id = opt.id,
-						name = opt.name,
-						selected = opt.id == action.params.id,
-					}
-				end)
-				:totable()
-		end
-		return new_options
-	end, from(props.options))
-
 	return function()
+		local options, dispatch = useReducer(function(options, action)
+			local new_options = options
+			if action.type == "select" then
+				new_options = vim.iter(options)
+					:map(function(opt)
+						return {
+							id = opt.id,
+							name = opt.name,
+							selected = opt.id == action.params.id,
+						}
+					end)
+					:totable()
+			end
+			return new_options
+		end, from(props.options))
+
 		local bufferlines = vim.iter(options())
 			:map(function(option)
 				local content, highlight

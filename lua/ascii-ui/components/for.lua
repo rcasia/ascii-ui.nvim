@@ -25,13 +25,7 @@ local function For(props)
 				:totable()
 		end
 
-		return vim.iter(inner_props)
-			:map(props.component)
-			:map(function(closure)
-				return closure()
-			end)
-			:flatten()
-			:totable()
+		return vim.iter(inner_props):map(props.component):flatten():totable()
 	end
 end
 

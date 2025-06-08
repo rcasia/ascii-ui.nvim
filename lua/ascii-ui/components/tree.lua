@@ -1,7 +1,9 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
 local Segment = require("ascii-ui.buffer.element")
 local createComponent = require("ascii-ui.components.functional-component")
-local useState = require("ascii-ui.hooks.use_state")
+
+local useState = require("ascii-ui.fiber").useState
+local i = require("ascii-ui.interaction_type")
 
 --- @class ascii-ui.TreeComponentProps.TreeNode
 --- @field text string
@@ -15,14 +17,17 @@ local useState = require("ascii-ui.hooks.use_state")
 --- @field is_last? boolean
 
 --- @param props ascii-ui.TreeComponentProps
---- @return fun(): ascii-ui.BufferLine[]
+--- @return ascii-ui.BufferLine[]
 local function Tree(props)
 	if props.tree.expanded == nil then
 		props.tree.expanded = true
 	end
-	local is_expanded, _ = useState(props.tree.expanded)
 
 	return function()
+		local is_expanded, set_expanded = useState(props.tree.expanded)
+		local toggle_expanded = function()
+			set_expanded(not is_expanded())
+		end
 		props.level = props.level or 0
 		props.has_siblings = props.has_siblings or false
 		props.is_last = props.is_last or false
@@ -53,8 +58,16 @@ local function Tree(props)
 			return {
 				BufferLine.new(
 					Segment:new({ content = prefix }),
-					Segment:new({ content = "▸ ", is_focusable = true }),
-					Segment:new({ content = props.tree.text, is_focusable = true })
+					Segment:new({
+						content = "▸ ",
+					}),
+					Segment:new({
+						content = props.tree.text,
+						is_focusable = true,
+						interactions = {
+							[i.SELECT] = toggle_expanded,
+						},
+					})
 				),
 			}
 			-- return { Segment:new({ content = prefix .. props.tree.text, is_focusable = true }):wrap() }
@@ -83,12 +96,26 @@ local function Tree(props)
 
 			BufferLine.new(
 				not is_head and Segment:new({ content = "╰╮" }),
-				not is_head and Segment:new({ content = "▾ ", is_focusable = true }),
-				Segment:new({ content = props.tree.text, is_focusable = true })
+				not is_head and Segment:new({
+					content = "▾ ",
+				}),
+				Segment:new({
+					content = props.tree.text,
+					is_focusable = true,
+
+					interactions = {
+						[i.SELECT] = toggle_expanded,
+					},
+				})
 			),
 			unpack(lines),
 		}
 	end
 end
 
-return createComponent("Tree", Tree, { tree = "table" })
+return createComponent("Tree", Tree, {
+	tree = "table",
+	level = "number",
+	has_siblings = "boolean",
+	is_last = "boolean",
+})

@@ -2,8 +2,8 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local eq = assert.are.same
-local Buffer = require("ascii-ui.buffer")
 local Element = require("ascii-ui.buffer.element")
+local renderer = require("ascii-ui.renderer"):new()
 local ui = require("ascii-ui")
 
 describe("ComponentCreator.createComponent", function()
@@ -15,36 +15,35 @@ describe("ComponentCreator.createComponent", function()
 		end
 	end, { content = "string", on_select = "function" })
 
-	---@param closure function
-	---@return string
-	local lines = function(closure)
-		return Buffer.new(unpack(closure())):to_string()
-	end
-
 	it("creates a component that can take props either as function or its simple type", function()
-		local component_closure1 = DummyComponent({ content = "t-shirt" })
-		local component_closure2 = DummyComponent({
-			content = function()
-				return "t-shirt"
-			end,
-		})
+		local App1 = ui.createComponent("App1", function()
+			return DummyComponent({ content = "t-shirt" })
+		end)
 
-		eq(lines(component_closure1), lines(component_closure2))
+		local App2 = ui.createComponent("App2", function()
+			return DummyComponent({
+				content = function()
+					return "t-shirt"
+				end,
+			})
+		end)
+		eq(renderer:render(App1):to_lines(), renderer:render(App2):to_lines())
 	end)
 
 	it("creates a component that can take functions and are not called on definition", function()
 		local invocations = 0
-		local component_closure1 = DummyComponent({ content = "t-shirt" })
-		local component_closure2 = DummyComponent({
-			content = function()
-				return "t-shirt"
-			end,
-			on_select = function()
-				invocations = invocations + 1
-			end,
-		})
+		local App = ui.createComponent("App2", function()
+			return DummyComponent({
+				content = function()
+					return "t-shirt"
+				end,
+				on_select = function()
+					invocations = invocations + 1
+				end,
+			})
+		end)
 
-		eq(lines(component_closure1), lines(component_closure2))
+		renderer:render(App)
 		eq(0, invocations)
 	end)
 

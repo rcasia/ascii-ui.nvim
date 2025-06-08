@@ -3,7 +3,7 @@ local Element = require("ascii-ui.buffer.element")
 
 local createComponent = require("ascii-ui.components.functional-component")
 
----@return fun(): ascii-ui.BufferLine[]
+---@return ascii-ui.BufferLine[]
 local function DummyComponent()
 	return function()
 		return { BufferLine.new(Element:new("dummy_render")) }

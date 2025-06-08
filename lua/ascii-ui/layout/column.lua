@@ -3,30 +3,23 @@ local createComponent = require("ascii-ui.components.functional-component")
 
 --- @param ... fun(): ascii-ui.BufferLine[]
 --- @return fun(): ascii-ui.BufferLine[]
-local function Layout(...)
-	local component_closures = { ... }
+local function Column(...)
+	local components = { ... }
+	local component_closures = function()
+		return vim.iter(components):flatten():totable()
+	end
 
-	vim.iter(component_closures):each(function(c)
-		assert(
-			type(c) == "function",
-			"Layout should receive component closures. Recieved: " .. type(c) .. vim.inspect(component_closures)
-		)
-	end)
-
-	--- @param config ascii-ui.Config
-	return function(config)
-		local bufferlines = {}
-		for idx, component in ipairs(component_closures) do
+	return function()
+		local output = {}
+		for idx, component in ipairs(component_closures()) do
 			if idx ~= 1 then
-				bufferlines[#bufferlines + 1] = BufferLine.new()
+				output[#output + 1] = BufferLine.new()
 			end
-			vim.iter(component(config)):each(function(line)
-				bufferlines[#bufferlines + 1] = line
-			end)
+			output[#output + 1] = component
 		end
 
-		return bufferlines
+		return output
 	end
 end
 
-return createComponent("Layout", Layout, { avoid_memoize = true })
+return createComponent("Layout", Column)

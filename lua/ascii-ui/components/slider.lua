@@ -4,6 +4,14 @@ local createComponent = require("ascii-ui.components.functional-component")
 local interaction_type = require("ascii-ui.interaction_type")
 local useReducer = require("ascii-ui.hooks.use_reducer")
 
+local function compact(t)
+	return vim.iter(t)
+		:filter(function(item)
+			return item ~= nil
+		end)
+		:totable()
+end
+
 --- @param props? { title?: string, value?: integer, config?: ascii-ui.Config }
 ---@return ascii-ui.BufferLine[]
 local function render(props, config)
@@ -35,7 +43,7 @@ local function render(props, config)
 	local width = 10
 	local knob_position = math.floor(width * props.value / 100)
 
-	return {
+	return compact({
 		props.title ~= "" and Element:new(props.title, false):wrap() or nil,
 		Bufferline.new(
 			Element:new({
@@ -47,15 +55,17 @@ local function render(props, config)
 			Element:new({ content = cc.horizontal:rep(width - knob_position), interactions = interactions }),
 			Element:new({ content = (" %d%%"):format(props.value) })
 		),
-	}
+	})
 end
 
 --- @param props? { title?: string, value?: integer }
 local function Slider(props)
-	return function(config)
-		props = props or {}
-		props.value = props.value or 0
-		props.title = props.title or ""
+	local config = require("ascii-ui.config")
+	props = props or {}
+	props.value = props.value or 0
+	props.title = props.title or ""
+
+	return function()
 		return render(props, config)
 	end
 end
