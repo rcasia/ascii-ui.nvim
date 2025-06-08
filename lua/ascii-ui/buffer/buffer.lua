@@ -232,7 +232,6 @@ function Buffer:add(...)
 		return self
 	end
 
-
 	vim.list_extend(self.lines, lines)
 	return self
 end

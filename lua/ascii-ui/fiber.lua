@@ -2,30 +2,16 @@ local Buffer = require("ascii-ui.buffer")
 local EventListener = require("ascii-ui.events")
 local config = require("ascii-ui.config")
 local unpack = unpack or table.unpack
+local FiberNode = require("ascii-ui.fibernode")
 
 local logger = require("ascii-ui.logger")
-
---- @class ascii-ui.FiberNode
---- @field type "Root" | string
---- @field closure fun(): function, ascii-ui.FiberNode[]
---- @field output ascii-ui.FiberNode[] | ascii-ui.BufferLine[] | nil
---- @field root ascii-ui.FiberNode | nil
---- @field child ascii-ui.FiberNode | nil
---- @field sibling ascii-ui.FiberNode | nil
---- @field parent ascii-ui.FiberNode | nil
---- @field hookIndex integer
---- @field hooks any[]
---- @field effects function[]
---- @field effectIndex integer
---- @field pendingEffects? function[]
---- @field prevDeps? any[]
---- @field cleanups? fn[]
 
 --- @type ascii-ui.FiberNode | nil
 local currentFiber
 
 --- @param root ascii-ui.FiberNode
 local function unmount(root)
+	--- @param fiber ascii-ui.FiberNode
 	local function traverse(fiber)
 		-- 1) Primero descendemos a todos los hijos (post-order)
 		local children = {}
@@ -46,7 +32,7 @@ local function unmount(root)
 					cleanup()
 				end
 			end
-			fiber.cleanups = nil
+			fiber.cleanups = {}
 		end
 	end
 
@@ -68,17 +54,12 @@ local function reconcileChildren(parent, output)
 	end
 end
 
---- @param fiber ascii-ui.FiberNode
+--- @param fiber ascii-ui.RootFiberNode
 local function performUnitOfWork(fiber)
 	assert(fiber, "Fiber cannot be nil")
 
 	currentFiber = fiber
-	fiber.effects = fiber.effects or {}
-	fiber.hookIndex = 1
-	fiber.effectIndex = 1
-	fiber.hooks = fiber.hooks or {}
 	fiber.root = fiber
-	fiber.root.pendingEffects = {}
 
 	if fiber.closure then
 		local lines, result = fiber.closure(config)
@@ -156,7 +137,7 @@ end
 -- helper de alto nivel: recibe un componente y devuelve las líneas del buffer
 local function render(Component)
 	local _, fiberArr = Component()
-	local root = fiberArr[1] --- @cast root ascii-ui.FiberNode
+	local root = fiberArr[1] --- @cast root ascii-ui.RootFiberNode
 	-- first phase: reconcile
 	workLoop(root)
 	local buffer = Buffer.new()
@@ -172,10 +153,12 @@ local function render(Component)
 end
 
 --- Re-renderiza el árbol de fibers a partir de la raíz dada
---- @param root ascii-ui.FiberNode
+--- @param root ascii-ui.RootFiberNode
 --- @return ascii-ui.Buffer buffer con las líneas renderizadas
 local function rerender(root)
 	unmount(root)
+
+	root = FiberNode.resetFrom(root)
 
 	root.pendingEffects = {}
 
@@ -219,9 +202,10 @@ local function useState(initial)
 			fiber.hooks[idx] = value
 		end
 		-- re-render completo sobre el mismo root
-		workLoop(fiber.root)
+		local root = FiberNode.resetFrom(fiber.root)
+		workLoop(root)
 		local buf = Buffer.new()
-		commitWork(fiber.root, buf)
+		commitWork(root, buf)
 		assert(buf, "buf cannot be nil")
 		fiber.root.lastRendered = buf
 
@@ -239,10 +223,6 @@ local function useEffect(fn, deps)
 	assert(type(deps) == "nil" or vim.isarray(deps), "deps should be an array or nil")
 
 	local fiber = currentFiber
-	fiber.effectIndex = fiber.effectIndex or 1
-	fiber.effects = fiber.effects or {}
-	fiber.prevDeps = fiber.prevDeps or {}
-	fiber.cleanups = fiber.cleanups or {}
 
 	local idx = fiber.effectIndex
 	local prev = fiber.prevDeps[idx]

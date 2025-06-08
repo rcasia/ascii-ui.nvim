@@ -1,3 +1,4 @@
+local FiberNode = require("ascii-ui.fibernode")
 local Renderer = require("ascii-ui.renderer")
 local logger = require("ascii-ui.logger")
 local memoize = require("ascii-ui.utils.memoize")
@@ -113,12 +114,12 @@ local function createComponent(name, functional_component, types)
 
 			return closure,
 				{
-					{
+					FiberNode.new({
 						name = name,
 						type = name,
 						props = props or args[1],
 						closure = closure,
-					},
+					}),
 				}
 		end,
 	})
