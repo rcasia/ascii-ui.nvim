@@ -6,10 +6,9 @@ local useState = ui.hooks.useState
 local If = ui.components.If
 
 --- @type ascii-ui.FunctionalComponent
-local function App()
-	local shouldShow, setShouldShow = useState(true)
-
+local App = ui.createComponent("App", function()
 	return function()
+		local shouldShow, setShouldShow = useState(true)
 		return Column(
 			If({
 				condition = function()
@@ -27,6 +26,6 @@ local function App()
 			})
 		)
 	end
-end
+end)
 
-ui.mount(App())
+ui.mount(App)

@@ -6,15 +6,15 @@ local For = ui.components.For
 local useReducer = ui.hooks.useReducer
 
 --- @type ascii-ui.FunctionalComponent
-local function App()
-	local items, dispatch = useReducer(function(state, action)
-		if action.type == "add" then
-			return vim.list_extend(state, { "this is " .. #state + 1 })
-		end
-		return state
-	end, { "this is 1", "this is 2" })
-
+local App = ui.createComponent("App", function()
 	return function()
+		local items, dispatch = useReducer(function(state, action)
+			if action.type == "add" then
+				return vim.list_extend(state, { "this is " .. #state + 1 })
+			end
+			return state
+		end, { "this is 1", "this is 2" })
+
 		return Column(
 			Paragraph({
 				content = function()
@@ -37,6 +37,6 @@ local function App()
 			})
 		)
 	end
-end
+end)
 
-ui.mount(App())
+ui.mount(App)

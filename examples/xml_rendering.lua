@@ -1,6 +1,6 @@
 local ui = require("ascii-ui")
 
-local function App()
+local App = ui.createComponent("App", function()
 	local message, set_message = ui.hooks.useState("Hello World")
 	local ref = ui.hooks.useFunctionRegistry(function()
 		set_message("Button Clicked!")
@@ -16,6 +16,6 @@ local function App()
 
 		]]):format(message(), ref)
 	end
-end
+end)
 
-ui.mount(App())
+ui.mount(App)
