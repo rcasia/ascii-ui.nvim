@@ -132,29 +132,20 @@ function AsciiUI.mount(AppComponent)
 		end
 
 		vim.schedule(function()
-			if interaction == i.CURSOR_MOVE_RIGHT or interaction == i.CURSOR_MOVE_DOWN then
-				local result = rendered_buffer:find_next_focusable({
-					line = position.line,
-					col = position.col, -- next calculated from the next column on same line
-				})
+			local result
+			if interaction == i.CURSOR_MOVE_DOWN then
+				result = rendered_buffer:find_next_focusable(position)
+			end
 
+			if interaction == i.CURSOR_MOVE_UP then
+				result = rendered_buffer:find_last_focusable(position)
+			end
+
+			if result then
 				local next_position = result.pos
 				Cursor.move_to(next_position, window.winid)
 				logger.debug(
 					"Cursor moved to next focusable position: " .. next_position.line .. ", " .. next_position.col
-				)
-			end
-
-			if interaction == i.CURSOR_MOVE_LEFT or interaction == i.CURSOR_MOVE_UP then
-				local result = rendered_buffer:find_position_of_the_last_focusable({
-					line = position.line,
-					col = position.col - 1,
-				})
-
-				local next_position = result.pos
-				Cursor.move_to(next_position, window.winid)
-				logger.debug(
-					"Cursor moved to last focusable position: " .. next_position.line .. ", " .. next_position.col
 				)
 			end
 		end)

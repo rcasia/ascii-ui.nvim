@@ -67,6 +67,15 @@ describe("Focusable", function()
 		assert(cursor_is_in(3, 13))
 
 		feed("j")
-		assert(cursor_is_in(5, 0), "not 5,0")
+		assert(cursor_is_in(5, 0))
+
+		feed("k")
+		assert(cursor_is_in(3, 13))
+
+		feed("k")
+		assert(cursor_is_in(2, 0))
+
+		feed("k")
+		assert(cursor_is_in(2, 0))
 	end)
 end)

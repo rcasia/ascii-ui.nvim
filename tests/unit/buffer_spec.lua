@@ -121,22 +121,22 @@ describe("buffer", function()
 
 			eq(
 				{ found = true, pos = { line = 2, col = 20 } },
-				b:find_position_of_the_last_focusable({ line = 3, col = 1 })
+				b:find_last_focusable({ line = 3, col = 1 })
 			)
 
 			eq(
 				{ found = true, pos = { line = 1, col = 21 } },
-				b:find_position_of_the_last_focusable({ line = 2, col = 1 })
+				b:find_last_focusable({ line = 2, col = 1 })
 			)
 
 			eq(
 				{ found = false, pos = { line = 1, col = 0 } },
-				b:find_position_of_the_last_focusable({ line = 1, col = 0 })
+				b:find_last_focusable({ line = 1, col = 0 })
 			)
 
 			eq(
 				{ found = true, pos = { line = 5, col = 0 } },
-				b:find_position_of_the_last_focusable({ line = 5, col = 30 })
+				b:find_last_focusable({ line = 5, col = 30 })
 			)
 		end)
 
@@ -148,11 +148,11 @@ describe("buffer", function()
 
 			eq(
 				{ found = false, pos = { line = 1, col = 10 } },
-				b:find_position_of_the_last_focusable({ line = 1, col = 10 })
+				b:find_last_focusable({ line = 1, col = 10 })
 			)
 			eq(
 				{ found = false, pos = { line = 2, col = 10 } },
-				b:find_position_of_the_last_focusable({ line = 2, col = 10 })
+				b:find_last_focusable({ line = 2, col = 10 })
 			)
 		end)
 

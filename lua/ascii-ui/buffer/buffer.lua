@@ -83,7 +83,7 @@ end
 
 ---@param position ascii-ui.Position
 ---@return { found: boolean, pos: ascii-ui.Position }
-function Buffer:find_position_of_the_last_focusable(position)
+function Buffer:find_last_focusable(position)
 	if position.line <= 1 then
 		return { pos = position, found = false }
 	end
