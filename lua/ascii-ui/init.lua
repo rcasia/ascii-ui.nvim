@@ -133,6 +133,9 @@ function AsciiUI.mount(AppComponent)
 
 		vim.schedule(function()
 			local result
+			if interaction == i.CURSOR_MOVE_RIGHT then
+				result = rendered_buffer:find_next_focusable(position)
+			end
 			if interaction == i.CURSOR_MOVE_DOWN then
 				result = rendered_buffer:find_next_focusable(position)
 			end
@@ -143,9 +146,14 @@ function AsciiUI.mount(AppComponent)
 
 			if result then
 				local next_position = result.pos
-				Cursor.move_to(next_position, window.winid)
+				Cursor.move_to(next_position, window.winid, window.bufnr)
 				logger.debug(
 					"Cursor moved to next focusable position: " .. next_position.line .. ", " .. next_position.col
+				)
+				local curr = Cursor.current_position()
+				assert(
+					next_position.col == curr.col,
+					"current position is " .. vim.inspect(curr) .. " wanted: " .. vim.inspect(next_position)
 				)
 			end
 		end)

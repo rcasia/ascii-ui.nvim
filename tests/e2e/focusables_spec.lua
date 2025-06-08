@@ -15,6 +15,7 @@ end
 local function cursor_is_in(line, col)
 	return vim.wait(400, function()
 		local cursor = Cursor.current_position()
+		print("cursor in" .. vim.inspect(cursor))
 		if type(col) == "nil" then
 			return cursor.line == line
 		end
@@ -38,7 +39,7 @@ local function buffer_contains(bufnr, pattern)
 end
 
 describe("Focusable", function()
-	it("when user moves cursor jumps to focusables", function()
+	it("when user moves cursor jumps to focusables (UP and DOWN)", function()
 		local non_focusable_line = Element:new({ content = "Not focusable" }):wrap()
 		local focusable_line = Element:new({ content = "Focusable", is_focusable = true }):wrap()
 		local App = ui.createComponent("App", function()
@@ -77,5 +78,25 @@ describe("Focusable", function()
 
 		feed("k")
 		assert(cursor_is_in(2, 0))
+	end)
+
+	it("when user moves cursor jumps to focusables (LEFT and RIGHT)", function()
+		local unfocusable = Element:new({ content = "o" }):wrap()
+		local focusable = Element:new({ content = "x", is_focusable = true }):wrap()
+		local App = ui.createComponent("App", function()
+			return function()
+				return {
+					focusable:append(unfocusable):append(focusable):append(unfocusable),
+				}
+			end
+		end)
+
+		local bufnr = ui.mount(App)
+
+		assert(buffer_contains(bufnr, "xoxo"), "not contains")
+		assert(cursor_is_in(1, 0), "1,0")
+
+		feed("l")
+		assert(cursor_is_in(1, 2), "1,2")
 	end)
 end)

@@ -57,10 +57,13 @@ function Cursor.attach_buffer(bufnr)
 end
 
 --- @param position ascii-ui.Position
-function Cursor.move_to(position, winid)
-	local line = vim.api.nvim_buf_get_lines(0, position.line, position.line + 1, false)[1] or ""
-	local byte_col = vim.str_byteindex(line, "utf-32", position.col)
+--- @param winid? integer
+--- @param bufnr? integer
+function Cursor.move_to(position, winid, bufnr)
+	local line = vim.api.nvim_buf_get_lines(bufnr or 0, position.line - 1, position.line, false)[1] or ""
+	local byte_col = vim.str_byteindex(line, "utf-8", position.col)
 
+	logger.debug("TRYING TO SET CURSOR TO (%d, %d)", position.line, byte_col)
 	vim.api.nvim_win_set_cursor(winid or 0, { position.line, byte_col })
 
 	Cursor.last_position = Cursor._current_position or Cursor.current_position()
