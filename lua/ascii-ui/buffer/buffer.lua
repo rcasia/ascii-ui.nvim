@@ -2,7 +2,7 @@ local BufferLine = require("ascii-ui.buffer.bufferline")
 local logger = require("ascii-ui.logger")
 
 ---@alias ascii-ui.Position { line: integer, col: integer }
----@alias ascii-ui.Buffer.ElementFoundResult { element: ascii-ui.Element, position: ascii-ui.Position }
+---@alias ascii-ui.Buffer.ElementFoundResult { element: ascii-ui.Segment, position: ascii-ui.Position }
 
 ---@class ascii-ui.Buffer
 ---@field lines ascii-ui.BufferLine[]
@@ -192,7 +192,7 @@ function Buffer:to_string()
 end
 
 ---@param id string
----@return ascii-ui.Element | nil
+---@return ascii-ui.Segment | nil
 function Buffer:find_element_by_id(id)
 	return vim.iter(self.lines)
 		:map(function(line)
@@ -205,7 +205,7 @@ function Buffer:find_element_by_id(id)
 end
 
 ---@param position { line: integer, col: integer }
----@return ascii-ui.Element | nil
+---@return ascii-ui.Segment | nil
 function Buffer:find_element_by_position(position)
 	if not self.lines[position.line] then
 		return nil -- out of bound

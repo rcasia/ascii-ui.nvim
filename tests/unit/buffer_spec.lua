@@ -3,19 +3,19 @@ pcall(require, "luacov")
 
 local Buffer = require("ascii-ui.buffer")
 local BufferLine = require("ascii-ui.buffer.bufferline")
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.element")
 local eq = assert.are.same
 
 describe("buffer", function()
 	describe("Segment", function()
 		it("should count ascii characters", function()
 			local s = "ascii"
-			local segment = Element:new({ content = s })
+			local segment = Segment:new({ content = s })
 			eq(5, segment:len())
 		end)
 		it("should count unicode characters", function()
 			local s = "a😊日€𐍈"
-			local segment = Element:new({ content = s })
+			local segment = Segment:new({ content = s })
 			eq(5, segment:len())
 		end)
 	end)
@@ -31,9 +31,9 @@ describe("buffer", function()
 	end)
 
 	it("has the longest buffer line length as width", function()
-		local longest = BufferLine.new(Element:new("longest line"), Element:new("ever written"))
+		local longest = BufferLine.new(Segment:new("longest line"), Segment:new("ever written"))
 
-		local b = Buffer.new(BufferLine.new(Element:new("short")), BufferLine.new(Element:new("longer line")), longest)
+		local b = Buffer.new(BufferLine.new(Segment:new("short")), BufferLine.new(Segment:new("longer line")), longest)
 
 		eq(longest:len(), b:width())
 	end)
@@ -45,12 +45,12 @@ describe("buffer", function()
 
 	describe("find_focusable", function()
 		it("should find the next focusable element", function()
-			local target_a = Element:new("this is focusable", true)
-			local target_b = Element:new("another focusable", true)
-			local target_c = Element:new("yet another focusable", true)
+			local target_a = Segment:new("this is focusable", true)
+			local target_b = Segment:new("another focusable", true)
+			local target_c = Segment:new("yet another focusable", true)
 			local b = Buffer.new(
-				BufferLine.new(Element:new("this is not focusable"), target_a),
-				BufferLine.new(Element:new("not focusable either"), target_b),
+				BufferLine.new(Segment:new("this is not focusable"), target_a),
+				BufferLine.new(Segment:new("not focusable either"), target_b),
 				BufferLine.new(),
 				BufferLine.new(),
 				BufferLine.new(target_c)
@@ -69,14 +69,14 @@ describe("buffer", function()
 		end)
 
 		it("finds next focusable element from position", function()
-			local target_a = Element:new({ content = "this is focusable", is_focusable = true })
-			local target_b = Element:new("another focusable", true)
-			local target_c = Element:new("yet another focusable", true)
+			local target_a = Segment:new({ content = "this is focusable", is_focusable = true })
+			local target_b = Segment:new("another focusable", true)
+			local target_c = Segment:new("yet another focusable", true)
 			local b = Buffer.new(
-				Element:new("this is not focusable"):wrap():append(target_a:wrap()),
-				Element:new("not focusable either"):wrap():append(target_b:wrap()),
+				Segment:new("this is not focusable"):wrap():append(target_a:wrap()),
+				Segment:new("not focusable either"):wrap():append(target_b:wrap()),
 				BufferLine.new(),
-				Element:new("not focusable either"):wrap():append(target_c:wrap())
+				Segment:new("not focusable either"):wrap():append(target_c:wrap())
 			)
 
 			eq({ found = true, pos = { line = 1, col = 21 } }, b:find_next_focusable({ line = 1, col = 1 }))
@@ -88,8 +88,8 @@ describe("buffer", function()
 
 		it("returns same input position when not found", function()
 			local b = Buffer.new(
-				BufferLine.new(Element:new("this is not focusable")),
-				BufferLine.new(Element:new("not focusable either"))
+				BufferLine.new(Segment:new("this is not focusable")),
+				BufferLine.new(Segment:new("not focusable either"))
 			)
 
 			eq({ found = false, pos = { line = 1, col = 10 } }, b:find_next_focusable({ line = 1, col = 10 }))
@@ -97,13 +97,13 @@ describe("buffer", function()
 		end)
 
 		describe("finds last focusable from position", function()
-			local target_a = Element:new("this is focusable", true)
-			local target_b = Element:new("another focusable", true)
-			local target_c = Element:new("yet another focusable", true)
-			local other_line = Element:new("focusable", true)
+			local target_a = Segment:new("this is focusable", true)
+			local target_b = Segment:new("another focusable", true)
+			local target_c = Segment:new("yet another focusable", true)
+			local other_line = Segment:new("focusable", true)
 			local b = Buffer.new(
-				BufferLine.new(Element:new("this is not focusable"), target_a),
-				BufferLine.new(Element:new("not focusable either"), target_b),
+				BufferLine.new(Segment:new("this is not focusable"), target_a),
+				BufferLine.new(Segment:new("not focusable either"), target_b),
 				BufferLine.new(),
 				BufferLine.new(),
 				BufferLine.new(other_line, target_c, other_line)
@@ -125,8 +125,8 @@ describe("buffer", function()
 				eq({ found = true, pos = { line = 5, col = 9 } }, b:find_last_focusable({ line = 5, col = 30 }))
 			end)
 
-			local unfocusable = Element:new({ content = "o" })
-			local focusable = Element:new({ content = "x", is_focusable = true })
+			local unfocusable = Segment:new({ content = "o" })
+			local focusable = Segment:new({ content = "x", is_focusable = true })
 			local buf = Buffer.new(BufferLine.new(focusable, unfocusable, focusable, unfocusable, focusable))
 
 			it("5", function()
@@ -136,8 +136,8 @@ describe("buffer", function()
 
 		it("returns not found when there is not last focusable", function()
 			local b = Buffer.new(
-				BufferLine.new(Element:new("this is not focusable")),
-				BufferLine.new(Element:new("not focusable either"))
+				BufferLine.new(Segment:new("this is not focusable")),
+				BufferLine.new(Segment:new("not focusable either"))
 			)
 
 			eq({ found = false, pos = { line = 1, col = 10 } }, b:find_last_focusable({ line = 1, col = 10 }))
@@ -146,12 +146,12 @@ describe("buffer", function()
 
 		it("finds the next colored element and its position", function()
 			local highlight = "SomeHighlight"
-			local target_a = Element:new("this is focusable", false, {}, highlight)
-			local target_b = Element:new("another focusable", true, {}, highlight)
-			local target_c = Element:new("yet another focusable", true, {}, highlight)
+			local target_a = Segment:new("this is focusable", false, {}, highlight)
+			local target_b = Segment:new("another focusable", true, {}, highlight)
+			local target_c = Segment:new("yet another focusable", true, {}, highlight)
 			local b = Buffer.new(
-				BufferLine.new(Element:new("this is not focusable"), target_a),
-				BufferLine.new(Element:new("not focusable either"), target_b),
+				BufferLine.new(Segment:new("this is not focusable"), target_a),
+				BufferLine.new(Segment:new("not focusable either"), target_b),
 				BufferLine.new(),
 				BufferLine.new(),
 				BufferLine.new(target_c)
@@ -173,11 +173,11 @@ describe("buffer", function()
 		end)
 
 		it("should find element by id", function()
-			local target = Element:new("target element")
+			local target = Segment:new("target element")
 			local b = Buffer.new(
-				BufferLine.new(Element:new("some element A")),
-				BufferLine.new(Element:new("some element B"), target),
-				BufferLine.new(Element:new("some elmenent C", true))
+				BufferLine.new(Segment:new("some element A")),
+				BufferLine.new(Segment:new("some element B"), target),
+				BufferLine.new(Segment:new("some elmenent C", true))
 			)
 
 			local found = b:find_element_by_id(target.id)
@@ -185,12 +185,12 @@ describe("buffer", function()
 		end)
 
 		it("should find element by position", function()
-			local target_a = Element:new("target element")
-			local element_before_target = Element:new("some element B")
+			local target_a = Segment:new("target element")
+			local element_before_target = Segment:new("some element B")
 			local b = Buffer.new(
-				BufferLine.new(Element:new("some element A")),
+				BufferLine.new(Segment:new("some element A")),
 				BufferLine.new(element_before_target, target_a),
-				BufferLine.new(Element:new("some element C"))
+				BufferLine.new(Segment:new("some element C"))
 			)
 
 			eq(target_a, b:find_element_by_position({ line = 2, col = element_before_target:len() + 1 }))
@@ -199,8 +199,8 @@ describe("buffer", function()
 		it("returns nil when not found", function()
 			local b = Buffer.new(
 				--
-				BufferLine.new(Element:new("some element A")),
-				BufferLine.new(Element:new("some element C"))
+				BufferLine.new(Segment:new("some element A")),
+				BufferLine.new(Segment:new("some element C"))
 			)
 
 			assert.is_nil(b:find_element_by_position({ line = math.huge, col = 1 }))
