@@ -81,7 +81,7 @@ function AsciiUI.mount(AppComponent)
 			if not current_element or not current_element:is_focusable() then
 				logger.debug("Current element is not focusable, moving to next focusable element")
 				local position = Cursor.current_position()
-				local result = rendered_buffer:find_position_of_the_next_focusable(position)
+				local result = rendered_buffer:find_next_focusable(position)
 
 				logger.debug("next position: %s", vim.inspect(result))
 				local next_position = result.pos
@@ -133,9 +133,9 @@ function AsciiUI.mount(AppComponent)
 
 		vim.schedule(function()
 			if interaction == i.CURSOR_MOVE_RIGHT or interaction == i.CURSOR_MOVE_DOWN then
-				local result = rendered_buffer:find_position_of_the_next_focusable({
+				local result = rendered_buffer:find_next_focusable({
 					line = position.line,
-					col = position.col + 1, -- next calculated from the next column on same line
+					col = position.col, -- next calculated from the next column on same line
 				})
 
 				local next_position = result.pos

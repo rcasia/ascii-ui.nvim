@@ -80,34 +80,21 @@ describe("buffer", function()
 		end)
 
 		it("finds next focusable element from position", function()
-			local target_a = Element:new("this is focusable", true)
+			local target_a = Element:new({ content = "this is focusable", is_focusable = true })
 			local target_b = Element:new("another focusable", true)
 			local target_c = Element:new("yet another focusable", true)
 			local b = Buffer.new(
-				BufferLine.new(Element:new("this is not focusable"), target_a),
-				BufferLine.new(Element:new("not focusable either"), target_b),
+				Element:new("this is not focusable"):wrap():append(target_a:wrap()),
+				Element:new("not focusable either"):wrap():append(target_b:wrap()),
 				BufferLine.new(),
-				BufferLine.new(),
-				BufferLine.new(target_c)
+				Element:new("not focusable either"):wrap():append(target_c:wrap())
 			)
 
-			eq(
-				{ found = true, pos = { line = 1, col = 21 } },
-				b:find_position_of_the_next_focusable({ line = 1, col = 1 })
-			)
-			eq(
-				{ found = true, pos = { line = 2, col = 20 } },
-				b:find_position_of_the_next_focusable({ line = 1, col = 22 })
-			)
-			eq(
-				{ found = true, pos = { line = 2, col = 20 } },
-				b:find_position_of_the_next_focusable({ line = 2, col = 1 })
-			)
-			eq(
-				{ found = true, pos = { line = 5, col = 0 } },
-				b:find_position_of_the_next_focusable({ line = 3, col = 1 })
-			)
-			eq(b:find_position_of_the_next_focusable(), b:find_position_of_the_next_focusable({ line = 1, col = 1 }))
+			eq({ found = true, pos = { line = 1, col = 21 } }, b:find_next_focusable({ line = 1, col = 1 }))
+			eq({ found = true, pos = { line = 2, col = 20 } }, b:find_next_focusable({ line = 1, col = 22 }))
+			eq({ found = true, pos = { line = 2, col = 20 } }, b:find_next_focusable({ line = 2, col = 1 }))
+			eq({ found = true, pos = { line = 4, col = 20 } }, b:find_next_focusable({ line = 3, col = 1 }))
+			eq(b:find_next_focusable(), b:find_next_focusable({ line = 1, col = 1 }))
 		end)
 
 		it("returns same input position when not found", function()
@@ -116,14 +103,8 @@ describe("buffer", function()
 				BufferLine.new(Element:new("not focusable either"))
 			)
 
-			eq(
-				{ found = false, pos = { line = 1, col = 10 } },
-				b:find_position_of_the_next_focusable({ line = 1, col = 10 })
-			)
-			eq(
-				{ found = false, pos = { line = 2, col = 10 } },
-				b:find_position_of_the_next_focusable({ line = 2, col = 10 })
-			)
+			eq({ found = false, pos = { line = 1, col = 10 } }, b:find_next_focusable({ line = 1, col = 10 }))
+			eq({ found = false, pos = { line = 2, col = 10 } }, b:find_next_focusable({ line = 2, col = 10 }))
 		end)
 
 		it("finds last focusable from position", function()

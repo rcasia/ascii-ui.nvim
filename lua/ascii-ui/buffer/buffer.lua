@@ -1,4 +1,5 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
+local logger = require("ascii-ui.logger")
 
 ---@alias ascii-ui.Position { line: integer, col: integer }
 ---@alias ascii-ui.Buffer.ElementFoundResult { element: ascii-ui.Element, position: ascii-ui.Position }
@@ -50,30 +51,29 @@ end
 
 ---@param position? ascii-ui.Position
 ---@return { found: boolean, pos: ascii-ui.Position }
-function Buffer:find_position_of_the_next_focusable(position)
+function Buffer:find_next_focusable(position)
+	logger.debug("find_next_focusable: " .. vim.inspect(position))
 	position = position or {}
 	position = { line = position.line or 1, col = position.col or 0 }
 
 	local pos = vim
-		.iter(ipairs(self.lines))
+		.iter(self.lines)
 		:skip(position.line - 1)
+		:enumerate()
 		--- @param line ascii-ui.BufferLine
 		:map(function(index, line)
-			local col = line:find_focusable2()
-			if col == -1 then
-				return nil -- return the current position when no focusable element is found
-			end
-			return { line = index, col = col }
+			return line:focusable_segments(index)
 		end)
-		:filter(function(pos)
-			if pos == nil then
+		:flatten()
+		:map(function(result)
+			logger.debug("considering position: (%d, %d)", result.position.line, result.position.col)
+			return result.position
+		end)
+		:filter(function(p)
+			if p.line == position.line and p.col <= position.col then
 				return false
 			end
-
-			-- filter in the lines that are after the current position
-			return pos.line > position.line
-				-- or a position that is in the same line but after the current column
-				or (pos.line == position.line and pos.col > position.col)
+			return true
 		end)
 		:take(1)
 		:last()
@@ -95,18 +95,13 @@ function Buffer:find_position_of_the_last_focusable(position)
 		:skip(math.abs(#self.lines - position.line))
 		--- @param line ascii-ui.BufferLine
 		:map(function(index, line)
-			local col = line:find_focusable2()
-			if col == -1 then
-				return nil -- return the current position when no focusable element is found
-			end
-
-			return { line = index, col = line:find_focusable2() }
+			return line:focusable_segments(index)
+		end)
+		:flatten()
+		:map(function(result)
+			return result.position
 		end)
 		:filter(function(pos)
-			if pos == nil then
-				return false
-			end
-
 			-- filter in the lines that are before the current position
 			return pos.line < position.line
 				-- or a position that is in the same line but before the current column
@@ -121,7 +116,7 @@ function Buffer:find_position_of_the_last_focusable(position)
 	}
 end
 
----@return fun(): ascii-ui.Element | nil
+---@return fun(): ascii-ui.Segment | nil
 function Buffer:iter_focusables()
 	assert(self.lines, "buffer component failed: lines cannot be nil")
 

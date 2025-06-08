@@ -41,20 +41,21 @@ function BufferLine:find_focusable()
 	return found, found and col or 0
 end
 
----@return number col returns 0 when not found
+---@return number[] cols
 function BufferLine:find_focusable2()
 	assert(self.elements, "bufferline component failed: segment cannot be nil")
 
 	local col = 0
+	local cols = {}
 	---@param segment ascii-ui.Segment
-	local found = vim.iter(self.elements):find(function(segment)
-		if segment:is_focusable() == false then
-			col = col + segment:len()
+	vim.iter(self.elements):each(function(segment)
+		if segment:is_focusable() then
+			cols[#cols + 1] = col
 		end
-		return segment:is_focusable()
+		col = col + segment:len()
 	end)
 
-	return found and col or -1
+	return cols
 end
 ---@param col number
 ---@return ascii-ui.Segment | nil
@@ -114,6 +115,21 @@ end
 --- @return boolean
 function BufferLine:is_empty()
 	return #self.elements == 0
+end
+
+--- @return { segment: ascii-ui.Segment, position: ascii-ui.Position }[]
+function BufferLine:focusable_segments(from_line)
+	local col = 0
+	return vim.iter(self.elements)
+		:map(function(segment)
+			local current_col = col
+			col = col + segment:len()
+			return { segment = segment, position = { line = from_line, col = current_col } }
+		end)
+		:filter(function(result)
+			return result.segment:is_focusable()
+		end)
+		:totable()
 end
 
 return BufferLine
