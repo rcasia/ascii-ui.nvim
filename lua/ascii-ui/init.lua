@@ -143,6 +143,9 @@ function AsciiUI.mount(AppComponent)
 			if interaction == i.CURSOR_MOVE_UP then
 				result = rendered_buffer:find_last_focusable(position)
 			end
+			if interaction == i.CURSOR_MOVE_LEFT then
+				result = rendered_buffer:find_last_focusable(position)
+			end
 
 			if result then
 				local next_position = result.pos

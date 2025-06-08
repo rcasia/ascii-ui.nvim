@@ -84,7 +84,8 @@ end
 ---@param position ascii-ui.Position
 ---@return { found: boolean, pos: ascii-ui.Position }
 function Buffer:find_last_focusable(position)
-	if position.line <= 1 then
+	logger.debug("find_last_focusable: " .. vim.inspect(position))
+	if position.line <= 0 then
 		return { pos = position, found = false }
 	end
 
@@ -95,20 +96,27 @@ function Buffer:find_last_focusable(position)
 		:skip(math.abs(#self.lines - position.line))
 		--- @param line ascii-ui.BufferLine
 		:map(function(index, line)
-			return line:focusable_segments(index)
+			return vim.iter(line:focusable_segments(index)):rev():totable()
 		end)
 		:flatten()
 		:map(function(result)
 			return result.position
 		end)
-		:filter(function(pos)
-			-- filter in the lines that are before the current position
-			return pos.line < position.line
-				-- or a position that is in the same line but before the current column
-				or (pos.line == position.line and pos.col < position.col)
+		:map(function(o)
+			logger.debug("considering position: (%d, %d)", o.line, o.col)
+			return o
+		end)
+		:filter(function(p)
+			if p.line == position.line and p.col >= position.col then
+				logger.debug("filtering out position: (%d, %d)", p.line, p.col)
+				return false
+			end
+			return true
 		end)
 		:take(1)
 		:last() or {}
+
+	logger.debug("last focusable position: " .. vim.inspect(pos))
 
 	return {
 		pos = { line = pos.line or position.line, col = pos.col or position.col },

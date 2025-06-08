@@ -3,6 +3,7 @@ pcall(require, "luacov")
 
 local ui = require("ascii-ui")
 local it = require("plenary.async.tests").it
+local Bufferline = require("ascii-ui.buffer.bufferline")
 local Cursor = require("ascii-ui.cursor")
 local Element = require("ascii-ui.buffer.element")
 
@@ -81,22 +82,31 @@ describe("Focusable", function()
 	end)
 
 	it("when user moves cursor jumps to focusables (LEFT and RIGHT)", function()
-		local unfocusable = Element:new({ content = "o" }):wrap()
-		local focusable = Element:new({ content = "x", is_focusable = true }):wrap()
+		local unfocusable = Element:new({ content = "o" })
+		local focusable = Element:new({ content = "x", is_focusable = true })
 		local App = ui.createComponent("App", function()
 			return function()
 				return {
-					focusable:append(unfocusable):append(focusable):append(unfocusable),
+					Bufferline.new(focusable, unfocusable, focusable, unfocusable, focusable),
 				}
 			end
 		end)
 
 		local bufnr = ui.mount(App)
 
-		assert(buffer_contains(bufnr, "xoxo"), "not contains")
+		assert(buffer_contains(bufnr, "xoxox"), "not contains")
 		assert(cursor_is_in(1, 0), "1,0")
 
 		feed("l")
 		assert(cursor_is_in(1, 2), "1,2")
+
+		feed("l")
+		assert(cursor_is_in(1, 4), "1,4")
+
+		feed("h")
+		assert(cursor_is_in(1, 2), "1,2 back")
+
+		feed("h")
+		assert(cursor_is_in(1, 0), "1,0 back")
 	end)
 end)
