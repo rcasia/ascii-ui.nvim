@@ -44,17 +44,6 @@ describe("buffer", function()
 	end)
 
 	describe("find_focusable", function()
-		it("should find the first focusable element", function()
-			local e = Element:new("this is focusable", true)
-			local b = Buffer.new(
-				BufferLine.new(Element:new("this is not focusable")),
-				BufferLine.new(Element:new("not focusable either"), e)
-			)
-			local found, position = b:find_focusable()
-			eq(e, found)
-			eq({ line = 2, col = 21 }, position)
-		end)
-
 		it("should find the next focusable element", function()
 			local target_a = Element:new("this is focusable", true)
 			local target_b = Element:new("another focusable", true)

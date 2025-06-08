@@ -23,26 +23,8 @@ function BufferLine.new(...)
 	return state
 end
 
----@deprecated
----@return ascii-ui.Segment | nil
----@return number col returns 0 when not found
-function BufferLine:find_focusable()
-	assert(self.elements, "bufferline component failed: segement cannot be nil")
-
-	local col = 1
-	---@param segment ascii-ui.Segment
-	local found = vim.iter(self.elements):find(function(segment)
-		if segment:is_focusable() == false then
-			col = col + segment:len()
-		end
-		return segment:is_focusable()
-	end)
-
-	return found, found and col or 0
-end
-
 ---@return number[] cols
-function BufferLine:find_focusable2()
+function BufferLine:find_focusable()
 	assert(self.elements, "bufferline component failed: segment cannot be nil")
 
 	local col = 0

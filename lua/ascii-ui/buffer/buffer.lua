@@ -35,20 +35,6 @@ function Buffer:height()
 	return #self.lines
 end
 
----@return ascii-ui.Element | nil
-function Buffer:find_focusable()
-	assert(self.lines, "buffer component failed: lines cannot be nil")
-
-	local result
-	for i, line in ipairs(self.lines) do
-		result = { line:find_focusable() }
-		if result[1] then
-			return result[1], { line = i, col = result[2] }
-		end
-	end
-	return result[1], result[2]
-end
-
 ---@param position? ascii-ui.Position
 ---@return { found: boolean, pos: ascii-ui.Position }
 function Buffer:find_next_focusable(position)
