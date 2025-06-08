@@ -2,7 +2,6 @@ local BufferLine = require("ascii-ui.buffer.bufferline")
 local Segment = require("ascii-ui.buffer.element")
 local createComponent = require("ascii-ui.components.functional-component")
 
-local Tree
 local useState = require("ascii-ui.fiber").useState
 local i = require("ascii-ui.interaction_type")
 
@@ -19,7 +18,7 @@ local i = require("ascii-ui.interaction_type")
 
 --- @param props ascii-ui.TreeComponentProps
 --- @return ascii-ui.BufferLine[]
-Tree = createComponent("Tree", function(props)
+local function Tree(props)
 	if props.tree.expanded == nil then
 		props.tree.expanded = true
 	end
@@ -112,11 +111,11 @@ Tree = createComponent("Tree", function(props)
 			unpack(lines),
 		}
 	end
-end, {
+end
+
+return createComponent("Tree", Tree, {
 	tree = "table",
 	level = "number",
 	has_siblings = "boolean",
 	is_last = "boolean",
 })
-
-return Tree

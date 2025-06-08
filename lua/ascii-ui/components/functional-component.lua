@@ -112,15 +112,14 @@ local function createComponent(name, functional_component, types)
 
 			local closure = memoize(factory, { closure_id = closure_id, props = props })
 
-			return closure,
-				{
-					FiberNode.new({
-						name = name,
-						type = name,
-						props = props or args[1],
-						closure = closure,
-					}),
-				}
+			return {
+				FiberNode.new({
+					name = name,
+					type = name,
+					props = props or args[1],
+					closure = closure,
+				}),
+			}
 		end,
 	})
 

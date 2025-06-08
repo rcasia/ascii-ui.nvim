@@ -49,6 +49,28 @@ describe("Fiber", function()
 		debugPrint(rootFiber)
 	end)
 
+	it("un componente compuesto", function()
+		local SomeComponent = ui.createComponent("SomeComponent", function()
+			return function()
+				return { Element:new({ content = "Componente Interno" }):wrap() }
+			end
+		end, {})
+		local List = ui.createComponent("List", function()
+			return function()
+				return SomeComponent()
+			end
+		end, {})
+
+		local lines, rootFiber = render(List)
+		eq({ "Componente Interno" }, lines:to_lines())
+		eq("SomeComponent", rootFiber.child.type)
+		eq(nil, rootFiber.child.sibling, "No debe haber hermanos en este caso")
+		-- eq(nil, rootFiber.child.child, "No debe haber hijos en este caso")
+		-- eq({}, rootFiber.output[1].output)
+
+		debugPrint(rootFiber)
+	end)
+
 	it("soporta useState y re-renderiza al actualizar", function()
 		-- componente con contador
 		local count, setCount
@@ -65,7 +87,7 @@ describe("Fiber", function()
 		end, {})
 
 		-- render inicial
-		local _, _rootFiber = Counter()
+		local _rootFiber = Counter()
 		local rootFiber = _rootFiber[1]
 		workLoop(rootFiber)
 		local buf1 = Buffer.new()

@@ -3,9 +3,9 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local Buffer = require("ascii-ui.buffer")
 local Element = require("ascii-ui.buffer.element")
 local If = require("ascii-ui.components.if")
+local renderer = require("ascii-ui.renderer"):new()
 local ui = require("ascii-ui")
 
 describe("If", function()
@@ -18,54 +18,46 @@ describe("If", function()
 	end, { content = "string" })
 
 	it("renders child component when condition is true", function()
-		local if_component = If({
-			condition = function()
-				return true
-			end,
+		local App = ui.createComponent("App", function()
+			return If({
+				condition = function()
+					return true
+				end,
 
-			child = component({ content = "dummy_render" }),
+				child = component({ content = "dummy_render" }),
+			})
+		end)
 
-			fallback = function() end,
-		})
-
-		---@return string
-		local lines = function()
-			return Buffer.new(unpack(if_component())):to_string()
-		end
-		eq([[dummy_render]], lines())
+		eq([[dummy_render]], renderer:render(App):to_string())
 	end)
 
 	it("renders empty when condition is false and there is no fallback", function()
-		local if_component = If({
-			condition = function()
-				return false
-			end,
+		local App = ui.createComponent("App", function()
+			return If({
+				condition = function()
+					return false
+				end,
 
-			child = component({ content = "dummy_render" }),
-		})
+				child = component({ content = "dummy_render" }),
+			})
+		end)
 
-		---@return string
-		local lines = function()
-			return Buffer.new(unpack(if_component())):to_string()
-		end
-		eq([[]], lines())
+		eq([[]], renderer:render(App):to_string())
 	end)
 
 	it("renders fallback when condition is false", function()
-		local if_component = If({
-			condition = function()
-				return false
-			end,
+		local App = ui.createComponent("App", function()
+			return If({
+				condition = function()
+					return false
+				end,
 
-			child = component(),
+				child = component({ content = "dummy_render" }),
 
-			fallback = component({ content = "I am the fallback" }),
-		})
+				fallback = component({ content = "I am the fallback" }),
+			})
+		end)
 
-		---@return string
-		local lines = function()
-			return Buffer.new(unpack(if_component())):to_string()
-		end
-		eq([[I am the fallback]], lines())
+		eq([[I am the fallback]], renderer:render(App):to_string())
 	end)
 end)

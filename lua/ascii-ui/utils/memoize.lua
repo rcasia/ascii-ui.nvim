@@ -16,8 +16,10 @@ function M.memoize(factory, dependants)
 	if not cache[key] then
 		cache[key] = factory()
 	end
-	assert(type(cache[key]) == "function", "Expected a function to be returned from the factory")
-	return cache[key]
+	-- assert(type(cache[key]) == "function", "Expected a function to be returned from the factory")
+	return function()
+		return cache[key]
+	end
 end
 
 return M.memoize

@@ -5,7 +5,7 @@ local function empty()
 	return { Bufferline.new() }
 end
 
---- @alias ascii-ui.IfComponentProps { child: function, fallback: function, condition: fun(): boolean }
+--- @alias ascii-ui.IfComponentProps { child: ascii-ui.FiberNode, fallback: ascii-ui.FiberNode, condition: fun(): boolean }
 
 --- @param props ascii-ui.IfComponentProps
 --- @return fun(): ascii-ui.BufferLine[]
@@ -14,15 +14,15 @@ local function If(props)
 		local fallback = props.fallback or empty
 
 		if props.condition() then
-			return props.child()
+			return props.child
 		end
 
-		return fallback()
+		return fallback
 	end
 end
 
 return createComponent("If", If, {
 	condition = "function",
-	child = "function",
-	fallback = "function",
+	child = "table",
+	fallback = "table",
 })

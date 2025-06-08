@@ -1,3 +1,5 @@
+local logger = require("ascii-ui.logger")
+
 --- @class ascii-ui.RootFiberNode : ascii-ui.FiberNode
 --- @field pendingEffects? function[]
 --- @field lastRendered? ascii-ui.Buffer
@@ -43,11 +45,15 @@ function FiberNode.new(fields)
 	return setmetatable(node, FiberNode)
 end
 
---- @param fiber ascii-ui.FiberNode
+--- @param fiber ascii-ui.RootFiberNode
+--- @return ascii-ui.RootFiberNode
 function FiberNode.resetFrom(fiber)
+	logger.debug("resetting from fiber: %s", vim.inspect(fiber))
 	fiber.hookIndex = 1
 	fiber.effectIndex = 1
 	fiber.hooks = fiber.hooks or {}
+
+	logger.debug("resetting hooks: %s", vim.inspect(fiber.hooks))
 	return fiber
 end
 return FiberNode

@@ -3,6 +3,7 @@ local EventListener = require("ascii-ui.events")
 local config = require("ascii-ui.config")
 local unpack = unpack or table.unpack
 local FiberNode = require("ascii-ui.fibernode")
+local is_callable = require("ascii-ui.utils.is_callable")
 
 local logger = require("ascii-ui.logger")
 
@@ -58,26 +59,41 @@ end
 local function performUnitOfWork(fiber)
 	assert(fiber, "Fiber cannot be nil")
 
-	currentFiber = fiber
+	currentFiber = FiberNode.resetFrom(fiber)
 	fiber.root = fiber
 
 	if fiber.closure then
-		local lines, result = fiber.closure(config)
+		logger.debug("Performing unit of work for fiber: %s", fiber.type or "<unknown>")
+		logger.debug("fiber.closure: %s", vim.inspect(fiber.closure))
+		local result = fiber.closure(config)
 		fiber.output = result
-		if not fiber.output then
-			if lines and type(lines) == "function" then
-				-- Si lines es una función, la ejecutamos para obtener el resultado
-				local result2 = lines(config)
-				if type(result2) ~= "function" then
-					fiber.output = result2
-				else
-					fiber.output = result2()
-				end
-			else
-				assert(type(lines) == "table", "lines should be a table or a function, got: " .. type(lines))
-				fiber.output = lines
+
+		-- unwrap fibernode from functions
+		local limit = 10
+		local current = 0
+		while is_callable(fiber.output) and current < limit do
+			if current >= limit then
+				logger.warn("Reached maximum unwrapping limit for fiber.output, stopping to prevent infinite loop")
+				break
 			end
+			current = current + 1
+			fiber.output = fiber.output(config)
 		end
+
+		-- if not fiber.output then
+		-- 	if lines and type(lines) == "function" then
+		-- 		-- Si lines es una función, la ejecutamos para obtener el resultado
+		-- 		local result2 = lines(config)
+		-- 		if type(result2) ~= "function" then
+		-- 			fiber.output = result2
+		-- 		else
+		-- 			fiber.output = result2()
+		-- 		end
+		-- 	else
+		-- 		assert(type(lines) == "table", "lines should be a table or a function, got: " .. type(lines))
+		-- 		fiber.output = lines
+		-- 	end
+		-- end
 		assert(type(fiber.output) == "table", "Expected fiber.output to return a table, got: " .. type(fiber.output))
 
 		reconcileChildren(fiber, fiber.output)
@@ -136,7 +152,7 @@ local function workLoop(root)
 end
 -- helper de alto nivel: recibe un componente y devuelve las líneas del buffer
 local function render(Component)
-	local _, fiberArr = Component()
+	local fiberArr = Component()
 	local root = fiberArr[1] --- @cast root ascii-ui.RootFiberNode
 	-- first phase: reconcile
 	workLoop(root)
@@ -157,8 +173,6 @@ end
 --- @return ascii-ui.Buffer buffer con las líneas renderizadas
 local function rerender(root)
 	unmount(root)
-
-	root = FiberNode.resetFrom(root)
 
 	root.pendingEffects = {}
 

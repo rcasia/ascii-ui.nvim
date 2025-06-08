@@ -35,7 +35,7 @@ describe("SelectComponent", function()
 		eq(nil, buffer:find_element_by_position({ line = 2, col = 1 }).highlight)
 		eq(nil, buffer:find_element_by_position({ line = 3, col = 1 }).highlight)
 
-		local second_selected_element = buffer:find_element_by_position({ line = 2, col = 1 })
+		local second_selected_element = assert(buffer:find_element_by_position({ line = 2, col = 1 }))
 
 		second_selected_element.interactions["SELECT"]()
 
