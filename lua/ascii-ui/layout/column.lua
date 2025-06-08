@@ -9,7 +9,7 @@ local function Layout(...)
 	vim.iter(component_closures):each(function(c)
 		assert(
 			type(c) == "function",
-			"Layout should recieve component closures. Recieved: " .. type(c) .. vim.inspect(component_closures)
+			"Layout should receive component closures. Recieved: " .. type(c) .. vim.inspect(component_closures)
 		)
 	end)
 

@@ -43,7 +43,7 @@ local function Row(...)
 	vim.iter(component_closures):each(function(c)
 		assert(
 			type(c) == "function",
-			"ui.layout.Row should recieve component closures. Recieved: " .. type(c) .. vim.inspect(component_closures)
+			"ui.layout.Row should receive component closures. Recieved: " .. type(c) .. vim.inspect(component_closures)
 		)
 	end)
 
