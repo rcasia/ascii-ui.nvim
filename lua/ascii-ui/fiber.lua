@@ -1,9 +1,7 @@
 local Buffer = require("ascii-ui.buffer")
 local EventListener = require("ascii-ui.events")
-local config = require("ascii-ui.config")
 local unpack = unpack or table.unpack
 local FiberNode = require("ascii-ui.fibernode")
-local is_callable = require("ascii-ui.utils.is_callable")
 
 local logger = require("ascii-ui.logger")
 
@@ -63,37 +61,8 @@ local function performUnitOfWork(fiber)
 	fiber.root = fiber
 
 	if fiber.closure then
-		logger.debug("Performing unit of work for fiber: %s", fiber.type or "<unknown>")
-		logger.debug("fiber.closure: %s", vim.inspect(fiber.closure))
-		local result = fiber.closure(config)
-		fiber.output = result
+		fiber.output = fiber:unwrap_closure()
 
-		-- unwrap fibernode from functions
-		local limit = 10
-		local current = 0
-		while is_callable(fiber.output) and current < limit do
-			if current >= limit then
-				logger.warn("Reached maximum unwrapping limit for fiber.output, stopping to prevent infinite loop")
-				break
-			end
-			current = current + 1
-			fiber.output = fiber.output(config)
-		end
-
-		-- if not fiber.output then
-		-- 	if lines and type(lines) == "function" then
-		-- 		-- Si lines es una función, la ejecutamos para obtener el resultado
-		-- 		local result2 = lines(config)
-		-- 		if type(result2) ~= "function" then
-		-- 			fiber.output = result2
-		-- 		else
-		-- 			fiber.output = result2()
-		-- 		end
-		-- 	else
-		-- 		assert(type(lines) == "table", "lines should be a table or a function, got: " .. type(lines))
-		-- 		fiber.output = lines
-		-- 	end
-		-- end
 		assert(type(fiber.output) == "table", "Expected fiber.output to return a table, got: " .. type(fiber.output))
 
 		reconcileChildren(fiber, fiber.output)
