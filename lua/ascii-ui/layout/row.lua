@@ -38,25 +38,15 @@ end
 --- @param ... fun(): ascii-ui.BufferLine[]
 --- @return fun(): ascii-ui.BufferLine[]
 local function Row(...)
-	local component_closures = vim
-		.iter({ ... })
-		-- TODO: this just ignores FiberNodes, remove when totally supported
-		:filter(function(item)
-			return type(item) ~= "table"
-		end)
-		:totable()
+	--- @type ascii-ui.FiberNode[]
+	local fiber_nodes = vim.iter({ ... }):flatten():totable()
 
-	vim.iter(component_closures):each(function(c)
-		assert(
-			type(c) == "function",
-			"ui.layout.Row should receive component closures. Recieved: " .. type(c) .. vim.inspect(component_closures)
-		)
-	end)
-
-	return function(config)
-		return vim.iter(component_closures)
-			:map(function(closure)
-				return closure(config)
+	return function()
+		return vim
+			.iter(fiber_nodes)
+			--- @param node ascii-ui.FiberNode
+			:map(function(node)
+				return node:unwrap_closure()
 			end)
 			:fold({}, function(acc, curr)
 				return merge_bufferlines(acc, curr)

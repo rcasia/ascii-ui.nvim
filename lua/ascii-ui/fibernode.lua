@@ -1,3 +1,6 @@
+local is_callable = require("ascii-ui.utils.is_callable")
+local logger = require("ascii-ui.logger")
+
 --- @class ascii-ui.RootFiberNode : ascii-ui.FiberNode
 --- @field pendingEffects? function[]
 --- @field lastRendered? ascii-ui.Buffer
@@ -52,4 +55,23 @@ function FiberNode.resetFrom(fiber)
 
 	return fiber
 end
+
+function FiberNode:unwrap_closure()
+	-- unwrap fibernode from functions
+	local limit = 10
+	local current = 0
+
+	local output = self.closure()
+
+	while is_callable(output) do
+		if current >= limit then
+			logger.warn("Reached maximum unwrapping limit for fiber.output, stopping to prevent infinite loop")
+			break
+		end
+		current = current + 1
+		output = output()
+	end
+	return output
+end
+
 return FiberNode
