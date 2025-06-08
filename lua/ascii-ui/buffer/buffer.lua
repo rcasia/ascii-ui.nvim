@@ -204,7 +204,7 @@ function Buffer:find_element_by_id(id)
 		:last()
 end
 
----@param position { line: integer, col: integer }
+---@param position ascii-ui.Position
 ---@return ascii-ui.Segment | nil
 function Buffer:find_element_by_position(position)
 	if not self.lines[position.line] then

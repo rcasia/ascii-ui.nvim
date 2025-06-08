@@ -194,6 +194,7 @@ describe("buffer", function()
 			)
 
 			eq(target_a, b:find_element_by_position({ line = 2, col = element_before_target:len() + 1 }))
+			eq(target_a, b:find_element_by_position({ line = 2, col = element_before_target:len() }))
 		end)
 
 		it("returns nil when not found", function()

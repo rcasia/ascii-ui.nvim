@@ -45,7 +45,7 @@ function BufferLine:find_element_by_col(col)
 	local len = 0
 	for _, segment in ipairs(self.elements) do
 		len = len + segment:len()
-		if len >= col then
+		if len > col then
 			return segment
 		end
 	end

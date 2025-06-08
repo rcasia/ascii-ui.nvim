@@ -27,7 +27,7 @@ function UserInteractions:new()
 	return state
 end
 
----@alias ascii-ui.UserInteractions.InteractionOpts { buffer_id: integer, position: table, interaction_type: ascii-ui.UserInteractions.InteractionType | string }
+---@alias ascii-ui.UserInteractions.InteractionOpts { buffer_id: integer, position: ascii-ui.Position, interaction_type: ascii-ui.UserInteractions.InteractionType | string }
 ---@param opts ascii-ui.UserInteractions.InteractionOpts
 function UserInteractions:interact(opts)
 	assert(opts.buffer_id, "buffer_id cannot be nil")
@@ -39,7 +39,13 @@ function UserInteractions:interact(opts)
 	local element = buffer:find_element_by_position(opts.position)
 
 	if not element then
-		logger.warn("element not found in buffer" .. vim.inspect(buffer))
+		logger.warn(
+			"element not found in buffer by position (%d, %d) and buffer dimensions being %d x %d",
+			opts.position.line,
+			opts.position.col,
+			buffer:height(),
+			buffer:width()
+		)
 		return -- there is no element to interact with
 	end
 
