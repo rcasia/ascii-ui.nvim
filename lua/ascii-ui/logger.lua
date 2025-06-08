@@ -13,6 +13,8 @@ local levels = {
 -- Set default log level
 Logger.level = levels.DEBUG
 
+local RUNNING_ON_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
+
 -- Get log file path
 local log_dir = vim.fn.stdpath("data") .. "/ascii-ui"
 local log_path = log_dir .. "/ascii-ui.log"
@@ -30,6 +32,12 @@ local function write_log(level, msg, ...)
 		return
 	end
 	ensure_log_dir()
+
+	if RUNNING_ON_ACTIONS then
+		-- If running on GitHub Actions, log to stdout instead of file
+		print(string.format("[%s] %s", level, msg))
+		return
+	end
 
 	local file = io.open(log_path, "a")
 	if file then
