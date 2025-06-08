@@ -61,7 +61,7 @@ end
 --- @param bufnr? integer
 function Cursor.move_to(position, winid, bufnr)
 	local line = vim.api.nvim_buf_get_lines(bufnr or 0, position.line - 1, position.line, false)[1] or ""
-	local byte_col = vim.str_byteindex(line, "utf-8", position.col)
+	local byte_col = vim.str_byteindex(line, "utf-32", position.col)
 
 	logger.debug("TRYING TO SET CURSOR TO (%d, %d)", position.line, byte_col)
 	vim.api.nvim_win_set_cursor(winid or 0, { position.line, byte_col })
