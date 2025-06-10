@@ -1,6 +1,6 @@
 package = "ascii-ui.nvim"
 version = "0.2.0"
-lua = ">=5.1"
+lua = "==5.1"
 
 [description]
 summary = "A WIP extensible ui framework with no non-sense apis (hopefully) for nvim."
@@ -9,8 +9,7 @@ labels = []
 license = "MIT"
 
 [dependencies]
-# Add your dependencies here
-# `busted = ">=2.0"`
+"plenary.nvim" = "scm-1"
 
 [build]
 type = "builtin"

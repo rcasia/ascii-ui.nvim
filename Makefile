@@ -3,7 +3,10 @@
 check:
 	lx check
 
-test:
+build:
+	lx build
+
+test: build
 	 bash scripts/test $(filter-out $@, $(MAKECMDGOALS))
 
 %:
