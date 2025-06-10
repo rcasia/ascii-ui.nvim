@@ -26,6 +26,13 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
+      # TODO: create an action maybe to just have lux in actions
+      - name: Install Rust
+        uses: cargo-bins/cargo-binstall@main
+
+      - name: Ejecutar cargo install
+        run: cargo binstall lux-cli --locked
+
       - uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
