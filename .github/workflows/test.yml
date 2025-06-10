@@ -26,37 +26,6 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
-      # 😩
-      - name: Install OS specific deps GPG (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: |
-          if [[ "${{ runner.os }}" == "Linux" ]]; then
-            sudo apt-get update
-            sudo apt-get install -y pkg-config libgpgme-dev libgpg-error-dev
-          else
-            brew update
-            brew install pkgconf gpgme libgpg-error
-          fi
-        shell: bash
-
-      - name: Install OS specific deps GPG (Windows/MSYS2)
-        if: runner.os == 'Windows'
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          update: true
-          install: |
-            mingw-w64-x86_64-pkg-config
-            mingw-w64-x86_64-gpgme
-            mingw-w64-x86_64-libgpg-error
-
-      # TODO: create an action maybe to just have lux in actions
-      - name: Install Rust
-        uses: cargo-bins/cargo-binstall@main
-
-      - name: Install Lux
-        run: cargo binstall lux-cli --locked
-
       - uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
