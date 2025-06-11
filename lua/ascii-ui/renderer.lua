@@ -1,6 +1,7 @@
 local Buffer = require("ascii-ui.buffer")
 local dom = require("ascii-ui.lib.dom-handler")
 local fiber = require("ascii-ui.fiber")
+local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
 local xml = require("ascii-ui.lib.xml2lua")
 
@@ -23,17 +24,6 @@ function Renderer:new(config)
 	self.__index = self
 
 	return state
-end
-
-local function is_callable(obj)
-	if type(obj) == "function" then
-		return true
-	elseif type(obj) == "table" then
-		local mt = getmetatable(obj)
-		return type(mt and mt.__call) == "function"
-	else
-		return false
-	end
 end
 
 ---@param renderable string

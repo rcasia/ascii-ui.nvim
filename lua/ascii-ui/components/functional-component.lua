@@ -1,5 +1,6 @@
 local FiberNode = require("ascii-ui.fibernode")
 local Renderer = require("ascii-ui.renderer")
+local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
 local memoize = require("ascii-ui.utils.memoize")
 
@@ -18,16 +19,6 @@ local memoize = require("ascii-ui.utils.memoize")
 ---| "table"
 ---| "function"
 
-local function is_callable(obj)
-	if type(obj) == "function" then
-		return true
-	elseif type(obj) == "table" then
-		local mt = getmetatable(obj)
-		return type(mt and mt.__call) == "function"
-	else
-		return false
-	end
-end
 --- @param props table<string, any>
 --- @param types table<string, ascii-ui.PropsType>
 local function validate_props(props, types)
