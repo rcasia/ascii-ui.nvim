@@ -1,4 +1,3 @@
-local Buffer = require("ascii-ui.buffer")
 local dom = require("ascii-ui.lib.dom-handler")
 local fiber = require("ascii-ui.fiber")
 local is_callable = require("ascii-ui.utils.is_callable")
@@ -26,32 +25,16 @@ function Renderer:new(config)
 	return state
 end
 
----@param renderable string
----| fun(config: ascii-ui.Config): string
----| fun(config: ascii-ui.Config): ascii-ui.BufferLine[]
----| fun(config: ascii-ui.Config): fun(config: ascii-ui.Config):  ascii-ui.BufferLine[]
+---@param renderable string | fun(config: ascii-ui.Config): ascii-ui.FiberNode[]
 ---@return ascii-ui.Buffer
 ---@return ascii-ui.FiberNode?
 function Renderer:render(renderable)
-	if type(renderable) == "string" then
-		return self:render_xml(renderable)
-	end
 	if is_callable(renderable) then
 		return fiber.render(renderable)
 	end
 
-	if type(renderable) == "function" then
-		local rendered = renderable(self.config)
-
-		if type(rendered) == "table" and vim.isarray(rendered) then
-			return Buffer.new(unpack(rendered))
-		end
-
-		if type(rendered) == "string" then
-			return self:render_xml(rendered)
-		end
-
-		return Buffer.new(unpack(rendered(self.config)))
+	if type(renderable) == "string" then
+		return self:render_xml(renderable)
 	end
 
 	error("Cannot render: " .. vim.inspect(renderable))
