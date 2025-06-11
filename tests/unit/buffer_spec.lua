@@ -23,6 +23,7 @@ describe("buffer", function()
 	it("should be able to create a buffer", function()
 		local b = Buffer.new()
 		eq("table", type(b))
+		eq(true, Buffer.is_buffer(b))
 	end)
 
 	it("creates buffer from array of strings", function()

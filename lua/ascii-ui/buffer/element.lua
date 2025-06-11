@@ -64,6 +64,19 @@ function Segment:new(...)
 	return state
 end
 
+--- @param obj any
+function Segment.is_segment(obj)
+	if
+		type(obj) == "table"
+		--
+		and obj.__index == Segment.__index
+	then
+		return true
+	end
+
+	return false
+end
+
 ---@return integer
 function Segment:len()
 	return unicode_len(self.content)

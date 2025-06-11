@@ -22,6 +22,19 @@ function Buffer.new(...)
 	return state
 end
 
+--- @param obj any
+function Buffer.is_buffer(obj)
+	if
+		type(obj) == "table"
+		--
+		and obj.__index == Buffer.__index
+	then
+		return true
+	end
+
+	return false
+end
+
 ---@return integer width
 function Buffer:width()
 	return vim.iter(self.lines)

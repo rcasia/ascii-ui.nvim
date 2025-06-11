@@ -23,6 +23,19 @@ function BufferLine.new(...)
 	return state
 end
 
+--- @param obj any
+function BufferLine.is_bufferline(obj)
+	if
+		type(obj) == "table"
+		--
+		and obj.__index == BufferLine.__index
+	then
+		return true
+	end
+
+	return false
+end
+
 ---@return number[] cols
 function BufferLine:find_focusable()
 	assert(self.elements, "bufferline component failed: segment cannot be nil")
