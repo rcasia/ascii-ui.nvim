@@ -1,8 +1,10 @@
+local Fiber = require("ascii-ui.fiber")
+
 --- @class ascii-ui.Hooks
 local Hooks = {
-	useState = require("ascii-ui.hooks.use_state"),
+	useState = Fiber.useState,
+	useEffect = Fiber.useEffect,
 	useReducer = require("ascii-ui.hooks.use_reducer"),
-	useEffect = require("ascii-ui.hooks.use_effect"),
 	useFunctionRegistry = require("ascii-ui.hooks.use_function_registry"),
 }
 
