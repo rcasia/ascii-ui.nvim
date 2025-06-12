@@ -80,9 +80,7 @@ local function commitWork(fiber, buffer)
 		buffer:add(fiber:get_line())
 		return
 	end
-	if not fiber.child then
-		return
-	end
+
 	local child = fiber.child
 	while child do
 		commitWork(child, buffer)
@@ -95,30 +93,13 @@ local function commitWork(fiber, buffer)
 	fiber.root.pendingEffects = {}
 end
 
---- añade esta función para obtener el siguiente Fiber en recorrido depth-first
---- @param fiber ascii-ui.FiberNode
---- @return ascii-ui.FiberNode | nil
-local function getNextFiber(fiber)
-	if fiber.child then
-		return fiber.child
-	end
-	local node = fiber
-	while node do
-		if node.sibling then
-			return node.sibling
-		end
-		node = node.parent
-	end
-	return nil
-end
-
 -- recorre todos los Units of Work automáticamente
--- @param root ascii-ui.RootFiberNode
+--- @param root ascii-ui.RootFiberNode
 local function workLoop(root)
 	local nextFiber = root
 	while nextFiber do
 		performUnitOfWork(nextFiber)
-		nextFiber = getNextFiber(nextFiber)
+		nextFiber = nextFiber:next()
 	end
 end
 -- helper de alto nivel: recibe un componente y devuelve las líneas del buffer

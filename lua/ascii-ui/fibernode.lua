@@ -99,8 +99,11 @@ function FiberNode:unwrap_closure()
 	-- return output
 end
 
+---
+--- Gets the next fiber following a depth-first path
+---
 --- @return ascii-ui.FiberNode | nil
-function FiberNode:next_fiber()
+function FiberNode:next()
 	if self.child then
 		return self.child
 	end

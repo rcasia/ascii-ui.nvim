@@ -236,8 +236,11 @@ Return ~
 @return ascii-ui.FiberNode[] output
 
 ------------------------------------------------------------------------------
-                                                        *FiberNode:next_fiber()*
-                            `FiberNode:next_fiber`()
+                                                              *FiberNode:next()*
+                               `FiberNode:next`()
+
+Gets the next fiber following a depth-first path
+
 @return ascii-ui.FiberNode | nil
 
 
@@ -686,11 +689,9 @@ Parameters ~
 @param buffer ascii-ui.Buffer
 
 ------------------------------------------------------------------------------
-                                                                *getNextFiber()*
-                            `getNextFiber`({fiber})
-añade esta función para obtener el siguiente Fiber en recorrido depth-first
-@param fiber ascii-ui.FiberNode
-@return ascii-ui.FiberNode | nil
+                                                                    *workLoop()*
+                               `workLoop`({root})
+@param root ascii-ui.RootFiberNode
 
 ------------------------------------------------------------------------------
                                                                     *rerender()*

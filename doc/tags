@@ -40,7 +40,7 @@ FiberNode	ascii-ui.txt	/*FiberNode*
 FiberNode.new()	ascii-ui.txt	/*FiberNode.new()*
 FiberNode.resetFrom()	ascii-ui.txt	/*FiberNode.resetFrom()*
 FiberNode:get_line()	ascii-ui.txt	/*FiberNode:get_line()*
-FiberNode:next_fiber()	ascii-ui.txt	/*FiberNode:next_fiber()*
+FiberNode:next()	ascii-ui.txt	/*FiberNode:next()*
 FiberNode:unwrap_closure()	ascii-ui.txt	/*FiberNode:unwrap_closure()*
 For()	ascii-ui.txt	/*For()*
 HexaColor	ascii-ui.txt	/*HexaColor*
@@ -99,7 +99,6 @@ debugPrint()	ascii-ui.txt	/*debugPrint()*
 from()	ascii-ui.txt	/*from()*
 from_function_prop()	ascii-ui.txt	/*from_function_prop()*
 generateKey()	ascii-ui.txt	/*generateKey()*
-getNextFiber()	ascii-ui.txt	/*getNextFiber()*
 levels	ascii-ui.txt	/*levels*
 merge_bufferlines()	ascii-ui.txt	/*merge_bufferlines()*
 performUnitOfWork()	ascii-ui.txt	/*performUnitOfWork()*
@@ -112,3 +111,4 @@ useFunctionRegistry()	ascii-ui.txt	/*useFunctionRegistry()*
 useReducer()	ascii-ui.txt	/*useReducer()*
 useState()	ascii-ui.txt	/*useState()*
 validate_props()	ascii-ui.txt	/*validate_props()*
+workLoop()	ascii-ui.txt	/*workLoop()*
