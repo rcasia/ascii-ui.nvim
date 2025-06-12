@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Temporary directory for documentation
+TMPDIR=$(mktemp -d)
+OUTPUT_FILE="$TMPDIR/ascii-ui.txt"
+
+# Generate docs into the temporary location
+DOC_OUTPUT_FILE="$OUTPUT_FILE" ./scripts/gendocs > /dev/null
+
+# Compare with existing docs
+if diff -u "$OUTPUT_FILE" doc/ascii-ui.txt > /dev/null; then
+  echo "Documentation is up to date"
+  exit 0
+else
+  echo "Documentation is not up to date. Run ./scripts/gendocs to regenerate." >&2
+  diff -u "$OUTPUT_FILE" doc/ascii-ui.txt || true
+  exit 1
+fi

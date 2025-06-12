@@ -15,7 +15,7 @@ local function matches_any(path, patterns)
 end
 
 -- clone the mini.doc repository if it doesn't exist
-vim.system({ "git", "clone", "git@github.com:echasnovski/mini.doc.git", mini_doc_path })
+vim.system({ "git", "clone", "git@github.com:echasnovski/mini.doc.git", mini_doc_path }):wait()
 
 -- add mini.doc to package.path
 local doc_path = ("%s/lua/?.lua;%s/lua/?/init.lua"):format(mini_doc_path, mini_doc_path)
@@ -39,4 +39,11 @@ handle:close()
 
 local mini = require("mini.doc")
 mini.setup()
-mini.generate(project_files)
+
+-- Allow overriding output via environment variable
+local output = os.getenv("DOC_OUTPUT_FILE")
+if output == nil or output == "" then
+	mini.generate(project_files)
+else
+	mini.generate(project_files, output)
+end
