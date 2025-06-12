@@ -1,0 +1,23 @@
+name: Docs
+
+on:
+  push:
+    paths-ignore:
+      - "**/*.md"
+    branches:
+      - "main"
+
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
+    branches:
+      - "main"
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    name: Check
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: ./scripts/check-docs
