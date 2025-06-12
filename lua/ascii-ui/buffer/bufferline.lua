@@ -93,7 +93,13 @@ end
 --- @param delimiter? ascii-ui.Segment
 --- @return ascii-ui.BufferLine
 function BufferLine:append(other_bufferline, delimiter)
-	assert(other_bufferline, "other_bufferline cannot be nil")
+	assert(
+		BufferLine.is_bufferline(other_bufferline),
+		("other_bufferline should be of type bufferline but found  %s : %s"):format(
+			type(other_bufferline),
+			vim.inspect(other_bufferline)
+		)
+	)
 
 	local elements = self.elements
 

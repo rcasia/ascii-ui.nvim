@@ -39,6 +39,9 @@ EventListenter:trigger()	ascii-ui.txt	/*EventListenter:trigger()*
 FiberNode	ascii-ui.txt	/*FiberNode*
 FiberNode.new()	ascii-ui.txt	/*FiberNode.new()*
 FiberNode.resetFrom()	ascii-ui.txt	/*FiberNode.resetFrom()*
+FiberNode:get_line()	ascii-ui.txt	/*FiberNode:get_line()*
+FiberNode:next_fiber()	ascii-ui.txt	/*FiberNode:next_fiber()*
+FiberNode:unwrap_closure()	ascii-ui.txt	/*FiberNode:unwrap_closure()*
 For()	ascii-ui.txt	/*For()*
 HexaColor	ascii-ui.txt	/*HexaColor*
 HexaColor.new()	ascii-ui.txt	/*HexaColor.new()*

@@ -1,5 +1,5 @@
+local Bufferline = require("ascii-ui.buffer.bufferline")
 local is_callable = require("ascii-ui.utils.is_callable")
-local logger = require("ascii-ui.logger")
 
 --- @class ascii-ui.RootFiberNode : ascii-ui.FiberNode
 --- @field pendingEffects? function[]
@@ -17,6 +17,7 @@ local logger = require("ascii-ui.logger")
 --- @field effectIndex integer
 --- @field closure fun(config?: ascii-ui.Config): ascii-ui.BufferLine | ascii-ui.FiberNode[]
 --- @field output? ascii-ui.BufferLine | ascii-ui.FiberNode[]
+--- @field private _line ascii-ui.BufferLine
 local FiberNode = {}
 FiberNode.__index = FiberNode
 
@@ -26,6 +27,7 @@ FiberNode.__index = FiberNode
 function FiberNode.new(fields)
 	fields = fields or {}
 	local node = {
+		_line = fields.lines,
 		name = fields.name,
 		type = fields.type or "Root",
 		props = fields.props,
@@ -43,7 +45,20 @@ function FiberNode.new(fields)
 		prevDeps = fields.prevDeps or {},
 		cleanups = fields.cleanups or {},
 	}
+
+	--- @type ascii-ui.FiberNode
 	return setmetatable(node, FiberNode)
+end
+
+function FiberNode:is_leaf()
+	return not self.child and not self.closure
+end
+
+--- @return ascii-ui.BufferLine
+function FiberNode:get_line()
+	assert(self._line, "Tried to get line from fiber node that has no line")
+
+	return self._line
 end
 
 --- @param fiber ascii-ui.RootFiberNode
@@ -56,6 +71,7 @@ function FiberNode.resetFrom(fiber)
 	return fiber
 end
 
+--- @return ascii-ui.FiberNode[] output
 function FiberNode:unwrap_closure()
 	-- unwrap fibernode from functions
 	local limit = 10
@@ -65,13 +81,37 @@ function FiberNode:unwrap_closure()
 
 	while is_callable(output) do
 		if current >= limit then
-			logger.warn("Reached maximum unwrapping limit for fiber.output, stopping to prevent infinite loop")
-			break
+			error("Reached maximum unwrapping limit for fiber.output, stopping to prevent infinite loop")
 		end
 		current = current + 1
 		output = output()
 	end
-	return output
+
+	return vim.iter(output)
+		:map(function(item)
+			if Bufferline.is_bufferline(item) then --- @cast item ascii-ui.BufferLine
+				return FiberNode.new({ lines = item })
+			end
+			return item
+		end)
+		:totable()
+
+	-- return output
+end
+
+--- @return ascii-ui.FiberNode | nil
+function FiberNode:next_fiber()
+	if self.child then
+		return self.child
+	end
+	local node = self
+	while node do
+		if node.sibling then
+			return node.sibling
+		end
+		node = node.parent
+	end
+	return nil
 end
 
 return FiberNode

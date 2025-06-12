@@ -208,6 +208,7 @@ Parameters ~
 @field effectIndex integer
 @field closure fun(config?: ascii-ui.Config): ascii-ui.BufferLine | ascii-ui.FiberNode[]
 @field output? ascii-ui.BufferLine | ascii-ui.FiberNode[]
+@field private _line ascii-ui.BufferLine
 
 ------------------------------------------------------------------------------
                                                                *FiberNode.new()*
@@ -219,10 +220,25 @@ Return ~
 `(ascii)`-ui.FiberNode
 
 ------------------------------------------------------------------------------
+                                                          *FiberNode:get_line()*
+                             `FiberNode:get_line`()
+@return ascii-ui.BufferLine
+
+------------------------------------------------------------------------------
                                                          *FiberNode.resetFrom()*
                          `FiberNode.resetFrom`({fiber})
 @param fiber ascii-ui.RootFiberNode
 @return ascii-ui.RootFiberNode
+
+------------------------------------------------------------------------------
+                                                    *FiberNode:unwrap_closure()*
+                          `FiberNode:unwrap_closure`()
+@return ascii-ui.FiberNode[] output
+
+------------------------------------------------------------------------------
+                                                        *FiberNode:next_fiber()*
+                            `FiberNode:next_fiber`()
+@return ascii-ui.FiberNode | nil
 
 
 ==============================================================================
@@ -666,7 +682,7 @@ Parameters ~
 ------------------------------------------------------------------------------
                                                                   *commitWork()*
                         `commitWork`({fiber}, {buffer})
-@param fiber ascii-ui.FiberNode | ascii-ui.BufferLine
+@param fiber ascii-ui.FiberNode
 @param buffer ascii-ui.Buffer
 
 ------------------------------------------------------------------------------

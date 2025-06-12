@@ -39,6 +39,7 @@ local function unmount(root)
 end
 local function reconcileChildren(parent, output)
 	assert(type(output) == "table", "output should be a table, got: " .. type(output))
+
 	parent.child = nil
 	local prevSibling
 	for i, node in ipairs(output) do
@@ -69,14 +70,14 @@ local function performUnitOfWork(fiber)
 	end
 end
 
---- @param fiber ascii-ui.FiberNode | ascii-ui.BufferLine
+--- @param fiber ascii-ui.FiberNode
 --- @param buffer ascii-ui.Buffer
 local function commitWork(fiber, buffer)
 	if not fiber then
 		return
 	end
-	if type(fiber) == "table" and fiber.elements then --- @cast fiber ascii-ui.BufferLine
-		buffer:add(fiber)
+	if fiber:is_leaf() then
+		buffer:add(fiber:get_line())
 		return
 	end
 	if not fiber.child then
@@ -112,6 +113,7 @@ local function getNextFiber(fiber)
 end
 
 -- recorre todos los Units of Work automáticamente
+-- @param root ascii-ui.RootFiberNode
 local function workLoop(root)
 	local nextFiber = root
 	while nextFiber do
