@@ -12,7 +12,7 @@ local currentFiber
 local function unmount(root)
 	--- @param fiber ascii-ui.FiberNode
 	local function traverse(fiber)
-		-- 1) Primero descendemos a todos los hijos (post-order)
+                -- 1) First descend into all children (post-order)
 		local children = {}
 		local child = fiber.child
 		while child do
@@ -23,7 +23,7 @@ local function unmount(root)
 			traverse(c)
 		end
 
-		-- 2) Luego ejecutamos los cleanups de este fiber en orden inverso (LIFO)
+                -- 2) Then run this fiber's cleanups in reverse order (LIFO)
 		if fiber.cleanups then
 			for i = #fiber.cleanups, 1, -1 do
 				local cleanup = fiber.cleanups[i]
@@ -94,7 +94,7 @@ local function commitWork(fiber, buffer)
 	fiber.root.pendingEffects = {}
 end
 
---- añade esta función para obtener el siguiente Fiber en recorrido depth-first
+--- add this function to obtain the next Fiber in depth-first traversal
 --- @param fiber ascii-ui.FiberNode
 --- @return ascii-ui.FiberNode | nil
 local function getNextFiber(fiber)
@@ -111,7 +111,7 @@ local function getNextFiber(fiber)
 	return nil
 end
 
--- recorre todos los Units of Work automáticamente
+-- traverse all Units of Work automatically
 local function workLoop(root)
 	local nextFiber = root
 	while nextFiber do
@@ -119,7 +119,7 @@ local function workLoop(root)
 		nextFiber = getNextFiber(nextFiber)
 	end
 end
--- helper de alto nivel: recibe un componente y devuelve las líneas del buffer
+-- high-level helper: receives a component and returns the buffer lines
 local function render(Component)
 	local fiberArr = Component()
 	local root = fiberArr[1] --- @cast root ascii-ui.RootFiberNode
@@ -137,9 +137,9 @@ local function render(Component)
 	return buffer, root
 end
 
---- Re-renderiza el árbol de fibers a partir de la raíz dada
+--- Re-render the tree of fibers from the given root
 --- @param root ascii-ui.RootFiberNode
---- @return ascii-ui.Buffer buffer con las líneas renderizadas
+--- @return ascii-ui.Buffer buffer with the rendered lines
 local function rerender(root)
 	unmount(root)
 
@@ -184,7 +184,7 @@ local function useState(initial)
 		else
 			fiber.hooks[idx] = value
 		end
-		-- re-render completo sobre el mismo root
+		-- full re-render on the same root
 		local root = FiberNode.resetFrom(fiber.root)
 		workLoop(root)
 		local buf = Buffer.new()
@@ -212,13 +212,13 @@ local function useEffect(fn, deps)
 	local shouldRun = false
 
 	if deps == nil then
-		logger.debug("nada: %s", vim.inspect(deps))
+		logger.debug("no deps: %s", vim.inspect(deps))
 
-		-- Sin array de deps: ejecutar en cada render y rerender
+		-- No deps array: run on each render and rerender
 		shouldRun = true
 	elseif #deps == 0 then
-		logger.debug("vacío")
-		-- Array vacío: sólo montaje
+		logger.debug("empty")
+		-- Empty array: only mount
 		shouldRun = (prev == nil)
 	else
 		if not prev then
@@ -254,15 +254,15 @@ local function useEffect(fn, deps)
 end
 
 ---
---- Debug: Imprime el árbol de Fibers con indentación y valores de hooks
+--- Debug: Prints the Fiber tree with indentation and hook values
 ---
 local function debugPrint(fiber, print_fn)
 	local function traverse(node, prefix, isLast)
 		local print = print_fn or print
-		-- Construye línea con prefijo gráfico
+		-- Builds line with graphical prefix
 		local branch = isLast and "└─ " or "├─ "
 		local line = prefix .. branch .. (node.type or "<buffer>")
-		-- Agrega estados de hooks si existen
+		-- Add hook states if any
 		if node.hooks and #node.hooks > 0 then
 			local parts = {}
 			for _, h in ipairs(node.hooks) do
@@ -271,7 +271,7 @@ local function debugPrint(fiber, print_fn)
 			line = line .. " [hooks=" .. table.concat(parts, ",") .. "]"
 		end
 		print(line)
-		-- Recorre hijos
+		-- Traverse children
 		local children = {}
 		local child = node.child
 		while child do

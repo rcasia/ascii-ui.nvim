@@ -68,17 +68,17 @@ describe("ascii-ui", function()
 			local bufnr = ui.mount(App)
 			assert(buffer_contains(bufnr, "0%"))
 
-			feed("llllll")
-			assert(buffer_contains(bufnr, "60%"), "no encuentra 60%")
+                        feed("llllll")
+                        assert(buffer_contains(bufnr, "60%"), "does not find 60%")
 
-			feed("hhh")
-			assert(buffer_contains(bufnr, "0%"), "no encuentra 0%")
+                        feed("hhh")
+                        assert(buffer_contains(bufnr, "0%"), "does not find 0%")
 
-			feed("j")
-			assert(cursor_is_in_line(3), "no está en 3")
+                        feed("j")
+                        assert(cursor_is_in_line(3), "not at 3")
 
-			feed("ll")
-			assert(buffer_contains(bufnr, "20%"), "no encuentra 20%")
+                        feed("ll")
+                        assert(buffer_contains(bufnr, "20%"), "does not find 20%")
 
 			feed("lll")
 			assert(buffer_contains(bufnr, "50%"))
@@ -88,12 +88,12 @@ describe("ascii-ui", function()
 			local content, setContent
 			local App = ui.createComponent("App", function()
 				return function()
-					content, setContent = useState("hola mundo")
+                                        content, setContent = useState("hello world")
 					return Paragraph({ content = content() })
 				end
 			end)
 			local bufnr = ui.mount(App)
-			assert(buffer_contains(bufnr, "hola mundo"))
+                        assert(buffer_contains(bufnr, "hello world"))
 
 			setContent("lemon juice")
 			assert(buffer_contains(bufnr, "lemon juice"))
@@ -103,7 +103,7 @@ describe("ascii-ui", function()
 			local content, setContent
 			local App = ui.createComponent("App", function()
 				return function()
-					content, setContent = useState("hola mundo")
+                                        content, setContent = useState("hello world")
 					return {
 						Element:new({
 							content = content(),
@@ -119,8 +119,8 @@ describe("ascii-ui", function()
 					}
 				end
 			end)
-			local bufnr = ui.mount(App)
-			assert(buffer_contains(bufnr, "hola mundo"))
+                        local bufnr = ui.mount(App)
+                        assert(buffer_contains(bufnr, "hello world"))
 
 			feed("l")
 			assert(buffer_contains(bufnr, "right"))
@@ -134,7 +134,7 @@ describe("ascii-ui", function()
 		local content, setContent
 		local SomeComponent = ui.createComponent("SomeComponent", function()
 			return function()
-				content, setContent = useState("hola mundo")
+                                content, setContent = useState("hello world")
 				return {
 					Element:new({
 						content = content(),
@@ -154,7 +154,7 @@ describe("ascii-ui", function()
 			return SomeComponent()
 		end)
 		local bufnr = ui.mount(App)
-		assert(buffer_contains(bufnr, "hola mundo"))
+                assert(buffer_contains(bufnr, "hello world"))
 
 		feed("l")
 		assert(buffer_contains(bufnr, "right"))

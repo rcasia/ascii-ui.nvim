@@ -62,25 +62,25 @@ end
 
 local components = {}
 
---- Crea un componente personalizado y lo registra
+--- Creates a custom component and registers it
 --- @generic ascii-ui.ComponentClosure, T
---- @param name string Nombre del componente
+--- @param name string Component name
 --- @param functional_component fun(props: T): fun(): ascii-ui.BufferLine[]
---- @param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
---- @return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
+--- @param types? table<string, ascii-ui.PropsType> Component prop types
+--- @return ascii-ui.ComponentClosure component_closure (The closure that renders the component)
 local function createComponent(name, functional_component, types)
 	types = types or {}
-	-- Validar que el nombre sea único
+	-- Validate that the name is unique
 	if components[name] then
-		logger.error(("El componente con nombre '%s' ya está registrado."):format(name))
+		logger.error(("The component named '%s' is already registered."):format(name))
 	end
 
-	-- Registro del componente con su renderFunction
+	-- Register the component with its renderFunction
 	components[name] = {
 		render = functional_component,
 	}
 
-	-- Generar la pseudofunción del componente
+	-- Generate the component's pseudo-function
 	local component_function = setmetatable({}, {
 		__call = function(_, ...)
 			local closure_id = tostring({})
@@ -92,7 +92,7 @@ local function createComponent(name, functional_component, types)
 				props = from_function_prop(args[1], types)
 				validate_props(props, types)
 				function factory()
-					-- dentro del workLoop, currentFiber ya está seteado
+					-- inside the workLoop, currentFiber is already set
 					return functional_component(props)
 				end
 			else

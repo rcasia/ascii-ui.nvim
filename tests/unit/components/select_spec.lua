@@ -39,7 +39,7 @@ describe("SelectComponent", function()
 
 		second_selected_element.interactions["SELECT"]()
 
-		-- Re-renderiza para reflejar el nuevo estado
+               -- Re-render to reflect the new state
 		local new_buffer = fiber.rerender(root)
 
 		local newly_selected = assert(new_buffer:find_element_by_position({ line = 2, col = 1 }))

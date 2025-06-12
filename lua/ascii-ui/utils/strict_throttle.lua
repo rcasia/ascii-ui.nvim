@@ -9,7 +9,7 @@ local function strict_throttle(fn, delay)
 			if queued_args then
 				local args = queued_args
 				queued_args = nil
-				run(unpack(args)) -- <-- reinicia delay aquí
+				run(unpack(args)) -- <-- restarts the delay here
 			else
 				running = false
 			end

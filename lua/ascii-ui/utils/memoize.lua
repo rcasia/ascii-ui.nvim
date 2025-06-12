@@ -1,11 +1,11 @@
 local M = {}
 
--- Tabla de caché global para todos los componentes
+-- Global cache table for all components
 local cache = {}
 
---- Genera una clave única basada en una tabla
+--- Generates a unique key based on a table
 local function generateKey(tbl)
-	return vim.inspect(tbl) -- Serializa las propiedades para generar una clave única
+	return vim.inspect(tbl) -- Serializes the properties to generate a unique key
 end
 
 --- @param factory function
