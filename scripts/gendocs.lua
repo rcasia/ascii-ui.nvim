@@ -39,4 +39,11 @@ handle:close()
 
 local mini = require("mini.doc")
 mini.setup()
-mini.generate(project_files)
+
+-- Allow overriding output via environment variable
+local output = os.getenv("DOC_OUTPUT_FILE")
+if output == nil or output == "" then
+	mini.generate(project_files)
+else
+	mini.generate(project_files, output)
+end

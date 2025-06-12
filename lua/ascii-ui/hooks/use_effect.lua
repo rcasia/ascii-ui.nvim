@@ -29,7 +29,7 @@ local EventListener = require("ascii-ui.events")
 ---
 --- @param fn function The callback to run as a side effect.
 --- @param observed_values? function[] Optional table of state getter functions to observe. If provided, the effect re-runs only when any observed value changes.
-local useEffect = function(fn, observed_values)
+local useEffectDeprecated = function(fn, observed_values)
 	local clean_up_fn = fn()
 
 	EventListener:listen("ui_close", function()
@@ -65,4 +65,4 @@ local useEffect = function(fn, observed_values)
 	end)
 end
 
-return useEffect
+return useEffectDeprecated
