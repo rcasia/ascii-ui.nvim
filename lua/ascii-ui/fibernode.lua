@@ -3,6 +3,7 @@ local is_callable = require("ascii-ui.utils.is_callable")
 
 --- @class ascii-ui.RootFiberNode : ascii-ui.FiberNode
 --- @field pendingEffects? function[]
+--- @field pendingCleanups? function[]
 --- @field lastRendered? ascii-ui.Buffer
 
 --- @class ascii-ui.FiberNode
@@ -15,7 +16,7 @@ local is_callable = require("ascii-ui.utils.is_callable")
 --- @field cleanups? function[]
 --- @field prevDeps any[]
 --- @field effectIndex integer
---- @field closure fun(config?: ascii-ui.Config): ascii-ui.BufferLine | ascii-ui.FiberNode[]
+--- @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
 --- @field output? ascii-ui.BufferLine | ascii-ui.FiberNode[]
 --- @field private _line ascii-ui.BufferLine
 local FiberNode = {}

@@ -87,6 +87,10 @@ local function commitWork(fiber, buffer)
 		child = child.sibling
 	end
 
+	for _, cu in ipairs(fiber.root.pendingCleanups or {}) do
+		cu()
+	end
+	fiber.root.pendingCleanups = {}
 	for _, eff in ipairs(fiber.root.pendingEffects) do
 		eff()
 	end
@@ -124,9 +128,8 @@ end
 --- @param root ascii-ui.RootFiberNode
 --- @return ascii-ui.Buffer buffer con las líneas renderizadas
 local function rerender(root)
-	unmount(root)
-
 	root.pendingEffects = {}
+	root.pendingCleanups = {}
 
 	workLoop(root)
 	local buf = Buffer.new()
@@ -151,22 +154,37 @@ local function useState(initial)
 	if fiber.hooks[idx] == nil then
 		fiber.hooks[idx] = initial
 	end
+	local snapshot = fiber.hooks[idx]
 
 	local function get()
-		return fiber.hooks[idx]
+		return snapshot -- siempre el mismo durante este render
 	end
 
 	local function set(value)
-		local oldCleanup = fiber.cleanups and fiber.cleanups[idx]
-		if oldCleanup then
-			oldCleanup()
-		end
+		-- local oldCleanup = fiber.cleanups and fiber.cleanups[idx]
+		-- if oldCleanup then
+		-- 	oldCleanup()
+		-- end
 
 		if type(value) == "function" then
 			fiber.hooks[idx] = value(fiber.hooks[idx])
 		else
 			fiber.hooks[idx] = value
 		end
+
+		-- ⇲ 2) P1 – ejecuta cleanups de efectos con deps no-vacíos ------
+		if fiber.cleanups then
+			for i, cu in ipairs(fiber.cleanups) do
+				local deps = fiber.prevDeps[i]
+				-- solo si deps existe y no está vacío
+				if deps and #deps > 0 and type(cu) == "function" then
+					cu() -- cleanup inmediato (mantiene valor viejo)
+					fiber.cleanups[i] = nil -- se reasignará en el nuevo render
+					fiber.prevDeps[i] = nil
+				end
+			end
+		end
+
 		-- re-render completo sobre el mismo root
 		local root = FiberNode.resetFrom(fiber.root)
 		workLoop(root)
@@ -187,8 +205,11 @@ end
 local function useEffect(fn, deps)
 	assert(currentFiber, "cannot call useEffect out of the component scope")
 	assert(type(deps) == "nil" or vim.isarray(deps), "deps should be an array or nil")
-
 	local fiber = currentFiber
+
+	if not fiber.root.pendingCleanups then
+		fiber.root.pendingCleanups = {}
+	end
 
 	local idx = fiber.effectIndex
 	local prev = fiber.prevDeps[idx]
@@ -222,17 +243,25 @@ local function useEffect(fn, deps)
 	end
 
 	if shouldRun then
+		local prevCleanup = fiber.cleanups[idx]
+		if prevCleanup then
+			table.insert(fiber.root.pendingCleanups, 1, prevCleanup) -- unshift
+		end
+
 		table.insert(fiber.root.pendingEffects, function()
-			local newCleanUp = fn()
-			if type(newCleanUp) == "function" then
-				fiber.cleanups[idx] = newCleanUp
-			else
-				fiber.cleanups[idx] = nil
-			end
+			local newCleanup = fn()
+			fiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
 		end)
 	end
 
-	fiber.prevDeps[idx] = deps and { unpack(deps) } or nil
+	-- guardar dependencias anteriores correctamente
+	if deps == nil then
+		fiber.prevDeps[idx] = nil
+	elseif #deps == 0 then
+		fiber.prevDeps[idx] = {} -- ← mantiene array vacío
+	else
+		fiber.prevDeps[idx] = { unpack(deps) }
+	end
 	fiber.effectIndex = fiber.effectIndex + 1
 end
 

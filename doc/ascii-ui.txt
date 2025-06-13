@@ -191,6 +191,7 @@ Parameters ~
 ------------------------------------------------------------------------------
 @class ascii-ui.RootFiberNode : ascii-ui.FiberNode
 @field pendingEffects? function[]
+@field pendingCleanups? function[]
 @field lastRendered? ascii-ui.Buffer
 
 ------------------------------------------------------------------------------
@@ -206,7 +207,7 @@ Parameters ~
 @field cleanups? function[]
 @field prevDeps any[]
 @field effectIndex integer
-@field closure fun(config?: ascii-ui.Config): ascii-ui.BufferLine | ascii-ui.FiberNode[]
+@field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
 @field output? ascii-ui.BufferLine | ascii-ui.FiberNode[]
 @field private _line ascii-ui.BufferLine
 

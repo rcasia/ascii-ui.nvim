@@ -191,6 +191,7 @@ function AsciiUI.mount(AppComponent)
 
 			window:close()
 			logger.info("Closed window %d", win_id)
+			fiber.unmount(fiberRoot)
 
 			EventListener:clear()
 		end,

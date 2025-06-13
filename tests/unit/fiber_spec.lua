@@ -260,4 +260,26 @@ describe("Fiber", function()
 			"Los cleanups se ejecutan en orden inverso, luego los efectos en orden"
 		)
 	end)
+
+	it("no ejecuta cleanup de effect [] al hacer setState", function()
+		local log = {}
+		local val, setVal
+
+		local C = ui.createComponent("C", function()
+			return function()
+				val, setVal = useState(0)
+				useEffect(function()
+					log[#log + 1] = "effect"
+					return function()
+						log[#log + 1] = "cleanup"
+					end
+				end, {}) -- deps vacías
+				return { Element:new({ content = tostring(val()) }):wrap() }
+			end
+		end, {})
+
+		fiber.render(C)
+		setVal(1) -- actualiza estado
+		assert.are.same({ "effect" }, log)
+	end)
 end)
