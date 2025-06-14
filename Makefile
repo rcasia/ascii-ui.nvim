@@ -1,7 +1,11 @@
 .PHONY: test
 
 check:
+	# running luacheck...
 	lx check
+
+	# running doc check...
+	./scripts/check-docs
 
 ifdef GITHUB_ACTIONS
 build:

@@ -3,5 +3,3 @@
 make check || exit 1
 
 make test || exit 1
-
-./scripts/check-docs || exit 1
