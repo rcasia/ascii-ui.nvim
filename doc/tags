@@ -40,6 +40,7 @@ FiberNode	ascii-ui.txt	/*FiberNode*
 FiberNode.new()	ascii-ui.txt	/*FiberNode.new()*
 FiberNode.resetFrom()	ascii-ui.txt	/*FiberNode.resetFrom()*
 FiberNode:get_line()	ascii-ui.txt	/*FiberNode:get_line()*
+FiberNode:iter()	ascii-ui.txt	/*FiberNode:iter()*
 FiberNode:next()	ascii-ui.txt	/*FiberNode:next()*
 FiberNode:unwrap_closure()	ascii-ui.txt	/*FiberNode:unwrap_closure()*
 For()	ascii-ui.txt	/*For()*

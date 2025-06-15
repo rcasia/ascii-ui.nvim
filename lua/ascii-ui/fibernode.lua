@@ -100,8 +100,16 @@ function FiberNode:unwrap_closure()
 	-- return output
 end
 
+--- Returns the next fiber node in a depth-first traversal of the fiber tree.
 ---
---- Gets the next fiber following a depth-first path
+--- The traversal order is:
+--- 1. First child (if any),
+--- 2. Then the next sibling (if no children or after visiting children),
+--- 3. Otherwise, ascend the tree to find the next available sibling.
+---
+--- It returns `nil` when it reaches the end of the tree.
+---
+--- @see ascii-ui.FiberNode.iter
 ---
 --- @return ascii-ui.FiberNode | nil
 function FiberNode:next()
@@ -116,6 +124,32 @@ function FiberNode:next()
 		node = node.parent
 	end
 	return nil
+end
+
+--- Returns an iterator that traverses the fiber tree in depth-first order,
+--- starting from the current node. The iteration visits each node once,
+--- descending first into children, then moving to siblings, and finally backtracking
+--- to ancestors until the entire subtree has been visited.
+---
+--- Example usage:
+--- ```lua
+--- for node in root:iter() do
+---     print(node.type)
+--- end
+--- ```
+---
+--- @see ascii-ui.FiberNode.next
+---
+--- @return fun(): ascii-ui.FiberNode | nil
+function FiberNode:iter()
+	local current = self
+	return function()
+		local result = current
+		if current then
+			current = current:next()
+		end
+		return result
+	end
 end
 
 return FiberNode
