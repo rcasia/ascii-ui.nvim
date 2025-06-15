@@ -4,12 +4,20 @@ local RUNNING_ON_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
 local lux_dependencies = vim.fn.glob(LUX_DIR .. "/" .. LUA_VERSION .. "/**/src", true, true)
 
-for _, dir in ipairs(lux_dependencies) do
+local add_to_luapath = function(dir)
 	package.path = table.concat({
 		dir .. "/?.lua",
 		dir .. "/?/init.lua",
 		package.path,
 	}, ";")
+end
+
+-- add project dir first
+add_to_luapath(".")
+
+-- add lux test dependencies
+for _, dir in ipairs(lux_dependencies) do
+	add_to_luapath(dir)
 end
 
 -- if in github actions, add a clone of plenary to the package path
