@@ -19,5 +19,8 @@ endif
 test: build
 	 bash scripts/test $(filter-out $@, $(MAKECMDGOALS))
 
+docs:
+	./scripts/gendocs
+
 %:
 	@:
