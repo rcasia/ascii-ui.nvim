@@ -26,9 +26,11 @@ describe("useReducer", function()
 
 		-- dispatch via closure
 		dispatch("inc")
-		eq({ "6" }, root.lastRendered:to_lines())
+		local new_buf = fiber.rerender(root)
+		eq({ "6" }, new_buf:to_lines())
 
 		dispatch("dec")
-		eq({ "5" }, root.lastRendered:to_lines())
+		local new_buf2 = fiber.rerender(root)
+		eq({ "5" }, new_buf2:to_lines())
 	end)
 end)

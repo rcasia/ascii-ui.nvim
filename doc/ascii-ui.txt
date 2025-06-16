@@ -198,6 +198,12 @@ Parameters ~
                                                                      *FiberNode*
                                   `FiberNode`
 @class ascii-ui.FiberNode
+@field private repeatingEffects? function[]
+@field private pendingEffects? function[]
+@field private pendingCleanups? function[]
+@field type string
+@field tag "PLACEMENT" | "UPDATE" | "NONE"
+@field props table | nil
 @field root? ascii-ui.RootFiberNode
 @field parent? ascii-ui.FiberNode
 @field sibling? ascii-ui.FiberNode
@@ -208,7 +214,7 @@ Parameters ~
 @field prevDeps any[]
 @field effectIndex integer
 @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
-@field output? ascii-ui.BufferLine | ascii-ui.FiberNode[]
+@field output? ascii-ui.FiberNode[]
 @field private _line ascii-ui.BufferLine
 
 ------------------------------------------------------------------------------
@@ -270,6 +276,27 @@ end
 @see ascii-ui.FiberNode.next
 
 @return fun(): ascii-ui.FiberNode | nil
+
+------------------------------------------------------------------------------
+                                                    *FiberNode:clone_for_diff()*
+                          `FiberNode:clone_for_diff`()
+Creates a shallow copy of the current FiberNode, intended to be used
+during the diffing process. The clone includes only the fields relevant
+for comparison and rendering reconciliation, not runtime state like
+hooks or effects.
+
+@return ascii-ui.FiberNode
+
+------------------------------------------------------------------------------
+                                                        *FiberNode:add_effect()*
+                   `FiberNode:add_effect`({eff}, {eff_type})
+@param eff function
+@param eff_type "REPEATING" | "ONCE"
+
+------------------------------------------------------------------------------
+                                                       *FiberNode:add_cleanup()*
+                         `FiberNode:add_cleanup`({cu})
+@param cu function
 
 
 ==============================================================================
@@ -701,9 +728,21 @@ Parameters ~
 @type ascii-ui.FiberNode | nil
 
 ------------------------------------------------------------------------------
+                                                                  *debugPrint()*
+                       `debugPrint`({fiber}, {print_fn})
+
+Debug: Imprime el árbol de Fibers con indentación y valores de hooks
+
+------------------------------------------------------------------------------
                                                                      *unmount()*
                                `unmount`({root})
 @param root ascii-ui.FiberNode
+
+------------------------------------------------------------------------------
+                                                           *reconcileChildren()*
+                    `reconcileChildren`({parent}, {output})
+@param parent ascii-ui.FiberNode
+@param output ascii-ui.FiberNode[]
 
 ------------------------------------------------------------------------------
                                                            *performUnitOfWork()*
@@ -733,12 +772,6 @@ Re-renderiza el árbol de fibers a partir de la raíz dada
                            `useEffect`({fn}, {deps})
 @param fn function
 @param deps? any[]
-
-------------------------------------------------------------------------------
-                                                                  *debugPrint()*
-                       `debugPrint`({fiber}, {print_fn})
-
-Debug: Imprime el árbol de Fibers con indentación y valores de hooks
 
 
 ==============================================================================

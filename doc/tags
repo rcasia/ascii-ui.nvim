@@ -39,6 +39,9 @@ EventListenter:trigger()	ascii-ui.txt	/*EventListenter:trigger()*
 FiberNode	ascii-ui.txt	/*FiberNode*
 FiberNode.new()	ascii-ui.txt	/*FiberNode.new()*
 FiberNode.resetFrom()	ascii-ui.txt	/*FiberNode.resetFrom()*
+FiberNode:add_cleanup()	ascii-ui.txt	/*FiberNode:add_cleanup()*
+FiberNode:add_effect()	ascii-ui.txt	/*FiberNode:add_effect()*
+FiberNode:clone_for_diff()	ascii-ui.txt	/*FiberNode:clone_for_diff()*
 FiberNode:get_line()	ascii-ui.txt	/*FiberNode:get_line()*
 FiberNode:iter()	ascii-ui.txt	/*FiberNode:iter()*
 FiberNode:next()	ascii-ui.txt	/*FiberNode:next()*
@@ -103,6 +106,7 @@ generateKey()	ascii-ui.txt	/*generateKey()*
 levels	ascii-ui.txt	/*levels*
 merge_bufferlines()	ascii-ui.txt	/*merge_bufferlines()*
 performUnitOfWork()	ascii-ui.txt	/*performUnitOfWork()*
+reconcileChildren()	ascii-ui.txt	/*reconcileChildren()*
 render()	ascii-ui.txt	/*render()*
 rerender()	ascii-ui.txt	/*rerender()*
 unmount()	ascii-ui.txt	/*unmount()*

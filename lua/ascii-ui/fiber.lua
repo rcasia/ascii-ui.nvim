@@ -8,6 +8,47 @@ local logger = require("ascii-ui.logger")
 --- @type ascii-ui.FiberNode | nil
 local currentFiber
 
+---
+--- Debug: Imprime el árbol de Fibers con indentación y valores de hooks
+---
+local function debugPrint(fiber, print_fn)
+	--- @param node ascii-ui.FiberNode
+	local function traverse(node, prefix, isLast)
+		local print = print_fn or logger.debug
+		-- Construye línea con prefijo gráfico
+		local branch = isLast and "└─ " or "├─ "
+		local line = prefix .. branch .. (node.type or "<buffer>")
+		-- Agrega estados de hooks si existen
+		if node.hooks and #node.hooks > 0 then
+			local parts = {}
+			for _, h in ipairs(node.hooks) do
+				parts[#parts + 1] = tostring(h)
+			end
+			line = line .. " [hooks=" .. table.concat(parts, ",") .. "]"
+		end
+		if node.tag then
+			line = line .. " " .. node.tag
+		end
+		if node:is_leaf() then
+			line = string.format("%s %s", line, node:get_line():to_string())
+		end
+		print(line)
+		-- Recorre hijos
+		local children = {}
+		local child = node.child
+		while child do
+			children[#children + 1] = child
+			child = child.sibling
+		end
+		-- Recurse
+		for i, c in ipairs(children) do
+			local last = (i == #children)
+			traverse(c, prefix .. (isLast and "   " or "│  "), last)
+		end
+	end
+	traverse(fiber, "", true)
+end
+
 --- @param root ascii-ui.FiberNode
 local function unmount(root)
 	--- @param fiber ascii-ui.FiberNode
@@ -31,12 +72,15 @@ local function unmount(root)
 					cleanup()
 				end
 			end
-			fiber.cleanups = {}
+			-- fiber.cleanups = {}
 		end
 	end
 
 	traverse(root)
 end
+
+--- @param parent ascii-ui.FiberNode
+--- @param output ascii-ui.FiberNode[]
 local function reconcileChildren(parent, output)
 	assert(type(output) == "table", "output should be a table, got: " .. type(output))
 
@@ -54,6 +98,28 @@ local function reconcileChildren(parent, output)
 	end
 end
 
+local function shallow_equal(t1, t2)
+	if t1 == t2 then
+		return true
+	end
+	if type(t1) ~= "table" or type(t2) ~= "table" then
+		return false
+	end
+
+	for k, v in pairs(t1) do
+		if t2[k] ~= v then
+			return false
+		end
+	end
+	for k in pairs(t2) do
+		if t1[k] == nil then
+			return false
+		end
+	end
+
+	return true
+end
+
 --- @param fiber ascii-ui.RootFiberNode
 local function performUnitOfWork(fiber)
 	assert(fiber, "Fiber cannot be nil")
@@ -61,12 +127,27 @@ local function performUnitOfWork(fiber)
 	currentFiber = FiberNode.resetFrom(fiber)
 	fiber.root = fiber
 
-	if fiber.closure then
-		fiber.output = fiber:unwrap_closure()
+	if fiber.closure and fiber.tag ~= "NONE" then
+		local output = fiber:unwrap_closure()
+		local old = fiber.output and fiber.output[1] or {}
+		local new = output[1]
 
-		assert(type(fiber.output) == "table", "Expected fiber.output to return a table, got: " .. type(fiber.output))
+		if
+			not new:is_leaf()
+			and old.type == new.type
+			and (shallow_equal(old.props, new.props) or vim.isarray(new.props))
+		then
+			--- @param n ascii-ui.FiberNode
+			vim.iter(fiber:iter()):each(function(n)
+				n.tag = "NONE"
+			end)
+			return -- do nothing else
+		end
 
-		reconcileChildren(fiber, fiber.output)
+		assert(type(output) == "table", "Expected fiber.output to return a table, got: " .. type(output))
+
+		reconcileChildren(fiber, output)
+		fiber.output = output
 	end
 end
 
@@ -86,15 +167,6 @@ local function commitWork(fiber, buffer)
 		commitWork(child, buffer)
 		child = child.sibling
 	end
-
-	for _, cu in ipairs(fiber.root.pendingCleanups or {}) do
-		cu()
-	end
-	fiber.root.pendingCleanups = {}
-	for _, eff in ipairs(fiber.root.pendingEffects) do
-		eff()
-	end
-	fiber.root.pendingEffects = {}
 end
 
 -- recorre todos los Units of Work automáticamente
@@ -108,6 +180,7 @@ local function workLoop(root)
 end
 -- helper de alto nivel: recibe un componente y devuelve las líneas del buffer
 local function render(Component)
+	logger.debug("FIBER.RENDER")
 	local fiberArr = Component()
 	local root = fiberArr[1] --- @cast root ascii-ui.RootFiberNode
 	-- first phase: reconcile
@@ -117,10 +190,11 @@ local function render(Component)
 	commitWork(root, buffer)
 
 	-- third phase: execute pending effects
-	for _, eff in ipairs(root.pendingEffects) do
-		eff()
-	end
-	root.pendingEffects = {}
+	--- @param n ascii-ui.FiberNode
+	vim.iter(root:iter()):each(function(n)
+		n:run_pending()
+		n.tag = "NONE"
+	end)
 	return buffer, root
 end
 
@@ -128,20 +202,18 @@ end
 --- @param root ascii-ui.RootFiberNode
 --- @return ascii-ui.Buffer buffer con las líneas renderizadas
 local function rerender(root)
-	root.pendingEffects = {}
-	root.pendingCleanups = {}
-
-	workLoop(root)
+	logger.debug("FIBER.RERENDER")
 	local buf = Buffer.new()
 
 	commitWork(root, buf)
-	root.lastRendered = buf
 
-	for _, eff in ipairs(root.pendingEffects) do
-		eff()
-	end
-	root.pendingEffects = {}
+	--- @param n ascii-ui.FiberNode
+	vim.iter(root:iter()):each(function(n)
+		n:run_pending()
+		n.tag = "NONE"
+	end)
 
+	logger.debug("MYBUF" .. buf:to_string())
 	return buf
 end
 
@@ -161,11 +233,6 @@ local function useState(initial)
 	end
 
 	local function set(value)
-		-- local oldCleanup = fiber.cleanups and fiber.cleanups[idx]
-		-- if oldCleanup then
-		-- 	oldCleanup()
-		-- end
-
 		if type(value) == "function" then
 			fiber.hooks[idx] = value(fiber.hooks[idx])
 		else
@@ -185,13 +252,11 @@ local function useState(initial)
 			end
 		end
 
-		-- re-render completo sobre el mismo root
-		local root = FiberNode.resetFrom(fiber.root)
+		local root = FiberNode.resetFrom(fiber)
+		fiber.tag = "UPDATE"
 		workLoop(root)
-		local buf = Buffer.new()
-		commitWork(root, buf)
-		assert(buf, "buf cannot be nil")
-		fiber.root.lastRendered = buf
+
+		debugPrint(root)
 
 		EventListener:trigger("state_change")
 	end
@@ -205,23 +270,19 @@ end
 local function useEffect(fn, deps)
 	assert(currentFiber, "cannot call useEffect out of the component scope")
 	assert(type(deps) == "nil" or vim.isarray(deps), "deps should be an array or nil")
+
 	local fiber = currentFiber
 
-	if not fiber.root.pendingCleanups then
-		fiber.root.pendingCleanups = {}
-	end
+	logger.debug("running useEffect on %s", fiber.type)
 
 	local idx = fiber.effectIndex
 	local prev = fiber.prevDeps[idx]
 	local shouldRun = false
 
 	if deps == nil then
-		logger.debug("nada: %s", vim.inspect(deps))
-
 		-- Sin array de deps: ejecutar en cada render y rerender
 		shouldRun = true
 	elseif #deps == 0 then
-		logger.debug("vacío")
 		-- Array vacío: sólo montaje
 		shouldRun = (prev == nil)
 	else
@@ -242,16 +303,29 @@ local function useEffect(fn, deps)
 		end
 	end
 
+	logger.debug("shouldRun: " .. tostring(shouldRun))
+
 	if shouldRun then
 		local prevCleanup = fiber.cleanups[idx]
-		if prevCleanup then
-			table.insert(fiber.root.pendingCleanups, 1, prevCleanup) -- unshift
-		end
 
-		table.insert(fiber.root.pendingEffects, function()
-			local newCleanup = fn()
-			fiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
-		end)
+		local effect_type = deps and "ONCE" or "REPEATING"
+		if effect_type == "ONCE" then
+			if prevCleanup then
+				fiber:add_cleanup(prevCleanup)
+			end
+			fiber:add_effect(function()
+				local newCleanup = fn()
+				fiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
+			end, effect_type)
+		else
+			fiber:add_effect(function()
+				if fiber.cleanups[idx] then
+					fiber.cleanups[idx]()
+				end
+				local newCleanup = fn()
+				fiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
+			end, effect_type)
+		end
 	end
 
 	-- guardar dependencias anteriores correctamente
@@ -265,45 +339,13 @@ local function useEffect(fn, deps)
 	fiber.effectIndex = fiber.effectIndex + 1
 end
 
----
---- Debug: Imprime el árbol de Fibers con indentación y valores de hooks
----
-local function debugPrint(fiber, print_fn)
-	local function traverse(node, prefix, isLast)
-		local print = print_fn or print
-		-- Construye línea con prefijo gráfico
-		local branch = isLast and "└─ " or "├─ "
-		local line = prefix .. branch .. (node.type or "<buffer>")
-		-- Agrega estados de hooks si existen
-		if node.hooks and #node.hooks > 0 then
-			local parts = {}
-			for _, h in ipairs(node.hooks) do
-				parts[#parts + 1] = tostring(h)
-			end
-			line = line .. " [hooks=" .. table.concat(parts, ",") .. "]"
-		end
-		print(line)
-		-- Recorre hijos
-		local children = {}
-		local child = node.child
-		while child do
-			children[#children + 1] = child
-			child = child.sibling
-		end
-		-- Recurse
-		for i, c in ipairs(children) do
-			local last = (i == #children)
-			traverse(c, prefix .. (isLast and "   " or "│  "), last)
-		end
-	end
-	traverse(fiber, "", true)
-end
-
 return {
 	render = render,
 	rerender = rerender,
 	unmount = unmount,
 	workLoop = workLoop,
+	performUnitOfWork = performUnitOfWork,
+	reconcileChildren = reconcileChildren,
 	commitWork = commitWork,
 	debugPrint = debugPrint,
 	-- hooks

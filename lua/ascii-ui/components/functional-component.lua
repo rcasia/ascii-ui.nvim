@@ -105,9 +105,9 @@ local function createComponent(name, functional_component, types)
 
 			return {
 				FiberNode.new({
-					name = name,
+					tag = "PLACEMENT",
 					type = name,
-					props = props or args[1],
+					props = props or args,
 					closure = closure,
 				}),
 			}

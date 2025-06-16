@@ -3,16 +3,15 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local Buffer = require("ascii-ui.buffer")
 local Element = require("ascii-ui.buffer.element")
+local FiberNode = require("ascii-ui.fibernode")
 local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 local render = fiber.render
 local useState = fiber.useState
 local useEffect = fiber.useEffect
-local commitWork = fiber.commitWork
-local workLoop = fiber.workLoop
 local debugPrint = fiber.debugPrint
+local logger = require("ascii-ui.logger")
 
 local MyComponent = ui.createComponent("MyComponent", function()
 	return function()
@@ -87,22 +86,19 @@ describe("Fiber", function()
 		end, {})
 
 		-- render inicial
-		local _rootFiber = Counter()
-		local rootFiber = _rootFiber[1]
-		workLoop(rootFiber)
-		local buf1 = Buffer.new()
-		commitWork(rootFiber, buf1)
+		local buf1, root = fiber.render(Counter)
 		eq({ "c:0", "b:false" }, buf1:to_lines())
 
 		-- disparar actualización
 		setCount(5)
 		setActive(true)
 
+		local buf2 = fiber.rerender(root)
 		-- tras el setState, el propio hook habrá vuelto a renderizar
-		local lines2 = rootFiber.lastRendered:to_lines()
+		local lines2 = buf2:to_lines()
 		eq({ "c:5", "b:true" }, lines2)
 
-		debugPrint(rootFiber)
+		debugPrint(root)
 	end)
 
 	it("debe ejecutar el efecto una vez tras el primer render", function()
@@ -154,14 +150,17 @@ describe("Fiber", function()
 
 		-- actualizamos estado a 1
 		setCount(1)
+		fiber.rerender(root)
 		eq({ 0, 1 }, runs, "Se reejecuta al cambiar count a 1")
 
 		-- otra vez a 1: no debe reejecutar
 		setCount(1)
+		fiber.rerender(root)
 		eq({ 0, 1 }, runs, "Mismo valor de dep no dispara efecto")
 
 		-- cambiamos a 2: sí
 		setCount(2)
+		fiber.rerender(root)
 		eq({ 0, 1, 2 }, runs, "Se reejecuta al cambiar count a 2")
 	end)
 	it("debe llamar al cleanup antes de reejecutar el effect", function()
@@ -186,15 +185,17 @@ describe("Fiber", function()
 		end, {})
 
 		-- primer render: effect se ejecuta, no hay cleanup aún
-		local _, _ = fiber.render(Counter)
+		local _, root = fiber.render(Counter)
 		eq({ "run:0" }, logs)
 
 		-- primer cambio de estado a 1: debe correrse cleanup(0) antes de run(1)
 		setCount(1)
+		fiber.rerender(root)
 		eq({ "run:0", "cleanup:0", "run:1" }, logs)
 
 		-- otro cambio a 2: cleanup(1) y run(2)
 		setCount(2)
+		fiber.rerender(root)
 		eq({ "run:0", "cleanup:0", "run:1", "cleanup:1", "run:2" }, logs)
 	end)
 	it("debe ejecutar el cleanup al desmontar el componente", function()
@@ -254,11 +255,13 @@ describe("Fiber", function()
 		-- rerender genérico (sin deps, así siempre both effects vuelven a correr)
 		log = {}
 		fiber.rerender(root)
-		eq(
-			{ "cleanup2", "cleanup1", "effect1", "effect2" },
-			log,
-			"Los cleanups se ejecutan en orden inverso, luego los efectos en orden"
-		)
+		fiber.debugPrint(root)
+		eq({
+			"cleanup1",
+			"effect1",
+			"cleanup2",
+			"effect2",
+		}, log, "Los cleanups se ejecutan en orden inverso, luego los efectos en orden")
 	end)
 
 	it("no ejecuta cleanup de effect [] al hacer setState", function()
@@ -281,5 +284,94 @@ describe("Fiber", function()
 		fiber.render(C)
 		setVal(1) -- actualiza estado
 		assert.are.same({ "effect" }, log)
+	end)
+
+	describe("reconcileChildren", function()
+		it("sets parent, root, child and sibling correctly", function()
+			-- Hojas simples: cada una envuelve una única línea
+			local ChildA = ui.createComponent("ChildA", function()
+				return function()
+					return { Element:new({ content = "ChildA" }):wrap() }
+				end
+			end, {})
+
+			local countB, setCountB
+			local ChildB = ui.createComponent("ChildB", function()
+				return function()
+					countB, setCountB = useState(0)
+					return { Element:new({ content = "ChildB:" .. countB() }):wrap() }
+				end
+			end, {})
+
+			local countC, setCountC
+			local ChildC = ui.createComponent("ChildC", function()
+				return function()
+					countC, setCountC = useState(0)
+					return { Element:new({ content = "ChildC:" .. countC() }):wrap() }
+				end
+			end, {})
+
+			local setCountApp
+			-- Componente raíz que agrupa los tres hijos, mismo estilo que tu List
+			local Test = ui.createComponent("App", function()
+				return function()
+					-- luacheck: push ignore _countApp
+					---@diagnostic disable-next-line: lowercase-global
+					_countApp, setCountApp = useState(0)
+					-- luacheck: pop
+
+					-- Llamamos a cada hijo y extraemos su FiberNode (primer elemento de la tabla)
+					return ui.layout.Column(ChildA(), ChildB(), ChildC())
+				end
+			end)
+
+			local _, root = fiber.render(Test)
+
+			--- @param node ascii-ui.FiberNode
+			local child_c = vim.iter(root:iter()):find(function(node)
+				return node.type == "ChildC"
+			end)
+
+			assert(child_c, "should find child_c")
+			eq("ChildC", child_c.type)
+			eq("ChildC:0", child_c.child:get_line():to_string())
+
+			setCountC(1)
+			setCountB(2)
+			setCountApp(3)
+			fiber.rerender(root)
+
+			--- @param node ascii-ui.FiberNode
+			local child_c2 = vim.iter(root:iter()):find(function(node)
+				return node.type == "ChildC"
+			end)
+
+			fiber.debugPrint(root, function(line)
+				logger.debug("rerendered: " .. line)
+			end)
+
+			eq("ChildC", child_c2.type)
+			eq("ChildC:1", child_c2.child:get_line():to_string())
+
+			--- @param node ascii-ui.FiberNode
+			local child_b = vim.iter(root:iter()):find(function(node)
+				return node.type == "ChildB"
+			end)
+
+			eq("ChildB", child_b.type)
+			eq("ChildB:2", child_b.child:get_line():to_string())
+		end)
+
+		it("handles parent.output being nil", function()
+			local parent = FiberNode.new({ name = "Root", type = "Root" })
+			local output = {
+				FiberNode.new({ type = "One" }),
+			}
+			parent.output = nil
+
+			fiber.reconcileChildren(parent, output)
+
+			assert.equals("One", parent.child.type)
+		end)
 	end)
 end)
