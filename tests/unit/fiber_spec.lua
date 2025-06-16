@@ -7,10 +7,8 @@ local Element = require("ascii-ui.buffer.element")
 local FiberNode = require("ascii-ui.fibernode")
 local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
-local render = fiber.render
 local useState = fiber.useState
 local useEffect = fiber.useEffect
-local debugPrint = fiber.debugPrint
 local logger = require("ascii-ui.logger")
 
 local MyComponent = ui.createComponent("MyComponent", function()
@@ -27,10 +25,10 @@ end, {})
 
 describe("Fiber", function()
 	it("renderiza MyComponent en una sola línea", function()
-		local buffer, rootFiber = render(App)
+		local buffer, rootFiber = fiber.render(App)
 		eq({ "Hello World" }, buffer:to_lines())
 
-		debugPrint(rootFiber)
+		fiber.debugPrint(rootFiber)
 	end)
 
 	it("renderiza List en dos líneas", function()
@@ -42,10 +40,10 @@ describe("Fiber", function()
 				}
 			end
 		end, {})
-		local lines, rootFiber = render(List)
+		local lines, rootFiber = fiber.render(List)
 		eq({ "Línea 1", "Línea 2" }, lines:to_lines())
 
-		debugPrint(rootFiber)
+		fiber.debugPrint(rootFiber)
 	end)
 
 	it("un componente compuesto", function()
@@ -60,14 +58,14 @@ describe("Fiber", function()
 			end
 		end, {})
 
-		local lines, rootFiber = render(List)
+		local lines, rootFiber = fiber.render(List)
 		eq({ "Componente Interno" }, lines:to_lines())
 		eq("SomeComponent", rootFiber.child.type)
 		eq(nil, rootFiber.child.sibling, "No debe haber hermanos en este caso")
 		-- eq(nil, rootFiber.child.child, "No debe haber hijos en este caso")
 		-- eq({}, rootFiber.output[1].output)
 
-		debugPrint(rootFiber)
+		fiber.debugPrint(rootFiber)
 	end)
 
 	it("soporta useState y re-renderiza al actualizar", function()
@@ -98,7 +96,7 @@ describe("Fiber", function()
 		local lines2 = buf2:to_lines()
 		eq({ "c:5", "b:true" }, lines2)
 
-		debugPrint(root)
+		fiber.debugPrint(root)
 	end)
 
 	it("debe ejecutar el efecto una vez tras el primer render", function()
