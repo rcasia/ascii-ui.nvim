@@ -11,11 +11,12 @@ local useState = fiber.useState
 local useEffect = fiber.useEffect
 local logger = require("ascii-ui.logger")
 
-local MyComponent = ui.createComponent("MyComponent", function()
+local MyComponent = ui.createComponent("MyComponent", function(props)
+	props = props or {}
 	return function()
-		return { Element:new({ content = "Hello World" }):wrap() }
+		return { Element:new({ content = props.content or "Hello World" }):wrap() }
 	end
-end, {})
+end, { content = "string" })
 
 local App = ui.createComponent("App", function()
 	return function()
@@ -289,7 +290,7 @@ describe("Fiber", function()
 			-- Hojas simples: cada una envuelve una única línea
 			local ChildA = ui.createComponent("ChildA", function()
 				return function()
-					return { Element:new({ content = "ChildA" }):wrap() }
+					return { Element:new({ content = "A" }):wrap() }
 				end
 			end, {})
 
@@ -297,7 +298,7 @@ describe("Fiber", function()
 			local ChildB = ui.createComponent("ChildB", function()
 				return function()
 					countB, setCountB = useState(0)
-					return { Element:new({ content = "ChildB:" .. countB() }):wrap() }
+					return { Element:new({ content = "B:" .. countB() }):wrap() }
 				end
 			end, {})
 
@@ -305,34 +306,42 @@ describe("Fiber", function()
 			local ChildC = ui.createComponent("ChildC", function()
 				return function()
 					countC, setCountC = useState(0)
-					return { Element:new({ content = "ChildC:" .. countC() }):wrap() }
+					return { Element:new({ content = "C:" .. countC() }):wrap() }
 				end
 			end, {})
 
-			local setCountApp
+			local countApp, setCountApp
 			-- Componente raíz que agrupa los tres hijos, mismo estilo que tu List
 			local Test = ui.createComponent("App", function()
 				return function()
-					-- luacheck: push ignore _countApp
-					---@diagnostic disable-next-line: lowercase-global
-					_countApp, setCountApp = useState(0)
-					-- luacheck: pop
+					countApp, setCountApp = useState(0)
 
 					-- Llamamos a cada hijo y extraemos su FiberNode (primer elemento de la tabla)
-					return ui.layout.Column(ChildA(), ChildB(), ChildC())
+					return ui.layout.Column(
+						ChildA(),
+						ChildB(),
+						ChildC(),
+						MyComponent({ content = "App:" .. tostring(countApp()) })
+					)
 				end
 			end)
 
-			local _, root = fiber.render(Test)
+			local buf, root = fiber.render(Test)
 
 			--- @param node ascii-ui.FiberNode
 			local child_c = vim.iter(root:iter()):find(function(node)
 				return node.type == "ChildC"
 			end)
+			logger.debug(
+				[[BUFFER:
+%s
+			]],
+				buf:to_string()
+			)
 
 			assert(child_c, "should find child_c")
 			eq("ChildC", child_c.type)
-			eq("ChildC:0", child_c.child:get_line():to_string())
+			eq("C:0", child_c.child:get_line():to_string())
 
 			setCountC(1)
 			setCountB(2)
@@ -348,8 +357,9 @@ describe("Fiber", function()
 				logger.debug("rerendered: " .. line)
 			end)
 
+			assert(child_c2, "child_c2 should not be nil on rerender")
 			eq("ChildC", child_c2.type)
-			eq("ChildC:1", child_c2.child:get_line():to_string())
+			eq("C:1", child_c2.child:get_line():to_string())
 
 			--- @param node ascii-ui.FiberNode
 			local child_b = vim.iter(root:iter()):find(function(node)
@@ -357,7 +367,14 @@ describe("Fiber", function()
 			end)
 
 			eq("ChildB", child_b.type)
-			eq("ChildB:2", child_b.child:get_line():to_string())
+			eq("B:2", child_b.child:get_line():to_string())
+
+			--- @type ascii-ui.FiberNode
+			local my_component = vim.iter(root:iter()):find(function(node)
+				return node.type == "MyComponent"
+			end)
+
+			eq("App:3", my_component.child:get_line():to_string())
 		end)
 
 		it("handles parent.output being nil", function()

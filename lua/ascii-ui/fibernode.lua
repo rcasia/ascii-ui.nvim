@@ -12,7 +12,7 @@ local logger = require("ascii-ui.logger")
 --- @field private pendingEffects? function[]
 --- @field private pendingCleanups? function[]
 --- @field type string
---- @field tag "PLACEMENT" | "UPDATE" | "NONE"
+--- @field tag "PLACEMENT" | "REPLACEMENT" | "UPDATE" | "NONE"
 --- @field props table | nil
 --- @field root? ascii-ui.RootFiberNode
 --- @field parent? ascii-ui.FiberNode
@@ -57,6 +57,89 @@ function FiberNode.new(fields)
 
 	--- @type ascii-ui.FiberNode
 	return setmetatable(node, FiberNode)
+end
+
+--- @param obj any
+--- @return boolean
+function FiberNode.is_node(obj)
+	if
+		type(obj) == "table"
+		--
+		and obj.__index == FiberNode.__index
+	then
+		return true
+	end
+
+	return false
+end
+
+--- @param t1 table
+--- @param t2 table
+--- @return boolean
+local function shallow_equal(t1, t2)
+	t1 = t1 or {}
+	t2 = t2 or {}
+	if t1 == t2 then
+		return true
+	end
+	if type(t1) ~= "table" or type(t2) ~= "table" then
+		return false
+	end
+
+	for k, v in pairs(t1) do
+		if t2[k] ~= v then
+			return false
+		end
+	end
+	for k in pairs(t2) do
+		if t1[k] == nil then
+			return false
+		end
+	end
+
+	return true
+end
+
+--- @param other ascii-ui.FiberNode
+--- @return boolean
+function FiberNode:is_same(other)
+	-- assert(FiberNode.is_node(other), "other should be node to be able to compare. Found: " .. vim.inspect(other))
+	assert(other, "other cannot be nil")
+	if vim.isarray(self.props) and vim.isarray(other.props) then
+		--- @param node ascii-ui.FiberNode
+		for i, node in ipairs(self.props) do
+			node = node[1]
+			if not other.props[i] then
+				logger.debug(
+					"is not same because it does not have the same lenght (%d vs %d)",
+					#self.props,
+					#other.props
+				)
+				return false
+			end
+			local is_same = node:is_same(other.props[i][1])
+			if not is_same then
+				logger.debug("is not same because inner nodes are not same")
+				return false
+			end
+		end
+		return true
+	end
+	if self.type ~= other.type then
+		logger.debug("is not the same because does not have the same type: (%s vs %s)", self.type, other.type)
+		return false
+	end
+
+	if not shallow_equal(self.props, other.props) then
+		logger.debug(
+			"is not the same because does not have the same props: (%s vs %s)",
+			vim.inspect(self.props),
+			vim.inspect(other.props)
+		)
+		return false
+	end
+
+	return true
 end
 
 function FiberNode:is_leaf()

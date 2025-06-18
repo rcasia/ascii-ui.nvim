@@ -80,74 +80,142 @@ local function unmount(root)
 end
 
 --- @param parent ascii-ui.FiberNode
---- @param output ascii-ui.FiberNode[]
-local function reconcileChildren(parent, output)
-	assert(type(output) == "table", "output should be a table, got: " .. type(output))
+--- @param new_children ascii-ui.FiberNode[]
+local function reconcileChildren(parent, new_children)
+	assert(type(new_children) == "table", "new_children should be a table, got: " .. type(new_children))
+	assert(parent.output or parent.tag == "PLACEMENT" or parent.tag == "REPLACEMENT")
+	assert(
+		--- @param node ascii-ui.FiberNode
+		vim.iter(new_children):all(function(node)
+			return FiberNode.is_node(node)
+		end),
+		"cannot reconcile parent with objects that are not FiberNodes"
+	)
+
+	logger.debug(
+		"🧑‍🧑‍🧒‍🧒🧑‍🧑‍🧒‍🧒🧑‍🧑‍🧒‍🧒 Reconciling children of %s",
+		parent.type
+	)
 
 	parent.child = nil
 	local prevSibling
-	for i, node in ipairs(output) do
+	for i, node in ipairs(new_children) do
 		node.parent = parent
 		node.root = parent.root or parent
-		if i == 1 then
-			parent.child = node
+		local old = parent.output and parent.output[i] or {}
+		logger.debug(
+			"reconcilitation against: %s",
+			vim.inspect({
+				--
+				new = ("(type: %s, tag: %s)"):format(node.type, node.tag),
+				old = ("(type: %s, tag: %s)"):format(old.type, old.tag),
+			})
+		)
+
+		node.props = node.props or {}
+		local new_child
+		if not node:is_leaf() and (FiberNode.is_node(old) and vim.tbl_isempty(node.props) or node:is_same(old)) then
+			logger.debug("⛓️ reused link ", parent.type, old.type)
+			new_child = old
 		else
-			prevSibling.sibling = node
+			logger.debug(
+				"⛓️‍💥 -> ⛓️ new link %s -> %s. Because [is_empty=%s, is_same=%s]",
+				parent.type,
+				node.type,
+				vim.tbl_isempty(node.props),
+				node:is_same(old)
+			)
+			new_child = node
 		end
-		prevSibling = node
-	end
-end
 
-local function shallow_equal(t1, t2)
-	if t1 == t2 then
-		return true
-	end
-	if type(t1) ~= "table" or type(t2) ~= "table" then
-		return false
-	end
-
-	for k, v in pairs(t1) do
-		if t2[k] ~= v then
-			return false
+		if i == 1 then
+			parent.child = new_child
+		else
+			prevSibling.sibling = new_child
 		end
+		prevSibling = new_child
 	end
-	for k in pairs(t2) do
-		if t1[k] == nil then
-			return false
-		end
-	end
-
-	return true
 end
 
 --- @param fiber ascii-ui.RootFiberNode
 local function performUnitOfWork(fiber)
 	assert(fiber, "Fiber cannot be nil")
 
+	if fiber.tag == "NONE" then
+		return -- does not need work
+	end
+
 	currentFiber = FiberNode.resetFrom(fiber)
 	fiber.root = fiber
 
-	if fiber.closure and fiber.tag ~= "NONE" then
-		local output = fiber:unwrap_closure()
-		local old = fiber.output and fiber.output[1] or {}
-		local new = output[1]
+	if fiber.closure then
+		local new_children = fiber:unwrap_closure()
+		local old_child = fiber.output and fiber.output[1] or {}
+		local new_child = new_children[1]
 
-		if
-			not new:is_leaf()
-			and old.type == new.type
-			and (shallow_equal(old.props, new.props) or vim.isarray(new.props))
-		then
-			--- @param n ascii-ui.FiberNode
-			vim.iter(fiber:iter()):each(function(n)
-				n.tag = "NONE"
-			end)
-			return -- do nothing else
+		logger.debug("🧑‍🧒‍🧒 children of %s", fiber.type)
+		--- @param child ascii-ui.FiberNode
+		vim.iter(new_children):enumerate():each(function(i, child)
+			logger.debug("🧒 %d. %s", i, child.type)
+		end)
+
+		if #new_children > 1 then
+			logger.debug("🪺 nested unit of work for: %s", fiber.type)
+			for _, node in ipairs(new_children) do
+				node.tag = fiber.tag
+			end
+
+			reconcileChildren(fiber, new_children)
+			fiber.output = new_children
+			fiber.tag = "NONE"
+			return -- do nothing
 		end
 
-		assert(type(output) == "table", "Expected fiber.output to return a table, got: " .. type(output))
+		logger.debug("tag check: %s [%s]", fiber.type, fiber.tag)
 
-		reconcileChildren(fiber, output)
-		fiber.output = output
+		if fiber.tag == "UPDATE" and not fiber:is_leaf() then
+			if not new_child:is_leaf() and new_child:is_same(old_child) then
+				new_child.tag = "NONE"
+				logger.debug("🫥 Child node has NOT changed: %s", old_child.type)
+				return -- do nothing else
+			elseif vim.isarray(new_child.props) then
+				logger.debug("♻️♻️♻️ Multiple children nodes has changed: %s", new_child.type)
+
+				local fiber_child_children = vim.iter(new_child:unwrap_closure())
+					:map(function(node)
+						node.tag = "REPLACEMENT"
+						return node
+					end)
+					:totable()
+
+				reconcileChildren(fiber.child, fiber_child_children)
+				logger.debug("🛫🛫🛫🛫🛫")
+				debugPrint(fiber.child)
+				logger.debug("🛫🛫🛫🛫🛫")
+				reconcileChildren(fiber, { fiber.child })
+
+				logger.debug("🛫🛫🛫🛫🛫")
+				debugPrint(fiber)
+				logger.debug("🛫🛫🛫🛫🛫")
+				fiber.output = new_children
+				fiber.child.tag = "NONE"
+				fiber.tag = "NONE"
+				return
+			else
+				logger.debug("♻️ Child node has changed: %s", new_child.type)
+
+				reconcileChildren(fiber, new_children)
+				fiber.output = new_children
+				fiber.tag = "NONE"
+				return
+			end
+		end
+
+		assert(type(new_children) == "table", "Expected fiber.output to return a table, got: " .. type(new_children))
+
+		reconcileChildren(fiber, new_children)
+		fiber.output = new_children
+		fiber.tag = "NONE"
 	end
 end
 
@@ -180,7 +248,7 @@ local function workLoop(root)
 end
 -- helper de alto nivel: recibe un componente y devuelve las líneas del buffer
 local function render(Component)
-	logger.debug("FIBER.RENDER")
+	logger.debug("📺 FIBER.RENDER")
 	local fiberArr = Component()
 	local root = fiberArr[1] --- @cast root ascii-ui.RootFiberNode
 	-- first phase: reconcile
@@ -202,7 +270,7 @@ end
 --- @param root ascii-ui.RootFiberNode
 --- @return ascii-ui.Buffer buffer con las líneas renderizadas
 local function rerender(root)
-	logger.debug("FIBER.RERENDER")
+	logger.debug("📺📺 FIBER.RERENDER")
 	local buf = Buffer.new()
 
 	commitWork(root, buf)
@@ -233,6 +301,7 @@ local function useState(initial)
 	end
 
 	local function set(value)
+		logger.debug("🥊 State change detected: (component: %s, state: %s)", fiber.type, vim.inspect(value))
 		if type(value) == "function" then
 			fiber.hooks[idx] = value(fiber.hooks[idx])
 		else
@@ -253,7 +322,9 @@ local function useState(initial)
 		end
 
 		local root = FiberNode.resetFrom(fiber)
-		fiber.tag = "UPDATE"
+		vim.iter(fiber:iter()):each(function(n)
+			n.tag = "UPDATE"
+		end)
 		workLoop(root)
 
 		debugPrint(root)

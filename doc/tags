@@ -37,12 +37,14 @@ EventListenter	ascii-ui.txt	/*EventListenter*
 EventListenter:listen()	ascii-ui.txt	/*EventListenter:listen()*
 EventListenter:trigger()	ascii-ui.txt	/*EventListenter:trigger()*
 FiberNode	ascii-ui.txt	/*FiberNode*
+FiberNode.is_node()	ascii-ui.txt	/*FiberNode.is_node()*
 FiberNode.new()	ascii-ui.txt	/*FiberNode.new()*
 FiberNode.resetFrom()	ascii-ui.txt	/*FiberNode.resetFrom()*
 FiberNode:add_cleanup()	ascii-ui.txt	/*FiberNode:add_cleanup()*
 FiberNode:add_effect()	ascii-ui.txt	/*FiberNode:add_effect()*
 FiberNode:clone_for_diff()	ascii-ui.txt	/*FiberNode:clone_for_diff()*
 FiberNode:get_line()	ascii-ui.txt	/*FiberNode:get_line()*
+FiberNode:is_same()	ascii-ui.txt	/*FiberNode:is_same()*
 FiberNode:iter()	ascii-ui.txt	/*FiberNode:iter()*
 FiberNode:next()	ascii-ui.txt	/*FiberNode:next()*
 FiberNode:unwrap_closure()	ascii-ui.txt	/*FiberNode:unwrap_closure()*
@@ -109,6 +111,7 @@ performUnitOfWork()	ascii-ui.txt	/*performUnitOfWork()*
 reconcileChildren()	ascii-ui.txt	/*reconcileChildren()*
 render()	ascii-ui.txt	/*render()*
 rerender()	ascii-ui.txt	/*rerender()*
+shallow_equal()	ascii-ui.txt	/*shallow_equal()*
 unmount()	ascii-ui.txt	/*unmount()*
 useEffect()	ascii-ui.txt	/*useEffect()*
 useEffectDeprecated()	ascii-ui.txt	/*useEffectDeprecated()*

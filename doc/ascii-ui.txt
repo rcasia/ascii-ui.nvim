@@ -202,7 +202,7 @@ Parameters ~
 @field private pendingEffects? function[]
 @field private pendingCleanups? function[]
 @field type string
-@field tag "PLACEMENT" | "UPDATE" | "NONE"
+@field tag "PLACEMENT" | "REPLACEMENT" | "UPDATE" | "NONE"
 @field props table | nil
 @field root? ascii-ui.RootFiberNode
 @field parent? ascii-ui.FiberNode
@@ -225,6 +225,25 @@ Parameters ~
 {fields} `(table<string, any>)`
 Return ~
 `(ascii)`-ui.FiberNode
+
+------------------------------------------------------------------------------
+                                                           *FiberNode.is_node()*
+                           `FiberNode.is_node`({obj})
+@param obj any
+@return boolean
+
+------------------------------------------------------------------------------
+                                                               *shallow_equal()*
+                          `shallow_equal`({t1}, {t2})
+@param t1 table
+@param t2 table
+@return boolean
+
+------------------------------------------------------------------------------
+                                                           *FiberNode:is_same()*
+                          `FiberNode:is_same`({other})
+@param other ascii-ui.FiberNode
+@return boolean
 
 ------------------------------------------------------------------------------
                                                           *FiberNode:get_line()*
@@ -740,9 +759,9 @@ Debug: Imprime el árbol de Fibers con indentación y valores de hooks
 
 ------------------------------------------------------------------------------
                                                            *reconcileChildren()*
-                    `reconcileChildren`({parent}, {output})
+                 `reconcileChildren`({parent}, {new_children})
 @param parent ascii-ui.FiberNode
-@param output ascii-ui.FiberNode[]
+@param new_children ascii-ui.FiberNode[]
 
 ------------------------------------------------------------------------------
                                                            *performUnitOfWork()*
