@@ -18,7 +18,7 @@ local App = ui.createComponent("App", function()
 		return Column(
 			Paragraph({
 				content = function()
-					return "There are " .. #items() .. " items in the list"
+					return "There are " .. #items .. " items in the list"
 				end,
 			}),
 			For({

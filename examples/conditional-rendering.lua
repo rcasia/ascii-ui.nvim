@@ -12,7 +12,7 @@ local App = ui.createComponent("App", function()
 		return Column(
 			If({
 				condition = function()
-					return shouldShow()
+					return shouldShow
 				end,
 				child = Paragraph({ content = "this is my content" }),
 				fallback = Paragraph({ content = "hidden" }),
@@ -21,7 +21,7 @@ local App = ui.createComponent("App", function()
 			Button({
 				label = "change",
 				on_press = function()
-					setShouldShow(not shouldShow())
+					setShouldShow(not shouldShow)
 				end,
 			})
 		)
