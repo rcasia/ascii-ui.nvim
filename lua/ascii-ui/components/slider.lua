@@ -2,7 +2,7 @@ local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 local createComponent = require("ascii-ui.components.functional-component")
 local interaction_type = require("ascii-ui.interaction_type")
-local useReducer = require("ascii-ui.hooks.use_reducer")
+local useState = require("ascii-ui.hooks.use_state")
 
 local function compact(t)
 	return vim.iter(t)
@@ -10,52 +10,6 @@ local function compact(t)
 			return item ~= nil
 		end)
 		:totable()
-end
-
---- @param props? { title?: string, value?: integer, config?: ascii-ui.Config }
----@return ascii-ui.BufferLine[]
-local function render(props, config)
-	local _props, dispatch = useReducer(function(state, action)
-		if action == "move_right" then
-			state.value = math.min(state.value + 10, 100)
-		end
-
-		if action == "move_left" then
-			state.value = math.max(state.value - 10, 0)
-		end
-
-		return state
-	end, props)
-
-	local cc = config.characters
-
-	local interactions = {
-		[interaction_type.CURSOR_MOVE_RIGHT] = function()
-			dispatch("move_right")
-		end,
-		[interaction_type.CURSOR_MOVE_LEFT] = function()
-			dispatch("move_left")
-		end,
-	}
-
-	props = _props
-
-	local width = 10
-	local knob_position = math.floor(width * props.value / 100)
-
-	return compact({
-		props.title ~= "" and Element:new(props.title, false):wrap() or nil,
-		Bufferline.new(
-			Element:new({
-				content = cc.horizontal:rep(knob_position),
-				interactions = interactions,
-			}),
-
-			Element:new({ content = cc.thumb, is_focusable = true, interactions = interactions }),
-			Element:new({ content = cc.horizontal:rep(width - knob_position), interactions = interactions }),
-			Element:new({ content = (" %d%%"):format(props.value) })
-		),
-	})
 end
 
 --- @param props? { title?: string, value?: integer }
@@ -66,7 +20,38 @@ local function Slider(props)
 	props.title = props.title or ""
 
 	return function()
-		return render(props, config)
+		local cc = config.characters
+		local value, setValue = useState(props.value or 0)
+
+		local interactions = {
+			[interaction_type.CURSOR_MOVE_RIGHT] = function()
+				setValue(function(v)
+					return math.min(v + 10, 100)
+				end)
+			end,
+			[interaction_type.CURSOR_MOVE_LEFT] = function()
+				setValue(function(v)
+					return math.max(v - 10, 0)
+				end)
+			end,
+		}
+
+		local width = 10
+		local knob_position = math.floor(width * value / 100)
+
+		return compact({
+			props.title ~= "" and Element:new(props.title, false):wrap() or nil,
+			Bufferline.new(
+				Element:new({
+					content = cc.horizontal:rep(knob_position),
+					interactions = interactions,
+				}),
+
+				Element:new({ content = cc.thumb, is_focusable = true, interactions = interactions }),
+				Element:new({ content = cc.horizontal:rep(width - knob_position), interactions = interactions }),
+				Element:new({ content = (" %d%%"):format(value) })
+			),
+		})
 	end
 end
 

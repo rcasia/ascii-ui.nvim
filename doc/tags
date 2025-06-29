@@ -110,7 +110,6 @@ levels	ascii-ui.txt	/*levels*
 merge_bufferlines()	ascii-ui.txt	/*merge_bufferlines()*
 performUnitOfWork()	ascii-ui.txt	/*performUnitOfWork()*
 reconcileChildren()	ascii-ui.txt	/*reconcileChildren()*
-render()	ascii-ui.txt	/*render()*
 rerender()	ascii-ui.txt	/*rerender()*
 shallow_equal()	ascii-ui.txt	/*shallow_equal()*
 useEffect()	ascii-ui.txt	/*useEffect()*

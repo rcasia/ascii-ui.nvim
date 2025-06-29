@@ -379,13 +379,6 @@ Genera una clave única basada en una tabla
 
 ==============================================================================
 ------------------------------------------------------------------------------
-                                                                      *render()*
-                          `render`({props}, {config})
-@param props? { title?: string, value?: integer, config?: ascii-ui.Config }
-Return ~
-`(ascii)`-ui.BufferLine[]
-
-------------------------------------------------------------------------------
                                                                       *Slider()*
                                `Slider`({props})
 @param props? { title?: string, value?: integer }
@@ -650,10 +643,11 @@ end
 ```
 
 @generic T
-@param reducer fun(value: T, action: ascii-ui.ReducerAction): T The reducer function to compute new state.
+@generic A
+@param reducer fun(value: T, action: A): T The reducer function to compute new state.
 @param value T The initial state value.
 @return T value The current state value.
-@return fun(action: ascii-ui.ReducerAction) dispatch Dispatches an action to update the state.
+@return fun(action: A) dispatch Dispatches an action to update the state.
 
 
 ==============================================================================
