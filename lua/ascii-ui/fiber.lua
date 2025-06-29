@@ -192,9 +192,8 @@ end
 --- @param fiber ascii-ui.FiberNode
 --- @param buffer ascii-ui.Buffer
 local function commitWork(fiber, buffer)
-	if not fiber then
-		return
-	end
+	assert(fiber, "Fiber cannot be nil")
+
 	if fiber:is_leaf() then
 		buffer:add(fiber:get_line())
 		return
