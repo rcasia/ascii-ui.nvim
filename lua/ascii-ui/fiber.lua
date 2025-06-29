@@ -307,7 +307,7 @@ end
 
 --- @param fn function
 --- @param deps? any[]
-local function useEffect(fn, deps)
+local function _useEffect(fn, deps)
 	assert(currentFiber, "cannot call useEffect out of the component scope")
 	assert(type(deps) == "nil" or vim.isarray(deps), "deps should be an array or nil")
 
@@ -389,5 +389,5 @@ return {
 	debugPrint = debugPrint,
 	-- hooks
 	useState = useState,
-	useEffect = useEffect,
+	_useEffect = _useEffect,
 }

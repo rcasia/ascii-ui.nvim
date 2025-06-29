@@ -1,7 +1,6 @@
 --- ascii-ui.hooks.useState() *ascii-ui.hooks.useState()*
 
-local EventListener = require("ascii-ui.events")
-local logger = require("ascii-ui.logger")
+local fiber = require("ascii-ui.fiber")
 
 ---
 --- Provides local state management within a component.
@@ -28,23 +27,7 @@ local logger = require("ascii-ui.logger")
 --- @return fun(): T getValue Returns the current state value when called.
 --- @return fun(value: T | fun(value: T): T) setValue Sets the state to a new value and triggers a state change event.
 local useState = function(value)
-	logger.debug("useState created")
-
-	local setValue = function(new_value)
-		if type(new_value) == "function" then
-			value = new_value(value)
-		else
-			value = new_value
-		end
-
-		EventListener:trigger("state_change")
-	end
-
-	local getValue = function()
-		return value
-	end
-
-	return getValue, setValue
+	return fiber.useState(value)
 end
 
 return useState

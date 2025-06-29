@@ -1,6 +1,6 @@
 --- ascii-ui.hooks.useEffect() *ascii-ui.hooks.useEffect()*
 
-local EventListener = require("ascii-ui.events")
+local fiber = require("ascii-ui.fiber")
 
 ---
 --- Runs a side-effect function after component render and when specified observed values change, inside an ascii-ui component.
@@ -29,40 +29,8 @@ local EventListener = require("ascii-ui.events")
 ---
 --- @param fn function The callback to run as a side effect.
 --- @param observed_values? function[] Optional table of state getter functions to observe. If provided, the effect re-runs only when any observed value changes.
-local useEffectDeprecated = function(fn, observed_values)
-	local clean_up_fn = fn()
-
-	EventListener:listen("ui_close", function()
-		if type(clean_up_fn) == "function" then
-			clean_up_fn()
-		end
-	end)
-
-	if not observed_values then
-		return
-	end
-
-	local last_seen_values = vim.iter(observed_values)
-		:map(function(observed_value)
-			return observed_value()
-		end)
-		:totable()
-
-	EventListener:listen("state_change", function()
-		local current_seen_values = vim.iter(observed_values)
-			:map(function(observed_value)
-				return observed_value()
-			end)
-			:totable()
-
-		local has_changes = not vim.deep_equal(last_seen_values, current_seen_values)
-		if has_changes then
-			clean_up_fn = fn()
-			if type(clean_up_fn) == "function" then
-				clean_up_fn()
-			end
-		end
-	end)
+local useEffect = function(fn, observed_values)
+	return fiber._useEffect(fn, observed_values)
 end
 
-return useEffectDeprecated
+return useEffect

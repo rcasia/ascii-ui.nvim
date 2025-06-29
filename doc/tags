@@ -89,6 +89,7 @@ Window:move_to()	ascii-ui.txt	/*Window:move_to()*
 Window:position()	ascii-ui.txt	/*Window:position()*
 Window:update()	ascii-ui.txt	/*Window:update()*
 _	ascii-ui.txt	/*_*
+_useEffect()	ascii-ui.txt	/*_useEffect()*
 ascii-ui.hooks.useEffect()	ascii-ui.txt	/*ascii-ui.hooks.useEffect()*
 ascii-ui.hooks.useFunctionRegistry()	ascii-ui.txt	/*ascii-ui.hooks.useFunctionRegistry()*
 ascii-ui.hooks.useReducer()	ascii-ui.txt	/*ascii-ui.hooks.useReducer()*
@@ -113,7 +114,6 @@ render()	ascii-ui.txt	/*render()*
 rerender()	ascii-ui.txt	/*rerender()*
 shallow_equal()	ascii-ui.txt	/*shallow_equal()*
 useEffect()	ascii-ui.txt	/*useEffect()*
-useEffectDeprecated()	ascii-ui.txt	/*useEffectDeprecated()*
 useFunctionRegistry()	ascii-ui.txt	/*useFunctionRegistry()*
 useReducer()	ascii-ui.txt	/*useReducer()*
 useState()	ascii-ui.txt	/*useState()*

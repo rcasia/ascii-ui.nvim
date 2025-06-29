@@ -661,8 +661,8 @@ end
 ascii-ui.hooks.useEffect() *ascii-ui.hooks.useEffect()*
 
 ------------------------------------------------------------------------------
-                                                         *useEffectDeprecated()*
-                 `useEffectDeprecated`({fn}, {observed_values})
+                                                                   *useEffect()*
+                      `useEffect`({fn}, {observed_values})
 
 Runs a side-effect function after component render and when specified observed values change, inside an ascii-ui component.
 
@@ -782,8 +782,8 @@ Re-renderiza el árbol de fibers a partir de la raíz dada
 @return ascii-ui.Buffer buffer con las líneas renderizadas
 
 ------------------------------------------------------------------------------
-                                                                   *useEffect()*
-                           `useEffect`({fn}, {deps})
+                                                                  *_useEffect()*
+                           `_useEffect`({fn}, {deps})
 @param fn function
 @param deps? any[]
 

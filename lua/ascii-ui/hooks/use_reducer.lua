@@ -1,7 +1,7 @@
 --- ascii-ui.hooks.useReducer() *ascii-ui.hooks.useReducer()*
 
 local logger = require("ascii-ui.logger")
-local useState = require("ascii-ui.fiber").useState
+local useState = require("ascii-ui.hooks.use_state")
 
 --- @alias ascii-ui.ReducerAction {type: string, params: any}
 

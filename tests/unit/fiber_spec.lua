@@ -8,7 +8,7 @@ local FiberNode = require("ascii-ui.fibernode")
 local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 local useState = fiber.useState
-local useEffect = fiber.useEffect
+local useEffect = fiber._useEffect
 local logger = require("ascii-ui.logger")
 
 local MyComponent = ui.createComponent("MyComponent", function(props)
