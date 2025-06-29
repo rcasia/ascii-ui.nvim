@@ -21,7 +21,7 @@ describe("useEffect", function()
 		assert(useTimer_invocations <= 100, "useTimer can only be called once per component render")
 		useTimer_invocations = useTimer_invocations + 1
 		local setInterval = function(callback, interval)
-			return vim.loop.new_timer():start(interval, interval, function()
+			return vim.uv.new_timer():start(interval, interval, function()
 				callback()
 			end)
 		end

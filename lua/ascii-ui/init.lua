@@ -25,7 +25,7 @@ local AsciiUI = {
 ---@param AppComponent ascii-ui.FunctionalComponent
 ---@return integer bufnr
 function AsciiUI.mount(AppComponent)
-	local start = vim.loop.hrtime()
+	local start = vim.uv.hrtime()
 	logger.info("------------------")
 	logger.info("Mounting component")
 	logger.info("------------------")
@@ -49,7 +49,7 @@ function AsciiUI.mount(AppComponent)
 	window:update(rendered_buffer)
 
 	EventListener:listen("state_change", function()
-		local rerender_start = vim.loop.hrtime()
+		local rerender_start = vim.uv.hrtime()
 
 		logger.info("Rerendering on state change for window %d and buffer %d", window.winid, window.bufnr)
 		local current_lines_count = rendered_buffer:height()
@@ -81,7 +81,7 @@ function AsciiUI.mount(AppComponent)
 			end
 		end
 
-		local rerender_elapsed_ns = vim.loop.hrtime() - rerender_start
+		local rerender_elapsed_ns = vim.uv.hrtime() - rerender_start
 		logger.info("Rerendering time: %.3f ms", rerender_elapsed_ns / 1e6)
 	end)
 
@@ -197,7 +197,7 @@ function AsciiUI.mount(AppComponent)
 		end,
 	})
 
-	local elapsed_ns = vim.loop.hrtime() - start
+	local elapsed_ns = vim.uv.hrtime() - start
 	logger.info("First render time: %.3f ms", elapsed_ns / 1e6)
 	return window.bufnr
 end
