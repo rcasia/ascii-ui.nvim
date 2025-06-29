@@ -112,7 +112,6 @@ reconcileChildren()	ascii-ui.txt	/*reconcileChildren()*
 render()	ascii-ui.txt	/*render()*
 rerender()	ascii-ui.txt	/*rerender()*
 shallow_equal()	ascii-ui.txt	/*shallow_equal()*
-unmount()	ascii-ui.txt	/*unmount()*
 useEffect()	ascii-ui.txt	/*useEffect()*
 useEffectDeprecated()	ascii-ui.txt	/*useEffectDeprecated()*
 useFunctionRegistry()	ascii-ui.txt	/*useFunctionRegistry()*

@@ -753,11 +753,6 @@ Parameters ~
 Debug: Imprime el árbol de Fibers con indentación y valores de hooks
 
 ------------------------------------------------------------------------------
-                                                                     *unmount()*
-                               `unmount`({root})
-@param root ascii-ui.FiberNode
-
-------------------------------------------------------------------------------
                                                            *reconcileChildren()*
                  `reconcileChildren`({parent}, {new_children})
 @param parent ascii-ui.FiberNode

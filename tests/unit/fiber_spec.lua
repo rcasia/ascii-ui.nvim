@@ -218,7 +218,7 @@ describe("Fiber", function()
 		eq({ "mounted" }, log, "solo debería haber corrido el efecto")
 
 		-- Unmount (lo que vamos a implementar)
-		fiber.unmount(root)
+		root:unmount()
 		eq({ "mounted", "unmounted" }, log, "el cleanup debe ejecutarse al unmount")
 	end)
 

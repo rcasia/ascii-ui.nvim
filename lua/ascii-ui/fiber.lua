@@ -49,36 +49,6 @@ local function debugPrint(fiber, print_fn)
 	traverse(fiber, "", true)
 end
 
---- @param root ascii-ui.FiberNode
-local function unmount(root)
-	--- @param fiber ascii-ui.FiberNode
-	local function traverse(fiber)
-		-- 1) Primero descendemos a todos los hijos (post-order)
-		local children = {}
-		local child = fiber.child
-		while child do
-			children[#children + 1] = child
-			child = child.sibling
-		end
-		for _, c in ipairs(children) do
-			traverse(c)
-		end
-
-		-- 2) Luego ejecutamos los cleanups de este fiber en orden inverso (LIFO)
-		if fiber.cleanups then
-			for i = #fiber.cleanups, 1, -1 do
-				local cleanup = fiber.cleanups[i]
-				if type(cleanup) == "function" then
-					cleanup()
-				end
-			end
-			-- fiber.cleanups = {}
-		end
-	end
-
-	traverse(root)
-end
-
 --- @param parent ascii-ui.FiberNode
 --- @param new_children ascii-ui.FiberNode[]
 local function reconcileChildren(parent, new_children)
@@ -413,7 +383,6 @@ end
 return {
 	render = render,
 	rerender = rerender,
-	unmount = unmount,
 	workLoop = workLoop,
 	performUnitOfWork = performUnitOfWork,
 	reconcileChildren = reconcileChildren,

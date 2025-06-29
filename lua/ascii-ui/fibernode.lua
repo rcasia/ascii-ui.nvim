@@ -318,4 +318,32 @@ function FiberNode:add_cleanup(cu)
 	self.pendingCleanups[#self.pendingCleanups + 1] = cu
 end
 
+function FiberNode:unmount()
+	--- @param fiber ascii-ui.FiberNode
+	local function traverse(fiber)
+		-- 1) Primero descendemos a todos los hijos (post-order)
+		local children = {}
+		local child = fiber.child
+		while child do
+			children[#children + 1] = child
+			child = child.sibling
+		end
+		for _, c in ipairs(children) do
+			traverse(c)
+		end
+
+		-- 2) Luego ejecutamos los cleanups de este fiber en orden inverso (LIFO)
+		if fiber.cleanups then
+			for i = #fiber.cleanups, 1, -1 do
+				local cleanup = fiber.cleanups[i]
+				if type(cleanup) == "function" then
+					cleanup()
+				end
+			end
+		end
+	end
+
+	traverse(self)
+end
+
 return FiberNode
