@@ -38,7 +38,7 @@ local function render(props, config)
 		end,
 	}
 
-	props = _props()
+	props = _props
 
 	local width = 10
 	local knob_position = math.floor(width * props.value / 100)

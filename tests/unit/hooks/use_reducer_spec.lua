@@ -13,11 +13,11 @@ describe("useReducer", function()
 			return s + (a == "inc" and 1 or -1)
 		end
 
-		local get, dispatch
+		local value, dispatch
 		local C = ui.createComponent("C", function()
 			return function()
-				get, dispatch = useReducer(reducer, 5)
-				return { Element:new({ content = tostring(get()) }):wrap() }
+				value, dispatch = useReducer(reducer, 5)
+				return { Element:new({ content = tostring(value) }):wrap() }
 			end
 		end)
 

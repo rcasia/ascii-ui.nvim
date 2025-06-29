@@ -47,7 +47,7 @@ local function Select(props)
 			return new_options
 		end, from(props.options))
 
-		local bufferlines = vim.iter(options())
+		local bufferlines = vim.iter(options)
 			:map(function(option)
 				local content, highlight
 

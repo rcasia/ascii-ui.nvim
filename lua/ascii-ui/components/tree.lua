@@ -26,7 +26,7 @@ local function Tree(props)
 	return function()
 		local is_expanded, set_expanded = useState(props.tree.expanded)
 		local toggle_expanded = function()
-			set_expanded(not is_expanded())
+			set_expanded(not is_expanded)
 		end
 		props.level = props.level or 0
 		props.has_siblings = props.has_siblings or false
@@ -52,7 +52,7 @@ local function Tree(props)
 			}
 		end
 
-		if not is_expanded() then
+		if not is_expanded then
 			-- if node is not expanded, render only the node text
 			local prefix = props.is_last and "╰─ " or "├─ "
 			return {

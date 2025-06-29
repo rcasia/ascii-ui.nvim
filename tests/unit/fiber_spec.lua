@@ -78,8 +78,8 @@ describe("Fiber", function()
 				count, setCount = useState(0)
 				active, setActive = useState(false)
 				return {
-					Element:new({ content = "c:" .. count() }):wrap(),
-					Element:new({ content = "b:" .. tostring(active()) }):wrap(),
+					Element:new({ content = "c:" .. count }):wrap(),
+					Element:new({ content = "b:" .. tostring(active) }):wrap(),
 				}
 			end
 		end, {})
@@ -133,9 +133,9 @@ describe("Fiber", function()
 				-- efecto con arreglo de deps = { count() }
 				useEffect(function()
 					-- registramos cada ejecución junto con el valor actual de count
-					runs[#runs + 1] = count()
-				end, { count() })
-				return { Element:new({ content = tostring(count()) }):wrap() }
+					runs[#runs + 1] = count
+				end, { count })
+				return { Element:new({ content = tostring(count) }):wrap() }
 			end
 		end, {})
 
@@ -172,14 +172,14 @@ describe("Fiber", function()
 
 				useEffect(function()
 					-- efecto: registramos la ejecución
-					logs[#logs + 1] = "run:" .. count()
+					logs[#logs + 1] = "run:" .. count
 					return function()
 						-- cleanup: registramos también
-						logs[#logs + 1] = "cleanup:" .. count()
+						logs[#logs + 1] = "cleanup:" .. count
 					end
-				end, { count() })
+				end, { count })
 
-				return { Element:new({ content = tostring(count()) }):wrap() }
+				return { Element:new({ content = tostring(count) }):wrap() }
 			end
 		end, {})
 
@@ -276,7 +276,7 @@ describe("Fiber", function()
 						log[#log + 1] = "cleanup"
 					end
 				end, {}) -- deps vacías
-				return { Element:new({ content = tostring(val()) }):wrap() }
+				return { Element:new({ content = tostring(val) }):wrap() }
 			end
 		end, {})
 
@@ -298,7 +298,7 @@ describe("Fiber", function()
 			local ChildB = ui.createComponent("ChildB", function()
 				return function()
 					countB, setCountB = useState(0)
-					return { Element:new({ content = "B:" .. countB() }):wrap() }
+					return { Element:new({ content = "B:" .. countB }):wrap() }
 				end
 			end, {})
 
@@ -306,7 +306,7 @@ describe("Fiber", function()
 			local ChildC = ui.createComponent("ChildC", function()
 				return function()
 					countC, setCountC = useState(0)
-					return { Element:new({ content = "C:" .. countC() }):wrap() }
+					return { Element:new({ content = "C:" .. countC }):wrap() }
 				end
 			end, {})
 
@@ -321,7 +321,7 @@ describe("Fiber", function()
 						ChildA(),
 						ChildB(),
 						ChildC(),
-						MyComponent({ content = "App:" .. tostring(countApp()) })
+						MyComponent({ content = "App:" .. tostring(countApp) })
 					)
 				end
 			end)

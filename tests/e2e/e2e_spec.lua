@@ -89,7 +89,7 @@ describe("ascii-ui", function()
 			local App = ui.createComponent("App", function()
 				return function()
 					content, setContent = useState("hola mundo")
-					return Paragraph({ content = content() })
+					return Paragraph({ content = content })
 				end
 			end)
 			local bufnr = ui.mount(App)
@@ -106,7 +106,7 @@ describe("ascii-ui", function()
 					content, setContent = useState("hola mundo")
 					return {
 						Element:new({
-							content = content(),
+							content = content,
 							interactions = {
 								[interaction_type.CURSOR_MOVE_RIGHT] = function()
 									setContent("right")
@@ -137,7 +137,7 @@ describe("ascii-ui", function()
 				content, setContent = useState("hola mundo")
 				return {
 					Element:new({
-						content = content(),
+						content = content,
 						interactions = {
 							[interaction_type.CURSOR_MOVE_RIGHT] = function()
 								setContent("right")

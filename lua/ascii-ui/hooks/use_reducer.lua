@@ -32,14 +32,14 @@ local useState = require("ascii-ui.hooks.use_state")
 --- @generic T
 --- @param reducer fun(value: T, action: ascii-ui.ReducerAction): T The reducer function to compute new state.
 --- @param value T The initial state value.
---- @return fun(): T getValue Returns the current state value when called.
+--- @return T value The current state value.
 --- @return fun(action: ascii-ui.ReducerAction) dispatch Dispatches an action to update the state.
 local useReducer = function(reducer, value)
 	logger.debug("useReducer created")
 	local state, setState = useState(value)
 
 	return state, function(action)
-		local new_state = reducer(state(), action)
+		local new_state = reducer(state, action)
 		setState(new_state)
 	end
 end

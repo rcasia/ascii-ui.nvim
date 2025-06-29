@@ -302,7 +302,7 @@ local function useState(initial)
 	end
 
 	fiber.hookIndex = idx + 1
-	return get, set
+	return get(), set
 end
 
 --- @param fn function
