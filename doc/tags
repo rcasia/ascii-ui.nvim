@@ -109,9 +109,9 @@ generateKey()	ascii-ui.txt	/*generateKey()*
 levels	ascii-ui.txt	/*levels*
 merge_bufferlines()	ascii-ui.txt	/*merge_bufferlines()*
 performUnitOfWork()	ascii-ui.txt	/*performUnitOfWork()*
+props_are_equal()	ascii-ui.txt	/*props_are_equal()*
 reconcileChildren()	ascii-ui.txt	/*reconcileChildren()*
 rerender()	ascii-ui.txt	/*rerender()*
-shallow_equal()	ascii-ui.txt	/*shallow_equal()*
 useEffect()	ascii-ui.txt	/*useEffect()*
 useFunctionRegistry()	ascii-ui.txt	/*useFunctionRegistry()*
 useReducer()	ascii-ui.txt	/*useReducer()*

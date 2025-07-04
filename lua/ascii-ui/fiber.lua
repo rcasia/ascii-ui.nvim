@@ -89,9 +89,10 @@ local function reconcileChildren(parent, new_children)
 			new_child = old
 		else
 			logger.debug(
-				"⛓️‍💥 -> ⛓️ new link %s -> %s. Because [is_empty=%s, is_same=%s]",
+				"⛓️‍💥 -> ⛓️ new link %s -> %s. Because [not_leaf=%s, is_empty=%s, is_same=%s]",
 				parent.type,
 				node.type,
+				not node:is_leaf(),
 				vim.tbl_isempty(node.props),
 				node:is_same(old)
 			)
@@ -215,6 +216,7 @@ local function workLoop(root)
 		nextFiber = nextFiber:next()
 	end
 end
+
 -- helper de alto nivel: recibe un componente y devuelve las líneas del buffer
 local function render(Component)
 	logger.debug("📺 FIBER.RENDER")

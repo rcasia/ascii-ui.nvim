@@ -233,13 +233,6 @@ Return ~
 @return boolean
 
 ------------------------------------------------------------------------------
-                                                               *shallow_equal()*
-                          `shallow_equal`({t1}, {t2})
-@param t1 table
-@param t2 table
-@return boolean
-
-------------------------------------------------------------------------------
                                                            *FiberNode:is_same()*
                           `FiberNode:is_same`({other})
 @param other ascii-ui.FiberNode
@@ -343,6 +336,17 @@ hooks or effects.
 
 ==============================================================================
 ------------------------------------------------------------------------------
+                                                             *props_are_equal()*
+                         `props_are_equal`({t1}, {t2})
+This is used for comparing props
+It will exclude the functions from the comparison
+@param t1 table
+@param t2 table
+@return boolean
+
+
+==============================================================================
+------------------------------------------------------------------------------
                                                                  *generateKey()*
                               `generateKey`({tbl})
 Genera una clave única basada en una tabla
@@ -441,7 +445,6 @@ Class ~
 Fields ~
 {id} `(integer)`
 {name} `(string)`
-{selected} `(boolean)`
 
 ------------------------------------------------------------------------------
                                                                         *from()*
