@@ -79,6 +79,24 @@ end
 function FiberNode:is_same(other)
 	-- assert(FiberNode.is_node(other), "other should be node to be able to compare. Found: " .. vim.inspect(other))
 	assert(other, "other cannot be nil")
+
+	if not FiberNode.is_node(other) then
+		logger.debug("is not the same because other is not a FiberNode")
+		return false
+	end
+
+	-- para nodos hoja compara la línea renderizada
+	if
+		self:is_leaf()
+		--
+		and other:is_leaf()
+		--
+		and self:get_line():to_string() ~= other:get_line():to_string()
+	then
+		logger.debug("is not the same because leaf line changed")
+		return false
+	end
+
 	if vim.isarray(self.props) and vim.isarray(other.props) then
 		--- @param node ascii-ui.FiberNode
 		for i, node in ipairs(self.props) do
@@ -280,6 +298,7 @@ end
 function FiberNode:add_effect(eff, eff_type)
 	logger.debug("Adding effect for fiber %s", self.type)
 	if eff_type == "ONCE" then
+		logger.debug("this effect is once")
 		self.pendingEffects[#self.pendingEffects + 1] = eff
 	end
 	if eff_type == "REPEATING" then
@@ -321,6 +340,31 @@ function FiberNode:unmount()
 	end
 
 	traverse(self)
+end
+
+--- @return ascii-ui.FiberNode[]
+function FiberNode:to_list()
+	return vim.iter(self:iter())
+		:map(function(node)
+			return vim.deepcopy(node)
+		end)
+		:totable()
+end
+
+--- @return function[]
+function FiberNode:pending_effects()
+	return vim
+		.iter(self:to_list())
+		--- @param node ascii-ui.FiberNode
+		:map(function(node)
+			return node.pendingEffects
+		end)
+		:flatten()
+		:totable()
+end
+
+function FiberNode:has_pending_effects()
+	return #self:pending_effects() > 0
 end
 
 return FiberNode

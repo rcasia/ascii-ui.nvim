@@ -47,6 +47,8 @@ FiberNode:get_line()	ascii-ui.txt	/*FiberNode:get_line()*
 FiberNode:is_same()	ascii-ui.txt	/*FiberNode:is_same()*
 FiberNode:iter()	ascii-ui.txt	/*FiberNode:iter()*
 FiberNode:next()	ascii-ui.txt	/*FiberNode:next()*
+FiberNode:pending_effects()	ascii-ui.txt	/*FiberNode:pending_effects()*
+FiberNode:to_list()	ascii-ui.txt	/*FiberNode:to_list()*
 FiberNode:unwrap_closure()	ascii-ui.txt	/*FiberNode:unwrap_closure()*
 For()	ascii-ui.txt	/*For()*
 HexaColor	ascii-ui.txt	/*HexaColor*
