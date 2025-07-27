@@ -1,5 +1,8 @@
+local Cursor = require("ascii-ui.cursor")
 local highlights = require("ascii-ui.highlights")
+local initialize_window_keymaps = require("ascii-ui.window.keymaps")
 local logger = require("ascii-ui.logger")
+
 ---@alias ascii-ui.WindowOpts { width?: integer, height?: integer }
 
 ---@class ascii-ui.Window
@@ -11,12 +14,13 @@ local Window = {
 	---@type ascii-ui.WindowOpts
 	default_opts = { width = 40, height = 20 },
 }
+Window.__index = Window
 
 ---@param opts? ascii-ui.WindowOpts
 ---@return ascii-ui.Window
-function Window:new(opts)
+function Window.new(opts)
 	opts = opts or {}
-	opts = vim.tbl_extend("force", self.default_opts, opts)
+	opts = vim.tbl_extend("force", Window.default_opts, opts)
 
 	-- set default color
 	local hl = vim.api.nvim_get_hl(0, { name = "Normal" })
@@ -35,8 +39,7 @@ function Window:new(opts)
 		edits_enabled = false,
 	}
 
-	setmetatable(state, self)
-	self.__index = self
+	setmetatable(state, Window)
 
 	return state
 end
@@ -68,23 +71,58 @@ function Window:open()
 
 	self.winid = win
 	self.bufnr = buf
+
+	initialize_window_keymaps(self)
+end
+
+--- Get the position of the window
+--- @return ascii-ui.Position
+function Window:position()
+	local pos = vim.api.nvim_win_get_position(self.winid)
+	return {
+		line = pos[1],
+		col = pos[2],
+	}
+end
+
+--- Move the window to a specific position
+--- @param position ascii-ui.Position
+function Window:move_to(position)
+	if self:is_close() then
+		error("Cannot move window: window or buffer is not open")
+	end
+	vim.api.nvim_win_set_config(self.winid, {
+		relative = "editor",
+		row = position.line,
+		col = position.col,
+	})
 end
 
 function Window:enable_edits()
-	logger.debug("Window/Buffer edits are enabled")
+	if self:is_close() then
+		error("Cannot enable edits: window or buffer is not open")
+	end
+	logger.debug("Edits are enabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = true
 	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
 end
 
 function Window:disable_edits()
-	logger.debug("Window/Buffer edits are disabled")
+	if self:is_close() then
+		error("Cannot disable edits: window or buffer is not open")
+	end
+	logger.debug("Edits are disabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = false
 	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
 end
 
 ---@return boolean
 function Window:is_open()
-	return self.winid ~= nil and self.bufnr ~= nil
+	return self.winid ~= nil or self.bufnr ~= nil
+end
+
+function Window:is_close()
+	return not self:is_open()
 end
 
 function Window:close()
@@ -122,12 +160,13 @@ function Window:update(buffer)
 		-- adjust scroll
 		vim.api.nvim_win_call(0, function()
 			local win = vim.api.nvim_get_current_win()
-			local curpos = vim.api.nvim_win_get_cursor(win)
+			local curpos = Cursor.current_position()
 
 			-- Move cursor to top, scroll, restore
 			vim.api.nvim_win_set_cursor(win, { 1, 0 })
+			Cursor.move_to({ line = 1, col = 0 }, win)
 			vim.cmd("normal! zt")
-			vim.api.nvim_win_set_cursor(win, curpos)
+			Cursor.move_to(curpos, win)
 		end)
 
 		-- coloring
@@ -154,6 +193,13 @@ function Window:update(buffer)
 
 		apply_highlight()
 	end)
+end
+
+--- @return boolean is_focused
+function Window:is_focused()
+	local cur_win = vim.api.nvim_get_current_win()
+
+	return self.winid == cur_win
 end
 
 return Window

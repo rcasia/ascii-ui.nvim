@@ -22,9 +22,9 @@ describe("Cursor", function()
 	end)
 
 	it("detects south movement", function()
-		local event_recieved = false
+		local event_received = false
 		EventListener:listen("CursorMovedSouth", function()
-			event_recieved = true
+			event_received = true
 		end)
 		mocked_cursor_position = { line = 1, col = 1 }
 		Cursor.trigger_move_event()
@@ -32,13 +32,13 @@ describe("Cursor", function()
 		mocked_cursor_position = { line = 2, col = 1 }
 		Cursor.trigger_move_event()
 
-		eq(true, event_recieved)
+		eq(true, event_received)
 	end)
 
 	it("detects north movement", function()
-		local event_recieved = false
+		local event_received = false
 		EventListener:listen("CursorMovedNorth", function()
-			event_recieved = true
+			event_received = true
 		end)
 		mocked_cursor_position = { line = 2, col = 1 }
 		Cursor.trigger_move_event()
@@ -46,13 +46,13 @@ describe("Cursor", function()
 		mocked_cursor_position = { line = 1, col = 1 }
 		Cursor.trigger_move_event()
 
-		eq(true, event_recieved)
+		eq(true, event_received)
 	end)
 
 	it("detects EAST movement", function()
-		local event_recieved = false
+		local event_received = false
 		EventListener:listen("CursorMovedEast", function()
-			event_recieved = true
+			event_received = true
 		end)
 		mocked_cursor_position = { line = 1, col = 1 }
 		Cursor.trigger_move_event()
@@ -60,13 +60,13 @@ describe("Cursor", function()
 		mocked_cursor_position = { line = 1, col = 2 }
 		Cursor.trigger_move_event()
 
-		eq(true, event_recieved)
+		eq(true, event_received)
 	end)
 
 	it("detects WEST movement", function()
-		local event_recieved = false
+		local event_received = false
 		EventListener:listen("CursorMovedWest", function()
-			event_recieved = true
+			event_received = true
 		end)
 		mocked_cursor_position = { line = 1, col = 2 }
 		Cursor.trigger_move_event()
@@ -74,16 +74,16 @@ describe("Cursor", function()
 		mocked_cursor_position = { line = 1, col = 1 }
 		Cursor.trigger_move_event()
 
-		eq(true, event_recieved)
+		eq(true, event_received)
 	end)
 
 	it("does not trigger the move event when moved by Cursor", function()
-		local event_recieved = false
+		local event_received = false
 		--- @type ascii-ui.EventType[]
 		local events = { "CursorMovedSouth", "CursorMovedNorth", "CursorMovedEast", "CursorMovedWest" }
 		for _, event in ipairs(events) do
 			EventListener:listen(event, function()
-				event_recieved = true
+				event_received = true
 			end)
 		end
 
@@ -93,6 +93,6 @@ describe("Cursor", function()
 		mocked_cursor_position = { line = 1, col = 1 }
 		Cursor.trigger_move_event()
 
-		eq(false, event_recieved)
+		eq(false, event_received)
 	end)
 end)

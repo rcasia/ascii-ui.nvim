@@ -1,5 +1,128 @@
 # Changelog
 
+## [0.4.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.3.0...v0.4.0) (2025-07-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* first fiber implementation ([#35](https://github.com/rcasia/ascii-ui.nvim/issues/35))
+
+### Features
+
+* add hexacolor.lua ([8a477fd](https://github.com/rcasia/ascii-ui.nvim/commit/8a477fd56e65dbf37ab686bc3c500c81d6c3e00c))
+* add iter function to FiberNode ([8964264](https://github.com/rcasia/ascii-ui.nvim/commit/89642645226e78477d3b788944c5b380fa286602))
+* add props_are_equal for prop comparison ([9974603](https://github.com/rcasia/ascii-ui.nvim/commit/9974603b38c4c6479789cddaca9c38ea1a192dbe))
+* add static method to recognize Buffer, Bufferline and Segment ([a958d49](https://github.com/rcasia/ascii-ui.nvim/commit/a958d4959c379323b47bd6f120527f46d5be974f))
+* changes on component props are reflected when depending on ancestors hooks ([c005e6a](https://github.com/rcasia/ascii-ui.nvim/commit/c005e6ab848ec2217becc8574a8228aee95f27f4))
+* expose fiber's useState and useEffect ([635a2d9](https://github.com/rcasia/ascii-ui.nvim/commit/635a2d99d613e40e53229e42b6a4fd95f4ac5108))
+* **fibernode:** expand fibernode methods ([01593eb](https://github.com/rcasia/ascii-ui.nvim/commit/01593ebe7e6ce3292014d95c610800b7e9c2807c))
+* first fiber implementation ([#35](https://github.com/rcasia/ascii-ui.nvim/issues/35)) ([32bcd8d](https://github.com/rcasia/ascii-ui.nvim/commit/32bcd8d9f440f6bfebfba661db6f8bc3c65d5b9d))
+* use fiber tags for rerendering control ([126bfc3](https://github.com/rcasia/ascii-ui.nvim/commit/126bfc322c1f4bf37880fc933bd1ceeb5304306d))
+
+
+### Bug Fixes
+
+* avoid infinite rerenders when there a useState.set invocation inside an useEffect ([#39](https://github.com/rcasia/ascii-ui.nvim/issues/39)) ([0522237](https://github.com/rcasia/ascii-ui.nvim/commit/05222371ba152e752760734543c8f043006dc6d7))
+* cursor focuses on last focusable on left ([ab446c0](https://github.com/rcasia/ascii-ui.nvim/commit/ab446c0649a8c5f69e109d67f13d9313785fd0a1))
+* cursor focuses on next focusable on right ([cb507a5](https://github.com/rcasia/ascii-ui.nvim/commit/cb507a52c67b37aea69b7ba7f7056a187df4e086))
+* do not call cleanup when setting value in useState ([43fbca1](https://github.com/rcasia/ascii-ui.nvim/commit/43fbca1ed1164bc91aad2ec1d94404214c189f22))
+* find element when selecting on it by the left edge ([34642e0](https://github.com/rcasia/ascii-ui.nvim/commit/34642e09d1a92ec54be70ce4de5d3754f2c879b1))
+* recognize focusables that are not the first in line ([be7253f](https://github.com/rcasia/ascii-ui.nvim/commit/be7253fa0784ddae5c05281747026bb35f670793))
+* set col count to keep into account utf-32 as before ([4dca51c](https://github.com/rcasia/ascii-ui.nvim/commit/4dca51c372d156217000be079e4182fa2e46a7b4))
+* **slider:** use correct hook for initial value ([7483a53](https://github.com/rcasia/ascii-ui.nvim/commit/7483a534c707f11f1c5e185caa349f68ef5cb671))
+* when cursor cannot go up does not go left anymore ([8170569](https://github.com/rcasia/ascii-ui.nvim/commit/8170569c18f5daa342bb1c5f3dec663ca1ca7a84))
+
+
+### Miscellaneous Chores
+
+* release 0.4.0 ([0df3cbe](https://github.com/rcasia/ascii-ui.nvim/commit/0df3cbe14f2241004b048b1a75ebcd039048b3ad))
+
+## [0.3.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.2.0...v0.3.0) (2025-06-01)
+
+
+### Features
+
+* **dsl:** function references can be passed to components in xml ([064c3af](https://github.com/rcasia/ascii-ui.nvim/commit/064c3afe42c8d426d1747550c6dd9097bdb76b1a))
+* **hooks:** create useFunctionRegistry hook ([52af8e7](https://github.com/rcasia/ascii-ui.nvim/commit/52af8e7b05039e4ec698cf0d6e8e3a3088b4c622))
+* **hooks:** expose api for useEffect and useFunctionRegistry ([7f501fd](https://github.com/rcasia/ascii-ui.nvim/commit/7f501fdc1b71a5c1204cbe8449beb1afd96339ba))
+* **hooks:** useEffect runs clean up function on ui close event ([30de36d](https://github.com/rcasia/ascii-ui.nvim/commit/30de36d92b2bd2f1c07f2dccef74c689173d89a4))
+* **hooks:** useEffect runs clean up function when dependencies change ([b8b75e8](https://github.com/rcasia/ascii-ui.nvim/commit/b8b75e846e0b75cf5a9b47d8e4d8c2066580cc71))
+* **hooks:** useState accepts a function parameter on the setter function ([e62a3c7](https://github.com/rcasia/ascii-ui.nvim/commit/e62a3c78d0a245e0c6dd66c3a1acd8be785d33e7))
+* pass the config in the component closure param ([ede9faa](https://github.com/rcasia/ascii-ui.nvim/commit/ede9faa0f7d9906f388a19194a306b6060907d20))
+* renderer recieves a function that returns a function, bufferlines or a xml string ([a52c4ce](https://github.com/rcasia/ascii-ui.nvim/commit/a52c4ce6b5e9c3ce5f68595b74982b03eb7b6f0a))
+* **segment:** count length taking into account unicode characters ([926a225](https://github.com/rcasia/ascii-ui.nvim/commit/926a225686e6709c730522c628137d4b0daa5a4d))
+* **tree:** created tree component ([e695605](https://github.com/rcasia/ascii-ui.nvim/commit/e6956056dd4e905d896f959b21f8af8566ec59df))
+* **tree:** renders a last leaf node with ending prefix ([593df5c](https://github.com/rcasia/ascii-ui.nvim/commit/593df5cd1f20f3c82ed64d4fae4a85835366fc69))
+* **tree:** renders a tree with only one child ([90b6f68](https://github.com/rcasia/ascii-ui.nvim/commit/90b6f6899294fad568f565c58ba51966671a1562))
+* **tree:** renders a tree with two children ([96d3c34](https://github.com/rcasia/ascii-ui.nvim/commit/96d3c3485c5ab27008a78241bea51ce9f730bcd1))
+* **tree:** renders a tree with two children having a third level ([11133f5](https://github.com/rcasia/ascii-ui.nvim/commit/11133f529807e5073ad1af8a07105a3535bed213))
+* **tree:** renders character to signal there are collapsed nodes ([c969d40](https://github.com/rcasia/ascii-ui.nvim/commit/c969d40b6cc74ee71b55c87352639542d1c84a60))
+* **tree:** renders character to signal there are expanded nodes ([d6f4134](https://github.com/rcasia/ascii-ui.nvim/commit/d6f41340583ba36a1049708ad9eedaf73453136d))
+* **tree:** renders last level one node with space before its children ([73be798](https://github.com/rcasia/ascii-ui.nvim/commit/73be798b1b73602f7b76745fa229e59ed7a39b09))
+* **tree:** set focusable segments in a tree ([adbda8b](https://github.com/rcasia/ascii-ui.nvim/commit/adbda8b1f9b0c420ddc56164590403fb8d28c834))
+* use cursor nvim api functions just in Cursor module ([727c3d6](https://github.com/rcasia/ascii-ui.nvim/commit/727c3d6c75c8aa18835879520aae88124dd94083))
+* **window:** make the floating window draggable ([90ee93f](https://github.com/rcasia/ascii-ui.nvim/commit/90ee93f7d9d0df7dd1ebb25c3d3be149b4208498))
+
+
+### Bug Fixes
+
+* don't listen key interactions when no on ui window ([b82420e](https://github.com/rcasia/ascii-ui.nvim/commit/b82420ea2ff1dceefc30f64636d9ceb4ca32baf5))
+* get current position without counting extra unicode bytes ([11d649f](https://github.com/rcasia/ascii-ui.nvim/commit/11d649fad3253b07f99889c06f6200a43f7062b1))
+* prevent changing modifiable attribute when window has no winid or burnr ([c45bad5](https://github.com/rcasia/ascii-ui.nvim/commit/c45bad5fcdc4d9ffe3e86a59ddb70db338027fe3))
+* remove autocommand when components are unmounted ([a01ada0](https://github.com/rcasia/ascii-ui.nvim/commit/a01ada07938b4f1dde1a49f57f06ffc00300b297)), closes [#25](https://github.com/rcasia/ascii-ui.nvim/issues/25)
+
+
+### Performance Improvements
+
+* throttle window drag updates ([4fc6a69](https://github.com/rcasia/ascii-ui.nvim/commit/4fc6a69df7888f0f3502c5389936c34e1e40ae5c))
+
+## [0.2.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.1.0...v0.2.0) (2025-05-21)
+
+
+### Features
+
+* add component validation on component definition call ([8122350](https://github.com/rcasia/ascii-ui.nvim/commit/8122350da8249e51444b0feef084eec8070def34))
+* Add partial implementation of a DSL ([#9](https://github.com/rcasia/ascii-ui.nvim/issues/9)) ([2d58532](https://github.com/rcasia/ascii-ui.nvim/commit/2d58532e232f148313e06e50f9e34e1e3acfa672))
+* avoid memoize in paragraph and box ([dbb3cb4](https://github.com/rcasia/ascii-ui.nvim/commit/dbb3cb425af1d48e02450ea9e101144a540b471e))
+* **button:** avoid memoization in button as it is not stateful ([eb3fb5c](https://github.com/rcasia/ascii-ui.nvim/commit/eb3fb5cc72f57355fae9762505bb1e2376116c5a))
+* clear event listener when window is closed ([4929826](https://github.com/rcasia/ascii-ui.nvim/commit/49298260453b0a414b87cf97818d02109ed6bd28))
+* create component ([bf58990](https://github.com/rcasia/ascii-ui.nvim/commit/bf58990a27b1d28535c35339b8bc1961fc83a16c))
+* create useEffect hook ([8fcc1b9](https://github.com/rcasia/ascii-ui.nvim/commit/8fcc1b90090d51fe141a751fa16d61a667f1de06))
+* created component for conditional rendering ([c8664aa](https://github.com/rcasia/ascii-ui.nvim/commit/c8664aa13fe2956b106ad95d822944c5c7cca4e6))
+* **cursor:** do not trigger ui event when a movement was caused by Cursor object ([730c636](https://github.com/rcasia/ascii-ui.nvim/commit/730c6367f2ba70beacc0e1e8bafed3c29fc71b2f))
+* **cursor:** trigger ui events when there is a movement ([da82420](https://github.com/rcasia/ascii-ui.nvim/commit/da82420b50cde063b181f15a40efb327f55f602a))
+* enable edits on buffer when focused on input ([1f62369](https://github.com/rcasia/ascii-ui.nvim/commit/1f62369033fc8ebe553fd64420aa23e934edf11b))
+* expose ascii-ui hooks ([900ac8d](https://github.com/rcasia/ascii-ui.nvim/commit/900ac8db55f1078d90ecffa5736c2a1f0db6ddae))
+* expose createComponent function to the public api ([656e1e1](https://github.com/rcasia/ascii-ui.nvim/commit/656e1e13e4d727048fb884dfd1defd1dd850257e))
+* **for:** add example ([d24c8e9](https://github.com/rcasia/ascii-ui.nvim/commit/d24c8e9575ecdfb75a445acc2d9a5cbc1e2038fa))
+* **for:** renders a component by a list of items tranformed ([9c4f03d](https://github.com/rcasia/ascii-ui.nvim/commit/9c4f03d865b0bdc75d7600af9c2642b728575065))
+* **for:** renders a component by a list of props ([c26fdcd](https://github.com/rcasia/ascii-ui.nvim/commit/c26fdcd26207736ff753a2a7bc66d6f7a03b4d08))
+* **for:** renders on list changes ([31c9a09](https://github.com/rcasia/ascii-ui.nvim/commit/31c9a09783076bddff2a3411aee6c7949c37184a))
+* habilitate components to take props either as function or its simple type ([0f32075](https://github.com/rcasia/ascii-ui.nvim/commit/0f320755d7120ce1f0386907e21926b305e87000))
+* **if:** render empty when condition is false and there is no fallback ([293d7de](https://github.com/rcasia/ascii-ui.nvim/commit/293d7de41c151cf5a88f19ce92498bf175bb84c3))
+* **if:** renders fallback when condition is false ([9f46855](https://github.com/rcasia/ascii-ui.nvim/commit/9f4685501f039a972fb5e90e7f50016504e79e3e))
+* init as lux project ([dc5576b](https://github.com/rcasia/ascii-ui.nvim/commit/dc5576bd94d54bcccb7e5e4e219667bc9647e0bc))
+* **input:** input can have an initial value ([07c33c1](https://github.com/rcasia/ascii-ui.nvim/commit/07c33c17c5915271f00f1ef0ed159f02132cc7a6))
+* move cursor to focusable when bufferlines count changes ([06c7061](https://github.com/rcasia/ascii-ui.nvim/commit/06c70610cb722896546d7b30f5443188a7b06694))
+* render Layout component from DSL ([099c906](https://github.com/rcasia/ascii-ui.nvim/commit/099c90601fd4754ff66e4b95372d0ba3cdd0d97e))
+* render multinested Layout from DSL ([f4f6335](https://github.com/rcasia/ascii-ui.nvim/commit/f4f63353ff82c3e164d0ed992abbeb6c44885b39))
+* **row:** created row layout component ([66e7efe](https://github.com/rcasia/ascii-ui.nvim/commit/66e7efe938f534e654f8250419982e0fefe7177d))
+* **row:** renders components respecting the empty space on the left ([67b5a71](https://github.com/rcasia/ascii-ui.nvim/commit/67b5a712e877810ab444c1c4805a407af7b59bd1))
+* **row:** renders row with components having several lines in a row ([c9911e5](https://github.com/rcasia/ascii-ui.nvim/commit/c9911e599c893a0af677e2a56c200eeb99f8b35f))
+* **row:** renders row with respecting components spacing ([c9b5861](https://github.com/rcasia/ascii-ui.nvim/commit/c9b58617a46d4a42575a870f100f8c46d3e2a394))
+* **row:** renders row with several components in a row ([96e60d4](https://github.com/rcasia/ascii-ui.nvim/commit/96e60d48a397289967cb02f62e3f8dca23386862))
+* **useEffect:** does not invoke function when a non observed value changes ([98a4f2f](https://github.com/rcasia/ascii-ui.nvim/commit/98a4f2f0f5bd6e12a1dce7f0e0df0e5646aaa121))
+* **useEffect:** invokes function everytime observed values change ([41efade](https://github.com/rcasia/ascii-ui.nvim/commit/41efade1ff8417e2fb25d556fe15b1991e82c739))
+* **window:** resize to match buffer ([c8bda07](https://github.com/rcasia/ascii-ui.nvim/commit/c8bda07d0080ec483b673c73285d34226506fcf7))
+
+
+### Bug Fixes
+
+* avoid sharing state between components with same props ([ad86a0c](https://github.com/rcasia/ascii-ui.nvim/commit/ad86a0c044cfdbafe49da0caa852238d78e18a5c))
+* **buffer:** make col 0-indexed ([de11905](https://github.com/rcasia/ascii-ui.nvim/commit/de11905c77029c48a1b64a49e4d208927e249073))
+* logger formats only when varargs ([ba22e7e](https://github.com/rcasia/ascii-ui.nvim/commit/ba22e7e941f08c13973d2a88df3d12067de79e66))
+* **win:** adjust scroll when lines are added to the buffer ([d817a87](https://github.com/rcasia/ascii-ui.nvim/commit/d817a877217d006c3fa27105aa81590c91ea877d))
+
 ## [0.1.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.0.1...v0.1.0) (2025-05-09)
 
 

@@ -1,65 +1,65 @@
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.element")
 
 ---@class ascii-ui.BufferLine
----@field elements ascii-ui.Element[]
+---@field elements ascii-ui.Segment[]
 local BufferLine = {}
+BufferLine.__index = BufferLine
 
----@param ... ascii-ui.Element
+---@param ... ascii-ui.Segment | boolean
 ---@return ascii-ui.BufferLine
-function BufferLine:new(...)
-	local elements = { ... }
+function BufferLine.new(...)
+	local elements = vim.iter({ ... })
+		:filter(function(segment)
+			return type(segment) == "table"
+		end)
+		:totable()
 
 	local state = {
 		elements = elements,
 	}
 
-	setmetatable(state, self)
-	self.__index = self
+	setmetatable(state, BufferLine)
 
 	return state
 end
 
----@deprecated
----@return ascii-ui.Element | nil
----@return number col returns 0 when not found
-function BufferLine:find_focusable()
-	assert(self.elements, "bufferline component failed: element cannot be nil")
+--- @param obj any
+function BufferLine.is_bufferline(obj)
+	if
+		type(obj) == "table"
+		--
+		and obj.__index == BufferLine.__index
+	then
+		return true
+	end
 
-	local col = 1
-	---@param element ascii-ui.Element
-	local found = vim.iter(self.elements):find(function(element)
-		if element:is_focusable() == false then
-			col = col + element:len()
-		end
-		return element:is_focusable()
-	end)
-
-	return found, found and col or 0
+	return false
 end
 
----@return number col returns 0 when not found
-function BufferLine:find_focusable2()
-	assert(self.elements, "bufferline component failed: element cannot be nil")
+---@return number[] cols
+function BufferLine:find_focusable()
+	assert(self.elements, "bufferline component failed: segment cannot be nil")
 
 	local col = 0
-	---@param element ascii-ui.Element
-	local found = vim.iter(self.elements):find(function(element)
-		if element:is_focusable() == false then
-			col = col + element:len()
+	local cols = {}
+	---@param segment ascii-ui.Segment
+	vim.iter(self.elements):each(function(segment)
+		if segment:is_focusable() then
+			cols[#cols + 1] = col
 		end
-		return element:is_focusable()
+		col = col + segment:len()
 	end)
 
-	return found and col or -1
+	return cols
 end
 ---@param col number
----@return ascii-ui.Element | nil
+---@return ascii-ui.Segment | nil
 function BufferLine:find_element_by_col(col)
 	local len = 0
-	for _, element in ipairs(self.elements) do
-		len = len + element:len()
-		if len >= col then
-			return element
+	for _, segment in ipairs(self.elements) do
+		len = len + segment:len()
+		if len > col then
+			return segment
 		end
 	end
 
@@ -68,25 +68,69 @@ end
 
 ---@return integer length
 function BufferLine:len()
-	return vim.iter(self.elements):fold(0, function(acc, element)
-		return acc + element:len()
+	return vim.iter(self.elements):fold(0, function(acc, segment)
+		return acc + segment:len()
 	end)
 end
 
 ---@param str string
 function BufferLine.from_string(str)
-	return BufferLine:new(Element:new(str))
+	return BufferLine.new(Segment:new(str))
 end
 
 ---@return string
 function BufferLine:to_string()
 	return vim
 		.iter(self.elements)
-		---@param element ascii-ui.Element
-		:map(function(element)
-			return element:to_string()
+		---@param segment ascii-ui.Segment
+		:map(function(segment)
+			return segment:to_string()
 		end)
 		:join("")
+end
+
+--- @param other_bufferline ascii-ui.BufferLine
+--- @param delimiter? ascii-ui.Segment
+--- @return ascii-ui.BufferLine
+function BufferLine:append(other_bufferline, delimiter)
+	assert(
+		BufferLine.is_bufferline(other_bufferline),
+		("other_bufferline should be of type bufferline but found  %s : %s"):format(
+			type(other_bufferline),
+			vim.inspect(other_bufferline)
+		)
+	)
+
+	local elements = self.elements
+
+	if delimiter then
+		elements[#elements + 1] = delimiter
+	end
+	vim.iter(other_bufferline.elements):each(function(segment)
+		elements[#elements + 1] = segment
+	end)
+
+	return BufferLine.new(unpack(elements))
+end
+
+--- @return boolean
+function BufferLine:is_empty()
+	return #self.elements == 0
+end
+
+--- @return { segment: ascii-ui.Segment, position: ascii-ui.Position }[]
+function BufferLine:focusable_segments(from_line)
+	local col = 0
+	return vim.iter(self.elements)
+		:map(function(segment)
+			local current_col = col
+			col = col + segment:len()
+			return { segment = segment, position = { line = from_line, col = current_col } }
+		end)
+		:filter(function(result)
+			return result.segment:is_focusable()
+		end)
+		:totable()
 end
 
 return BufferLine

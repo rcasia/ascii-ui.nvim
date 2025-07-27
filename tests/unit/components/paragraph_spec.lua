@@ -2,18 +2,16 @@ pcall(require, "luacov")
 ---@module "luassert"
 local eq = assert.are.same
 
-local Buffer = require("ascii-ui.buffer")
 local Paragraph = require("ascii-ui.components.paragraph")
+local renderer = require("ascii-ui.renderer"):new()
+local ui = require("ascii-ui")
 
 describe("Paragraph", function()
 	it("should render", function()
-		local content = "hello world!"
-		local paragraph = Paragraph({ content = content })()
+		local App = ui.createComponent("App", function()
+			return Paragraph({ content = "hello world!" })
+		end)
 
-		---@return string
-		local lines = function()
-			return Buffer:new(unpack(paragraph)):to_string()
-		end
-		eq([[hello world!]], lines())
+		eq([[hello world!]], renderer:render(App):to_string())
 	end)
 end)

@@ -1,13 +1,26 @@
 .PHONY: test
 
 check:
+	# running luacheck...
 	lx check
 
-test:
+	# running doc check...
+	./scripts/check-docs
+
+ifdef GITHUB_ACTIONS
+build:
+	echo "Skipping build in GitHub Actions"
+else
+build:
+	echo "Building project..."
+	lx build
+endif
+
+test: build
 	 bash scripts/test $(filter-out $@, $(MAKECMDGOALS))
 
-busted:
-	eval $(luarocks path --lua-version=5.1 --lua-dir=/opt/lua-5.1.5) &&  busted --run unit
+docs:
+	./scripts/gendocs
 
 %:
 	@:

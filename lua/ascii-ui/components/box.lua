@@ -5,14 +5,13 @@ local createComponent = require("ascii-ui.components.functional-component")
 
 ---@param props ascii-ui.BoxProps
 local function Box(props)
-	props = props or {}
-	props.width = props.width or 15
-	props.height = props.height or 3
-	props.content = props.content or ""
-	local config = props.__config or require("ascii-ui.config")
-	-- TODO: merge custom config with default
-
 	return function()
+		local config = require("ascii-ui.config")
+		props = props or {}
+		props.width = props.width or 15
+		props.height = props.height or 3
+		props.content = props.content or ""
+
 		local cc = config.characters
 		local width = props.width
 
@@ -56,4 +55,4 @@ local function Box(props)
 	end
 end
 
-return createComponent("Box", Box, { avoid_memoize = true })
+return createComponent("Box", Box, { width = "number", height = "number", content = "string", __config = "table" })

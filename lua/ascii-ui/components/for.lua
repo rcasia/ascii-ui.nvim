@@ -13,7 +13,7 @@ local function For(props)
 	local inner_props = props.props or {}
 
 	return function()
-		local items = type(props.items) == "function" and props.items() or props.items
+		local items = props.items
 		if items then
 			inner_props = vim.iter(items)
 				:map(function(item)
@@ -25,14 +25,8 @@ local function For(props)
 				:totable()
 		end
 
-		return vim.iter(inner_props)
-			:map(props.component)
-			:map(function(closure)
-				return closure()
-			end)
-			:flatten()
-			:totable()
+		return vim.iter(inner_props):map(props.component):flatten():totable()
 	end
 end
 
-return createComponent("For", For)
+return createComponent("For", For, { items = "table", props = "table", component = "function", transform = "function" })

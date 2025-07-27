@@ -5,8 +5,7 @@ local Renderer = require("ascii-ui.renderer")
 local eq = assert.are.same
 
 local DummyComponent = require("tests.util.dummy_functional_component")
-local Layout = require("ascii-ui.layout")
-local create_dummy_component = require("tests.util.dummy_component")
+local ui = require("ascii-ui")
 
 describe("renderer", function()
 	local config = {
@@ -22,14 +21,14 @@ describe("renderer", function()
 	local renderer = Renderer:new(config)
 
 	it("should render a component", function()
-		local component = create_dummy_component()
-		eq({ "dummy_render" }, renderer:render(component):to_lines())
+		eq({ "dummy_render" }, renderer:render(DummyComponent):to_lines())
 	end)
 
 	it("should render a custom component", function()
-		local App = function()
-			return Layout(DummyComponent())
-		end
-		eq({ "dummy_render" }, renderer:render(App()):to_lines())
+		local App = ui.createComponent("App", function()
+			-- return Column(DummyComponent())
+			return DummyComponent()
+		end)
+		eq({ "dummy_render" }, renderer:render(App):to_lines())
 	end)
 end)

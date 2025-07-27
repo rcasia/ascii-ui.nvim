@@ -1,41 +1,40 @@
-local M = {}
+local LUX_DIR = ".lux"
+local LUA_VERSION = "5.1"
+local RUNNING_ON_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
-local function tempdir(plugin)
-	if jit.os == "Windows" then
-		return "D:\\tmp\\" .. plugin
+local lux_dependencies = vim.fn.glob(LUX_DIR .. "/" .. LUA_VERSION .. "/**/src", true, true)
+
+local add_to_luapath = function(dir)
+	package.path = table.concat({
+		dir .. "/?.lua",
+		dir .. "/?/init.lua",
+		package.path,
+	}, ";")
+end
+
+-- add project dir first
+add_to_luapath(".")
+
+-- add lux test dependencies
+for _, dir in ipairs(lux_dependencies) do
+	add_to_luapath(dir)
+end
+
+-- if in github actions, add a clone of plenary to the package path
+if RUNNING_ON_ACTIONS then
+	local plenary_path = vim.fn.expand("$GITHUB_WORKSPACE/../plenary.nvim")
+	if vim.fn.isdirectory(plenary_path) == 0 then
+		vim.fn.system({
+			"git",
+			"clone",
+			"https://github.com/nvim-lua/plenary.nvim",
+			plenary_path,
+		})
 	end
-	return ".tests/site/pack/deps/start/" .. plugin
+
+	package.path = table.concat({
+		plenary_path .. "/lua/?.lua",
+		plenary_path .. "/lua/?/init.lua",
+		package.path,
+	}, ";")
 end
-
-local plenary_dir = os.getenv("PLENARY_DIR") or tempdir("plenary.nvim")
-print("Plenary dir: " .. plenary_dir)
-if vim.fn.isdirectory(plenary_dir) == 0 then
-	vim.fn.system({
-		"git",
-		"clone",
-		"https://github.com/nvim-lua/plenary.nvim",
-		plenary_dir,
-	})
-end
-vim.opt.rtp:append(".")
-vim.opt.rtp:append(plenary_dir)
-
-local root_dir = vim.fn.fnamemodify(vim.trim(vim.fn.system("git rev-parse --show-toplevel")), ":p"):gsub("/$", "")
-
-package.path = string.format("%s;%s/?.lua;%s/?/init.lua", package.path, root_dir, root_dir)
-
-vim.opt.packpath:prepend(root_dir .. "/.tests/site")
-
-vim.cmd([[
-  packadd plenary.nvim
-]])
-
-require("plenary.busted")
-
-vim.cmd("runtime plugin/plenary.vim")
-
-local _ = require("ascii-ui")
-local logger = require("ascii-ui.logger")
-logger.set_level("DEBUG")
-
-return M

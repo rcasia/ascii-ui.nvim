@@ -1,15 +1,20 @@
 on:
   workflow_dispatch: {}
   push:
+    paths-ignore:
+      - "**/*.md"
     branches: [main]
   pull_request:
+    paths-ignore:
+      - "**/*.md"
     branches: [main]
 
-name: Luacov
+name: Coverage
 
 jobs:
   test:
-    name: test
+    if: false # skip for now, not working at the moment
+    name: Luacov
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout

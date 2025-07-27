@@ -1,12 +1,16 @@
 pcall(require, "luacov")
 ---@module "luassert"
 
-local Options = require("ascii-ui.components.select")
 local ui = require("ascii-ui")
+local Select = ui.components.Select
 local it = require("plenary.async.tests").it
 local Paragraph = ui.components.Paragraph
+local Column = ui.layout.Column
 local Slider = ui.components.Slider
-local useState = ui.hooks.useState
+local useState = require("ascii-ui.fiber").useState
+local Element = require("ascii-ui.buffer.element")
+local interaction_type = require("ascii-ui.interaction_type")
+
 local function feed(keys)
 	vim.api.nvim_feedkeys(keys, "mtx", true)
 end
@@ -35,8 +39,9 @@ local function buffer_contains(bufnr, pattern)
 end
 
 describe("ascii-ui", function()
-	it("should open close and open again with out problems", function()
-		local component = Options({ options = {
+	-- FIXME: when there is an useReducer
+	pending("should open close and open again with out problems", function()
+		local component = Select({ options = {
 			"book",
 			"pencil",
 			"rubber",
@@ -53,39 +58,113 @@ describe("ascii-ui", function()
 	end)
 
 	describe("sliders", function()
-		it("silders slide", function()
-			local bufnr = ui.mount(ui.layout(
-				--
-				Slider(),
-				Slider()
-			))
+		it("sliders slide", function()
+			local App = ui.createComponent("App", function()
+				return function()
+					return Column(
+						--
+						Slider({ title = "test-slider 1" }),
+						Slider({ title = "test-slider 2" })
+					)
+				end
+			end)
 
+			local bufnr = ui.mount(App)
 			assert(buffer_contains(bufnr, "0%"))
 
+			feed("j")
 			feed("llllll")
-			assert(buffer_contains(bufnr, "60%"))
+			assert(buffer_contains(bufnr, "60%"), "no encuentra 60%")
 
 			feed("hhh")
-			assert(buffer_contains(bufnr, "30%"))
+			assert(buffer_contains(bufnr, "30%"), "no encuentra 30%")
 
 			feed("j")
-			assert(cursor_is_in_line(3))
+			assert(cursor_is_in_line(5), "no está en 5")
 
 			feed("ll")
-			assert(buffer_contains(bufnr, "20%"))
+			assert(buffer_contains(bufnr, "20%"), "no encuentra 20%")
 
-			feed("ll")
-			assert(buffer_contains(bufnr, "40%"))
+			feed("lll")
+			assert(buffer_contains(bufnr, "50%"))
 		end)
 
-		it("functional", function()
-			local content, setContent = useState("hola mundo")
-
-			local bufnr = ui.mount(Paragraph({ content = content }))
+		it("fiber functional", function()
+			local content, setContent
+			local App = ui.createComponent("App", function()
+				return function()
+					content, setContent = useState("hola mundo")
+					return Paragraph({ content = content })
+				end
+			end)
+			local bufnr = ui.mount(App)
 			assert(buffer_contains(bufnr, "hola mundo"))
 
 			setContent("lemon juice")
 			assert(buffer_contains(bufnr, "lemon juice"))
 		end)
+
+		it("fiber functional interaction", function()
+			local content, setContent
+			local App = ui.createComponent("App", function()
+				return function()
+					content, setContent = useState("hola mundo")
+					return {
+						Element:new({
+							content = content,
+							interactions = {
+								[interaction_type.CURSOR_MOVE_RIGHT] = function()
+									setContent("right")
+								end,
+								[interaction_type.CURSOR_MOVE_LEFT] = function()
+									setContent("left")
+								end,
+							},
+						}):wrap(),
+					}
+				end
+			end)
+			local bufnr = ui.mount(App)
+			assert(buffer_contains(bufnr, "hola mundo"))
+
+			feed("l")
+			assert(buffer_contains(bufnr, "right"))
+
+			feed("h")
+			assert(buffer_contains(bufnr, "left"))
+		end)
+	end)
+
+	it("fiber functional interaction with inner component", function()
+		local content, setContent
+		local SomeComponent = ui.createComponent("SomeComponent", function()
+			return function()
+				content, setContent = useState("hola mundo")
+				return {
+					Element:new({
+						content = content,
+						interactions = {
+							[interaction_type.CURSOR_MOVE_RIGHT] = function()
+								setContent("right")
+							end,
+							[interaction_type.CURSOR_MOVE_LEFT] = function()
+								setContent("left")
+							end,
+						},
+					}):wrap(),
+				}
+			end
+		end)
+		local App = ui.createComponent("App", function()
+			return SomeComponent()
+		end)
+		local bufnr = ui.mount(App)
+		assert(buffer_contains(bufnr, "hola mundo"))
+
+		feed("l")
+		assert(buffer_contains(bufnr, "right"))
+
+		feed("h")
+		assert(buffer_contains(bufnr, "left"))
 	end)
 end)

@@ -8,7 +8,6 @@ local ui = require("ascii-ui")
 return ui.createComponent("Input", function(props)
 	props = props or {}
 	props.value = props.value or ""
-
 	return function()
 		return {
 			Element:new({
@@ -20,4 +19,4 @@ return ui.createComponent("Input", function(props)
 			}):wrap(),
 		}
 	end
-end)
+end, { value = "string" })

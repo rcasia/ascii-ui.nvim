@@ -1,6 +1,5 @@
-local logger = require("ascii-ui.logger")
-local nvim_win_get_cursor = vim.api.nvim_win_get_cursor
 local EventListener = require("ascii-ui.events")
+local logger = require("ascii-ui.logger")
 
 --- @class ascii-ui.Cursor
 --- @field buffers table<number, boolean>
@@ -32,8 +31,10 @@ local Cursor = {
 
 --- @return ascii-ui.CursorPosition
 function Cursor.current_position()
-	local pos = nvim_win_get_cursor(0)
-	return { line = pos[1], col = pos[2] }
+	local row, byte_col = unpack(vim.api.nvim_win_get_cursor(0))
+	local line = vim.api.nvim_get_current_line()
+	local visual_col = vim.str_utfindex(line, "utf-32", byte_col)
+	return { line = row, col = visual_col }
 end
 
 function Cursor.trigger_move_event()
@@ -55,9 +56,16 @@ function Cursor.attach_buffer(bufnr)
 	Cursor.buffers[bufnr] = true
 end
 
---- @param position ascii-ui.CursorPosition
-function Cursor.move_to(position)
-	vim.api.nvim_win_set_cursor(0, { position.line, position.col })
+--- @param position ascii-ui.Position
+--- @param winid? integer
+--- @param bufnr? integer
+function Cursor.move_to(position, winid, bufnr)
+	local line = vim.api.nvim_buf_get_lines(bufnr or 0, position.line - 1, position.line, false)[1] or ""
+	local byte_col = vim.str_byteindex(line, "utf-32", position.col)
+
+	logger.debug("TRYING TO SET CURSOR TO (%d, %d)", position.line, byte_col)
+	vim.api.nvim_win_set_cursor(winid or 0, { position.line, byte_col })
+
 	Cursor.last_position = Cursor._current_position or Cursor.current_position()
 	Cursor._current_position = Cursor.current_position()
 end

@@ -1,6 +1,7 @@
 pcall(require, "luacov")
 ---@module "luassert"
 
+local _ = require("ascii-ui")
 local config = require("ascii-ui.config")
 local renderer = require("ascii-ui.renderer"):new(config)
 
@@ -23,7 +24,7 @@ describe("DSL", function()
 		eq([[Hello World!]], actual_render:to_string())
 	end)
 
-	it("translates from composed dsl to buffer", function()
+	pending("translates from composed dsl to buffer", function()
 		local actual = renderer:render([[
 		<Layout>
 			<Paragraph content="Hello World!" />

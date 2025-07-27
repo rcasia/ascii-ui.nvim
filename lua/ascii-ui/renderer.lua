@@ -1,16 +1,21 @@
-local Buffer = require("ascii-ui.buffer")
+local FiberNode = require("ascii-ui.fibernode")
 local dom = require("ascii-ui.lib.dom-handler")
+local fiber = require("ascii-ui.fiber")
+local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
 local xml = require("ascii-ui.lib.xml2lua")
+
 ---@class ascii-ui.Renderer
+--- @field config ascii-ui.Config
 local Renderer = {}
 
 Renderer.component_tags = {}
 
----@param config { characters: { top_left: string, top_right: string,
+---@param config? { characters: { top_left: string, top_right: string,
 --- bottom_left: string, bottom_right: string, horizontal: string, vertical: string } }
 --- @return ascii-ui.Renderer
 function Renderer:new(config)
+	config = config or {}
 	local state = {
 		config = config,
 	}
@@ -21,25 +26,30 @@ function Renderer:new(config)
 	return state
 end
 
----@param renderable ascii-ui.Component | ascii-ui.BufferLine[] | string
+---@param renderable string | fun(config: ascii-ui.Config): ascii-ui.FiberNode[]
 ---@return ascii-ui.Buffer
+---@return ascii-ui.FiberNode?
 function Renderer:render(renderable)
+	if is_callable(renderable) then
+		return fiber.render(renderable)
+	end
+
 	if type(renderable) == "string" then
-		return self:render_xml(renderable)
-	end
-	if vim.isarray(renderable) then
-		return Buffer:new(unpack(renderable))
-	end
-	if type(renderable) == "function" then
-		return Buffer:new(unpack(renderable()))
+		local fibernodes = self:render_xml(renderable)
+		local createComponent = require("ascii-ui.components.functional-component")
+		local Component = createComponent("innerxml", function()
+			return function()
+				return fibernodes
+			end
+		end)
+
+		return fiber.render(Component)
 	end
 
-	assert(renderable.render)
-
-	return Buffer:new(unpack(renderable:render()))
+	error("Cannot render: " .. vim.inspect(renderable))
 end
 
---- @return ascii-ui.BufferLine[]
+--- @return ascii-ui.FiberNode[]
 function Renderer:render_by_tag(tag_name, props, children)
 	logger.info("Rendering tag: " .. tag_name)
 	local instance
@@ -54,23 +64,27 @@ function Renderer:render_by_tag(tag_name, props, children)
 
 		instance = component(unpack(child_components))
 	else
-		local component = self.component_tags[tag_name]
-		if not component then
+		local Component = self.component_tags[tag_name]
+		if not Component then
 			error("Component not found for tag: " .. tag_name)
 		end
 
-		instance = component(props)
+		instance = Component(props)
 	end
 
-	if type(instance) == "function" then
+	if is_callable(instance) then
 		return instance
 	end
 
-	error("not expected")
+	if FiberNode.is_node_list(instance) then
+		return instance
+	end
+
+	error("not expected. found: " .. vim.inspect(instance))
 end
 
 --- @param xml_content string
---- @return ascii-ui.Buffer
+--- @return ascii-ui.FiberNode[]
 function Renderer:render_xml(xml_content)
 	--- @return XmlNode
 	local function xml_parse(dsl)
@@ -87,9 +101,9 @@ function Renderer:render_xml(xml_content)
 
 	local props = result._attr
 
-	local component_closure = self:render_by_tag(tag_name, props, result._children)
+	local component = self:render_by_tag(tag_name, props, result._children)
 
-	return Buffer:new(unpack(component_closure()))
+	return component
 end
 
 return Renderer

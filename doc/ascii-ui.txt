@@ -1,354 +1,1133 @@
-ascii-ui.Buffer                                                *ascii-ui.Buffer*
-
-    Fields: ~
-        {lines}  (ascii-ui.BufferLine[])
-
-
-Buffer:new()                                                        *Buffer:new*
-    @param ...? ascii-ui.BufferLine
-
-    Returns: ~
-        (ascii-ui.Buffer)
-
-
-Buffer:find_focusable()                                  *Buffer:find_focusable*
-
-    Returns: ~
-        (ascii-ui.Element|nil)
-
-
-Buffer:iter_focusables()                                *Buffer:iter_focusables*
-
-    Returns: ~
-        (fun():ascii-ui.Element|nil)
-
-
-Buffer.from_lines({lines})                                   *Buffer.from_lines*
-
-    Parameters: ~
-        {lines}  (string[])
-
-    Returns: ~
-        (ascii-ui.Buffer)
-
-
-Buffer:to_lines()                                              *Buffer:to_lines*
-
-    Returns: ~
-        (string[])
-
-
-Buffer:find_element_by_id({id})                      *Buffer:find_element_by_id*
-
-    Parameters: ~
-        {id}  (string)
-
-    Returns: ~
-        (ascii-ui.Element|nil)
-
-
-                                               *Buffer:find_element_by_position*
-Buffer:find_element_by_position({position})
-
-    Parameters: ~
-        {position}  ({line:integer,col:integer})
-
-    Returns: ~
-        (ascii-ui.Element|nil)
-
-
-ascii-ui.BufferLine                                        *ascii-ui.BufferLine*
-
-    Fields: ~
-        {elements}  (ascii-ui.Element[])
-
-
-BufferLine:new({...})                                           *BufferLine:new*
-
-    Parameters: ~
-        {...}  (ascii-ui.Element)
-
-    Returns: ~
-        (ascii-ui.BufferLine)
-
-
-BufferLine:find_focusable()                          *BufferLine:find_focusable*
-
-    Returns: ~
-        (ascii-ui.Element|nil)
-        ({col:number}|nil)
-
-
-BufferLine:find_element_by_col({col})           *BufferLine:find_element_by_col*
-
-    Parameters: ~
-        {col}  (number)
-
-    Returns: ~
-        (ascii-ui.Element|nil)
-
-
-BufferLine.from_string({str})                           *BufferLine.from_string*
-
-    Parameters: ~
-        {str}  (string)
-
-
-BufferLine:to_string()                                    *BufferLine:to_string*
-
-    Returns: ~
-        (string)
-
-
-ascii-ui.Element                                              *ascii-ui.Element*
-
-
-Element:new({text}, {is_focusable?})                               *Element:new*
-
-    Parameters: ~
-        {text}           (string)
-        {is_focusable?}  (boolean)
-
-    Returns: ~
-        (ascii-ui.Element)
-
-
-Element:len()                                                      *Element:len*
-
-    Returns: ~
-        (integer)
-
-
-Element:to_string()                                          *Element:to_string*
-
-
-Element:is_focusable()                                    *Element:is_focusable*
-
-
-ascii-ui.BoxProps                                            *ascii-ui.BoxProps*
-
-    Type: ~
-        {width:integer,height:integer}
-
-
-ascii-ui.Box : ascii-ui.Component                                 *ascii-ui.Box*
-
-    Fields: ~
-        {props}  (ascii-ui.BoxProps)
-
-
-Box:new({props?})                                                      *Box:new*
-
-    Parameters: ~
-        {props?}  (ascii-ui.BoxProps)
-
-    Returns: ~
-        (ascii-ui.Box)
-
-
-Box:set_child({child})                                           *Box:set_child*
-
-    Parameters: ~
-        {child}  (string)
-
-
-Box:child()                                                          *Box:child*
-
-    Returns: ~
-        (string)
-
-
-Box:has_child()                                                  *Box:has_child*
-
-    Returns: ~
-        (boolean)
-
-
-ascii-ui.Checkbox : ascii-ui.Component                       *ascii-ui.Checkbox*
-
-    Fields: ~
-        {checked}  (boolean)
-        {label}    (string)
-
-
-Checkbox:new({opts?})                                             *Checkbox:new*
-
-    Parameters: ~
-        {opts?}  ({checked?:boolean,label?:string})
-
-    Returns: ~
-        (ascii-ui.Checkbox)
-
-
-Checkbox:toggle()                                              *Checkbox:toggle*
-
-
-Checkbox:is_checked()                                      *Checkbox:is_checked*
-
-
-Checkbox:render()                                              *Checkbox:render*
-
-    Returns: ~
-        (ascii-ui.BufferLine[])
-
-
-ascii-ui.Component                                          *ascii-ui.Component*
-
-    Fields: ~
-        {render}  (fun():ascii-ui.BufferLine[])
-
-
-Component:new()                                                  *Component:new*
-     @return ascii-ui.Component
-
-
-Component:extend()                                            *Component:extend*
-     @generic T
-     @param custom_component T
-     @param props? table<string, any>
-     @return T
-
-
-Component:subscribe()                                      *Component:subscribe*
-     @param cb fun(component: table, key: string, value: any)
-
-
-Component:clear_subscriptions()                  *Component:clear_subscriptions*
-
-
-ascii-ui.OptionsOpts                                      *ascii-ui.OptionsOpts*
-
-    Type: ~
-        {options:string[]}
-
-
-ascii-ui.Options.Item                                    *ascii-ui.Options.Item*
-
-    Fields: ~
-        {id}    (integer)
-        {name}  (string)
-
-
-ascii-ui.Options : ascii-ui.Component                         *ascii-ui.Options*
-
-    Fields: ~
-        {options}          (ascii-ui.Options.Item[])
-        {_index_selected}  (integer)
-
-
-Options:new({opts})                                                *Options:new*
-
-    Parameters: ~
-        {opts}  (ascii-ui.OptionsOpts)
-
-    Returns: ~
-        (ascii-ui.Options)
-
-
-Options:select_index({index})                             *Options:select_index*
-
-    Parameters: ~
-        {index}  (integer)
-
-    Returns: ~
-        (string)  selected_option
-
-
-Options:select_next()                                      *Options:select_next*
-
-    Returns: ~
-        (string)  selected_option
-
-
-Options:render()                                                *Options:render*
-
-    Returns: ~
-        (ascii-ui.BufferLine[])
-
-
-ascii-ui.TextInput : ascii-ui.Component                     *ascii-ui.TextInput*
-
-    Fields: ~
-        {content}  (string)
-
-
-TextInput:new()                                                  *TextInput:new*
-
-    Returns: ~
-        (ascii-ui.TextInput)
-
-
-M.render({component})                                                 *M.render*
-
-    Parameters: ~
-        {component}  (ascii-ui.Component)
-
-    Returns: ~
-        (integer)  bufnr
-
-
-ascii-ui.Renderer                                            *ascii-ui.Renderer*
-
-
-Renderer:new()                                                    *Renderer:new*
-     bottom_left: string, bottom_right: string, horizontal: string, vertical: string } }
-     @return ascii-ui.Renderer
-
-
-Renderer:render({component})                                   *Renderer:render*
-
-    Parameters: ~
-        {component}  (ascii-ui.Component)
-
-    Returns: ~
-        (ascii-ui.Buffer)
-
-
-Renderer:render_box({box})                                 *Renderer:render_box*
-
-    Parameters: ~
-        {box}  (ascii-ui.Box)
-
-
-ascii-ui.WindowOpts                                        *ascii-ui.WindowOpts*
-
-    Type: ~
-        {width?:integer,height?:integer}
-
-
-ascii-ui.Window                                                *ascii-ui.Window*
-
-    Fields: ~
-        {winid}  (integer)
-        {bufnr}  (integer)
-        {opts}   (ascii-ui.WindowOpts)
-
-
-Window:new({opts?})                                                 *Window:new*
-
-    Parameters: ~
-        {opts?}  (ascii-ui.WindowOpts)
-
-    Returns: ~
-        (ascii-ui.Window)
-
-
-Window:open()                                                      *Window:open*
-
-
-Window:is_open()                                                *Window:is_open*
-
-    Returns: ~
-        (boolean)
-
-
-Window:close()                                                    *Window:close*
-
-
-Window:update({buffer_content})                                  *Window:update*
-
-    Parameters: ~
-        {buffer_content}  (string[])
-
-
-vim:tw=78:ts=8:noet:ft=help:norl:
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *Cursor*
+                                    `Cursor`
+@class ascii-ui.Cursor
+@field buffers table<number, boolean>
+@field last_position ascii-ui.CursorPosition | nil
+@field _current_position ascii-ui.CursorPosition | nil
+
+------------------------------------------------------------------------------
+@class ascii-ui.CursorPosition
+@field line integer
+@field col integer
+
+------------------------------------------------------------------------------
+                                                     *Cursor.current_position()*
+                          `Cursor.current_position`()
+@return ascii-ui.CursorPosition
+
+------------------------------------------------------------------------------
+                                                              *Cursor.move_to()*
+                 `Cursor.move_to`({position}, {winid}, {bufnr})
+@param position ascii-ui.Position
+@param winid? integer
+@param bufnr? integer
+
+------------------------------------------------------------------------------
+                                              *Cursor.last_movement_direction()*
+                       `Cursor.last_movement_direction`()
+@return ascii-ui.CursorDirection
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *Logger*
+                                    `Logger`
+@class ascii-ui.Logger
+
+------------------------------------------------------------------------------
+                                                                        *levels*
+                                    `levels`
+@enum ascii-ui.Logger.LogLevel
+
+------------------------------------------------------------------------------
+                                                            *Logger.set_level()*
+                        `Logger.set_level`({new_level})
+@param new_level ascii-ui.Logger.LogLevel
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                       *AsciiUI*
+                                   `AsciiUI`
+@class ascii-ui.AsciiUI
+
+------------------------------------------------------------------------------
+                                                               *AsciiUI.mount()*
+                        `AsciiUI.mount`({AppComponent})
+Parameters ~
+{AppComponent} `(ascii)`-ui.FunctionalComponent
+Return ~
+`(integer)` bufnr
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                     *HexaColor*
+                                  `HexaColor`
+@class ascii-ui.HexaColor
+@field group string The name of the highlight group created for the hex color
+
+------------------------------------------------------------------------------
+                                                               *HexaColor.new()*
+                             `HexaColor.new`({hex})
+Create a new instance and register the highlight group
+@param hex  string a hex color code (e.g. "#ff00aa")
+@return ascii-ui.HexaColor instance with its highlight group name
+
+------------------------------------------------------------------------------
+                                                     *HexaColor:get_highlight()*
+                          `HexaColor:get_highlight`()
+Retrieve the highlight group name
+@return string highlight the name of the highlight group created
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                      *Renderer*
+                                   `Renderer`
+Class ~
+{ascii-ui.Renderer}
+@field config ascii-ui.Config
+
+------------------------------------------------------------------------------
+                                                                *Renderer:new()*
+                            `Renderer:new`({config})
+Parameters ~
+{config} `(optional)` { `(characters)`: { top_left: string, top_right: string,
+bottom_left: string, bottom_right: string, horizontal: string, vertical: string } }
+@return ascii-ui.Renderer
+
+------------------------------------------------------------------------------
+                                                             *Renderer:render()*
+                        `Renderer:render`({renderable})
+Parameters ~
+{renderable} `(string | fun(config: ascii-ui.Config): ascii-ui.FiberNode[])`
+Return ~
+`(ascii)`-ui.Buffer
+Return ~
+`(ascii)`-ui.FiberNode `(optional)`
+
+------------------------------------------------------------------------------
+                                                      *Renderer:render_by_tag()*
+           `Renderer:render_by_tag`({tag_name}, {props}, {children})
+@return ascii-ui.FiberNode[]
+
+------------------------------------------------------------------------------
+                                                         *Renderer:render_xml()*
+                      `Renderer:render_xml`({xml_content})
+@param xml_content string
+@return ascii-ui.FiberNode[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                              *UserInteractions*
+                               `UserInteractions`
+Class ~
+{ascii-ui.UserInteractions}
+Fields ~
+{private} `(singleton_instance)` ascii-ui.UserInteractions | nil
+{private} `(buffers)` table<integer, ascii-ui.Buffer>
+
+------------------------------------------------------------------------------
+                                                        *UserInteractions:new()*
+                            `UserInteractions:new`()
+Return ~
+`(ascii)`-ui.UserInteractions
+
+------------------------------------------------------------------------------
+                                                   *UserInteractions:interact()*
+                      `UserInteractions:interact`({opts})
+Parameters ~
+{opts} `({ buffer_id: integer, position: ascii-ui.Position, interaction_type: ascii-ui.UserInteractions.InteractionType | string })`
+
+------------------------------------------------------------------------------
+                                              *UserInteractions:attach_buffer()*
+            `UserInteractions:attach_buffer`({buffer}, {buffer_id})
+Parameters ~
+{buffer} `(ascii)`-ui.Buffer
+{buffer_id} `(integer)`
+
+------------------------------------------------------------------------------
+                                              *UserInteractions:detach_buffer()*
+                 `UserInteractions:detach_buffer`({buffer_id})
+Parameters ~
+{buffer_id} `(integer)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *Layout*
+                                    `Layout`
+@class ascii-ui.Layout
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                           *merge_bufferlines()*
+            `merge_bufferlines`({bufferlines}, {other_bufferlines})
+@param bufferlines ascii-ui.BufferLine[]
+@param other_bufferlines ascii-ui.BufferLine[]
+@return ascii-ui.BufferLine[]
+
+------------------------------------------------------------------------------
+                                                                         *Row()*
+                                  `Row`({...})
+@param ... fun(): ascii-ui.BufferLine[]
+@return fun(): ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                      *Column()*
+                                `Column`({...})
+@param ... fun(): ascii-ui.BufferLine[]
+@return fun(): ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@class ascii-ui.RootFiberNode : ascii-ui.FiberNode
+@field pendingEffects? function[]
+@field pendingCleanups? function[]
+@field lastRendered? ascii-ui.Buffer
+
+------------------------------------------------------------------------------
+                                                                     *FiberNode*
+                                  `FiberNode`
+@class ascii-ui.FiberNode
+@field private repeatingEffects? function[]
+@field private pendingEffects? function[]
+@field private pendingCleanups? function[]
+@field id string
+@field type string
+@field tag "PLACEMENT" | "REPLACEMENT" | "UPDATE" | "NONE"
+@field props table | nil
+@field root? ascii-ui.RootFiberNode
+@field parent? ascii-ui.FiberNode
+@field sibling? ascii-ui.FiberNode
+@field child? ascii-ui.FiberNode
+@field hooks? any[]
+@field hookIndex integer
+@field cleanups? function[]
+@field prevDeps any[]
+@field effectIndex integer
+@field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
+@field output? ascii-ui.FiberNode[]
+@field private _line ascii-ui.BufferLine
+
+------------------------------------------------------------------------------
+                                                               *FiberNode.new()*
+                           `FiberNode.new`({fields})
+a new FiberNode instance
+Parameters ~
+{fields} `(table<string, any>)`
+Return ~
+`(ascii)`-ui.FiberNode
+
+------------------------------------------------------------------------------
+                                                           *FiberNode.is_node()*
+                           `FiberNode.is_node`({obj})
+@param obj any
+@return boolean
+
+------------------------------------------------------------------------------
+                                                      *FiberNode.is_node_list()*
+                        `FiberNode.is_node_list`({obj})
+@param obj any
+@return boolean
+
+------------------------------------------------------------------------------
+                                                           *FiberNode:is_same()*
+                          `FiberNode:is_same`({other})
+@param other ascii-ui.FiberNode
+@return boolean
+
+------------------------------------------------------------------------------
+                                                          *FiberNode:get_line()*
+                             `FiberNode:get_line`()
+@return ascii-ui.BufferLine
+
+------------------------------------------------------------------------------
+                                                         *FiberNode.resetFrom()*
+                         `FiberNode.resetFrom`({fiber})
+@param fiber ascii-ui.RootFiberNode
+@return ascii-ui.RootFiberNode
+
+------------------------------------------------------------------------------
+                                                    *FiberNode:unwrap_closure()*
+                          `FiberNode:unwrap_closure`()
+@return ascii-ui.FiberNode[] output
+
+------------------------------------------------------------------------------
+                                                              *FiberNode:next()*
+                               `FiberNode:next`()
+Returns the next fiber node in a depth-first traversal of the fiber tree.
+
+The traversal order is:
+1. First child (if any),
+2. Then the next sibling (if no children or after visiting children),
+3. Otherwise, ascend the tree to find the next available sibling.
+
+It returns `nil` when it reaches the end of the tree.
+
+@see ascii-ui.FiberNode.iter
+
+@return ascii-ui.FiberNode | nil
+
+------------------------------------------------------------------------------
+                                                              *FiberNode:iter()*
+                               `FiberNode:iter`()
+Returns an iterator that traverses the fiber tree in depth-first order,
+starting from the current node. The iteration visits each node once,
+descending first into children, then moving to siblings, and finally backtracking
+to ancestors until the entire subtree has been visited.
+
+Example usage:
+```lua
+for node in root:iter() do
+    print(node.type)
+end
+```
+
+@see ascii-ui.FiberNode.next
+
+@return fun(): ascii-ui.FiberNode | nil
+
+------------------------------------------------------------------------------
+                                                    *FiberNode:clone_for_diff()*
+                          `FiberNode:clone_for_diff`()
+Creates a shallow copy of the current FiberNode, intended to be used
+during the diffing process. The clone includes only the fields relevant
+for comparison and rendering reconciliation, not runtime state like
+hooks or effects.
+
+@return ascii-ui.FiberNode
+
+------------------------------------------------------------------------------
+                                                        *FiberNode:add_effect()*
+                   `FiberNode:add_effect`({eff}, {eff_type})
+@param eff function
+@param eff_type "REPEATING" | "ONCE"
+
+------------------------------------------------------------------------------
+                                                       *FiberNode:add_cleanup()*
+                         `FiberNode:add_cleanup`({cu})
+@param cu function
+
+------------------------------------------------------------------------------
+                                                           *FiberNode:to_list()*
+                             `FiberNode:to_list`()
+@return ascii-ui.FiberNode[]
+
+------------------------------------------------------------------------------
+                                                   *FiberNode:pending_effects()*
+                         `FiberNode:pending_effects`()
+@return function[]
+
+------------------------------------------------------------------------------
+                                                        *FiberNode:get_buffer()*
+                            `FiberNode:get_buffer`()
+@return ascii-ui.Buffer
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                *EventListenter*
+                                `EventListenter`
+@class ascii-ui.Events
+
+------------------------------------------------------------------------------
+                                                                             *_*
+                                      `_`
+@enum (key) ascii-ui.EventType
+
+------------------------------------------------------------------------------
+                                                       *EventListenter:listen()*
+                    `EventListenter:listen`({ev_type}, {fn})
+@param ev_type ascii-ui.EventType
+@param fn function
+
+------------------------------------------------------------------------------
+                                                      *EventListenter:trigger()*
+                      `EventListenter:trigger`({ev_type})
+@param ev_type ascii-ui.EventType
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                             *props_are_equal()*
+                         `props_are_equal`({t1}, {t2})
+This is used for comparing props
+It will exclude the functions from the comparison
+@param t1 table
+@param t2 table
+@return boolean
+
+
+==============================================================================
+------------------------------------------------------------------------------
+
+metrics.lua — minimal module for counting and displaying simple metrics
+
+Basic usage:
+  local metrics = require('metrics')
+  metrics:inc('hits')     -- adds 1
+  metrics:inc('foo', 3)   -- adds 3
+  metrics:set('bar', 10)
+  metrics:show()          -- displays a popup with the metrics
+
+(Optional) Create user commands from init.lua:
+  vim.api.nvim_create_user_command('MetricsShow', function() require('metrics').show() end, {})
+  vim.api.nvim_create_user_command('MetricInc', function(opts)
+    require('metrics').inc(opts.fargs[1], tonumber(opts.fargs[2]) or 1)
+  end, { nargs = '+', complete = 'file' })
+
+All annotations use **LuaCATS** (type format for LuaLS / sumneko).
+
+------------------------------------------------------------------------------
+Options for `show`.
+Class ~
+{MetricsShowOpts}
+Fields ~
+{max_height} `(optional)` `(integer)` # maximum height of the popup.
+{border} `(optional)` `(string)`      # border style for `nvim_open_win` (e.g., "rounded", "single").
+
+------------------------------------------------------------------------------
+                                                                       *Metrics*
+                                   `Metrics`
+Public API of the metrics module.
+Class ~
+{Metrics}
+Fields ~
+{get} `(fun(key: string): number)`              # Gets the current value (0 if it does not exist).
+{set} `(fun(key: string, value: number): number)`  # Sets an exact value and returns it.
+{inc} `(fun(key: string, amount?: integer): number)`     # Increments the value and returns the new total.
+{reset} `(fun())`                                           # Clears all metrics.
+{all} `(fun(): table<string, number>)`                                # Shallow copy of all metrics.
+{show} `(fun(opts?: MetricsShowOpts): integer)`            # Opens a popup and returns the winid.
+
+------------------------------------------------------------------------------
+                                                                         *store*
+                                    `store`
+Type ~
+`(table<string, number>)`
+
+------------------------------------------------------------------------------
+                                                                 *Metrics.get()*
+                              `Metrics.get`({key})
+Devuelve el valor actual (0 si no existe).
+Parameters ~
+{key} `(string)`
+Return ~
+`(number)` value
+
+------------------------------------------------------------------------------
+                                                                 *Metrics.set()*
+                         `Metrics.set`({key}, {value})
+Establece un valor exacto y lo devuelve.
+Parameters ~
+{key} `(string)`
+{value} `(number)`
+Return ~
+`(number)` new_value
+
+------------------------------------------------------------------------------
+                                                                 *Metrics.inc()*
+                         `Metrics.inc`({key}, {amount})
+Incrementa (por defecto +1) y devuelve el nuevo total.
+Parameters ~
+{key} `(string)`
+{amount} `(optional)` `(integer)`
+Return ~
+`(number)` new_total
+
+------------------------------------------------------------------------------
+                                                               *Metrics.reset()*
+                               `Metrics.reset`()
+Reinicia todo el almacén de métricas.
+
+------------------------------------------------------------------------------
+                                                                 *Metrics.all()*
+                                `Metrics.all`()
+Devuelve una copia con todas las métricas.
+Return ~
+`(table<string, number>)` copy
+
+------------------------------------------------------------------------------
+                                                                    *as_lines()*
+                                  `as_lines`()
+Convierte a líneas de texto para mostrar.
+Return ~
+`(string[])` lines
+
+------------------------------------------------------------------------------
+                                                                *Metrics.show()*
+                             `Metrics.show`({opts})
+Muestra un popup muy simple con las métricas.
+Parameters ~
+{opts} `(optional)` `(MetricsShowOpts)`
+Return ~
+`(integer)` winid
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                 *generateKey()*
+                              `generateKey`({tbl})
+Genera una clave única basada en una tabla
+
+------------------------------------------------------------------------------
+                                                                   *M.memoize()*
+                      `M.memoize`({factory}, {dependants})
+@param factory function
+@param dependants table<string, any> Dependencies for memoization
+@return function fn memoized closure
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *config*
+                                    `config`
+@class ascii-ui.Config
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@class ascii-ui.ForComponentProps
+@field props? table[]
+@field items? any[] | fun(): any[]
+@field component ascii-ui.FunctionalComponent
+@field transform? fun(item: any): table
+
+------------------------------------------------------------------------------
+                                                                         *For()*
+                                 `For`({props})
+@param props ascii-ui.ForComponentProps
+@return fun(): ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                      *Slider()*
+                               `Slider`({props})
+@param props? { title?: string, value?: integer, on_change?: fun(value: integer) }
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                    *Components*
+                                  `Components`
+@class ascii-ui.Components
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@alias ascii-ui.ParagraphComponent.Props { content?: string }
+
+------------------------------------------------------------------------------
+                                                                   *Paragraph()*
+                              `Paragraph`({props})
+@param props ascii-ui.ParagraphComponent.Props
+@return ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@alias ascii-ui.IfComponentProps { child: ascii-ui.FiberNode, fallback: ascii-ui.FiberNode, condition: fun(): boolean }
+
+------------------------------------------------------------------------------
+                                                                          *If()*
+                                 `If`({props})
+@param props ascii-ui.IfComponentProps
+@return fun(): ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@class ascii-ui.TreeComponentProps.TreeNode
+@field text string
+@field children? ascii-ui.TreeComponentProps.TreeNode[]
+@field expanded? boolean
+
+------------------------------------------------------------------------------
+@class ascii-ui.TreeComponentProps
+@field tree ascii-ui.TreeComponentProps.TreeNode
+@field level? integer
+@field has_siblings? boolean
+@field is_last? boolean
+
+------------------------------------------------------------------------------
+                                                                        *Tree()*
+                                `Tree`({props})
+@param props ascii-ui.TreeComponentProps
+@return ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+Class ~
+{ascii-ui.SelectComponent.Option}
+Fields ~
+{id} `(integer)`
+{name} `(string)`
+
+------------------------------------------------------------------------------
+                                                                        *from()*
+                             `from`({option_names})
+Parameters ~
+{option_names} `(string[])`
+Return ~
+`(ascii)`-ui.SelectComponent.Option[]
+
+------------------------------------------------------------------------------
+                                                                      *Select()*
+                               `Select`({props})
+@param props { options: string[], title?: string, on_select? : fun(selected_option: string) }
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@alias ascii-ui.InputProps { value?: string }
+
+------------------------------------------------------------------------------
+@param props? ascii-ui.InputProps
+@return fun(): ascii-ui.BufferLine[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                    *Checkbox()*
+                              `Checkbox`({props})
+Parameters ~
+{props} `({ active?: boolean, label?: string })`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                         *Box()*
+                                 `Box`({props})
+Parameters ~
+{props} `({ width: integer, height: integer, content: string })`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@generic T
+@generic P : ascii-ui.ComponentProps
+@alias ComponentClosure fun(): ascii-ui.BufferLine[]
+@alias ascii-ui.ComponentProp<T> T | fun(): T
+@alias ascii-ui.ComponentProps table<string, ascii-ui.ComponentProp<any>>
+@alias ascii-ui.FunctionalComponent<P> fun(props: P): ComponentClosure
+
+------------------------------------------------------------------------------
+@alias ascii-ui.PropsType
+"nil"
+"number"
+"string"
+"boolean"
+"table"
+"function"
+
+------------------------------------------------------------------------------
+                                                              *validate_props()*
+                       `validate_props`({props}, {types})
+@param props table<string, any>
+@param types table<string, ascii-ui.PropsType>
+
+------------------------------------------------------------------------------
+                                                          *from_function_prop()*
+                     `from_function_prop`({props}, {types})
+@param props table<string, any>
+@param types table<string, ascii-ui.PropsType>
+@return table<string, any>
+
+------------------------------------------------------------------------------
+                                                             *createComponent()*
+           `createComponent`({name}, {functional_component}, {types})
+Crea un componente personalizado y lo registra
+@generic ascii-ui.ComponentClosure, T
+@param name string Nombre del componente
+@param functional_component fun(props: T): fun(): ascii-ui.BufferLine[]
+@param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
+@return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@alias ascii-ui.ButtonComponent.Props { label: string, on_press?: fun() }
+
+------------------------------------------------------------------------------
+                                                                      *Button()*
+                               `Button`({props})
+@type ascii-ui.FunctionalComponent<ascii-ui.ButtonComponent.Props>
+@return ComponentClosure
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                              *INTERACTION_TYPE*
+                               `INTERACTION_TYPE`
+(key) ascii-ui.UserInteractions.InteractionType
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                         *Hooks*
+                                    `Hooks`
+@class ascii-ui.Hooks
+
+
+==============================================================================
+------------------------------------------------------------------------------
+ascii-ui.hooks.useState() *ascii-ui.hooks.useState()*
+
+------------------------------------------------------------------------------
+                                                                    *useState()*
+                              `useState`({value})
+
+Provides local state management within a component.
+Returns getter and setter functions for a value, triggering UI updates on change.
+
+Example:
+```
+local function MyComponent()
+  local count, setCount = useState(0)
+  return function()
+    return ui.layout.Column(
+      ui.components.Paragraph({ content = function() return ("Count: %d"):format(count()) end }),
+      ui.components.Button({
+        label = "Increment",
+        on_press = function() setCount(count() + 1) end
+      })
+    )
+  end
+end
+```
+
+@generic T
+@param value T The initial state value.
+@return T value A deep copy of the current state value.
+@return fun(value: T | fun(value: T): T) setValue Sets the state to a new value and triggers a state change event.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+ascii-ui.hooks.useFunctionRegistry() *ascii-ui.hooks.useFunctionRegistry()*
+
+------------------------------------------------------------------------------
+                                                         *useFunctionRegistry()*
+                          `useFunctionRegistry`({fn})
+Registers a Lua function and returns a string key reference to be used in ascii-ui component markup or as an indirect callback.
+This allows the UI runtime to invoke the function later.
+
+Example:
+```
+local function MyComponent()
+  local ref = ui.hooks.useFunctionRegistry(function()
+    print("Button pressed!")
+  end)
+  return function()
+    return ui.components.Button({ label = "Click Me", on_press = ref })
+  end
+end
+```
+
+@param fn function The Lua function to register in the global registry.
+@return string reference String key that can be used to retrieve and call the function.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+ascii-ui.hooks.useReducer() *ascii-ui.hooks.useReducer()*
+
+------------------------------------------------------------------------------
+@alias ascii-ui.ReducerAction {type: string, params: any}
+
+------------------------------------------------------------------------------
+                                                                  *useReducer()*
+                        `useReducer`({reducer}, {value})
+
+Manages complex state logic by applying a reducer function to the current state and dispatched actions within an ascii-ui component.
+Returns getter and dispatch functions for the state.
+
+Example:
+```
+local function reducer(state, action)
+  if action.type == "increment" then
+    return state + 1
+  end
+  return state
+end
+
+local function MyComponent()
+  local count, dispatch = ascii-ui.hooks.useReducer(reducer, 0)
+  return function()
+    return ui.components.Button({
+      label = "Count: " .. count(),
+      on_press = function() dispatch({type="increment"}) end
+    })
+  end
+end
+```
+
+@generic T
+@generic A
+@param reducer fun(value: T, action: A): T The reducer function to compute new state.
+@param value T The initial state value.
+@return T value The current state value.
+@return fun(action: A) dispatch Dispatches an action to update the state.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+ascii-ui.hooks.useEffect() *ascii-ui.hooks.useEffect()*
+
+------------------------------------------------------------------------------
+                                                                   *useEffect()*
+                      `useEffect`({fn}, {observed_values})
+
+Runs a side-effect function after component render and when specified observed values change, inside an ascii-ui component.
+
+Example (runs effect on every render):
+```
+local function MyComponent()
+  local count, setCount = ui.hooks.useState(0)
+  ui.hooks.useEffect(function()
+    print("Rendered!")
+  end)
+  -- component render logic ...
+end
+```
+
+Example (runs effect only when count changes):
+```
+local function MyComponent()
+  local count, setCount = ui.hooks.useState(0)
+  ui.hooks.useEffect(function()
+    print("Count changed to", count())
+  end, { count })
+  -- component render logic ...
+end
+```
+
+@param fn function The callback to run as a side effect.
+@param observed_values? any[] Optional table of state getter functions to observe. If provided, the effect re-runs only when any observed value changes.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *Window*
+                                    `Window`
+Class ~
+{ascii-ui.Window}
+Fields ~
+{winid} `(integer)`
+{bufnr} `(integer)`
+{ns_id} `(integer)`
+{opts} `({ width?: integer, height?: integer })`
+
+------------------------------------------------------------------------------
+                                                                  *Window.new()*
+                              `Window.new`({opts})
+Parameters ~
+{opts} `(optional)` `({ width?: integer, height?: integer })`
+Return ~
+`(ascii)`-ui.Window
+
+------------------------------------------------------------------------------
+                                                             *Window:position()*
+                              `Window:position`()
+Get the position of the window
+@return ascii-ui.Position
+
+------------------------------------------------------------------------------
+                                                              *Window:move_to()*
+                          `Window:move_to`({position})
+Move the window to a specific position
+@param position ascii-ui.Position
+
+------------------------------------------------------------------------------
+                                                              *Window:is_open()*
+                               `Window:is_open`()
+Return ~
+`(boolean)`
+
+------------------------------------------------------------------------------
+                                                               *Window:update()*
+                           `Window:update`({buffer})
+Parameters ~
+{buffer} `(ascii)`-ui.Buffer
+
+------------------------------------------------------------------------------
+                                                           *Window:is_focused()*
+                             `Window:is_focused`()
+@return boolean is_focused
+
+
+==============================================================================
+------------------------------------------------------------------------------
+@type ascii-ui.FiberNode | nil
+
+------------------------------------------------------------------------------
+                                                                  *debugPrint()*
+                       `debugPrint`({fiber}, {print_fn})
+
+Debug: Imprime el árbol de Fibers con indentación y valores de hooks
+
+------------------------------------------------------------------------------
+                                                           *reconcileChildren()*
+                 `reconcileChildren`({parent}, {new_children})
+@param parent ascii-ui.FiberNode
+@param new_children ascii-ui.FiberNode[]
+
+------------------------------------------------------------------------------
+                                                           *performUnitOfWork()*
+                          `performUnitOfWork`({fiber})
+@param fiber ascii-ui.RootFiberNode
+
+------------------------------------------------------------------------------
+                                                                  *commitWork()*
+                        `commitWork`({fiber}, {buffer})
+@param fiber ascii-ui.FiberNode
+@param buffer ascii-ui.Buffer
+
+------------------------------------------------------------------------------
+                                                                    *workLoop()*
+                               `workLoop`({root})
+@param root ascii-ui.RootFiberNode
+
+------------------------------------------------------------------------------
+                                                                    *rerender()*
+                               `rerender`({root})
+Re-renderiza el árbol de fibers a partir de la raíz dada
+@param root ascii-ui.RootFiberNode
+@return ascii-ui.Buffer buffer con las líneas renderizadas
+
+------------------------------------------------------------------------------
+                                                                  *_useEffect()*
+                           `_useEffect`({fn}, {deps})
+@param fn function
+@param deps? any[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                    *Highligths*
+                                  `Highligths`
+(key) ascii-ui.Highligths
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                       *Segment*
+                                   `Segment`
+Class ~
+{ascii-ui.Segment}
+Fields ~
+{content} `(string)`
+{interactions} `(table<ascii-ui.UserInteractions.InteractionType, function>)`
+{highlight} `(optional)` `(string)`
+{private} `(focusable)` boolean
+
+------------------------------------------------------------------------------
+                                                                 *Segment:new()*
+                              `Segment:new`({...})
+Parameters ~
+{...} `({ content: string, is_focusable?: boolean, interactions?: table<ascii-ui.UserInteractions.InteractionType, function>, highlight?: string }  | string)`
+Return ~
+`(ascii)`-ui.Segment
+
+------------------------------------------------------------------------------
+                                                          *Segment.is_segment()*
+                          `Segment.is_segment`({obj})
+@param obj any
+
+------------------------------------------------------------------------------
+                                                                 *Segment:len()*
+                                `Segment:len`()
+Return ~
+`(integer)`
+
+------------------------------------------------------------------------------
+                                                        *Segment:is_focusable()*
+                            `Segment:is_focusable`()
+Return ~
+`(boolean)`
+
+------------------------------------------------------------------------------
+                                                                *Segment:wrap()*
+                                `Segment:wrap`()
+Wraps the element in a ascii-ui.Bufferline object
+Return ~
+`(ascii)`-ui.BufferLine
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                        *Buffer*
+                                    `Buffer`
+Class ~
+{ascii-ui.Buffer}
+Fields ~
+{lines} `(ascii)`-ui.BufferLine[]
+
+------------------------------------------------------------------------------
+                                                                  *Buffer.new()*
+                              `Buffer.new`({...})
+Parameters ~
+{...} `(optional)` `(ascii)`-ui.BufferLine
+Return ~
+`(ascii)`-ui.Buffer
+
+------------------------------------------------------------------------------
+                                                            *Buffer.is_buffer()*
+                           `Buffer.is_buffer`({obj})
+@param obj any
+
+------------------------------------------------------------------------------
+                                                                *Buffer:width()*
+                                `Buffer:width`()
+Return ~
+`(integer)` width
+
+------------------------------------------------------------------------------
+                                                  *Buffer:find_next_focusable()*
+                    `Buffer:find_next_focusable`({position})
+Parameters ~
+{position} `(optional)` `({ line: integer, col: integer })`
+Return ~
+`({ found: boolean, pos: { line: integer, col: integer } })`
+
+------------------------------------------------------------------------------
+                                                  *Buffer:find_last_focusable()*
+                    `Buffer:find_last_focusable`({position})
+Parameters ~
+{position} `({ line: integer, col: integer })`
+Return ~
+`({ found: boolean, pos: { line: integer, col: integer } })`
+
+------------------------------------------------------------------------------
+                                                      *Buffer:iter_focusables()*
+                           `Buffer:iter_focusables`()
+Return ~
+`(fun(): ascii-ui.Segment | nil)`
+
+------------------------------------------------------------------------------
+                                                *Buffer:iter_colored_elements()*
+                        `Buffer:iter_colored_elements`()
+Return ~
+`(fun(): { element: ascii-ui.Segment, position: { line: integer, col: integer } } | nil)`
+
+------------------------------------------------------------------------------
+                                                           *Buffer.from_lines()*
+                          `Buffer.from_lines`({lines})
+Parameters ~
+{lines} `(string[])`
+Return ~
+`(ascii)`-ui.Buffer
+
+------------------------------------------------------------------------------
+                                                             *Buffer:to_lines()*
+                              `Buffer:to_lines`()
+Return ~
+`(string[])`
+
+------------------------------------------------------------------------------
+                                                   *Buffer:find_element_by_id()*
+                       `Buffer:find_element_by_id`({id})
+Parameters ~
+{id} `(string)`
+Return ~
+`(ascii)`-ui.Segment | nil
+
+------------------------------------------------------------------------------
+                                             *Buffer:find_element_by_position()*
+                 `Buffer:find_element_by_position`({position})
+Parameters ~
+{position} `({ line: integer, col: integer })`
+Return ~
+`(ascii)`-ui.Segment | nil
+
+------------------------------------------------------------------------------
+                                                                  *Buffer:add()*
+                              `Buffer:add`({...})
+@param ... ascii-ui.BufferLine
+@return ascii-ui.Buffer
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                    *BufferLine*
+                                  `BufferLine`
+Class ~
+{ascii-ui.BufferLine}
+Fields ~
+{elements} `(ascii)`-ui.Segment[]
+
+------------------------------------------------------------------------------
+                                                              *BufferLine.new()*
+                            `BufferLine.new`({...})
+Parameters ~
+{...} `(ascii)`-ui.Segment | boolean
+Return ~
+`(ascii)`-ui.BufferLine
+
+------------------------------------------------------------------------------
+                                                    *BufferLine.is_bufferline()*
+                       `BufferLine.is_bufferline`({obj})
+@param obj any
+
+------------------------------------------------------------------------------
+                                                   *BufferLine:find_focusable()*
+                         `BufferLine:find_focusable`()
+Return ~
+`(number[])` cols
+
+------------------------------------------------------------------------------
+                                              *BufferLine:find_element_by_col()*
+                    `BufferLine:find_element_by_col`({col})
+Parameters ~
+{col} `(number)`
+Return ~
+`(ascii)`-ui.Segment | nil
+
+------------------------------------------------------------------------------
+                                                              *BufferLine:len()*
+                               `BufferLine:len`()
+Return ~
+`(integer)` length
+
+------------------------------------------------------------------------------
+                                                      *BufferLine.from_string()*
+                        `BufferLine.from_string`({str})
+Parameters ~
+{str} `(string)`
+
+------------------------------------------------------------------------------
+                                                        *BufferLine:to_string()*
+                            `BufferLine:to_string`()
+Return ~
+`(string)`
+
+------------------------------------------------------------------------------
+                                                           *BufferLine:append()*
+              `BufferLine:append`({other_bufferline}, {delimiter})
+@param other_bufferline ascii-ui.BufferLine
+@param delimiter? ascii-ui.Segment
+@return ascii-ui.BufferLine
+
+------------------------------------------------------------------------------
+                                                         *BufferLine:is_empty()*
+                            `BufferLine:is_empty`()
+@return boolean
+
+------------------------------------------------------------------------------
+                                               *BufferLine:focusable_segments()*
+                  `BufferLine:focusable_segments`({from_line})
+@return { segment: ascii-ui.Segment, position: { line: integer, col: integer } }[]
+
+
+ vim:tw=78:ts=8:noet:ft=help:norl:

@@ -1,13 +1,13 @@
 local interaction_type = require("ascii-ui.interaction_type")
 
----@alias ascii-ui.ElementProps { content: string, is_focusable?: boolean, interactions?: table<ascii-ui.UserInteractions.InteractionType, function>, highlight?: string }
+---@alias ascii-ui.SegmentOpts { content: string, is_focusable?: boolean, interactions?: table<ascii-ui.UserInteractions.InteractionType, function>, highlight?: string }
 
----@class ascii-ui.Element
+---@class ascii-ui.Segment
 ---@field content string
 ---@field interactions table<ascii-ui.UserInteractions.InteractionType, function>
 ---@field highlight? string
 ---@field private focusable boolean
-local Element = {}
+local Segment = {}
 
 local last_incremental_id = 0
 local function generate_id()
@@ -15,9 +15,27 @@ local function generate_id()
 	return last_incremental_id
 end
 
----@param ... ascii-ui.ElementProps  | string
----@return ascii-ui.Element
-function Element:new(...)
+local function unicode_len(s)
+	local i, len = 1, 0
+	while i <= #s do
+		local c = s:byte(i)
+		if c < 0x80 then
+			i = i + 1
+		elseif c < 0xE0 then
+			i = i + 2
+		elseif c < 0xF0 then
+			i = i + 3
+		else
+			i = i + 4
+		end
+		len = len + 1
+	end
+	return len
+end
+
+---@param ... ascii-ui.SegmentOpts  | string
+---@return ascii-ui.Segment
+function Segment:new(...)
 	local props = { ... }
 
 	if type(props[1]) == "string" then
@@ -25,7 +43,7 @@ function Element:new(...)
 	else
 		props = props[1]
 	end
-	assert(type(props) == "table", "Element props must be a table")
+	assert(type(props) == "table", "Element props must be a table. Found: " .. type(props) .. " " .. debug.traceback())
 
 	vim.validate({ content = { props.content, "string" } })
 	local state = {
@@ -46,33 +64,46 @@ function Element:new(...)
 	return state
 end
 
----@return integer
-function Element:len()
-	return string.len(self.content)
+--- @param obj any
+function Segment.is_segment(obj)
+	if
+		type(obj) == "table"
+		--
+		and obj.__index == Segment.__index
+	then
+		return true
+	end
+
+	return false
 end
 
-function Element:to_string()
+---@return integer
+function Segment:len()
+	return unicode_len(self.content)
+end
+
+function Segment:to_string()
 	return self.content
 end
 
 ---@return boolean
-function Element:is_focusable()
+function Segment:is_focusable()
 	return self.focusable
 end
 
-function Element:is_colored()
+function Segment:is_colored()
 	return self.highlight ~= nil
 end
 
-function Element:is_inputable()
+function Segment:is_inputable()
 	return self.interactions[interaction_type.ON_INPUT] ~= nil
 end
 
 --- Wraps the element in a ascii-ui.Bufferline object
 ---@return ascii-ui.BufferLine
-function Element:wrap()
+function Segment:wrap()
 	local Bufferline = require("ascii-ui.buffer.bufferline")
-	return Bufferline:new(self)
+	return Bufferline.new(self)
 end
 
-return Element
+return Segment

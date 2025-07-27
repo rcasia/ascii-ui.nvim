@@ -1,0 +1,29 @@
+name: Docs
+
+on:
+  push:
+    paths-ignore:
+      - "**/*.md"
+    branches:
+      - "main"
+
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
+    branches:
+      - "main"
+
+jobs:
+  docs:
+    if: false # not working yet
+    runs-on: ubuntu-latest
+    name: Check
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: stable
+
+      - run: ./scripts/check-docs
