@@ -29,7 +29,7 @@ function AsciiUI.mount(AppComponent)
 	logger.info("------------------")
 	logger.info("Mounting component")
 	logger.info("------------------")
-	if not is_callable(AppComponent) then
+	if not is_callable(AppComponent) and AppComponent.__is_a_component then
 		error(vim.inspect(AppComponent))
 		error("should be a functional component. Found: " .. type(AppComponent))
 	end

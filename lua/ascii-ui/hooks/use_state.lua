@@ -10,7 +10,6 @@ local fiber = require("ascii-ui.fiber")
 --- ```
 --- local function MyComponent()
 ---   local count, setCount = useState(0)
----   return function()
 ---     return ui.layout.Column(
 ---       ui.components.Paragraph({ content = function() return ("Count: %d"):format(count()) end }),
 ---       ui.components.Button({
@@ -18,7 +17,6 @@ local fiber = require("ascii-ui.fiber")
 ---         on_press = function() setCount(count() + 1) end
 ---       })
 ---     )
----   end
 --- end
 --- ```
 ---

@@ -75,6 +75,7 @@ local function createComponent(name, functional_component, types)
 
 	-- Generar la pseudofunción del componente
 	local component_function = setmetatable({}, {
+		__is_a_component = true,
 		__call = function(_, ...)
 			local closure_id = tostring({})
 			logger.debug("Creating closure for component '%s' with id %s", name, closure_id)
@@ -86,17 +87,15 @@ local function createComponent(name, functional_component, types)
 				validate_props(props, types)
 				function factory()
 					-- dentro del workLoop, currentFiber ya está seteado
-					local result = functional_component(props)
-					assert(is_callable(result), "Functional component must return a function")
-					if type(result) == "string" then
-						local renderer = require("ascii-ui.renderer")
-						return renderer:render_xml(result)
+					return function()
+						return functional_component(props)
 					end
-					return result
 				end
 			else
 				factory = function()
-					return functional_component(unpack(args))
+					return function()
+						return functional_component(unpack(args))
+					end
 				end
 			end
 
