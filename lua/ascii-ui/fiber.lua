@@ -4,6 +4,7 @@ local unpack = unpack or table.unpack
 local FiberNode = require("ascii-ui.fibernode")
 
 local logger = require("ascii-ui.logger")
+local metrics = require("ascii-ui.utils.metrics")
 
 --- @type ascii-ui.FiberNode | nil
 local currentFiber
@@ -233,7 +234,9 @@ local function render(Component)
 	vim.iter(root:iter()):each(function(n)
 		n:run_pending()
 		n.tag = "NONE"
+		assert(not n:has_pending_effects(), "should not have pending effects")
 	end)
+
 	return buffer, root
 end
 
@@ -244,16 +247,19 @@ local function rerender(root)
 	logger.debug("📺📺 FIBER.RERENDER")
 	local buf = Buffer.new()
 
+	workLoop(root)
 	commitWork(root, buf)
 
 	--- @param n ascii-ui.FiberNode
 	vim.iter(root:iter()):each(function(n)
 		n:run_pending()
 		n.tag = "NONE"
+
+		assert(not n:has_pending_effects(), "should not have pending effects")
 	end)
 
 	logger.debug("MYBUF" .. buf:to_string())
-	return buf
+	return buf, root
 end
 
 local function useState(initial)
@@ -264,6 +270,7 @@ local function useState(initial)
 	local idx = fiber.hookIndex
 	if fiber.hooks[idx] == nil then
 		fiber.hooks[idx] = initial
+		logger.debug("🥊 Initializing state for %s at index %d with value: %s", fiber.type, idx, vim.inspect(initial))
 	end
 	local snapshot = fiber.hooks[idx]
 
@@ -272,6 +279,8 @@ local function useState(initial)
 	end
 
 	local function set(value)
+		metrics.inc("hooks.useState.set.calls")
+		logger.debug("Metrics inner: " .. vim.inspect(metrics.all()))
 		logger.debug("🥊 State change detected: (component: %s, state: %s)", fiber.type, vim.inspect(value))
 		if type(value) == "function" then
 			fiber.hooks[idx] = value(fiber.hooks[idx])
@@ -296,7 +305,7 @@ local function useState(initial)
 		vim.iter(fiber:iter()):each(function(n)
 			n.tag = "UPDATE"
 		end)
-		workLoop(root)
+		-- workLoop(root)
 
 		debugPrint(root)
 
@@ -316,6 +325,12 @@ local function _useEffect(fn, deps)
 	local fiber = currentFiber
 
 	logger.debug("running useEffect on %s", fiber.type)
+	logger.debug(
+		"running useEffect with deps: "
+			.. vim.inspect(deps)
+			.. " vs prev: "
+			.. vim.inspect(fiber.prevDeps[fiber.effectIndex])
+	)
 
 	local idx = fiber.effectIndex
 	local prev = fiber.prevDeps[idx]

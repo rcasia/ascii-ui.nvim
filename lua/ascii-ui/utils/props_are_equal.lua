@@ -16,7 +16,7 @@ local function props_are_equal(t1, t2)
 	end
 
 	for k, v in pairs(t1) do
-		if t2[k] ~= v and not is_callable(v) and not props_are_equal(t2[k], v) then
+		if t2[k] ~= v and not props_are_equal(t2[k], v) then
 			return false
 		end
 	end

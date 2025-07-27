@@ -6,7 +6,7 @@ local props_are_equal = require("ascii-ui.utils.props_are_equal")
 local eq = assert.are.same
 
 describe("props_are_equal function", function()
-	it("equals when differing on functions", function()
+	it("not equals when differing on functions", function()
 		local props_a = {
 			some = function() end,
 		}
@@ -15,7 +15,7 @@ describe("props_are_equal function", function()
 		}
 		local result = props_are_equal(props_a, props_b)
 
-		eq(true, result)
+		eq(false, result)
 	end)
 
 	it("equals when differing on inner tables", function()

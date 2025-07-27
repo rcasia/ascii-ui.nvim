@@ -1,4 +1,5 @@
 local logger = require("ascii-ui.logger")
+local throttle = require("ascii-ui.utils.strict_throttle")
 
 --- @class ascii-ui.Events
 local EventListenter = {}
@@ -17,11 +18,13 @@ local _ = {
 function EventListenter:listen(ev_type, fn)
 	self[ev_type] = self[ev_type] or {}
 
+	-- table.insert(self[ev_type], throttle(fn, 100))
 	table.insert(self[ev_type], fn)
 end
 
 --- @param ev_type ascii-ui.EventType
 function EventListenter:trigger(ev_type)
+	logger.info("🔫 Triggering event: " .. ev_type)
 	if not self[ev_type] then
 		return
 	end

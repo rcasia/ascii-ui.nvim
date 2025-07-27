@@ -1,3 +1,4 @@
+local Buffer = require("ascii-ui.buffer.buffer")
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
@@ -34,8 +35,10 @@ FiberNode.__index = FiberNode
 ---@param fields table<string, any>
 ---@return ascii-ui.FiberNode
 function FiberNode.new(fields)
+	local id = tostring({})
 	fields = fields or {}
 	local node = {
+		id = id,
 		_line = fields.lines,
 		tag = fields.tag or "PLACEMENT",
 		name = fields.name,
@@ -269,6 +272,11 @@ function FiberNode:__tostring()
 end
 
 function FiberNode:run_pending()
+	if #self.pendingEffects > 0 then
+		logger.debug("🏃🏃🏃 Running pending effects and cleanups for fiber %s, with id: %s", self.type, self.id)
+		logger.debug("pendingEffects: %s", tostring(self.pendingEffects[1]))
+	end
+
 	if self.pendingCleanups and #self.pendingCleanups > 0 then
 		vim.iter(self.pendingCleanups):each(function(cu)
 			logger.debug("running pending cleanup for %s", self.type)
@@ -296,6 +304,7 @@ end
 --- @param eff function
 --- @param eff_type "REPEATING" | "ONCE"
 function FiberNode:add_effect(eff, eff_type)
+	logger.debug("ADD_EFFECT: " .. debug.traceback())
 	logger.debug("Adding effect for fiber %s", self.type)
 	if eff_type == "ONCE" then
 		logger.debug("this effect is once")
@@ -365,6 +374,20 @@ end
 
 function FiberNode:has_pending_effects()
 	return #self:pending_effects() > 0
+end
+
+--- @return ascii-ui.Buffer
+function FiberNode:get_buffer()
+	local buffer = Buffer.new()
+
+	--- @param node ascii-ui.FiberNode
+	vim.iter(self.root:iter()):each(function(node)
+		if node:is_leaf() then
+			buffer:add(node:get_line())
+		end
+	end)
+
+	return buffer
 end
 
 return FiberNode
