@@ -3,6 +3,7 @@ local EventListener = require("ascii-ui.events")
 local Window = require("ascii-ui.window")
 local i = require("ascii-ui.interaction_type")
 local logger = require("ascii-ui.logger")
+local user_config = require("ascii-ui.config.user_config")
 local user_interations = require("ascii-ui.user_interactions")
 
 -- local ascii_renderer = require("ascii-ui.renderer"):new(config)
@@ -205,9 +206,15 @@ function AsciiUI.mount(AppComponent)
 	return window.bufnr
 end
 
+function AsciiUI.setup(config)
+	config = config or {}
+	user_config.set(config)
+	return AsciiUI
+end
+
 setmetatable(AsciiUI, {
-	__call = function(_, _) -- (self, opts)
-		return AsciiUI
+	__call = function(self, config)
+		return self.setup(config)
 	end,
 })
 

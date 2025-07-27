@@ -1,6 +1,7 @@
 --- ascii-ui.hooks.useUserConfig() *ascii-ui.hooks.useUserConfig()*
 
 local useState = require("ascii-ui.hooks.use_state")
+local userConfig = require("ascii-ui.config.user_config")
 
 ---
 --- Provides access to the current user configuration for ascii-ui.
@@ -10,8 +11,7 @@ local useState = require("ascii-ui.hooks.use_state")
 ---
 --- @return ascii-ui.Config config A deep copy of the current user configuration.
 local useConfig = function()
-	-- TODO: get the actual user config
-	local config = useState(require("ascii-ui.config"))
+	local config = useState(userConfig.get())
 	return config
 end
 
