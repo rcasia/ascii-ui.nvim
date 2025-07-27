@@ -15,7 +15,6 @@ on:
 
 jobs:
   lua-typecheck:
-    if: false # do not run until typecheck is fixed
     runs-on: ubuntu-latest
     name: Lua Typecheck
     steps:

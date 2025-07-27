@@ -3,3 +3,4 @@
 make check || exit 1
 
 make test || exit 1
+

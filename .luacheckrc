@@ -10,6 +10,7 @@ read_globals = {
 exclude_files = {
 	"**/lib/**",
 	"**/.tests/**",
+	"tests/util/definitions.lua",
 	".lux/**",
 	".deps/**",
 }

@@ -12,5 +12,9 @@
     "it",
     "before_each",
     "after_each"
+  ],
+  "workspace.library": [
+    "lua/ascii-ui/lib",
+    "tests/util/definitions.lua"
   ]
 }
