@@ -364,44 +364,44 @@ It will exclude the functions from the comparison
 ==============================================================================
 ------------------------------------------------------------------------------
 
-metrics.lua — módulo mínimo para contar y mostrar métricas simples
+metrics.lua — minimal module for counting and displaying simple metrics
 
-Uso básico:
+Basic usage:
   local metrics = require('metrics')
-  metrics:inc('hits')     -- suma 1
-  metrics:inc('foo', 3)   -- suma 3
+  metrics:inc('hits')     -- adds 1
+  metrics:inc('foo', 3)   -- adds 3
   metrics:set('bar', 10)
-  metrics:show()          -- muestra un popup con las métricas
+  metrics:show()          -- displays a popup with the metrics
 
-(Opcional) Crear comandos de usuario desde init.lua:
+(Optional) Create user commands from init.lua:
   vim.api.nvim_create_user_command('MetricsShow', function() require('metrics').show() end, {})
   vim.api.nvim_create_user_command('MetricInc', function(opts)
     require('metrics').inc(opts.fargs[1], tonumber(opts.fargs[2]) or 1)
   end, { nargs = '+', complete = 'file' })
 
-Todas las anotaciones usan **LuaCATS** (formato de tipos para LuaLS / sumneko).
+All annotations use **LuaCATS** (type format for LuaLS / sumneko).
 
 ------------------------------------------------------------------------------
-Opciones para `show`.
+Options for `show`.
 Class ~
 {MetricsShowOpts}
 Fields ~
-{max_height} `(optional)` `(integer)` # alto máximo del popup.
-{border} `(optional)` `(string)`      # estilo de borde para `nvim_open_win` (p. ej. "rounded", "single").
+{max_height} `(optional)` `(integer)` # maximum height of the popup.
+{border} `(optional)` `(string)`      # border style for `nvim_open_win` (e.g., "rounded", "single").
 
 ------------------------------------------------------------------------------
                                                                        *Metrics*
                                    `Metrics`
-API pública del módulo de métricas.
+Public API of the metrics module.
 Class ~
 {Metrics}
 Fields ~
-{get} `(fun(key: string): number)`              # Obtiene el valor actual (0 si no existe).
-{set} `(fun(key: string, value: number): number)`  # Fija un valor exacto y lo devuelve.
-{inc} `(fun(key: string, amount?: integer): number)`     # Incrementa el valor y devuelve el nuevo total.
-{reset} `(fun())`                                           # Borra todas las métricas.
-{all} `(fun(): table<string, number>)`                                # Copia superficial de todas las métricas.
-{show} `(fun(opts?: MetricsShowOpts): integer)`            # Abre un popup y devuelve el winid.
+{get} `(fun(key: string): number)`              # Gets the current value (0 if it does not exist).
+{set} `(fun(key: string, value: number): number)`  # Sets an exact value and returns it.
+{inc} `(fun(key: string, amount?: integer): number)`     # Increments the value and returns the new total.
+{reset} `(fun())`                                           # Clears all metrics.
+{all} `(fun(): table<string, number>)`                                # Shallow copy of all metrics.
+{show} `(fun(opts?: MetricsShowOpts): integer)`            # Opens a popup and returns the winid.
 
 ------------------------------------------------------------------------------
                                                                          *store*
