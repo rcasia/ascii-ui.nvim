@@ -1,13 +1,12 @@
 local ui = require("ascii-ui")
 
 local App = ui.createComponent("App", function()
-	return function()
-		local value, set_value = ui.hooks.useState(0)
-		local ref = ui.hooks.useFunctionRegistry(function()
-			set_value(value + 1)
-		end)
+	local value, set_value = ui.hooks.useState(0)
+	local ref = ui.hooks.useFunctionRegistry(function()
+		set_value(value + 1)
+	end)
 
-		return ([[
+	return ([[
 
 		<Layout>
 			<Paragraph content="Button Clicked %d times!" />
@@ -15,7 +14,6 @@ local App = ui.createComponent("App", function()
 		</Layout>
 
 		]]):format(value, ref)
-	end
 end)
 
 ui.mount(App)

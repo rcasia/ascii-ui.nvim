@@ -7,25 +7,23 @@ local If = ui.components.If
 
 --- @type ascii-ui.FunctionalComponent
 local App = ui.createComponent("App", function()
-	return function()
-		local shouldShow, setShouldShow = useState(true)
-		return Column(
-			If({
-				condition = function()
-					return shouldShow
-				end,
-				child = Paragraph({ content = "this is my content" }),
-				fallback = Paragraph({ content = "hidden" }),
-			}),
+	local shouldShow, setShouldShow = useState(true)
+	return Column(
+		If({
+			condition = function()
+				return shouldShow
+			end,
+			child = Paragraph({ content = "this is my content" }),
+			fallback = Paragraph({ content = "hidden" }),
+		}),
 
-			Button({
-				label = "change",
-				on_press = function()
-					setShouldShow(not shouldShow)
-				end,
-			})
-		)
-	end
+		Button({
+			label = "change",
+			on_press = function()
+				setShouldShow(not shouldShow)
+			end,
+		})
+	)
 end)
 
 ui.mount(App)

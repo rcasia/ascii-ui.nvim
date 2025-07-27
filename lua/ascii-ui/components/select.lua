@@ -30,42 +30,40 @@ end
 
 --- @param props ascii-ui.SelectComponentOpts
 local function Select(props)
-	return function()
-		-- TODO: add useEffect to update options when props change
-		local selected, setSelected = useState(1)
-		local options, _ = useState(from(props.options))
+	-- TODO: add useEffect to update options when props change
+	local selected, setSelected = useState(1)
+	local options, _ = useState(from(props.options))
 
-		local bufferlines = vim.iter(options)
-			:map(function(option)
-				local content, highlight
+	local bufferlines = vim.iter(options)
+		:map(function(option)
+			local content, highlight
 
-				logger.debug("CONDITION: option.id == selected " .. tostring(option.id == selected))
-				if option.id == selected then
-					content = ("[x] %s"):format(option.name)
-					highlight = highlights.SELECTION
-				else
-					content = ("[ ] %s"):format(option.name)
-				end
+			logger.debug("CONDITION: option.id == selected " .. tostring(option.id == selected))
+			if option.id == selected then
+				content = ("[x] %s"):format(option.name)
+				highlight = highlights.SELECTION
+			else
+				content = ("[ ] %s"):format(option.name)
+			end
 
-				return Element:new(content, true, {
-					[interation_type.SELECT] = function()
-						setSelected(option.id)
-						if props.on_select then
-							props.on_select(option.name)
-						end
-					end,
-				}, highlight)
-			end)
-			:map(function(element)
-				return element:wrap()
-			end)
-			:totable()
+			return Element:new(content, true, {
+				[interation_type.SELECT] = function()
+					setSelected(option.id)
+					if props.on_select then
+						props.on_select(option.name)
+					end
+				end,
+			}, highlight)
+		end)
+		:map(function(element)
+			return element:wrap()
+		end)
+		:totable()
 
-		if vim.fn.empty(props.title) == 0 then
-			table.insert(bufferlines, 1, Element:new(props.title):wrap())
-		end
-		return bufferlines
+	if vim.fn.empty(props.title) == 0 then
+		table.insert(bufferlines, 1, Element:new(props.title):wrap())
 	end
+	return bufferlines
 end
 
 return createComponent("Select", Select, { options = "table", title = "string", on_select = "function" })

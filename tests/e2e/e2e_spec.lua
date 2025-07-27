@@ -92,10 +92,8 @@ describe("ascii-ui", function()
 		it("fiber functional", function()
 			local content, setContent
 			local App = ui.createComponent("App", function()
-				return function()
-					content, setContent = useState("hola mundo")
-					return Paragraph({ content = content })
-				end
+				content, setContent = useState("hola mundo")
+				return Paragraph({ content = content })
 			end)
 			local bufnr = ui.mount(App)
 			assert(buffer_contains(bufnr, "hola mundo"))

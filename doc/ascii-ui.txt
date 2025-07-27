@@ -542,7 +542,6 @@ Genera una clave única basada en una tabla
                                                                           *If()*
                                  `If`({props})
 @param props ascii-ui.IfComponentProps
-@return fun(): ascii-ui.BufferLine[]
 
 
 ==============================================================================
@@ -563,7 +562,6 @@ Genera una clave única basada en una tabla
                                                                         *Tree()*
                                 `Tree`({props})
 @param props ascii-ui.TreeComponentProps
-@return ascii-ui.BufferLine[]
 
 
 ==============================================================================
@@ -594,7 +592,6 @@ Return ~
 
 ------------------------------------------------------------------------------
 @param props? ascii-ui.InputProps
-@return fun(): ascii-ui.BufferLine[]
 
 
 ==============================================================================
@@ -662,8 +659,7 @@ Crea un componente personalizado y lo registra
 ------------------------------------------------------------------------------
                                                                       *Button()*
                                `Button`({props})
-@type ascii-ui.FunctionalComponent<ascii-ui.ButtonComponent.Props>
-@return ComponentClosure
+@param props ascii-ui.ButtonComponent.Props
 
 
 ==============================================================================
@@ -695,7 +691,6 @@ Example:
 ```
 local function MyComponent()
   local count, setCount = useState(0)
-  return function()
     return ui.layout.Column(
       ui.components.Paragraph({ content = function() return ("Count: %d"):format(count()) end }),
       ui.components.Button({
@@ -703,7 +698,6 @@ local function MyComponent()
         on_press = function() setCount(count() + 1) end
       })
     )
-  end
 end
 ```
 
@@ -764,12 +758,10 @@ end
 
 local function MyComponent()
   local count, dispatch = ascii-ui.hooks.useReducer(reducer, 0)
-  return function()
     return ui.components.Button({
       label = "Count: " .. count(),
       on_press = function() dispatch({type="increment"}) end
     })
-  end
 end
 ```
 
