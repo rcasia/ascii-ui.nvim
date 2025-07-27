@@ -201,6 +201,7 @@ Parameters ~
 @field private repeatingEffects? function[]
 @field private pendingEffects? function[]
 @field private pendingCleanups? function[]
+@field id string
 @field type string
 @field tag "PLACEMENT" | "REPLACEMENT" | "UPDATE" | "NONE"
 @field props table | nil
