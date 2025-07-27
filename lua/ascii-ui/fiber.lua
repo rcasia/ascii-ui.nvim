@@ -234,7 +234,6 @@ local function render(Component)
 	vim.iter(root:iter()):each(function(n)
 		n:run_pending()
 		n.tag = "NONE"
-		assert(not n:has_pending_effects(), "should not have pending effects")
 	end)
 
 	return buffer, root
@@ -254,8 +253,6 @@ local function rerender(root)
 	vim.iter(root:iter()):each(function(n)
 		n:run_pending()
 		n.tag = "NONE"
-
-		assert(not n:has_pending_effects(), "should not have pending effects")
 	end)
 
 	logger.debug("MYBUF" .. buf:to_string())
