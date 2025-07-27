@@ -17,7 +17,6 @@ local _ = {
 function EventListenter:listen(ev_type, fn)
 	self[ev_type] = self[ev_type] or {}
 
-	-- table.insert(self[ev_type], throttle(fn, 100))
 	table.insert(self[ev_type], fn)
 end
 

@@ -316,7 +316,6 @@ local function useState(initial)
 		vim.iter(fiber:iter()):each(function(n)
 			n.tag = "UPDATE"
 		end)
-		-- workLoop(root)
 
 		debugPrint(root)
 

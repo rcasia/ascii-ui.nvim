@@ -40,6 +40,7 @@ describe("UI updates", function()
 			useEffect(function()
 				metrics.inc("App.useEffect.calls")
 
+				-- NOTE: This is just to avoid infinite loop in the test
 				log[#log + 1] = ("useEffect called with count: %d"):format(count)
 				assert(#log < 10, "useEffect should not be called more than twice")
 				if count > 0 then
@@ -70,6 +71,5 @@ describe("UI updates", function()
 
 		logger.debug("Metrics: " .. vim.inspect(metrics.all()))
 		assert(buffer_contains(bufnr, "Button has been pressed 1 times"))
-		-- assert(#log == 1, "useEffect should be called only once. Current calls: " .. #log)
 	end)
 end)

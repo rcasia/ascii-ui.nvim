@@ -13,6 +13,7 @@ local props_are_equal = require("ascii-ui.utils.props_are_equal")
 --- @field private repeatingEffects? function[]
 --- @field private pendingEffects? function[]
 --- @field private pendingCleanups? function[]
+--- @field id string
 --- @field type string
 --- @field tag "PLACEMENT" | "REPLACEMENT" | "UPDATE" | "NONE"
 --- @field props table | nil
@@ -35,6 +36,7 @@ FiberNode.__index = FiberNode
 ---@param fields table<string, any>
 ---@return ascii-ui.FiberNode
 function FiberNode.new(fields)
+	-- TODO: use a better id generation strategy
 	local id = tostring({})
 	fields = fields or {}
 	local node = {
@@ -185,8 +187,6 @@ function FiberNode:unwrap_closure()
 			return item
 		end)
 		:totable()
-
-	-- return output
 end
 
 --- Returns the next fiber node in a depth-first traversal of the fiber tree.
