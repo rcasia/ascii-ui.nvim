@@ -1,5 +1,3 @@
-local is_callable = require("ascii-ui.utils.is_callable")
-
 --- This is used for comparing props
 --- It will exclude the functions from the comparison
 --- @param t1 table

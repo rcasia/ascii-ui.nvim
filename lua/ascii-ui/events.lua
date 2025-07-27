@@ -1,5 +1,4 @@
 local logger = require("ascii-ui.logger")
-local throttle = require("ascii-ui.utils.strict_throttle")
 
 --- @class ascii-ui.Events
 local EventListenter = {}
