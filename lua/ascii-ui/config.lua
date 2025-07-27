@@ -7,7 +7,11 @@ local config = {
 		bottom_right = "╯",
 		horizontal = "─",
 		vertical = "│",
+		left_tree = "├",
 		thumb = "●",
+		whitespace = " ",
+		right_triangule = "▸",
+		down_triangule = "▾",
 	},
 	keymaps = {
 		quit = "q",

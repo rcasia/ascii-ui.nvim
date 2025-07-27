@@ -4,6 +4,7 @@ local createComponent = require("ascii-ui.components.functional-component")
 
 local useState = require("ascii-ui.fiber").useState
 local i = require("ascii-ui.interaction_type")
+local useConfig = require("ascii-ui.hooks.use_config")
 
 --- @class ascii-ui.TreeComponentProps.TreeNode
 --- @field text string
@@ -18,6 +19,14 @@ local i = require("ascii-ui.interaction_type")
 
 --- @param props ascii-ui.TreeComponentProps
 local function Tree(props)
+	local config = useConfig()
+	local cc = config.characters
+	-- combinations of characters
+	local LEAF_PREFIX = cc.bottom_left .. cc.horizontal .. cc.whitespace
+	local LEFT_TREE_PREFIX = cc.left_tree .. cc.horizontal .. cc.whitespace
+	local RIGHT_TRIANGULE = cc.right_triangule .. cc.whitespace
+	local DOWN_TRIANGULE = cc.down_triangule .. cc.whitespace
+
 	if props.tree.expanded == nil then
 		props.tree.expanded = true
 	end
@@ -38,9 +47,9 @@ local function Tree(props)
 	if not has_children then
 		local prefix = ""
 		if props.is_last then
-			prefix = "╰─ "
+			prefix = LEAF_PREFIX
 		elseif props.level > 0 then
-			prefix = "├─ "
+			prefix = LEFT_TREE_PREFIX
 		end
 		return {
 			BufferLine.new(
@@ -52,12 +61,12 @@ local function Tree(props)
 
 	if not is_expanded then
 		-- if node is not expanded, render only the node text
-		local prefix = props.is_last and "╰─ " or "├─ "
+		local prefix = props.is_last and LEAF_PREFIX or LEFT_TREE_PREFIX
 		return {
 			BufferLine.new(
 				Segment:new({ content = prefix }),
 				Segment:new({
-					content = "▸ ",
+					content = RIGHT_TRIANGULE,
 				}),
 				Segment:new({
 					content = props.tree.text,
@@ -68,7 +77,6 @@ local function Tree(props)
 				})
 			),
 		}
-		-- return { Segment:new({ content = prefix .. props.tree.text, is_focusable = true }):wrap() }
 	end
 
 	-- when has children
@@ -84,7 +92,7 @@ local function Tree(props)
 		end)
 		:flatten()
 		:map(function(child)
-			return Segment:new({ content = props.has_siblings and not props.is_last and "│" or " " })
+			return Segment:new({ content = props.has_siblings and not props.is_last and cc.vertical or cc.whitespace })
 				:wrap()
 				:append(child)
 		end)
@@ -93,9 +101,9 @@ local function Tree(props)
 	return {
 
 		BufferLine.new(
-			not is_head and Segment:new({ content = "╰╮" }),
+			not is_head and Segment:new({ content = cc.bottom_left .. cc.top_right }),
 			not is_head and Segment:new({
-				content = "▾ ",
+				content = DOWN_TRIANGULE,
 			}),
 			Segment:new({
 				content = props.tree.text,
