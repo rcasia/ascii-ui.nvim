@@ -272,7 +272,7 @@ local function useState(initial)
 	local snapshot = fiber.hooks[idx]
 
 	local function get()
-		return snapshot -- siempre el mismo durante este render
+		return vim.deepcopy(snapshot) -- return a copy of the state to avoid mutation
 	end
 
 	local function set(value)

@@ -24,7 +24,7 @@ local fiber = require("ascii-ui.fiber")
 ---
 --- @generic T
 --- @param value T The initial state value.
---- @return T value The current state value.
+--- @return T value A deep copy of the current state value.
 --- @return fun(value: T | fun(value: T): T) setValue Sets the state to a new value and triggers a state change event.
 local useState = function(value)
 	return fiber.useState(value)
