@@ -67,4 +67,38 @@ describe("useEffect", function()
 
 		eq(#log, 3 + 1)
 	end)
+
+	it("gets executed every render when there is nil dependencies", function()
+		local log = {}
+		local use_state_log = {}
+		local value, set_value
+		local another_value, set_another_value
+		local Component = ui.createComponent("C", function()
+			return function()
+				value, set_value = ui.hooks.useState(0)
+				another_value, set_another_value = ui.hooks.useState(0)
+				use_state_log[#use_state_log + 1] = "useState called with value: " .. tostring(value)
+				useEffect(function()
+					log[#log + 1] = "useEffect called"
+				end)
+				return { Element:new({ content = tostring(value) .. tostring(another_value) }):wrap() }
+			end
+		end)
+
+		ui.mount(Component)
+
+		set_value(1)
+		set_value(2)
+		set_value(3)
+		set_another_value(1)
+		set_another_value(2)
+		set_another_value(3)
+		set_another_value(4)
+		set_another_value(5)
+		vim.wait(3000, function()
+			return false
+		end)
+
+		eq(#log, 8 + 1)
+	end)
 end)
