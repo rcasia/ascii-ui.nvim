@@ -23,8 +23,7 @@ local function run(filename)
 end
 
 describe("examples", function()
-	-- FIXME: when new arch ready
-	pending("load without errors", function()
+	it("load without errors", function()
 		local handle = assert(io.popen("find ./examples -type f -name '*.lua'"))
 
 		for file in handle:lines() do

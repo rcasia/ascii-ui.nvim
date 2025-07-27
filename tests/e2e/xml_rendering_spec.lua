@@ -31,14 +31,15 @@ end
 
 describe("ascii-ui", function()
 	-- FIXME: when there is a compound component combination with fiber arch
-	pending("renders a clickable button with XML", function()
-		local function App()
-			local message, set_message = ui.hooks.useState("Hello World")
-			local ref = ui.hooks.useFunctionRegistry(function()
-				set_message("Button Clicked!")
-			end)
-
+	it("renders a clickable button with XML", function()
+		-- local function App()
+		local App = ui.createComponent("App", function()
 			return function()
+				local message, set_message = ui.hooks.useState("Hello World")
+				local ref = ui.hooks.useFunctionRegistry(function()
+					set_message("Button Clicked!")
+				end)
+
 				return ([[
 
 		<Layout>
@@ -46,11 +47,11 @@ describe("ascii-ui", function()
 			<Button label="Click me" on_press="%s" />
 		</Layout>
 
-		]]):format(message(), ref)
+		]]):format(message, ref)
 			end
-		end
+		end)
 
-		local bufnr = ui.mount(App())
+		local bufnr = ui.mount(App)
 
 		assert(buffer_contains(bufnr, "Hello World"))
 

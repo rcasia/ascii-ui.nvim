@@ -112,13 +112,13 @@ Return ~
 ------------------------------------------------------------------------------
                                                       *Renderer:render_by_tag()*
            `Renderer:render_by_tag`({tag_name}, {props}, {children})
-@return ascii-ui.BufferLine[]
+@return ascii-ui.FiberNode[]
 
 ------------------------------------------------------------------------------
                                                          *Renderer:render_xml()*
                       `Renderer:render_xml`({xml_content})
 @param xml_content string
-@return ascii-ui.Buffer
+@return ascii-ui.FiberNode[]
 
 
 ==============================================================================
@@ -230,6 +230,12 @@ Return ~
 ------------------------------------------------------------------------------
                                                            *FiberNode.is_node()*
                            `FiberNode.is_node`({obj})
+@param obj any
+@return boolean
+
+------------------------------------------------------------------------------
+                                                      *FiberNode.is_node_list()*
+                        `FiberNode.is_node_list`({obj})
 @param obj any
 @return boolean
 

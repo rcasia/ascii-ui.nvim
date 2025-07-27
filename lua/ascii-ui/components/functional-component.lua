@@ -60,8 +60,6 @@ local function from_function_prop(props, types)
 		end)
 end
 
-local components = {}
-
 --- Crea un componente personalizado y lo registra
 --- @generic ascii-ui.ComponentClosure, T
 --- @param name string Nombre del componente
@@ -71,14 +69,9 @@ local components = {}
 local function createComponent(name, functional_component, types)
 	types = types or {}
 	-- Validar que el nombre sea único
-	if components[name] then
+	if Renderer.component_tags[name] then
 		logger.error(("El componente con nombre '%s' ya está registrado."):format(name))
 	end
-
-	-- Registro del componente con su renderFunction
-	components[name] = {
-		render = functional_component,
-	}
 
 	-- Generar la pseudofunción del componente
 	local component_function = setmetatable({}, {
@@ -93,7 +86,13 @@ local function createComponent(name, functional_component, types)
 				validate_props(props, types)
 				function factory()
 					-- dentro del workLoop, currentFiber ya está seteado
-					return functional_component(props)
+					local result = functional_component(props)
+					assert(is_callable(result), "Functional component must return a function")
+					if type(result) == "string" then
+						local renderer = require("ascii-ui.renderer")
+						return renderer:render_xml(result)
+					end
+					return result
 				end
 			else
 				factory = function()

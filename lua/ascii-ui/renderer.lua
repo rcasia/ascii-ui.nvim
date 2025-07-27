@@ -1,3 +1,4 @@
+local FiberNode = require("ascii-ui.fibernode")
 local dom = require("ascii-ui.lib.dom-handler")
 local fiber = require("ascii-ui.fiber")
 local is_callable = require("ascii-ui.utils.is_callable")
@@ -34,13 +35,21 @@ function Renderer:render(renderable)
 	end
 
 	if type(renderable) == "string" then
-		return self:render_xml(renderable)
+		local fibernodes = self:render_xml(renderable)
+		local createComponent = require("ascii-ui.components.functional-component")
+		local Component = createComponent("innerxml", function()
+			return function()
+				return fibernodes
+			end
+		end)
+
+		return fiber.render(Component)
 	end
 
 	error("Cannot render: " .. vim.inspect(renderable))
 end
 
---- @return ascii-ui.BufferLine[]
+--- @return ascii-ui.FiberNode[]
 function Renderer:render_by_tag(tag_name, props, children)
 	logger.info("Rendering tag: " .. tag_name)
 	local instance
@@ -60,21 +69,22 @@ function Renderer:render_by_tag(tag_name, props, children)
 			error("Component not found for tag: " .. tag_name)
 		end
 
-		local XmlApp = require("ascii-ui").createComponent("XMlApp", function()
-			return Component(props)
-		end)
-		instance = XmlApp
+		instance = Component(props)
 	end
 
 	if is_callable(instance) then
 		return instance
 	end
 
-	error("not expected")
+	if FiberNode.is_node_list(instance) then
+		return instance
+	end
+
+	error("not expected. found: " .. vim.inspect(instance))
 end
 
 --- @param xml_content string
---- @return ascii-ui.Buffer
+--- @return ascii-ui.FiberNode[]
 function Renderer:render_xml(xml_content)
 	--- @return XmlNode
 	local function xml_parse(dsl)
@@ -93,7 +103,7 @@ function Renderer:render_xml(xml_content)
 
 	local component = self:render_by_tag(tag_name, props, result._children)
 
-	return fiber.render(component)
+	return component
 end
 
 return Renderer

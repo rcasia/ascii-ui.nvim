@@ -38,6 +38,7 @@ EventListenter:listen()	ascii-ui.txt	/*EventListenter:listen()*
 EventListenter:trigger()	ascii-ui.txt	/*EventListenter:trigger()*
 FiberNode	ascii-ui.txt	/*FiberNode*
 FiberNode.is_node()	ascii-ui.txt	/*FiberNode.is_node()*
+FiberNode.is_node_list()	ascii-ui.txt	/*FiberNode.is_node_list()*
 FiberNode.new()	ascii-ui.txt	/*FiberNode.new()*
 FiberNode.resetFrom()	ascii-ui.txt	/*FiberNode.resetFrom()*
 FiberNode:add_cleanup()	ascii-ui.txt	/*FiberNode:add_cleanup()*

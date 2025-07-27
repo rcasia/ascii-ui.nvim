@@ -79,6 +79,12 @@ function FiberNode.is_node(obj)
 	return false
 end
 
+--- @param obj any
+--- @return boolean
+function FiberNode.is_node_list(obj)
+	return vim.isarray(obj) and vim.iter(obj):all(FiberNode.is_node)
+end
+
 --- @param other ascii-ui.FiberNode
 --- @return boolean
 function FiberNode:is_same(other)
@@ -177,8 +183,14 @@ function FiberNode:unwrap_closure()
 		end
 		current = current + 1
 		output = output()
+
+		if type(output) == "string" then
+			local renderer = require("ascii-ui.renderer")
+			output = renderer:render_xml(output)
+		end
 	end
 
+	assert(vim.isarray(output), "FiberNode.closure should return an array of FiberNodes, got type: " .. type(output))
 	return vim.iter(output)
 		:map(function(item)
 			if Bufferline.is_bufferline(item) then --- @cast item ascii-ui.BufferLine
