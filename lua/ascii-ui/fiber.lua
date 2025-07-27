@@ -282,10 +282,21 @@ local function useState(initial)
 		metrics.inc("hooks.useState.set.calls")
 		logger.debug("Metrics inner: " .. vim.inspect(metrics.all()))
 		logger.debug("🥊 State change detected: (component: %s, state: %s)", fiber.type, vim.inspect(value))
+
+		local new_value
 		if type(value) == "function" then
-			fiber.hooks[idx] = value(fiber.hooks[idx])
+			new_value = value(fiber.hooks[idx])
 		else
-			fiber.hooks[idx] = value
+			new_value = value
+		end
+
+		-- do nothing if the value is the same as before
+		if new_value == fiber.hooks[idx] then
+			logger.debug("🥊 No change in state, skipping re-render")
+			return
+		else
+			logger.debug("🥊 State changed from %s to %s", vim.inspect(fiber.hooks[idx]), vim.inspect(new_value))
+			fiber.hooks[idx] = new_value
 		end
 
 		-- ⇲ 2) P1 – ejecuta cleanups de efectos con deps no-vacíos ------

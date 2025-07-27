@@ -304,7 +304,6 @@ end
 --- @param eff function
 --- @param eff_type "REPEATING" | "ONCE"
 function FiberNode:add_effect(eff, eff_type)
-	logger.debug("ADD_EFFECT: " .. debug.traceback())
 	logger.debug("Adding effect for fiber %s", self.type)
 	if eff_type == "ONCE" then
 		logger.debug("this effect is once")

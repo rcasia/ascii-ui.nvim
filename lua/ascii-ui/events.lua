@@ -23,10 +23,10 @@ end
 
 --- @param ev_type ascii-ui.EventType
 function EventListenter:trigger(ev_type)
-	logger.info("🔫 Triggering event: " .. ev_type)
 	if not self[ev_type] then
 		return
 	end
+	logger.info("🔫 Triggering event: " .. ev_type .. " that has " .. #self[ev_type] .. " functions")
 
 	for _, fn in ipairs(self[ev_type]) do
 		local ok, err = pcall(fn)

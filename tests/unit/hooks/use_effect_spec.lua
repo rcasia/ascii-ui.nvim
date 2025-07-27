@@ -101,4 +101,41 @@ describe("useEffect", function()
 
 		eq(#log, 8 + 1)
 	end)
+
+	it("gets executed right when has state change inside", function()
+		local log = {}
+		local use_state_log = {}
+		local value, set_value
+		local message, set_message
+		local Component = ui.createComponent("C", function()
+			return function()
+				value, set_value = ui.hooks.useState(0)
+				message, set_message = ui.hooks.useState("initial message")
+				use_state_log[#use_state_log + 1] = "useState called with value: " .. tostring(value)
+				useEffect(function()
+					log[#log + 1] = "useEffect called"
+					if #log > 10 then
+						error(debug.traceback("log exceeded the max: "))
+					end
+					set_message("useEffect called with value: " .. tostring(value))
+				end, { value })
+				return { Element:new({ content = message }):wrap() }
+			end
+		end)
+
+		ui.mount(Component)
+
+		set_value(1)
+		set_value(2)
+		set_value(3)
+		vim.wait(3000, function()
+			return false
+		end)
+
+		-- TODO: this is tricky and will revise later
+		-- expected to run 3 times
+		-- but twice because of state change inside
+		-- plus one for initial render
+		eq(#log, 3 * 2 + 1)
+	end)
 end)
