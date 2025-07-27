@@ -507,7 +507,7 @@ Genera una clave única basada en una tabla
 ------------------------------------------------------------------------------
                                                                       *Slider()*
                                `Slider`({props})
-@param props? { title?: string, value?: integer }
+@param props? { title?: string, value?: integer, on_change?: fun(value: integer) }
 
 
 ==============================================================================

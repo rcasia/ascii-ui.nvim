@@ -2,6 +2,7 @@ local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 local createComponent = require("ascii-ui.components.functional-component")
 local interaction_type = require("ascii-ui.interaction_type")
+local useEffect = require("ascii-ui.hooks.use_effect")
 local useState = require("ascii-ui.hooks.use_state")
 
 local function compact(t)
@@ -12,7 +13,7 @@ local function compact(t)
 		:totable()
 end
 
---- @param props? { title?: string, value?: integer }
+--- @param props? { title?: string, value?: integer, on_change?: fun(value: integer) }
 local function Slider(props)
 	local config = require("ascii-ui.config")
 	props = props or {}
@@ -22,6 +23,12 @@ local function Slider(props)
 	return function()
 		local cc = config.characters
 		local value, setValue = useState(props.value or 0)
+
+		useEffect(function()
+			if props.on_change then
+				props.on_change(value)
+			end
+		end, { value })
 
 		local interactions = {
 			[interaction_type.CURSOR_MOVE_RIGHT] = function()
@@ -55,4 +62,8 @@ local function Slider(props)
 	end
 end
 
-return createComponent("Slider", Slider, { title = "string", value = "number", config = "table" })
+return createComponent(
+	"Slider",
+	Slider,
+	{ title = "string", value = "number", config = "table", on_change = "function" }
+)

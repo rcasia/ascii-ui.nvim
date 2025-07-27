@@ -5,6 +5,7 @@ local ui = require("ascii-ui")
 local Select = ui.components.Select
 local it = require("plenary.async.tests").it
 local Paragraph = ui.components.Paragraph
+local Column = ui.layout.Column
 local Slider = ui.components.Slider
 local useState = require("ascii-ui.fiber").useState
 local Element = require("ascii-ui.buffer.element")
@@ -57,25 +58,29 @@ describe("ascii-ui", function()
 	end)
 
 	describe("sliders", function()
-		-- FIX: does not update on interaction due to unimplemented hooks for new architecture
-		pending("silders slide", function()
+		it("sliders slide", function()
 			local App = ui.createComponent("App", function()
 				return function()
-					return Slider({ title = "test-slider" })
+					return Column(
+						--
+						Slider({ title = "test-slider 1" }),
+						Slider({ title = "test-slider 2" })
+					)
 				end
-			end, {})
+			end)
 
 			local bufnr = ui.mount(App)
 			assert(buffer_contains(bufnr, "0%"))
 
+			feed("j")
 			feed("llllll")
 			assert(buffer_contains(bufnr, "60%"), "no encuentra 60%")
 
 			feed("hhh")
-			assert(buffer_contains(bufnr, "0%"), "no encuentra 0%")
+			assert(buffer_contains(bufnr, "30%"), "no encuentra 30%")
 
 			feed("j")
-			assert(cursor_is_in_line(3), "no está en 3")
+			assert(cursor_is_in_line(5), "no está en 5")
 
 			feed("ll")
 			assert(buffer_contains(bufnr, "20%"), "no encuentra 20%")
