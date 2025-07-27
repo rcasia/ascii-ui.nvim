@@ -11,7 +11,7 @@ local levels = {
 }
 
 -- Set default log level
-Logger.level = levels.DEBUG
+Logger.level = levels.INFO
 
 local RUNNING_ON_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 

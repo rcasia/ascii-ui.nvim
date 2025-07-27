@@ -1,5 +1,7 @@
 --- @class ascii-ui.Config
 local config = {
+	---@type ascii-ui.Logger.LogLevel
+	log_level = "INFO",
 	characters = {
 		top_left = "╭",
 		top_right = "╮",

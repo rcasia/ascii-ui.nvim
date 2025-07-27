@@ -209,6 +209,8 @@ end
 function AsciiUI.setup(config)
 	config = config or {}
 	user_config.set(config)
+
+	logger.set_level(user_config.get().log_level)
 	return AsciiUI
 end
 

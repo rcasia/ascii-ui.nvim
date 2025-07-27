@@ -2,7 +2,7 @@ local logger = require("ascii-ui.logger")
 
 local DEFAULT_CONFIG = require("ascii-ui.config")
 
---- @type ascii-ui.Config?
+--- @type ascii-ui.Config
 local _config = DEFAULT_CONFIG
 
 return {
