@@ -1,39 +1,39 @@
 ---
---- metrics.lua — módulo mínimo para contar y mostrar métricas simples
+--- metrics.lua — minimal module for counting and displaying simple metrics
 ---
---- Uso básico:
+--- Basic usage:
 ---   local metrics = require('metrics')
----   metrics:inc('hits')     -- suma 1
----   metrics:inc('foo', 3)   -- suma 3
+---   metrics:inc('hits')     -- adds 1
+---   metrics:inc('foo', 3)   -- adds 3
 ---   metrics:set('bar', 10)
----   metrics:show()          -- muestra un popup con las métricas
+---   metrics:show()          -- displays a popup with the metrics
 ---
---- (Opcional) Crear comandos de usuario desde init.lua:
+--- (Optional) Create user commands from init.lua:
 ---   vim.api.nvim_create_user_command('MetricsShow', function() require('metrics').show() end, {})
 ---   vim.api.nvim_create_user_command('MetricInc', function(opts)
 ---     require('metrics').inc(opts.fargs[1], tonumber(opts.fargs[2]) or 1)
 ---   end, { nargs = '+', complete = 'file' })
 ---
---- Todas las anotaciones usan **LuaCATS** (formato de tipos para LuaLS / sumneko).
+--- All annotations use **LuaCATS** (type format for LuaLS / sumneko).
 ---
 
 ---@alias MetricsKey string
 ---@alias MetricsValue number
 ---@alias MetricsStore table<MetricsKey, MetricsValue>
 
---- Opciones para `show`.
+--- Options for `show`.
 ---@class MetricsShowOpts
----@field max_height? integer # alto máximo del popup.
----@field border? string      # estilo de borde para `nvim_open_win` (p. ej. "rounded", "single").
+---@field max_height? integer # maximum height of the popup.
+---@field border? string      # border style for `nvim_open_win` (e.g., "rounded", "single").
 
---- API pública del módulo de métricas.
+--- Public API of the metrics module.
 ---@class Metrics
----@field get fun(key: MetricsKey): MetricsValue              # Obtiene el valor actual (0 si no existe).
----@field set fun(key: MetricsKey, value: MetricsValue): MetricsValue  # Fija un valor exacto y lo devuelve.
----@field inc fun(key: MetricsKey, amount?: integer): MetricsValue     # Incrementa el valor y devuelve el nuevo total.
----@field reset fun()                                           # Borra todas las métricas.
----@field all fun(): MetricsStore                                # Copia superficial de todas las métricas.
----@field show fun(opts?: MetricsShowOpts): integer            # Abre un popup y devuelve el winid.
+---@field get fun(key: MetricsKey): MetricsValue              # Gets the current value (0 if it does not exist).
+---@field set fun(key: MetricsKey, value: MetricsValue): MetricsValue  # Sets an exact value and returns it.
+---@field inc fun(key: MetricsKey, amount?: integer): MetricsValue     # Increments the value and returns the new total.
+---@field reset fun()                                           # Clears all metrics.
+---@field all fun(): MetricsStore                                # Shallow copy of all metrics.
+---@field show fun(opts?: MetricsShowOpts): integer            # Opens a popup and returns the winid.
 local Metrics = {}
 
 -- Almacenamiento en memoria
