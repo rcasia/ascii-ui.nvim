@@ -201,6 +201,7 @@ Parameters ~
 @field private repeatingEffects? function[]
 @field private pendingEffects? function[]
 @field private pendingCleanups? function[]
+@field id string
 @field type string
 @field tag "PLACEMENT" | "REPLACEMENT" | "UPDATE" | "NONE"
 @field props table | nil
@@ -320,6 +321,11 @@ hooks or effects.
                          `FiberNode:pending_effects`()
 @return function[]
 
+------------------------------------------------------------------------------
+                                                        *FiberNode:get_buffer()*
+                            `FiberNode:get_buffer`()
+@return ascii-ui.Buffer
+
 
 ==============================================================================
 ------------------------------------------------------------------------------
@@ -353,6 +359,112 @@ It will exclude the functions from the comparison
 @param t1 table
 @param t2 table
 @return boolean
+
+
+==============================================================================
+------------------------------------------------------------------------------
+
+metrics.lua — módulo mínimo para contar y mostrar métricas simples
+
+Uso básico:
+  local metrics = require('metrics')
+  metrics:inc('hits')     -- suma 1
+  metrics:inc('foo', 3)   -- suma 3
+  metrics:set('bar', 10)
+  metrics:show()          -- muestra un popup con las métricas
+
+(Opcional) Crear comandos de usuario desde init.lua:
+  vim.api.nvim_create_user_command('MetricsShow', function() require('metrics').show() end, {})
+  vim.api.nvim_create_user_command('MetricInc', function(opts)
+    require('metrics').inc(opts.fargs[1], tonumber(opts.fargs[2]) or 1)
+  end, { nargs = '+', complete = 'file' })
+
+Todas las anotaciones usan **LuaCATS** (formato de tipos para LuaLS / sumneko).
+
+------------------------------------------------------------------------------
+Opciones para `show`.
+Class ~
+{MetricsShowOpts}
+Fields ~
+{max_height} `(optional)` `(integer)` # alto máximo del popup.
+{border} `(optional)` `(string)`      # estilo de borde para `nvim_open_win` (p. ej. "rounded", "single").
+
+------------------------------------------------------------------------------
+                                                                       *Metrics*
+                                   `Metrics`
+API pública del módulo de métricas.
+Class ~
+{Metrics}
+Fields ~
+{get} `(fun(key: string): number)`              # Obtiene el valor actual (0 si no existe).
+{set} `(fun(key: string, value: number): number)`  # Fija un valor exacto y lo devuelve.
+{inc} `(fun(key: string, amount?: integer): number)`     # Incrementa el valor y devuelve el nuevo total.
+{reset} `(fun())`                                           # Borra todas las métricas.
+{all} `(fun(): table<string, number>)`                                # Copia superficial de todas las métricas.
+{show} `(fun(opts?: MetricsShowOpts): integer)`            # Abre un popup y devuelve el winid.
+
+------------------------------------------------------------------------------
+                                                                         *store*
+                                    `store`
+Type ~
+`(table<string, number>)`
+
+------------------------------------------------------------------------------
+                                                                 *Metrics.get()*
+                              `Metrics.get`({key})
+Devuelve el valor actual (0 si no existe).
+Parameters ~
+{key} `(string)`
+Return ~
+`(number)` value
+
+------------------------------------------------------------------------------
+                                                                 *Metrics.set()*
+                         `Metrics.set`({key}, {value})
+Establece un valor exacto y lo devuelve.
+Parameters ~
+{key} `(string)`
+{value} `(number)`
+Return ~
+`(number)` new_value
+
+------------------------------------------------------------------------------
+                                                                 *Metrics.inc()*
+                         `Metrics.inc`({key}, {amount})
+Incrementa (por defecto +1) y devuelve el nuevo total.
+Parameters ~
+{key} `(string)`
+{amount} `(optional)` `(integer)`
+Return ~
+`(number)` new_total
+
+------------------------------------------------------------------------------
+                                                               *Metrics.reset()*
+                               `Metrics.reset`()
+Reinicia todo el almacén de métricas.
+
+------------------------------------------------------------------------------
+                                                                 *Metrics.all()*
+                                `Metrics.all`()
+Devuelve una copia con todas las métricas.
+Return ~
+`(table<string, number>)` copy
+
+------------------------------------------------------------------------------
+                                                                    *as_lines()*
+                                  `as_lines`()
+Convierte a líneas de texto para mostrar.
+Return ~
+`(string[])` lines
+
+------------------------------------------------------------------------------
+                                                                *Metrics.show()*
+                             `Metrics.show`({opts})
+Muestra un popup muy simple con las métricas.
+Parameters ~
+{opts} `(optional)` `(MetricsShowOpts)`
+Return ~
+`(integer)` winid
 
 
 ==============================================================================
@@ -696,7 +808,7 @@ end
 ```
 
 @param fn function The callback to run as a side effect.
-@param observed_values? function[] Optional table of state getter functions to observe. If provided, the effect re-runs only when any observed value changes.
+@param observed_values? any[] Optional table of state getter functions to observe. If provided, the effect re-runs only when any observed value changes.
 
 
 ==============================================================================

@@ -6,6 +6,7 @@ local user_interations = require("ascii-ui.user_interactions")
 
 local on_select = function(window)
 	vim.keymap.set("n", config.keymaps.select, function()
+		logger.debug("--------- USER-INTERACTIONS SELECT ---------")
 		logger.debug("Select key pressed, interacting with user interactions")
 		local bufnr = vim.api.nvim_get_current_buf()
 		local position = Cursor.current_position()

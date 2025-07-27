@@ -43,6 +43,7 @@ FiberNode.resetFrom()	ascii-ui.txt	/*FiberNode.resetFrom()*
 FiberNode:add_cleanup()	ascii-ui.txt	/*FiberNode:add_cleanup()*
 FiberNode:add_effect()	ascii-ui.txt	/*FiberNode:add_effect()*
 FiberNode:clone_for_diff()	ascii-ui.txt	/*FiberNode:clone_for_diff()*
+FiberNode:get_buffer()	ascii-ui.txt	/*FiberNode:get_buffer()*
 FiberNode:get_line()	ascii-ui.txt	/*FiberNode:get_line()*
 FiberNode:is_same()	ascii-ui.txt	/*FiberNode:is_same()*
 FiberNode:iter()	ascii-ui.txt	/*FiberNode:iter()*
@@ -62,6 +63,13 @@ Layout	ascii-ui.txt	/*Layout*
 Logger	ascii-ui.txt	/*Logger*
 Logger.set_level()	ascii-ui.txt	/*Logger.set_level()*
 M.memoize()	ascii-ui.txt	/*M.memoize()*
+Metrics	ascii-ui.txt	/*Metrics*
+Metrics.all()	ascii-ui.txt	/*Metrics.all()*
+Metrics.get()	ascii-ui.txt	/*Metrics.get()*
+Metrics.inc()	ascii-ui.txt	/*Metrics.inc()*
+Metrics.reset()	ascii-ui.txt	/*Metrics.reset()*
+Metrics.set()	ascii-ui.txt	/*Metrics.set()*
+Metrics.show()	ascii-ui.txt	/*Metrics.show()*
 Paragraph()	ascii-ui.txt	/*Paragraph()*
 Renderer	ascii-ui.txt	/*Renderer*
 Renderer:new()	ascii-ui.txt	/*Renderer:new()*
@@ -92,6 +100,7 @@ Window:position()	ascii-ui.txt	/*Window:position()*
 Window:update()	ascii-ui.txt	/*Window:update()*
 _	ascii-ui.txt	/*_*
 _useEffect()	ascii-ui.txt	/*_useEffect()*
+as_lines()	ascii-ui.txt	/*as_lines()*
 ascii-ui.hooks.useEffect()	ascii-ui.txt	/*ascii-ui.hooks.useEffect()*
 ascii-ui.hooks.useFunctionRegistry()	ascii-ui.txt	/*ascii-ui.hooks.useFunctionRegistry()*
 ascii-ui.hooks.useReducer()	ascii-ui.txt	/*ascii-ui.hooks.useReducer()*
@@ -114,6 +123,7 @@ performUnitOfWork()	ascii-ui.txt	/*performUnitOfWork()*
 props_are_equal()	ascii-ui.txt	/*props_are_equal()*
 reconcileChildren()	ascii-ui.txt	/*reconcileChildren()*
 rerender()	ascii-ui.txt	/*rerender()*
+store	ascii-ui.txt	/*store*
 useEffect()	ascii-ui.txt	/*useEffect()*
 useFunctionRegistry()	ascii-ui.txt	/*useFunctionRegistry()*
 useReducer()	ascii-ui.txt	/*useReducer()*

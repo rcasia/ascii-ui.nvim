@@ -50,13 +50,17 @@ function AsciiUI.mount(AppComponent)
 
 	EventListener:listen("state_change", function()
 		local rerender_start = vim.uv.hrtime()
+		logger.info("------------------")
+		logger.info("Rerendering component")
+		logger.info("------------------")
 
 		logger.info("Rerendering on state change for window %d and buffer %d", window.winid, window.bufnr)
 		local current_lines_count = rendered_buffer:height()
 		-- rendered_buffer = ascii_renderer:render(Component) -- assign variable to have change the referenced value
-		rendered_buffer = rerender(fiberRoot)
+		rendered_buffer, fiberRoot = rerender(fiberRoot)
 		fiber.debugPrint(fiberRoot, logger.debug)
 		local new_lines_count = rendered_buffer:height()
+		rendered_buffer = fiberRoot:get_buffer()
 		window:update(rendered_buffer)
 
 		-- rebind the buffer to the window

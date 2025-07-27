@@ -28,7 +28,7 @@ local fiber = require("ascii-ui.fiber")
 --- ```
 ---
 --- @param fn function The callback to run as a side effect.
---- @param observed_values? function[] Optional table of state getter functions to observe. If provided, the effect re-runs only when any observed value changes.
+--- @param observed_values? any[] Optional table of state getter functions to observe. If provided, the effect re-runs only when any observed value changes.
 local useEffect = function(fn, observed_values)
 	return fiber._useEffect(fn, observed_values)
 end
