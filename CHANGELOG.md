@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.4.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.3.0...v0.4.0) (2025-07-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* first fiber implementation ([#35](https://github.com/rcasia/ascii-ui.nvim/issues/35))
+
+### Features
+
+* add hexacolor.lua ([8a477fd](https://github.com/rcasia/ascii-ui.nvim/commit/8a477fd56e65dbf37ab686bc3c500c81d6c3e00c))
+* add iter function to FiberNode ([8964264](https://github.com/rcasia/ascii-ui.nvim/commit/89642645226e78477d3b788944c5b380fa286602))
+* add props_are_equal for prop comparison ([9974603](https://github.com/rcasia/ascii-ui.nvim/commit/9974603b38c4c6479789cddaca9c38ea1a192dbe))
+* add static method to recognize Buffer, Bufferline and Segment ([a958d49](https://github.com/rcasia/ascii-ui.nvim/commit/a958d4959c379323b47bd6f120527f46d5be974f))
+* changes on component props are reflected when depending on ancestors hooks ([c005e6a](https://github.com/rcasia/ascii-ui.nvim/commit/c005e6ab848ec2217becc8574a8228aee95f27f4))
+* expose fiber's useState and useEffect ([635a2d9](https://github.com/rcasia/ascii-ui.nvim/commit/635a2d99d613e40e53229e42b6a4fd95f4ac5108))
+* **fibernode:** expand fibernode methods ([01593eb](https://github.com/rcasia/ascii-ui.nvim/commit/01593ebe7e6ce3292014d95c610800b7e9c2807c))
+* first fiber implementation ([#35](https://github.com/rcasia/ascii-ui.nvim/issues/35)) ([32bcd8d](https://github.com/rcasia/ascii-ui.nvim/commit/32bcd8d9f440f6bfebfba661db6f8bc3c65d5b9d))
+* use fiber tags for rerendering control ([126bfc3](https://github.com/rcasia/ascii-ui.nvim/commit/126bfc322c1f4bf37880fc933bd1ceeb5304306d))
+
+
+### Bug Fixes
+
+* avoid infinite rerenders when there a useState.set invocation inside an useEffect ([#39](https://github.com/rcasia/ascii-ui.nvim/issues/39)) ([0522237](https://github.com/rcasia/ascii-ui.nvim/commit/05222371ba152e752760734543c8f043006dc6d7))
+* cursor focuses on last focusable on left ([ab446c0](https://github.com/rcasia/ascii-ui.nvim/commit/ab446c0649a8c5f69e109d67f13d9313785fd0a1))
+* cursor focuses on next focusable on right ([cb507a5](https://github.com/rcasia/ascii-ui.nvim/commit/cb507a52c67b37aea69b7ba7f7056a187df4e086))
+* do not call cleanup when setting value in useState ([43fbca1](https://github.com/rcasia/ascii-ui.nvim/commit/43fbca1ed1164bc91aad2ec1d94404214c189f22))
+* find element when selecting on it by the left edge ([34642e0](https://github.com/rcasia/ascii-ui.nvim/commit/34642e09d1a92ec54be70ce4de5d3754f2c879b1))
+* recognize focusables that are not the first in line ([be7253f](https://github.com/rcasia/ascii-ui.nvim/commit/be7253fa0784ddae5c05281747026bb35f670793))
+* set col count to keep into account utf-32 as before ([4dca51c](https://github.com/rcasia/ascii-ui.nvim/commit/4dca51c372d156217000be079e4182fa2e46a7b4))
+* **slider:** use correct hook for initial value ([7483a53](https://github.com/rcasia/ascii-ui.nvim/commit/7483a534c707f11f1c5e185caa349f68ef5cb671))
+* when cursor cannot go up does not go left anymore ([8170569](https://github.com/rcasia/ascii-ui.nvim/commit/8170569c18f5daa342bb1c5f3dec663ca1ca7a84))
+
+
+### Miscellaneous Chores
+
+* release 0.4.0 ([0df3cbe](https://github.com/rcasia/ascii-ui.nvim/commit/0df3cbe14f2241004b048b1a75ebcd039048b3ad))
+
 ## [0.3.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.2.0...v0.3.0) (2025-06-01)
 
 
