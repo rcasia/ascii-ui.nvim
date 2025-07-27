@@ -4,6 +4,7 @@ local Hooks = {
 	useEffect = require("ascii-ui.hooks.use_effect"),
 	useReducer = require("ascii-ui.hooks.use_reducer"),
 	useFunctionRegistry = require("ascii-ui.hooks.use_function_registry"),
+	useConfig = require("ascii-ui.hooks.use_config"),
 }
 
 return Hooks

@@ -2,6 +2,7 @@ local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
 local createComponent = require("ascii-ui.components.functional-component")
 local interaction_type = require("ascii-ui.interaction_type")
+local useConfig = require("ascii-ui.hooks.use_config")
 local useEffect = require("ascii-ui.hooks.use_effect")
 local useState = require("ascii-ui.hooks.use_state")
 
@@ -15,7 +16,7 @@ end
 
 --- @param props? { title?: string, value?: integer, on_change?: fun(value: integer) }
 local function Slider(props)
-	local config = require("ascii-ui.config")
+	local config = useConfig()
 	props = props or {}
 	props.value = props.value or 0
 	props.title = props.title or ""

@@ -1,11 +1,12 @@
 local Element = require("ascii-ui.buffer.element")
 local createComponent = require("ascii-ui.components.functional-component")
+local useConfig = require("ascii-ui.hooks.use_config")
 
 ---@alias ascii-ui.BoxProps { width: integer, height: integer, content: string }
 
 ---@param props ascii-ui.BoxProps
 local function Box(props)
-	local config = require("ascii-ui.config")
+	local config = useConfig()
 	props = props or {}
 	props.width = props.width or 15
 	props.height = props.height or 3

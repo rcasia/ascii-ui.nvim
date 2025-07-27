@@ -89,21 +89,17 @@ Retrieve the highlight group name
                                    `Renderer`
 Class ~
 {ascii-ui.Renderer}
-@field config ascii-ui.Config
 
 ------------------------------------------------------------------------------
                                                                 *Renderer:new()*
-                            `Renderer:new`({config})
-Parameters ~
-{config} `(optional)` { `(characters)`: { top_left: string, top_right: string,
-bottom_left: string, bottom_right: string, horizontal: string, vertical: string } }
+                                `Renderer:new`()
 @return ascii-ui.Renderer
 
 ------------------------------------------------------------------------------
                                                              *Renderer:render()*
                         `Renderer:render`({renderable})
 Parameters ~
-{renderable} `(string | fun(config: ascii-ui.Config): ascii-ui.FiberNode[])`
+{renderable} `(string | fun(): ascii-ui.FiberNode[])`
 Return ~
 `(ascii)`-ui.Buffer
 Return ~
@@ -807,6 +803,22 @@ end
 
 @param fn function The callback to run as a side effect.
 @param observed_values? any[] Optional table of state getter functions to observe. If provided, the effect re-runs only when any observed value changes.
+
+
+==============================================================================
+------------------------------------------------------------------------------
+ascii-ui.hooks.useUserConfig() *ascii-ui.hooks.useUserConfig()*
+
+------------------------------------------------------------------------------
+                                                                   *useConfig()*
+                                 `useConfig`()
+
+Provides access to the current user configuration for ascii-ui.
+This hook returns a deep copy of the user's configuration table,
+allowing components to read configuration values without risk of
+mutating the global config.
+
+@return ascii-ui.Config config A deep copy of the current user configuration.
 
 
 ==============================================================================

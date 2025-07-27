@@ -106,6 +106,7 @@ ascii-ui.hooks.useEffect()	ascii-ui.txt	/*ascii-ui.hooks.useEffect()*
 ascii-ui.hooks.useFunctionRegistry()	ascii-ui.txt	/*ascii-ui.hooks.useFunctionRegistry()*
 ascii-ui.hooks.useReducer()	ascii-ui.txt	/*ascii-ui.hooks.useReducer()*
 ascii-ui.hooks.useState()	ascii-ui.txt	/*ascii-ui.hooks.useState()*
+ascii-ui.hooks.useUserConfig()	ascii-ui.txt	/*ascii-ui.hooks.useUserConfig()*
 ascii-ui.nvim-ascii-ui.nvim	ascii-ui.nvim.txt	/*ascii-ui.nvim-ascii-ui.nvim*
 ascii-ui.nvim-ascii-ui.nvim-example	ascii-ui.nvim.txt	/*ascii-ui.nvim-ascii-ui.nvim-example*
 ascii-ui.nvim-links	ascii-ui.nvim.txt	/*ascii-ui.nvim-links*
@@ -125,6 +126,7 @@ props_are_equal()	ascii-ui.txt	/*props_are_equal()*
 reconcileChildren()	ascii-ui.txt	/*reconcileChildren()*
 rerender()	ascii-ui.txt	/*rerender()*
 store	ascii-ui.txt	/*store*
+useConfig()	ascii-ui.txt	/*useConfig()*
 useEffect()	ascii-ui.txt	/*useEffect()*
 useFunctionRegistry()	ascii-ui.txt	/*useFunctionRegistry()*
 useReducer()	ascii-ui.txt	/*useReducer()*

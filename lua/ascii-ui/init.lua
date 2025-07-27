@@ -1,7 +1,6 @@
 local Cursor = require("ascii-ui.cursor")
 local EventListener = require("ascii-ui.events")
 local Window = require("ascii-ui.window")
--- local config = require("ascii-ui.config")
 local i = require("ascii-ui.interaction_type")
 local logger = require("ascii-ui.logger")
 local user_interations = require("ascii-ui.user_interactions")

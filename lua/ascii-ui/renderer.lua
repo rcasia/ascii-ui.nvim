@@ -6,19 +6,13 @@ local logger = require("ascii-ui.logger")
 local xml = require("ascii-ui.lib.xml2lua")
 
 ---@class ascii-ui.Renderer
---- @field config ascii-ui.Config
 local Renderer = {}
 
 Renderer.component_tags = {}
 
----@param config? { characters: { top_left: string, top_right: string,
---- bottom_left: string, bottom_right: string, horizontal: string, vertical: string } }
 --- @return ascii-ui.Renderer
-function Renderer:new(config)
-	config = config or {}
-	local state = {
-		config = config,
-	}
+function Renderer:new()
+	local state = {}
 
 	setmetatable(state, self)
 	self.__index = self
@@ -26,7 +20,7 @@ function Renderer:new(config)
 	return state
 end
 
----@param renderable string | fun(config: ascii-ui.Config): ascii-ui.FiberNode[]
+---@param renderable string | fun(): ascii-ui.FiberNode[]
 ---@return ascii-ui.Buffer
 ---@return ascii-ui.FiberNode?
 function Renderer:render(renderable)
