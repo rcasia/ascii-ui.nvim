@@ -54,13 +54,13 @@ describe("Tree Component", function()
 			return Tree({ tree = tree })
 		end, {})
 
-		eq(
-			vim.trim([[node-1
- ╰╮▾ node-1-1
- │╰─ node-1-1-1
- ╰─ node-1-2]]),
-			renderer:render(App):to_string()
-		)
+		eq({
+			--
+			"node-1",
+			" ╰╮─ ▾ node-1-1",
+			" │╰─ node-1-1-1",
+			" ╰─ node-1-2",
+		}, renderer:render(App):to_lines())
 	end)
 
 	it("renders last level one node with space before its children", function()
@@ -76,17 +76,15 @@ describe("Tree Component", function()
 		local App = ui.createComponent("App", function()
 			return Tree({ tree = tree })
 		end, {})
-		local result = renderer:render(App):to_string()
 
-		eq(
-			[[node-1
- ├─ node-1-1
- ├─ node-1-2
- ╰╮▾ node-1-3
-  ╰╮▾ node-1-3-1
-   ╰─ node-1-3-1-1]],
-			result
-		)
+		eq({
+			"node-1",
+			" ├─ node-1-1",
+			" ├─ node-1-2",
+			" ╰╮─ ▾ node-1-3",
+			"  ╰╮─ ▾ node-1-3-1",
+			"   ╰─ node-1-3-1-1",
+		}, renderer:render(App):to_lines())
 	end)
 
 	it("renders nodes that are not expanded", function()

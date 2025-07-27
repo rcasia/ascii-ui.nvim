@@ -25,7 +25,7 @@ local function Tree(props)
 	local LEAF_PREFIX = cc.bottom_left .. cc.horizontal .. cc.whitespace
 	local LEFT_TREE_PREFIX = cc.left_tree .. cc.horizontal .. cc.whitespace
 	local RIGHT_TRIANGULE = cc.right_triangule .. cc.whitespace
-	local DOWN_TRIANGULE = cc.down_triangule .. cc.whitespace
+	local DOWN_TRIANGULE = cc.horizontal .. cc.whitespace .. cc.down_triangule .. cc.whitespace
 
 	if props.tree.expanded == nil then
 		props.tree.expanded = true
