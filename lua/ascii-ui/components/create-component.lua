@@ -60,10 +60,12 @@ local function from_function_prop(props, types)
 		end)
 end
 
+--- @alias ascii-ui.TemplateString string
+
 --- Crea un componente personalizado y lo registra
 --- @generic ascii-ui.ComponentClosure, T
 --- @param name string Nombre del componente
---- @param functional_component fun(props: T): ascii-ui.FiberNode[]
+--- @param functional_component fun(props: T): ascii-ui.FiberNode[] | ascii-ui.TemplateString
 --- @param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
 --- @return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
 local function createComponent(name, functional_component, types)
