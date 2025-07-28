@@ -28,7 +28,6 @@ local useState = ui.hooks.useState
 local App = ui.createComponent("App", function()
   local content, setContent = useState("initial content")
   return {
-   --
    Paragraph({ content = content }),
    Button({
     label = "change",
