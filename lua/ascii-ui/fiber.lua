@@ -54,13 +54,12 @@ end
 --- @param new_children ascii-ui.FiberNode[]
 local function reconcileChildren(parent, new_children)
 	assert(type(new_children) == "table", "new_children should be a table, got: " .. type(new_children))
-	assert(parent.output or parent.tag == "PLACEMENT" or parent.tag == "REPLACEMENT")
 	assert(
 		--- @param node ascii-ui.FiberNode
 		vim.iter(new_children):all(function(node)
 			return FiberNode.is_node(node)
 		end),
-		"cannot reconcile parent with objects that are not FiberNodes"
+		"cannot reconcile parent with objects that are not FiberNodes. Found:" .. vim.inspect(new_children[1])
 	)
 
 	logger.debug(

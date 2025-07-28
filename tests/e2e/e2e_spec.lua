@@ -5,7 +5,6 @@ local ui = require("ascii-ui")
 local Select = ui.components.Select
 local it = require("plenary.async.tests").it
 local Paragraph = ui.components.Paragraph
-local Column = ui.layout.Column
 local Slider = ui.components.Slider
 local useState = require("ascii-ui.fiber").useState
 local Element = require("ascii-ui.buffer.element")
@@ -60,13 +59,11 @@ describe("ascii-ui", function()
 	describe("sliders", function()
 		it("sliders slide", function()
 			local App = ui.createComponent("App", function()
-				return function()
-					return Column(
-						--
-						Slider({ title = "test-slider 1" }),
-						Slider({ title = "test-slider 2" })
-					)
-				end
+				return {
+					--
+					Slider({ title = "test-slider 1" }),
+					Slider({ title = "test-slider 2" }),
+				}
 			end)
 
 			local bufnr = ui.mount(App)
@@ -80,7 +77,7 @@ describe("ascii-ui", function()
 			assert(buffer_contains(bufnr, "30%"), "no encuentra 30%")
 
 			feed("j")
-			assert(cursor_is_in_line(5), "no está en 5")
+			assert(cursor_is_in_line(4), "no está en la línea 4")
 
 			feed("ll")
 			assert(buffer_contains(bufnr, "20%"), "no encuentra 20%")

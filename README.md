@@ -27,7 +27,7 @@ local useState = ui.hooks.useState
 
 local App = ui.createComponent("App", function()
   local content, setContent = useState("initial content")
-  return Column(
+  return {
    --
    Paragraph({ content = content }),
    Button({
@@ -36,7 +36,7 @@ local App = ui.createComponent("App", function()
      setContent("changed content")
     end,
    })
-  )
+  }
 end)
 
 ui.mount(App)

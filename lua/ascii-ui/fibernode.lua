@@ -192,6 +192,13 @@ function FiberNode:unwrap_closure()
 
 	assert(vim.isarray(output), "FiberNode.closure should return an array of FiberNodes, got type: " .. type(output))
 	return vim.iter(output)
+		:map(function(node)
+			if node[1] then
+				-- If the node is wrapped in an array, unwrap it
+				node = node[1]
+			end
+			return node
+		end)
 		:map(function(item)
 			if Bufferline.is_bufferline(item) then --- @cast item ascii-ui.BufferLine
 				return FiberNode.new({ lines = item })
