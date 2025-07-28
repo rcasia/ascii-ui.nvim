@@ -1,5 +1,5 @@
 local Element = require("ascii-ui.buffer.element")
-local createComponent = require("ascii-ui.components.functional-component")
+local createComponent = require("ascii-ui.components.create-component")
 local highlights = require("ascii-ui.highlights")
 local interaction_type = require("ascii-ui.interaction_type")
 

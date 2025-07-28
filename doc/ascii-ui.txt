@@ -521,6 +521,48 @@ Genera una clave única basada en una tabla
 
 ==============================================================================
 ------------------------------------------------------------------------------
+@generic T
+@generic P : ascii-ui.ComponentProps
+@alias ComponentClosure fun(): ascii-ui.BufferLine[]
+@alias ascii-ui.ComponentProp<T> T | fun(): T
+@alias ascii-ui.ComponentProps table<string, ascii-ui.ComponentProp<any>>
+@alias ascii-ui.FunctionalComponent<P> fun(props: P): ComponentClosure
+
+------------------------------------------------------------------------------
+@alias ascii-ui.PropsType
+"nil"
+"number"
+"string"
+"boolean"
+"table"
+"function"
+
+------------------------------------------------------------------------------
+                                                              *validate_props()*
+                       `validate_props`({props}, {types})
+@param props table<string, any>
+@param types table<string, ascii-ui.PropsType>
+
+------------------------------------------------------------------------------
+                                                          *from_function_prop()*
+                     `from_function_prop`({props}, {types})
+@param props table<string, any>
+@param types table<string, ascii-ui.PropsType>
+@return table<string, any>
+
+------------------------------------------------------------------------------
+                                                             *createComponent()*
+           `createComponent`({name}, {functional_component}, {types})
+Crea un componente personalizado y lo registra
+@generic ascii-ui.ComponentClosure, T
+@param name string Nombre del componente
+@param functional_component fun(props: T): fun(): ascii-ui.BufferLine[]
+@param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
+@return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
+
+
+==============================================================================
+------------------------------------------------------------------------------
                                                                     *Components*
                                   `Components`
 @class ascii-ui.Components
@@ -611,48 +653,6 @@ Parameters ~
                                  `Box`({props})
 Parameters ~
 {props} `({ width: integer, height: integer, content: string })`
-
-
-==============================================================================
-------------------------------------------------------------------------------
-@generic T
-@generic P : ascii-ui.ComponentProps
-@alias ComponentClosure fun(): ascii-ui.BufferLine[]
-@alias ascii-ui.ComponentProp<T> T | fun(): T
-@alias ascii-ui.ComponentProps table<string, ascii-ui.ComponentProp<any>>
-@alias ascii-ui.FunctionalComponent<P> fun(props: P): ComponentClosure
-
-------------------------------------------------------------------------------
-@alias ascii-ui.PropsType
-"nil"
-"number"
-"string"
-"boolean"
-"table"
-"function"
-
-------------------------------------------------------------------------------
-                                                              *validate_props()*
-                       `validate_props`({props}, {types})
-@param props table<string, any>
-@param types table<string, ascii-ui.PropsType>
-
-------------------------------------------------------------------------------
-                                                          *from_function_prop()*
-                     `from_function_prop`({props}, {types})
-@param props table<string, any>
-@param types table<string, ascii-ui.PropsType>
-@return table<string, any>
-
-------------------------------------------------------------------------------
-                                                             *createComponent()*
-           `createComponent`({name}, {functional_component}, {types})
-Crea un componente personalizado y lo registra
-@generic ascii-ui.ComponentClosure, T
-@param name string Nombre del componente
-@param functional_component fun(props: T): fun(): ascii-ui.BufferLine[]
-@param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
-@return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
 
 
 ==============================================================================

@@ -1,5 +1,5 @@
 local Element = require("ascii-ui.buffer.element")
-local createComponent = require("ascii-ui.components.functional-component")
+local createComponent = require("ascii-ui.components.create-component")
 
 ---@param props { active?: boolean, label?: string }
 local function Checkbox(props)

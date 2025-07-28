@@ -1,5 +1,5 @@
 local Element = require("ascii-ui.buffer.element")
-local createComponent = require("ascii-ui.components.functional-component")
+local createComponent = require("ascii-ui.components.create-component")
 local useConfig = require("ascii-ui.hooks.use_config")
 
 ---@alias ascii-ui.BoxProps { width: integer, height: integer, content: string }

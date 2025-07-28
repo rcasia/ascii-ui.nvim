@@ -1,6 +1,6 @@
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Element = require("ascii-ui.buffer.element")
-local createComponent = require("ascii-ui.components.functional-component")
+local createComponent = require("ascii-ui.components.create-component")
 local interaction_type = require("ascii-ui.interaction_type")
 local useConfig = require("ascii-ui.hooks.use_config")
 local useEffect = require("ascii-ui.hooks.use_effect")

@@ -30,7 +30,7 @@ function Renderer:render(renderable)
 
 	if type(renderable) == "string" then
 		local fibernodes = self:render_xml(renderable)
-		local createComponent = require("ascii-ui.components.functional-component")
+		local createComponent = require("ascii-ui.components.create-component")
 		local Component = createComponent("innerxml", function()
 			return function()
 				return fibernodes

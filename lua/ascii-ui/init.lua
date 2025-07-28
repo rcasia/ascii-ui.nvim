@@ -16,7 +16,7 @@ local is_callable = require("ascii-ui.utils.is_callable")
 local AsciiUI = {
 	--- This contains all the components available in the library
 	components = require("ascii-ui.components"),
-	createComponent = require("ascii-ui.components.functional-component"),
+	createComponent = require("ascii-ui.components.create-component"),
 	hooks = require("ascii-ui.hooks"),
 	--- This contains the layout class
 	layout = require("ascii-ui.layout"),

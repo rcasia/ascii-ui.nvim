@@ -1,4 +1,4 @@
-local createComponent = require("ascii-ui.components.functional-component")
+local createComponent = require("ascii-ui.components.create-component")
 
 --- @class ascii-ui.ForComponentProps
 --- @field props? table[]

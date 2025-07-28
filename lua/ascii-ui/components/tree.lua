@@ -1,6 +1,6 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
 local Segment = require("ascii-ui.buffer.element")
-local createComponent = require("ascii-ui.components.functional-component")
+local createComponent = require("ascii-ui.components.create-component")
 
 local useState = require("ascii-ui.fiber").useState
 local i = require("ascii-ui.interaction_type")
