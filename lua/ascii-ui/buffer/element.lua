@@ -1,7 +1,14 @@
 local interaction_type = require("ascii-ui.interaction_type")
 
----@alias ascii-ui.SegmentOpts { content: string, is_focusable?: boolean, interactions?: table<ascii-ui.UserInteractions.InteractionType, function>, highlight?: string }
+--- @class ascii-ui.SegmentOpts
+--- @field content string does not support newlines
+--- @field is_focusable? boolean whether the segment can be focused
+--- @field interactions? table<ascii-ui.UserInteractions.InteractionType, function> a map of interaction types to functions
+--- @field highlight? string a highlight group name to apply to the segment
 
+---
+--- A segment is the minimal unit of a render in ascii-ui.
+--- It contains the content to be displayed, optional interactions, and can be highlighted.
 ---@class ascii-ui.Segment
 ---@field content string
 ---@field interactions table<ascii-ui.UserInteractions.InteractionType, function>
@@ -46,6 +53,10 @@ function Segment:new(...)
 	assert(type(props) == "table", "Element props must be a table. Found: " .. type(props) .. " " .. debug.traceback())
 
 	vim.validate({ content = { props.content, "string" } })
+
+	-- content cannot have newlines
+	assert(not props.content:find("\n", 1, true), "Segment content cannot contain newlines. Found: " .. props.content)
+
 	local state = {
 		id = generate_id(),
 		content = props.content,

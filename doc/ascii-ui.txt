@@ -936,8 +936,18 @@ Re-renderiza el árbol de fibers a partir de la raíz dada
 
 ==============================================================================
 ------------------------------------------------------------------------------
+@class ascii-ui.SegmentOpts
+@field content string does not support newlines
+@field is_focusable? boolean whether the segment can be focused
+@field interactions? table<ascii-ui.UserInteractions.InteractionType, function> a map of interaction types to functions
+@field highlight? string a highlight group name to apply to the segment
+
+------------------------------------------------------------------------------
                                                                        *Segment*
                                    `Segment`
+
+A segment is the minimal unit of a render in ascii-ui.
+It contains the content to be displayed, optional interactions, and can be highlighted.
 Class ~
 {ascii-ui.Segment}
 Fields ~
@@ -950,7 +960,7 @@ Fields ~
                                                                  *Segment:new()*
                               `Segment:new`({...})
 Parameters ~
-{...} `({ content: string, is_focusable?: boolean, interactions?: table<ascii-ui.UserInteractions.InteractionType, function>, highlight?: string }  | string)`
+{...} `(ascii)`-ui.SegmentOpts  | string
 Return ~
 `(ascii)`-ui.Segment
 

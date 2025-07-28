@@ -6,7 +6,11 @@ local createComponent = require("ascii-ui.components.create-component")
 --- @param props ascii-ui.ParagraphComponent.Props
 --- @return ascii-ui.BufferLine[]
 local function Paragraph(props)
-	return { Element:new({ content = props.content }):wrap() }
+	return vim.iter(vim.split(props.content or "", "\n", { plain = true }))
+		:map(function(line)
+			return Element:new({ content = line }):wrap()
+		end)
+		:totable()
 end
 
 return createComponent("Paragraph", Paragraph, { content = "string" })
