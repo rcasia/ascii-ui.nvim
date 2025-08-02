@@ -2,7 +2,9 @@
 
 check:
 	# running luacheck...
-	lx check
+	
+	# skipping lx check for now, it does not support offline mode
+	# lx check
 
 	# running doc check...
 	./scripts/check-docs

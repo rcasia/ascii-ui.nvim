@@ -25,23 +25,23 @@ describe("DSL", function()
 
 	pending("translates from composed dsl to buffer", function()
 		local actual = renderer:render([[
-		<Layout>
+		<Column>
 			<Paragraph content="Hello World!" />
-		</Layout>
+		</Column>
     ]])
 
 		eq([[Hello World!]], actual:to_string())
 
 		local actual_2 = renderer:render([[
-		<Layout>
+		<Column>
 			<Paragraph content="Hello from level 1!" />
-			<Layout>
+			<Column>
 				<Paragraph content="Hello from level 2!" />
-				<Layout>
+				<Column>
 					<Paragraph content="Hello from level 3!" />
-				</Layout>
-			</Layout>
-		</Layout>
+				</Column>
+			</Column>
+		</Column>
     ]])
 
 		eq(

@@ -8,10 +8,10 @@ local App = ui.createComponent("App", function()
 
 	return ([[
 
-		<Layout>
+		<Column>
 			<Paragraph content="Button Clicked %d times!" />
 			<Button label="Click me" on_press="%s" />
-		</Layout>
+		</Column>
 
 		]]):format(value, ref)
 end)

@@ -40,10 +40,10 @@ describe("ascii-ui", function()
 
 			return ([[
 
-		<Layout>
+		<Column>
 			<Paragraph content="%s" />
 			<Button label="Click me" on_press="%s" />
-		</Layout>
+		</Column>
 
 		]]):format(message, ref)
 		end)

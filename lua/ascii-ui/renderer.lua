@@ -47,7 +47,7 @@ end
 function Renderer:render_by_tag(tag_name, props, children)
 	logger.info("Rendering tag: " .. tag_name)
 	local instance
-	if tag_name == "Layout" then
+	if tag_name == "Column" then
 		local child_components = vim.iter(children)
 			:map(function(child)
 				return self:render_by_tag(child._name, child._attr, child._children)

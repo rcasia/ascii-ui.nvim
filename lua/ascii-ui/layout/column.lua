@@ -22,4 +22,4 @@ local function Column(...)
 	end
 end
 
-return createComponent("Layout", Column)
+return createComponent("Column", Column)
