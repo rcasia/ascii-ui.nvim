@@ -33,27 +33,25 @@ describe("useEffect", function()
 				set_time(tostring(os.date("%H:%M:%S")))
 				set_counter(counter + 1)
 				useEffect_invocations = useEffect_invocations + 1
-			end, 1000)
+			end, 33)
 		end, {})
 
 		return time
 	end
 
 	local App = ui.createComponent("App", function()
-		return function()
-			local time = useTimer()
-			return Column(
-				Paragraph({ content = "These are some clocks!" }),
-				--
-				Row(Button({ label = time }), Button({ label = time }))
-			)
-		end
+		local time = useTimer()
+		return Column(
+			Paragraph({ content = "These are some clocks!" }),
+			--
+			Row(Button({ label = time }), Button({ label = time }))
+		)
 	end)
 
 	-- FIXME: when there is useEffect
 	it("does run just once", function()
 		ui.mount(App)
-		vim.wait(3000, function()
+		vim.wait(100, function()
 			return false
 		end)
 

@@ -12,14 +12,12 @@ describe("useEffect", function()
 		local use_state_log = {}
 		local value, set_value
 		local Component = ui.createComponent("C", function()
-			return function()
-				value, set_value = ui.hooks.useState(0)
-				use_state_log[#use_state_log + 1] = "useState called with value: " .. tostring(value)
-				useEffect(function()
-					log[#log + 1] = "useEffect called"
-				end, {})
-				return { Element:new({ content = tostring(value) }):wrap() }
-			end
+			value, set_value = ui.hooks.useState(0)
+			use_state_log[#use_state_log + 1] = "useState called with value: " .. tostring(value)
+			useEffect(function()
+				log[#log + 1] = "useEffect called"
+			end, {})
+			return { Element:new({ content = tostring(value) }):wrap() }
 		end)
 
 		ui.mount(Component)
@@ -27,7 +25,7 @@ describe("useEffect", function()
 		set_value(1)
 		set_value(2)
 		set_value(3)
-		vim.wait(1000, function()
+		vim.wait(100, function()
 			return #use_state_log > 1
 		end)
 
@@ -40,15 +38,13 @@ describe("useEffect", function()
 		local value, set_value
 		local another_value, set_another_value
 		local Component = ui.createComponent("C", function()
-			return function()
-				value, set_value = ui.hooks.useState(0)
-				another_value, set_another_value = ui.hooks.useState(0)
-				use_state_log[#use_state_log + 1] = "useState called with value: " .. tostring(value)
-				useEffect(function()
-					log[#log + 1] = "useEffect called"
-				end, { value })
-				return { Element:new({ content = tostring(value) .. tostring(another_value) }):wrap() }
-			end
+			value, set_value = ui.hooks.useState(0)
+			another_value, set_another_value = ui.hooks.useState(0)
+			use_state_log[#use_state_log + 1] = "useState called with value: " .. tostring(value)
+			useEffect(function()
+				log[#log + 1] = "useEffect called"
+			end, { value })
+			return { Element:new({ content = tostring(value) .. tostring(another_value) }):wrap() }
 		end)
 
 		ui.mount(Component)
@@ -61,7 +57,7 @@ describe("useEffect", function()
 		set_another_value(3)
 		set_another_value(4)
 		set_another_value(5)
-		vim.wait(3000, function()
+		vim.wait(100, function()
 			return false
 		end)
 
@@ -74,15 +70,13 @@ describe("useEffect", function()
 		local value, set_value
 		local another_value, set_another_value
 		local Component = ui.createComponent("C", function()
-			return function()
-				value, set_value = ui.hooks.useState(0)
-				another_value, set_another_value = ui.hooks.useState(0)
-				use_state_log[#use_state_log + 1] = "useState called with value: " .. tostring(value)
-				useEffect(function()
-					log[#log + 1] = "useEffect called"
-				end)
-				return { Element:new({ content = tostring(value) .. tostring(another_value) }):wrap() }
-			end
+			value, set_value = ui.hooks.useState(0)
+			another_value, set_another_value = ui.hooks.useState(0)
+			use_state_log[#use_state_log + 1] = "useState called with value: " .. tostring(value)
+			useEffect(function()
+				log[#log + 1] = "useEffect called"
+			end)
+			return { Element:new({ content = tostring(value) .. tostring(another_value) }):wrap() }
 		end)
 
 		ui.mount(Component)
@@ -95,7 +89,7 @@ describe("useEffect", function()
 		set_another_value(3)
 		set_another_value(4)
 		set_another_value(5)
-		vim.wait(3000, function()
+		vim.wait(100, function()
 			return false
 		end)
 
@@ -108,19 +102,17 @@ describe("useEffect", function()
 		local value, set_value
 		local message, set_message
 		local Component = ui.createComponent("C", function()
-			return function()
-				value, set_value = ui.hooks.useState(0)
-				message, set_message = ui.hooks.useState("initial message")
-				use_state_log[#use_state_log + 1] = "useState called with value: " .. tostring(value)
-				useEffect(function()
-					log[#log + 1] = "useEffect called"
-					if #log > 10 then
-						error(debug.traceback("log exceeded the max: "))
-					end
-					set_message("useEffect called with value: " .. tostring(value))
-				end, { value })
-				return { Element:new({ content = message }):wrap() }
-			end
+			value, set_value = ui.hooks.useState(0)
+			message, set_message = ui.hooks.useState("initial message")
+			use_state_log[#use_state_log + 1] = "useState called with value: " .. tostring(value)
+			useEffect(function()
+				log[#log + 1] = "useEffect called"
+				if #log > 10 then
+					error(debug.traceback("log exceeded the max: "))
+				end
+				set_message("useEffect called with value: " .. tostring(value))
+			end, { value })
+			return { Element:new({ content = message }):wrap() }
 		end)
 
 		ui.mount(Component)
@@ -128,7 +120,7 @@ describe("useEffect", function()
 		set_value(1)
 		set_value(2)
 		set_value(3)
-		vim.wait(3000, function()
+		vim.wait(100, function()
 			return false
 		end)
 
