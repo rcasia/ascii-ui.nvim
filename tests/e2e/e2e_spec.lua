@@ -38,22 +38,25 @@ local function buffer_contains(bufnr, pattern)
 end
 
 describe("ascii-ui", function()
-	-- FIXME: when there is an useReducer
-	pending("should open close and open again with out problems", function()
-		local component = Select({ options = {
-			"book",
-			"pencil",
-			"rubber",
-		} })
+	it("interacts with elements of a Select component", function()
+		local App = ui.createComponent("App", function()
+			return Select({ options = {
+				"book",
+				"pencil",
+				"rubber",
+			} })
+		end)
 
-		local bufnr = ui.mount(component)
+		local bufnr = ui.mount(App)
 
 		assert(buffer_contains(bufnr, "[x] book"))
 
-		vim.api.nvim_buf_delete(bufnr, {})
+		-- move down and press enter
+		feed("j")
+		local enter = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
+		feed(enter) -- simulate pressing Enter on the button
 
-		-- TODO: check second option can be selected
-		-- assert(buffer_contains(bufnr_2, "[x] pencil"))
+		assert(buffer_contains(bufnr, "[x] pencil"))
 	end)
 
 	describe("sliders", function()
@@ -70,6 +73,7 @@ describe("ascii-ui", function()
 			assert(buffer_contains(bufnr, "0%"))
 
 			feed("j")
+
 			feed("llllll")
 			assert(buffer_contains(bufnr, "60%"), "no encuentra 60%")
 
