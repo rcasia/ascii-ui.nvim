@@ -44,17 +44,15 @@ describe("Focusable", function()
 		local non_focusable_line = Element:new({ content = "Not focusable" }):wrap()
 		local focusable_line = Element:new({ content = "Focusable", is_focusable = true }):wrap()
 		local App = ui.createComponent("App", function()
-			return function()
-				return {
+			return {
 
-					Element:new({ content = "Not focusable" }):wrap(),
-					Element:new({ content = "Focusable", is_focusable = true }):wrap(),
-					non_focusable_line:append(focusable_line),
-					Element:new({ content = "Not focusable" }):wrap(),
-					Element:new({ content = "Focusable", is_focusable = true }):wrap(),
-					Element:new({ content = "Not focusable" }):wrap(),
-				}
-			end
+				Element:new({ content = "Not focusable" }):wrap(),
+				Element:new({ content = "Focusable", is_focusable = true }):wrap(),
+				non_focusable_line:append(focusable_line),
+				Element:new({ content = "Not focusable" }):wrap(),
+				Element:new({ content = "Focusable", is_focusable = true }):wrap(),
+				Element:new({ content = "Not focusable" }):wrap(),
+			}
 		end)
 
 		local bufnr = ui.mount(App)
@@ -85,11 +83,9 @@ describe("Focusable", function()
 		local unfocusable = Element:new({ content = "o" })
 		local focusable = Element:new({ content = "x", is_focusable = true })
 		local App = ui.createComponent("App", function()
-			return function()
-				return {
-					Bufferline.new(focusable, unfocusable, focusable, unfocusable, focusable),
-				}
-			end
+			return {
+				Bufferline.new(focusable, unfocusable, focusable, unfocusable, focusable),
+			}
 		end)
 
 		local bufnr = ui.mount(App)

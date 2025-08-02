@@ -33,31 +33,29 @@ describe("UI updates", function()
 	local log = {}
 
 	local App = ui.createComponent("App", function()
-		return function()
-			local count, setCount = useState(0)
-			local message, setMessage = useState("hola")
+		local count, setCount = useState(0)
+		local message, setMessage = useState("hola")
 
-			useEffect(function()
-				metrics.inc("App.useEffect.calls")
+		useEffect(function()
+			metrics.inc("App.useEffect.calls")
 
-				-- NOTE: This is just to avoid infinite loop in the test
-				log[#log + 1] = ("useEffect called with count: %d"):format(count)
-				assert(#log < 10, "useEffect should not be called more than twice")
-				if count > 0 then
-					setMessage(("Button has been pressed %d times"):format(count))
-				end
-			end, { count })
+			-- NOTE: This is just to avoid infinite loop in the test
+			log[#log + 1] = ("useEffect called with count: %d"):format(count)
+			assert(#log < 10, "useEffect should not be called more than twice")
+			if count > 0 then
+				setMessage(("Button has been pressed %d times"):format(count))
+			end
+		end, { count })
 
-			return Column(
-				Paragraph({ content = message }),
-				Button({
-					label = "Press me",
-					on_press = function()
-						setCount(count + 1)
-					end,
-				})
-			)
-		end
+		return Column(
+			Paragraph({ content = message }),
+			Button({
+				label = "Press me",
+				on_press = function()
+					setCount(count + 1)
+				end,
+			})
+		)
 	end)
 
 	it("does run just once", function()

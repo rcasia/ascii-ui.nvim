@@ -30,17 +30,15 @@ local function buffer_contains(bufnr, pattern)
 end
 
 describe("ascii-ui", function()
-	-- FIXME: when there is a compound component combination with fiber arch
 	it("renders a clickable button with XML", function()
 		-- local function App()
 		local App = ui.createComponent("App", function()
-			return function()
-				local message, set_message = ui.hooks.useState("Hello World")
-				local ref = ui.hooks.useFunctionRegistry(function()
-					set_message("Button Clicked!")
-				end)
+			local message, set_message = ui.hooks.useState("Hello World")
+			local ref = ui.hooks.useFunctionRegistry(function()
+				set_message("Button Clicked!")
+			end)
 
-				return ([[
+			return ([[
 
 		<Layout>
 			<Paragraph content="%s" />
@@ -48,7 +46,6 @@ describe("ascii-ui", function()
 		</Layout>
 
 		]]):format(message, ref)
-			end
 		end)
 
 		local bufnr = ui.mount(App)

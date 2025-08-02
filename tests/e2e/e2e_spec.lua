@@ -106,22 +106,20 @@ describe("ascii-ui", function()
 		it("fiber functional interaction", function()
 			local content, setContent
 			local App = ui.createComponent("App", function()
-				return function()
-					content, setContent = useState("hola mundo")
-					return {
-						Element:new({
-							content = content,
-							interactions = {
-								[interaction_type.CURSOR_MOVE_RIGHT] = function()
-									setContent("right")
-								end,
-								[interaction_type.CURSOR_MOVE_LEFT] = function()
-									setContent("left")
-								end,
-							},
-						}):wrap(),
-					}
-				end
+				content, setContent = useState("hola mundo")
+				return {
+					Element:new({
+						content = content,
+						interactions = {
+							[interaction_type.CURSOR_MOVE_RIGHT] = function()
+								setContent("right")
+							end,
+							[interaction_type.CURSOR_MOVE_LEFT] = function()
+								setContent("left")
+							end,
+						},
+					}):wrap(),
+				}
 			end)
 			local bufnr = ui.mount(App)
 			assert(buffer_contains(bufnr, "hola mundo"))
@@ -137,22 +135,20 @@ describe("ascii-ui", function()
 	it("fiber functional interaction with inner component", function()
 		local content, setContent
 		local SomeComponent = ui.createComponent("SomeComponent", function()
-			return function()
-				content, setContent = useState("hola mundo")
-				return {
-					Element:new({
-						content = content,
-						interactions = {
-							[interaction_type.CURSOR_MOVE_RIGHT] = function()
-								setContent("right")
-							end,
-							[interaction_type.CURSOR_MOVE_LEFT] = function()
-								setContent("left")
-							end,
-						},
-					}):wrap(),
-				}
-			end
+			content, setContent = useState("hola mundo")
+			return {
+				Element:new({
+					content = content,
+					interactions = {
+						[interaction_type.CURSOR_MOVE_RIGHT] = function()
+							setContent("right")
+						end,
+						[interaction_type.CURSOR_MOVE_LEFT] = function()
+							setContent("left")
+						end,
+					},
+				}):wrap(),
+			}
 		end)
 		local App = ui.createComponent("App", function()
 			return SomeComponent()
