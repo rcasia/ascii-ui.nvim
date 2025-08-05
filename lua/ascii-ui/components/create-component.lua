@@ -67,7 +67,7 @@ end
 --- @param name string Nombre del componente
 --- @param functional_component fun(props: T): ascii-ui.FiberNode[] | ascii-ui.TemplateString
 --- @param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
---- @return ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
+--- @return fun(props: T): ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
 local function createComponent(name, functional_component, types)
 	types = types or {}
 	-- Validar que el nombre sea único
