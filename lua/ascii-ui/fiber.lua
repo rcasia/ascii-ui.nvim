@@ -87,6 +87,7 @@ local function reconcileChildren(parent, new_children)
 		if not node:is_leaf() and (FiberNode.is_node(old) and vim.tbl_isempty(node.props) or node:is_same(old)) then
 			logger.debug("⛓️ reused link ", parent.type, old.type)
 			new_child = old
+			node:unmount()
 		else
 			logger.debug(
 				"⛓️‍💥 -> ⛓️ new link %s -> %s. Because [not_leaf=%s, is_empty=%s, is_same=%s]",
@@ -96,6 +97,9 @@ local function reconcileChildren(parent, new_children)
 				vim.tbl_isempty(node.props),
 				node:is_same(old)
 			)
+			if FiberNode.is_node(old) then
+				old:unmount()
+			end
 			new_child = node
 		end
 
@@ -258,7 +262,9 @@ local function rerender(root)
 	return buf, root
 end
 
-local function useState(initial)
+--- @param initial any
+--- @param avoid_rerender? boolean
+local function useState(initial, avoid_rerender)
 	assert(currentFiber, "cannot call useState out of context")
 	local fiber = currentFiber
 
@@ -271,7 +277,10 @@ local function useState(initial)
 	local snapshot = fiber.hooks[idx]
 
 	local function get()
-		return vim.deepcopy(snapshot) -- return a copy of the state to avoid mutation
+		if type(snapshot) == "table" then
+			return vim.deepcopy(snapshot) -- return a copy of the state to avoid mutation
+		end
+		return snapshot -- return the value directly
 	end
 
 	local function set(value)
@@ -295,12 +304,19 @@ local function useState(initial)
 			fiber.hooks[idx] = new_value
 		end
 
+		if avoid_rerender then
+			logger.debug("🥊 Avoiding re-render for %s", fiber.type)
+			return
+		end
+
 		-- ⇲ 2) P1 – ejecuta cleanups de efectos con deps no-vacíos ------
 		if fiber.cleanups then
 			for i, cu in ipairs(fiber.cleanups) do
 				local deps = fiber.prevDeps[i]
 				-- solo si deps existe y no está vacío
 				if deps and #deps > 0 and type(cu) == "function" then
+					logger.debug("🥊 Cleaning up effect at index %d for %s", i, fiber.type)
+					logger.debug("deps xx: " .. vim.inspect(deps))
 					cu() -- cleanup inmediato (mantiene valor viejo)
 					fiber.cleanups[i] = nil -- se reasignará en el nuevo render
 					fiber.prevDeps[i] = nil
@@ -373,6 +389,10 @@ local function _useEffect(fn, deps)
 
 		local effect_type = deps and "ONCE" or "REPEATING"
 		if effect_type == "ONCE" then
+			logger.debug(
+				"adding cleanup for once: %s",
+				vim.inspect({ type = fiber.type, prev = tostring(prevCleanup) })
+			)
 			if prevCleanup then
 				fiber:add_cleanup(prevCleanup)
 			end
@@ -381,6 +401,7 @@ local function _useEffect(fn, deps)
 				fiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
 			end, effect_type)
 		else
+			logger.debug("running cleanup to effect")
 			fiber:add_effect(function()
 				if fiber.cleanups[idx] then
 					fiber.cleanups[idx]()

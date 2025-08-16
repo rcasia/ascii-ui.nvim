@@ -337,7 +337,7 @@ end
 
 --- @param cu function
 function FiberNode:add_cleanup(cu)
-	logger.debug("Adding cleanup for fiber %s", self.type)
+	logger.debug("Adding cleanup %s for fiber %s", tostring(cu), self.type)
 	self.pendingCleanups[#self.pendingCleanups + 1] = cu
 end
 
@@ -362,6 +362,8 @@ function FiberNode:unmount()
 				if type(cleanup) == "function" then
 					cleanup()
 				end
+				fiber.cleanups[i] = nil
+				fiber.prevDeps[i] = nil
 			end
 		end
 	end
