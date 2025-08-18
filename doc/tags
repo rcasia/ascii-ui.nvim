@@ -1,5 +1,4 @@
 AsciiUI	ascii-ui.txt	/*AsciiUI*
-AsciiUI.mount()	ascii-ui.txt	/*AsciiUI.mount()*
 Box()	ascii-ui.txt	/*Box()*
 Buffer	ascii-ui.txt	/*Buffer*
 Buffer.from_lines()	ascii-ui.txt	/*Buffer.from_lines()*

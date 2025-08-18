@@ -53,14 +53,6 @@
                                    `AsciiUI`
 @class ascii-ui.AsciiUI
 
-------------------------------------------------------------------------------
-                                                               *AsciiUI.mount()*
-                        `AsciiUI.mount`({AppComponent})
-Parameters ~
-{AppComponent} `(ascii)`-ui.FunctionalComponent
-Return ~
-`(integer)` bufnr
-
 
 ==============================================================================
 ------------------------------------------------------------------------------
@@ -115,6 +107,14 @@ Return ~
                       `Renderer:render_xml`({xml_content})
 @param xml_content string
 @return ascii-ui.FiberNode[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+Parameters ~
+{RootComponent} `(ascii)`-ui.FunctionalComponent
+Return ~
+`(integer)` bufnr
 
 
 ==============================================================================
