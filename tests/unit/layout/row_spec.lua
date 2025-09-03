@@ -1,5 +1,6 @@
 pcall(require, "luacov")
 
+local assert = require("luassert")
 local eq = assert.are.same
 
 local Element = require("ascii-ui.buffer.element")

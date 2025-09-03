@@ -1,5 +1,5 @@
 pcall(require, "luacov")
----@module "luassert"
+local assert = require("luassert")
 
 local eq = assert.are.same
 local useFunctionRegistry = require("ascii-ui.hooks.use_function_registry")

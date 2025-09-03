@@ -9,6 +9,8 @@ labels = []
 license = "MIT"
 
 [dependencies]
+luassert = "1.9.0-1"
+"mini.test" = "0.16.0"
 "plenary.nvim" = "scm-1"
 
 [test]

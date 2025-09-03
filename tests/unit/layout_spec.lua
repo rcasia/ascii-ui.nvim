@@ -1,5 +1,6 @@
 pcall(require, "luacov")
 local DummyComponent = require("tests.util.dummy_functional_component")
+local assert = require("luassert")
 local eq = assert.are.same
 
 local Column = require("ascii-ui.layout.column")

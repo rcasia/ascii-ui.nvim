@@ -1,5 +1,5 @@
 pcall(require, "luacov")
----@module "luassert"
+local assert = require("luassert")
 
 local ui = require("ascii-ui")
 local it = require("plenary.async.tests").it

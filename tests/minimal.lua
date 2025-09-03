@@ -22,19 +22,22 @@ end
 
 -- if in github actions, add a clone of plenary to the package path
 if RUNNING_ON_ACTIONS then
-	local plenary_path = vim.fn.expand("$GITHUB_WORKSPACE/../plenary.nvim")
-	if vim.fn.isdirectory(plenary_path) == 0 then
+	local testing_framework_path = vim.fn.expand("$GITHUB_WORKSPACE/../mini.test")
+	if vim.fn.isdirectory(testing_framework_path) == 0 then
 		vim.fn.system({
 			"git",
 			"clone",
-			"https://github.com/nvim-lua/plenary.nvim",
-			plenary_path,
+			"git@github.com:nvim-mini/mini.test.git",
+			testing_framework_path,
 		})
 	end
 
 	package.path = table.concat({
-		plenary_path .. "/lua/?.lua",
-		plenary_path .. "/lua/?/init.lua",
+		testing_framework_path .. "/lua/?.lua",
+		testing_framework_path .. "/lua/?/init.lua",
 		package.path,
 	}, ";")
 end
+
+-- Add current directory to 'runtimepath' to be able to use 'lua' files
+vim.cmd([[let &rtp.=','.getcwd()]])

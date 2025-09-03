@@ -1,5 +1,8 @@
 pcall(require, "luacov")
----@module "luassert"
+local assert = require("luassert")
+local pending = function(msg, fn)
+	print("PENDING: " .. msg)
+end
 
 local _ = require("ascii-ui")
 local renderer = require("ascii-ui.renderer"):new()

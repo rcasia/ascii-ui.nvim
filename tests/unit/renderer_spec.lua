@@ -1,5 +1,5 @@
 pcall(require, "luacov")
----@module "luassert"
+local assert = require("luassert")
 
 local Renderer = require("ascii-ui.renderer")
 local eq = assert.are.same

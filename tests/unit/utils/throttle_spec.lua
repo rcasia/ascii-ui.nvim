@@ -1,5 +1,5 @@
 pcall(require, "luacov")
----@module "luassert"
+local assert = require("luassert")
 
 local strict_throttle = require("ascii-ui.utils.strict_throttle")
 
