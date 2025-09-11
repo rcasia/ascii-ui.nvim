@@ -21,7 +21,6 @@ return {
 
 local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
-local Column = ui.layout.Column
 local Button = ui.components.Button
 local useState = ui.hooks.useState
 
