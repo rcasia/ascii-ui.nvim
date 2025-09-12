@@ -1,5 +1,5 @@
 pcall(require, "luacov")
-local assert = require("luassert")
+---@module "luassert"
 
 local memoize = require("ascii-ui.utils.memoize")
 

@@ -1,5 +1,5 @@
 pcall(require, "luacov")
-local assert = require("luassert")
+---@module "luassert"
 
 local props_are_equal = require("ascii-ui.utils.props_are_equal")
 

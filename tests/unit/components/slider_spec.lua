@@ -1,6 +1,5 @@
 pcall(require, "luacov")
 
-local assert = require("luassert")
 local eq = assert.are.same
 local test_config = require("tests.config")
 

@@ -1,5 +1,5 @@
 pcall(require, "luacov")
-local assert = require("luassert")
+---@module "luassert"
 
 local Box = require("ascii-ui.components.box")
 local Renderer = require("ascii-ui.renderer")

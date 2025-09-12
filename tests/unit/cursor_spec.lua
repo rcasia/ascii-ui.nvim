@@ -1,5 +1,5 @@
 pcall(require, "luacov")
-local assert = require("luassert")
+---@module "luassert"
 
 local Cursor = require("ascii-ui.cursor")
 local EventListener = require("ascii-ui.events")

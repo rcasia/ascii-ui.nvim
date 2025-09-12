@@ -1,5 +1,5 @@
 pcall(require, "luacov")
-local assert = require("luassert")
+---@module "luassert"
 
 describe("arch tests", function()
 	it("all test files start with line pcall(require, 'luacov')", function()

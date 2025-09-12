@@ -18,13 +18,8 @@ build:
 	lx build
 endif
 
-ifdef GITHUB_ACTIONS
 test: build
 	 bash scripts/test $(filter-out $@, $(MAKECMDGOALS))
-else
-test: build
-	 bash scripts/test_mini $(filter-out $@, $(MAKECMDGOALS))
-endif
 
 docs:
 	./scripts/gendocs

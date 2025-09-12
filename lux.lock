@@ -21,24 +21,6 @@
           "source": "sha256-IjNkK1leVtYgbEjUqguVMjbdW+0BHAOCE0pazrVuF50="
         }
       },
-      "78669c3562845520fd2df5f95ea4492f7ac12b98847ca90de986aae6c9f86ee4": {
-        "name": "mini.test",
-        "version": "0.16.0-1",
-        "pinned": false,
-        "opt": false,
-        "dependencies": [],
-        "constraint": "==0.16.0",
-        "binaries": [],
-        "source": "luarocks_rockspec+https://luarocks.org/",
-        "source_url": {
-          "type": "url",
-          "url": "https://github.com/echasnovski/mini.test/archive/v0.16.0.zip"
-        },
-        "hashes": {
-          "rockspec": "sha256-wZZWEgAYBy0V953JuuO+5XsRPv05X/hfAiwAH81niT8=",
-          "source": "sha256-frG6nRAtszKsNGnqtwutq7m8631egxS7pK/oNI9+tZw="
-        }
-      },
       "acdfde00d122aac481c18c906d483478bb536741beb025becc11782a075d125b": {
         "name": "luassert",
         "version": "1.9.0-1",
@@ -80,34 +62,10 @@
           "rockspec": "sha256-r0jP0L52Bjijhhwn/6j9FhToew/BGCKTVtDoCCw25ik=",
           "source": "sha256-9Un7ekhBxcnmFE1xjCCFTZ7eqIbmXvQexpnhduAg4M0="
         }
-      },
-      "fd314d02e320aea863d0e3d2105fc515bd41704f3ef68c947cf074313878e8c2": {
-        "name": "luassert",
-        "version": "1.9.0-1",
-        "pinned": false,
-        "opt": false,
-        "dependencies": [
-          "4e9592a499c9ced4f8ce366db9db7d9c0dd1424ea8d4c8c16c1550ea3a61a696"
-        ],
-        "constraint": "==1.9.0",
-        "binaries": [],
-        "source": "luarocks_rockspec+https://luarocks.org/",
-        "source_url": {
-          "type": "git",
-          "url": "https://github.com/lunarmodules/luassert.git",
-          "ref": "v1.9.0"
-        },
-        "hashes": {
-          "rockspec": "sha256-rTPvF/GK/jMnH/q4wbwTCGBFELWh+JcvHeOCFAbIf64=",
-          "source": "sha256-jjdB95Vr5iVsh5T7E84WwZMW6/5H2k2R/ny2VBs2l3I="
-        }
       }
     },
     "entrypoints": [
-      "78669c3562845520fd2df5f95ea4492f7ac12b98847ca90de986aae6c9f86ee4",
-      "acdfde00d122aac481c18c906d483478bb536741beb025becc11782a075d125b",
-      "e979389dab6913034a620a7b176733ae22e6b46a6233b7aba9221c0aa611aead",
-      "fd314d02e320aea863d0e3d2105fc515bd41704f3ef68c947cf074313878e8c2"
+      "e979389dab6913034a620a7b176733ae22e6b46a6233b7aba9221c0aa611aead"
     ]
   }
 }

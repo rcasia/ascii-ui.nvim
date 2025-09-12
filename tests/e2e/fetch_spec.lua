@@ -1,8 +1,6 @@
 pcall(require, "luacov")
-local assert = require("luassert")
-local pending = function(msg, fn)
-	print("PENDING: " .. msg)
-end
+---@module "luassert"
+
 local eq = assert.are.same
 
 --- @param stdout string
