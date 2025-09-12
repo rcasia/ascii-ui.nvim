@@ -1,3 +1,5 @@
+local Bufferline = require("ascii-ui.buffer.bufferline")
+local Segment = require("ascii-ui.buffer.element")
 local logger = require("ascii-ui.logger")
 local mount = require("ascii-ui.mount")
 local user_config = require("ascii-ui.config.user_config")
@@ -6,6 +8,13 @@ local user_config = require("ascii-ui.config.user_config")
 local AsciiUI = {
 	--- This contains all the components available in the library
 	components = require("ascii-ui.components"),
+	blocks = {
+		Bufferline = Bufferline.new,
+		---@param opts ascii-ui.SegmentOpts
+		Segment = function(opts)
+			return Segment:new(opts)
+		end,
+	},
 	createComponent = require("ascii-ui.components.create-component"),
 	hooks = require("ascii-ui.hooks"),
 	--- This contains the layout class
