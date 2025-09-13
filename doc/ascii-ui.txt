@@ -828,6 +828,17 @@ end
 
 ==============================================================================
 ------------------------------------------------------------------------------
+                                                                  *useTimeout()*
+                       `useTimeout`({callback}, {delay})
+
+Executes a callback function after a specified delay.
+
+@param callback function The function to be executed after the delay.
+@param delay number|nil The delay in milliseconds. If nil or negative, the timeout is not set.
+
+
+==============================================================================
+------------------------------------------------------------------------------
 ascii-ui.hooks.useUserConfig() *ascii-ui.hooks.useUserConfig()*
 
 ------------------------------------------------------------------------------

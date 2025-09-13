@@ -6,6 +6,7 @@ local Hooks = {
 	useFunctionRegistry = require("ascii-ui.hooks.use_function_registry"),
 	useConfig = require("ascii-ui.hooks.use_config"),
 	useInterval = require("ascii-ui.hooks.use_interval"),
+	useTimeout = require("ascii-ui.hooks.use_timeout"),
 }
 
 return Hooks
