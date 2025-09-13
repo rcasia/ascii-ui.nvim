@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.5.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.4.0...v0.5.0) (2025-09-13)
+
+
+### Features
+
+* add log level to user configuration ([30ebdff](https://github.com/rcasia/ascii-ui.nvim/commit/30ebdff8382fd4143e5f8c28537607c53ed14eef))
+* **block:** expose component blocks to public api ([c20a96b](https://github.com/rcasia/ascii-ui.nvim/commit/c20a96b82a88b02c5cb84e1714640b7bd71eb2e8))
+* capture user config on plugin init ([ef0b50e](https://github.com/rcasia/ascii-ui.nvim/commit/ef0b50ede11166cc8931fb7948e35ccfba21ee69))
+* **dsl:** support xml definitions in new fiber architecture ([a05da17](https://github.com/rcasia/ascii-ui.nvim/commit/a05da17324a549c0e4f6c2e6c40a16670fdbf624))
+* **hooks:** add use_interval hook ([d36bd58](https://github.com/rcasia/ascii-ui.nvim/commit/d36bd588acd57c7835b34934db256addea5e6758))
+* **hooks:** add useTimeout hook ([d58cb2c](https://github.com/rcasia/ascii-ui.nvim/commit/d58cb2c51b8c7a86cf70dd1dcc936f07516f587e))
+* **hooks:** create useConfig hook ([358002f](https://github.com/rcasia/ascii-ui.nvim/commit/358002f914b20ac965fff4c08c021e104905934c))
+* let the user return a list of fibernodes for custom components ([d2b528c](https://github.com/rcasia/ascii-ui.nvim/commit/d2b528c493cda53eb87f71eaff46033e028f369a))
+* **paragraph:** support for newlines ([009237b](https://github.com/rcasia/ascii-ui.nvim/commit/009237b43d329da0c7c8436bafa81849acc2796b))
+* remove the requirement for the user to use an inner function for component definitions ([c28ee19](https://github.com/rcasia/ascii-ui.nvim/commit/c28ee19ef937cac34937930fd042b80c883ce2bb))
+* **slider:** add on_change prop to slider component ([5c7eedd](https://github.com/rcasia/ascii-ui.nvim/commit/5c7eedd237e2a0d0bf1f75735c6f402209530448))
+* **tree:** better tree drawing ([5e70d37](https://github.com/rcasia/ascii-ui.nvim/commit/5e70d37020e6ab856f278f405a95774c50afd776))
+* **tree:** use user config to render tree component ([9197abd](https://github.com/rcasia/ascii-ui.nvim/commit/9197abdaa3a4295f6c56d34297d41146f1c52a95))
+* use mini.test as dependency ([4a8824f](https://github.com/rcasia/ascii-ui.nvim/commit/4a8824f26c148d72ccb176e4fb6a45b7f09d029d))
+
+
+### Bug Fixes
+
+* remove pending effects assertion ([591094b](https://github.com/rcasia/ascii-ui.nvim/commit/591094bced6d51dc16e68c9c2b0ce4238af025d1))
+* return a deep copy of the state to avoid mutation ([17be7dd](https://github.com/rcasia/ascii-ui.nvim/commit/17be7dd779dc83a7b2c06ed26cd60b9afc5257eb))
+
 ## [0.4.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.3.0...v0.4.0) (2025-07-27)
 
 
