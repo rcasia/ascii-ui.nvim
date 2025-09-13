@@ -62,11 +62,7 @@ function Segment:new(...)
 		content = props.content,
 		highlight = props.highlight,
 		focusable = props.is_focusable or false,
-		interactions = props.interactions or {
-			[interaction_type.SELECT] = function()
-				print("selected", props.content)
-			end,
-		}, -- TODO: pass this to default interactions on a different module
+		interactions = props.interactions or {},
 	}
 
 	setmetatable(state, self)
@@ -99,7 +95,11 @@ end
 
 ---@return boolean
 function Segment:is_focusable()
-	return self.focusable
+	if self.focusable then
+		return true
+	end
+
+	return vim.tbl_count(self.interactions) > 0
 end
 
 function Segment:is_colored()

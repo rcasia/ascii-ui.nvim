@@ -48,15 +48,13 @@ local function Slider(props)
 		local knob_position = math.floor(width * value / 100)
 
 		return compact({
-			props.title ~= "" and Element:new(props.title, false):wrap() or nil,
+			props.title ~= "" and Element:new(props.title):wrap() or nil,
 			Bufferline.new(
 				Element:new({
 					content = cc.horizontal:rep(knob_position),
-					interactions = interactions,
 				}),
-
-				Element:new({ content = cc.thumb, is_focusable = true, interactions = interactions }),
-				Element:new({ content = cc.horizontal:rep(width - knob_position), interactions = interactions }),
+				Element:new({ content = cc.thumb, interactions = interactions }),
+				Element:new({ content = cc.horizontal:rep(width - knob_position) }),
 				Element:new({ content = (" %d%%"):format(value) })
 			),
 		})
