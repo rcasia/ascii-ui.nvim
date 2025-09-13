@@ -741,6 +741,17 @@ end
 
 ==============================================================================
 ------------------------------------------------------------------------------
+                                                                 *useInterval()*
+                       `useInterval`({callback}, {delay})
+
+Executes a callback function at specified intervals.
+
+@param callback function The function to be executed at each interval.
+@param delay number|nil The interval delay in milliseconds. If nil, the interval is not set.
+
+
+==============================================================================
+------------------------------------------------------------------------------
 ascii-ui.hooks.useReducer() *ascii-ui.hooks.useReducer()*
 
 ------------------------------------------------------------------------------

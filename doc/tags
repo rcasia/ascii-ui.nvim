@@ -129,6 +129,7 @@ store	ascii-ui.txt	/*store*
 useConfig()	ascii-ui.txt	/*useConfig()*
 useEffect()	ascii-ui.txt	/*useEffect()*
 useFunctionRegistry()	ascii-ui.txt	/*useFunctionRegistry()*
+useInterval()	ascii-ui.txt	/*useInterval()*
 useReducer()	ascii-ui.txt	/*useReducer()*
 useState()	ascii-ui.txt	/*useState()*
 validate_props()	ascii-ui.txt	/*validate_props()*
