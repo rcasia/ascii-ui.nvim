@@ -9,7 +9,7 @@ local function useInterval(callback, delay)
 	local timer_ref = {}
 
 	useEffect(function()
-		if delay == nil then
+		if delay == nil or delay <= 0 then
 			return
 		end
 
