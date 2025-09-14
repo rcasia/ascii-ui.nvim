@@ -197,10 +197,24 @@ function FiberNode:unwrap_closure()
 		end
 	end
 
+	local function filter_nil_values(t)
+		local result = {}
+		-- Use pairs() to iterate through all elements of the table,
+		-- regardless of whether they have a numeric or string key.
+		-- This is crucial for handling "holes" in the array.
+		for _, value in pairs(t) do
+			-- Only insert the value into the new table if it is not nil.
+			if value ~= nil then
+				table.insert(result, value)
+			end
+		end
+		return result
+	end
+
 	local function flatten(tbl)
 		local result = {}
 
-		for _, v in ipairs(tbl) do
+		for _, v in ipairs(filter_nil_values(tbl)) do
 			if vim.isarray(v) then
 				local nested = flatten(v)
 				for _, nv in ipairs(nested) do
@@ -216,9 +230,10 @@ function FiberNode:unwrap_closure()
 
 	-- assert(FiberNode.is_node(output), "Fibernode.closure should return a FiberNode. Found " .. vim.inspect(output))
 	output = flatten(output)
+
 	return vim.iter(output)
-		:map(function(item)
-			return item
+		:filter(function(item)
+			return not not item
 		end)
 		:map(function(item)
 			if Bufferline.is_bufferline(item) then --- @cast item ascii-ui.BufferLine

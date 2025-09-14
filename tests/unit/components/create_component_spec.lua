@@ -20,10 +20,28 @@ describe("ComponentCreator.createComponent", function()
 			}
 		end)
 
-		local App2 = ui.createComponent("App1", function()
+		local App2 = ui.createComponent("App2", function()
 			return { {
 				DummyComponent({ content = "t-shirt" }),
 			} }
+		end)
+
+		eq(renderer:render(App1):to_lines(), renderer:render(App2):to_lines())
+		eq({ "t-shirt" }, renderer:render(App1):to_lines())
+	end)
+
+	it("creates a component that can have nil nodes", function()
+		local App1 = ui.createComponent("App1", function()
+			return {
+				DummyComponent({ content = "t-shirt" }),
+			}
+		end)
+
+		local App2 = ui.createComponent("App2", function()
+			return {
+				nil,
+				DummyComponent({ content = "t-shirt" }),
+			}
 		end)
 
 		eq(renderer:render(App1):to_lines(), renderer:render(App2):to_lines())
