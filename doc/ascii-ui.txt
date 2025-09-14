@@ -998,6 +998,12 @@ Return ~
 `(integer)`
 
 ------------------------------------------------------------------------------
+                                                             *Segment:raw_len()*
+                              `Segment:raw_len`()
+Return ~
+`(integer)`
+
+------------------------------------------------------------------------------
                                                         *Segment:is_focusable()*
                             `Segment:is_focusable`()
 Return ~

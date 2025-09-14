@@ -181,7 +181,7 @@ function Window:update(buffer)
 			for element_result in buffer:iter_colored_elements() do
 				local pos = element_result.position
 				local element = element_result.element
-				local end_col = pos.col + element:len()
+				local end_col = pos.col + element:raw_len()
 
 				vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, pos.line - 1, pos.col - 1, {
 					end_col = end_col - 1,

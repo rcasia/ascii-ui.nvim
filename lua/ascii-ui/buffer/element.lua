@@ -89,6 +89,11 @@ function Segment:len()
 	return unicode_len(self.content)
 end
 
+---@return integer
+function Segment:raw_len()
+	return string.len(self.content)
+end
+
 function Segment:to_string()
 	return self.content
 end

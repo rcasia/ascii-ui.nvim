@@ -82,6 +82,7 @@ Segment.is_segment()	ascii-ui.txt	/*Segment.is_segment()*
 Segment:is_focusable()	ascii-ui.txt	/*Segment:is_focusable()*
 Segment:len()	ascii-ui.txt	/*Segment:len()*
 Segment:new()	ascii-ui.txt	/*Segment:new()*
+Segment:raw_len()	ascii-ui.txt	/*Segment:raw_len()*
 Segment:wrap()	ascii-ui.txt	/*Segment:wrap()*
 Select()	ascii-ui.txt	/*Select()*
 Slider()	ascii-ui.txt	/*Slider()*
