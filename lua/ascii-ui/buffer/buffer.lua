@@ -152,7 +152,7 @@ function Buffer:iter_colored_elements()
 			return vim.iter(line.elements)
 				:map(function(element)
 					local current_col = col_offset
-					col_offset = col_offset + element:len() -- o el método que dé el ancho
+					col_offset = col_offset + element:raw_len() -- o el método que dé el ancho
 
 					if element:is_colored() then
 						return {
