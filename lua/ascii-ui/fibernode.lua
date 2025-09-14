@@ -197,8 +197,29 @@ function FiberNode:unwrap_closure()
 		end
 	end
 
+	local function flatten(tbl)
+		local result = {}
+
+		for _, v in ipairs(tbl) do
+			if vim.isarray(v) then
+				local nested = flatten(v)
+				for _, nv in ipairs(nested) do
+					table.insert(result, nv)
+				end
+			else
+				table.insert(result, v)
+			end
+		end
+
+		return result
+	end
+
 	-- assert(FiberNode.is_node(output), "Fibernode.closure should return a FiberNode. Found " .. vim.inspect(output))
+	output = flatten(output)
 	return vim.iter(output)
+		:map(function(item)
+			return item
+		end)
 		:map(function(item)
 			if Bufferline.is_bufferline(item) then --- @cast item ascii-ui.BufferLine
 				return FiberNode.new({ lines = item })
@@ -207,8 +228,6 @@ function FiberNode:unwrap_closure()
 			return item
 		end)
 		:totable()
-
-	-- return output
 end
 
 --- Returns the next fiber node in a depth-first traversal of the fiber tree.
