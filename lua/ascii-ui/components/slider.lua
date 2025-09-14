@@ -6,14 +6,6 @@ local useConfig = require("ascii-ui.hooks.use_config")
 local useEffect = require("ascii-ui.hooks.use_effect")
 local useState = require("ascii-ui.hooks.use_state")
 
-local function compact(t)
-	return vim.iter(t)
-		:filter(function(item)
-			return item ~= nil
-		end)
-		:totable()
-end
-
 --- @param props? { title?: string, value?: integer, on_change?: fun(value: integer) }
 local function Slider(props)
 	local config = useConfig()
@@ -47,8 +39,8 @@ local function Slider(props)
 		local width = 10
 		local knob_position = math.floor(width * value / 100)
 
-		return compact({
-			props.title ~= "" and Element:new(props.title):wrap() or nil,
+		return {
+			props.title ~= "" and Element:new(props.title):wrap(),
 			Bufferline.new(
 				Element:new({
 					content = cc.horizontal:rep(knob_position),
@@ -57,7 +49,7 @@ local function Slider(props)
 				Element:new({ content = cc.horizontal:rep(width - knob_position) }),
 				Element:new({ content = (" %d%%"):format(value) })
 			),
-		})
+		}
 	end
 end
 
