@@ -33,7 +33,7 @@ describe("useEffect", function()
 				set_time(tostring(os.date("%H:%M:%S")))
 				set_counter(counter + 1)
 				useEffect_invocations = useEffect_invocations + 1
-			end, 33)
+			end, 30)
 		end, {})
 
 		return time
