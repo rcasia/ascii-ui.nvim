@@ -1,8 +1,6 @@
 pcall(require, "luacov")
 ---@module "luassert"
 
-local eq = assert.are.same
-
 local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
 local Button = ui.components.Button

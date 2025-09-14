@@ -4,7 +4,7 @@ check:
 	# running luacheck...
 	
 	# skipping lx check for now, it does not support offline mode
-	# lx check
+	lx lint
 
 	# running doc check...
 	./scripts/check-docs
