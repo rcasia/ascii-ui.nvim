@@ -70,7 +70,7 @@ function Renderer:render_by_tag(tag_name, props, children)
 		return instance
 	end
 
-	if FiberNode.is_node_list(instance) then
+	if FiberNode.is_node(instance) then
 		return instance
 	end
 

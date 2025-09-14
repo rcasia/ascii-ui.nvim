@@ -59,7 +59,7 @@ local function reconcileChildren(parent, new_children)
 		vim.iter(new_children):all(function(node)
 			return FiberNode.is_node(node)
 		end),
-		"cannot reconcile parent with objects that are not FiberNodes. Found:" .. vim.inspect(new_children[1])
+		"cannot reconcile parent with objects that are not FiberNodes. Found:" .. vim.inspect(new_children)
 	)
 
 	logger.debug(
@@ -121,7 +121,8 @@ local function performUnitOfWork(fiber)
 
 	if fiber.closure then
 		local new_children = fiber:unwrap_closure()
-		local old_child = fiber.output and fiber.output[1] or {}
+		assert(FiberNode.is_node_list(new_children), "Expected FiberNode. Found: " .. vim.inspect(new_children))
+		local old_child = fiber.output and fiber.output or {}
 		local new_child = new_children[1]
 
 		logger.debug("🧑‍🧒‍🧒 children of %s", fiber.type)
@@ -221,7 +222,7 @@ end
 local function render(Component)
 	logger.debug("📺 FIBER.RENDER")
 	local fiberArr = Component()
-	local root = fiberArr[1] --- @cast root ascii-ui.RootFiberNode
+	local root = fiberArr --- @cast root ascii-ui.RootFiberNode
 	-- first phase: reconcile
 	workLoop(root)
 	local buffer = Buffer.new()

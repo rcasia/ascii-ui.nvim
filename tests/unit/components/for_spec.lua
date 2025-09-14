@@ -12,9 +12,7 @@ describe("For", function()
 	local DummyComponent = ui.createComponent("DummyComponent", function(props)
 		props = props or {}
 
-		return function()
-			return { Element:new(props.content):wrap() }
-		end
+		return { Element:new(props.content):wrap() }
 	end, { content = "string" })
 
 	it("renders a list of components based on a list of props", function()

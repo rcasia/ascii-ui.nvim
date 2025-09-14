@@ -49,24 +49,20 @@ describe("Fiber", function()
 
 	it("un componente compuesto", function()
 		local SomeComponent = ui.createComponent("SomeComponent", function()
-			return function()
-				return { Element:new({ content = "Componente Interno" }):wrap() }
-			end
+			return { Element:new({ content = "Componente Interno" }):wrap() }
 		end, {})
 		local List = ui.createComponent("List", function()
-			return function()
-				return SomeComponent()
-			end
+			return {
+				SomeComponent(),
+			}
 		end, {})
 
 		local lines, rootFiber = fiber.render(List)
+		fiber.debugPrint(rootFiber, print)
 		eq({ "Componente Interno" }, lines:to_lines())
+		eq("List", rootFiber.type)
 		eq("SomeComponent", rootFiber.child.type)
 		eq(nil, rootFiber.child.sibling, "No debe haber hermanos en este caso")
-		-- eq(nil, rootFiber.child.child, "No debe haber hijos en este caso")
-		-- eq({}, rootFiber.output[1].output)
-
-		fiber.debugPrint(rootFiber)
 	end)
 
 	it("soporta useState y re-renderiza al actualizar", function()
@@ -74,14 +70,12 @@ describe("Fiber", function()
 		local count, setCount
 		local active, setActive
 		local Counter = ui.createComponent("Counter", function()
-			return function()
-				count, setCount = useState(0)
-				active, setActive = useState(false)
-				return {
-					Element:new({ content = "c:" .. count }):wrap(),
-					Element:new({ content = "b:" .. tostring(active) }):wrap(),
-				}
-			end
+			count, setCount = useState(0)
+			active, setActive = useState(false)
+			return {
+				Element:new({ content = "c:" .. count }):wrap(),
+				Element:new({ content = "b:" .. tostring(active) }):wrap(),
+			}
 		end, {})
 
 		-- render inicial
@@ -105,13 +99,11 @@ describe("Fiber", function()
 
 		local Test = ui.createComponent("Test", function()
 			-- efecto sin deps ({}): se ejecuta siempre una vez
-			return function()
-				useEffect(function()
-					invocations = invocations + 1
-				end, {})
+			useEffect(function()
+				invocations = invocations + 1
+			end, {})
 
-				return { Element:new({ content = "foo" }):wrap() }
-			end
+			return { Element:new({ content = "foo" }):wrap() }
 		end)
 
 		-- primer render

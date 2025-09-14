@@ -24,7 +24,7 @@ local function For(props)
 			:totable()
 	end
 
-	return vim.iter(inner_props):map(props.component):flatten():totable()
+	return vim.iter(inner_props):map(props.component):totable()
 end
 
 return createComponent("For", For, { items = "table", props = "table", component = "function", transform = "function" })

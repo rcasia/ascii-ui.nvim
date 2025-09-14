@@ -39,7 +39,7 @@ end
 --- @return fun(): ascii-ui.BufferLine[]
 local function Row(...)
 	--- @type ascii-ui.FiberNode[]
-	local fiber_nodes = vim.iter({ ... }):flatten():totable()
+	local fiber_nodes = { ... }
 
 	return function()
 		return vim

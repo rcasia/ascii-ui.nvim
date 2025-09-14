@@ -68,11 +68,15 @@ end
 --- @param obj any
 --- @return boolean
 function FiberNode.is_node(obj)
-	if
-		type(obj) == "table"
-		--
-		and obj.__index == FiberNode.__index
-	then
+	if type(obj) ~= "table" then
+		return false
+	end
+
+	if obj.__index == FiberNode.__index then
+		return true
+	end
+
+	if Bufferline.is_bufferline(obj) then
 		return true
 	end
 
@@ -111,7 +115,6 @@ function FiberNode:is_same(other)
 	if vim.isarray(self.props) and vim.isarray(other.props) then
 		--- @param node ascii-ui.FiberNode
 		for i, node in ipairs(self.props) do
-			node = node[1]
 			if not other.props[i] then
 				logger.debug(
 					"is not same because it does not have the same lenght (%d vs %d)",
@@ -120,7 +123,7 @@ function FiberNode:is_same(other)
 				)
 				return false
 			end
-			local is_same = node:is_same(other.props[i][1])
+			local is_same = node:is_same(other.props[i])
 			if not is_same then
 				logger.debug("is not same because inner nodes are not same")
 				return false
@@ -188,24 +191,24 @@ function FiberNode:unwrap_closure()
 			local renderer = require("ascii-ui.renderer")
 			output = renderer:render_xml(output)
 		end
+
+		if FiberNode.is_node(output) then
+			output = output:closure()
+		end
 	end
 
-	assert(vim.isarray(output), "FiberNode.closure should return an array of FiberNodes, got type: " .. type(output))
+	-- assert(FiberNode.is_node(output), "Fibernode.closure should return a FiberNode. Found " .. vim.inspect(output))
 	return vim.iter(output)
-		:map(function(node)
-			if node[1] then
-				-- If the node is wrapped in an array, unwrap it
-				node = node[1]
-			end
-			return node
-		end)
 		:map(function(item)
 			if Bufferline.is_bufferline(item) then --- @cast item ascii-ui.BufferLine
 				return FiberNode.new({ lines = item })
 			end
+			assert(FiberNode.is_node(item), "Fibernode.closure should return a FiberNode. Found " .. vim.inspect(item))
 			return item
 		end)
 		:totable()
+
+	-- return output
 end
 
 --- Returns the next fiber node in a depth-first traversal of the fiber tree.

@@ -1,17 +1,16 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
+local Fibernode = require("ascii-ui.fibernode")
 local createComponent = require("ascii-ui.components.create-component")
 
 --- @param ... fun(): ascii-ui.BufferLine[]
 --- @return fun(): ascii-ui.BufferLine[]
 local function Column(...)
 	local components = { ... }
-	local component_closures = function()
-		return vim.iter(components):flatten():totable()
-	end
+	assert(Fibernode.is_node_list(components), "Column only accepts components as arguments")
 
 	return function()
 		local output = {}
-		for idx, component in ipairs(component_closures()) do
+		for idx, component in ipairs(components) do
 			if idx ~= 1 then
 				output[#output + 1] = BufferLine.new()
 			end
