@@ -81,64 +81,43 @@ return function(RootComponent)
 	user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
 	logger.info("Attached buffer %s to user interactions", window.bufnr)
 
+	local key_map = {
+		["l"] = { interaction = i.CURSOR_MOVE_RIGHT, search_fn = rendered_buffer.find_next_focusable },
+		["h"] = { interaction = i.CURSOR_MOVE_LEFT, search_fn = rendered_buffer.find_last_focusable },
+		["j"] = { interaction = i.CURSOR_MOVE_DOWN, search_fn = rendered_buffer.find_next_focusable },
+		["k"] = { interaction = i.CURSOR_MOVE_UP, search_fn = rendered_buffer.find_last_focusable },
+	}
+
 	vim.on_key(function(key, _)
 		if not window:is_focused() then
+			return
+		end
+		local action = key_map[key]
+		if not action then
 			return
 		end
 
 		local position = Cursor.current_position()
 
-		local interaction
-		if key == "l" then
-			interaction = i.CURSOR_MOVE_RIGHT
-		end
-
-		if key == "h" then
-			interaction = i.CURSOR_MOVE_LEFT
-		end
-
-		if key == "j" then
-			interaction = i.CURSOR_MOVE_DOWN
-		end
-
-		if key == "k" then
-			interaction = i.CURSOR_MOVE_UP
-		end
-
-		if interaction then
-			user_interations:instance():interact({
-				buffer_id = window.bufnr,
-				position = position,
-				interaction_type = interaction,
-			})
-		end
+		user_interations:instance():interact({
+			buffer_id = window.bufnr,
+			position = position,
+			interaction_type = action.interaction,
+		})
 
 		vim.schedule(function()
-			local result
-			if interaction == i.CURSOR_MOVE_RIGHT then
-				result = rendered_buffer:find_next_focusable(position)
-			end
-			if interaction == i.CURSOR_MOVE_DOWN then
-				result = rendered_buffer:find_next_focusable(position)
-			end
-
-			if interaction == i.CURSOR_MOVE_UP then
-				result = rendered_buffer:find_last_focusable(position)
-			end
-			if interaction == i.CURSOR_MOVE_LEFT then
-				result = rendered_buffer:find_last_focusable(position)
-			end
-
+			local result = action.search_fn(rendered_buffer, position)
 			if result then
 				local next_position = result.pos
 				Cursor.move_to(next_position, window.winid, window.bufnr)
 				logger.debug(
 					"Cursor moved to next focusable position: " .. next_position.line .. ", " .. next_position.col
 				)
+
 				local curr = Cursor.current_position()
 				assert(
-					next_position.col == curr.col,
-					"current position is " .. vim.inspect(curr) .. " wanted: " .. vim.inspect(next_position)
+					next_position.line == curr.line and next_position.col == curr.col,
+					"Current position is " .. vim.inspect(curr) .. " wanted: " .. vim.inspect(next_position)
 				)
 			end
 		end)
