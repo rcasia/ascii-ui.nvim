@@ -3,8 +3,8 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local Segment = require("ascii-ui.buffer.segment")
 local If = require("ascii-ui.components.if")
+local Segment = require("ascii-ui.buffer.segment")
 local renderer = require("ascii-ui.renderer"):new()
 local ui = require("ascii-ui")
 

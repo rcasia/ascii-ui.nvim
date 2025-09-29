@@ -3,8 +3,8 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local Segment = require("ascii-ui.buffer.segment")
 local FiberNode = require("ascii-ui.fibernode")
+local Segment = require("ascii-ui.buffer.segment")
 local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 local useState = fiber.useState
