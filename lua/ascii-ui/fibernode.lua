@@ -199,7 +199,7 @@ function FiberNode:unwrap_closure()
 
 	local function filter_nil_values(t)
 		local result = {}
-		-- Use pairs() to iterate through all elements of the table,
+		-- Use pairs() to iterate through all segments of the table,
 		-- regardless of whether they have a numeric or string key.
 		-- This is crucial for handling "holes" in the array.
 		for _, value in pairs(t) do

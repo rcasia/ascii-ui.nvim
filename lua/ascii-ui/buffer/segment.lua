@@ -50,7 +50,7 @@ function Segment:new(...)
 	else
 		props = props[1]
 	end
-	assert(type(props) == "table", "Element props must be a table. Found: " .. type(props) .. " " .. debug.traceback())
+	assert(type(props) == "table", "Segment props must be a table. Found: " .. type(props) .. " " .. debug.traceback())
 
 	vim.validate({ content = { props.content, "string" } })
 
@@ -115,7 +115,7 @@ function Segment:is_inputable()
 	return self.interactions[interaction_type.ON_INPUT] ~= nil
 end
 
---- Wraps the element in a ascii-ui.Bufferline object
+--- Wraps the segment in a ascii-ui.Bufferline object
 ---@return ascii-ui.BufferLine
 function Segment:wrap()
 	local Bufferline = require("ascii-ui.buffer.bufferline")

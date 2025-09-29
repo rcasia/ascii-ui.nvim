@@ -58,10 +58,10 @@ return function(RootComponent)
 			logger.info("Window %d resized from %d to %d lines", window.winid, current_lines_count, new_lines_count)
 
 			-- TODO: this will not work for all cases
-			local current_element = rendered_buffer:find_element_by_position(Cursor.current_position())
-			logger.debug("Current element: %s", vim.inspect(current_element))
-			if not current_element or not current_element:is_focusable() then
-				logger.debug("Current element is not focusable, moving to next focusable element")
+			local current_segment = rendered_buffer:find_segment_by_position(Cursor.current_position())
+			logger.debug("Current segment: %s", vim.inspect(current_segment))
+			if not current_segment or not current_segment:is_focusable() then
+				logger.debug("Current segment is not focusable, moving to next focusable segment")
 				local position = Cursor.current_position()
 				local result = rendered_buffer:find_next_focusable(position)
 
@@ -131,12 +131,12 @@ return function(RootComponent)
 				return -- not our window
 			end
 
-			local element = rendered_buffer:find_element_by_position(Cursor.current_position())
-			if not element then
+			local segment = rendered_buffer:find_segment_by_position(Cursor.current_position())
+			if not segment then
 				return
 			end
 
-			if element:is_inputable() then
+			if segment:is_inputable() then
 				window:enable_edits()
 			else
 				window:disable_edits()

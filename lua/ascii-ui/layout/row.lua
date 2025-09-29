@@ -1,5 +1,5 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local createComponent = require("ascii-ui.components.create-component")
 
 --- @param bufferlines ascii-ui.BufferLine[]
@@ -28,7 +28,7 @@ local function merge_bufferlines(bufferlines, other_bufferlines)
 		if left_bufferline:is_empty() and i == 1 then
 			merged_bufferlines[i] = left_bufferline:append(right_bufferline)
 		else
-			merged_bufferlines[i] = left_bufferline:append(right_bufferline, Element:new((" "):rep(spacing_cols_count)))
+			merged_bufferlines[i] = left_bufferline:append(right_bufferline, Segment:new((" "):rep(spacing_cols_count)))
 		end
 	end
 

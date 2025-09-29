@@ -2,7 +2,7 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local eq = assert.are.same
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local ui = require("ascii-ui")
 local useEffect = require("ascii-ui.hooks.use_effect")
 
@@ -17,7 +17,7 @@ describe("useEffect", function()
 			useEffect(function()
 				log[#log + 1] = "useEffect called"
 			end, {})
-			return { Element:new({ content = tostring(value) }):wrap() }
+			return { Segment:new({ content = tostring(value) }):wrap() }
 		end)
 
 		ui.mount(Component)
@@ -44,7 +44,7 @@ describe("useEffect", function()
 			useEffect(function()
 				log[#log + 1] = "useEffect called"
 			end, { value })
-			return { Element:new({ content = tostring(value) .. tostring(another_value) }):wrap() }
+			return { Segment:new({ content = tostring(value) .. tostring(another_value) }):wrap() }
 		end)
 
 		ui.mount(Component)
@@ -76,7 +76,7 @@ describe("useEffect", function()
 			useEffect(function()
 				log[#log + 1] = "useEffect called"
 			end)
-			return { Element:new({ content = tostring(value) .. tostring(another_value) }):wrap() }
+			return { Segment:new({ content = tostring(value) .. tostring(another_value) }):wrap() }
 		end)
 
 		ui.mount(Component)
@@ -112,7 +112,7 @@ describe("useEffect", function()
 				end
 				set_message("useEffect called with value: " .. tostring(value))
 			end, { value })
-			return { Element:new({ content = message }):wrap() }
+			return { Segment:new({ content = message }):wrap() }
 		end)
 
 		ui.mount(Component)

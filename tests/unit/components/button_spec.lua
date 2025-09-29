@@ -17,6 +17,6 @@ describe("Button", function()
 		local buffer = Renderer:new():render(App)
 
 		eq([[Send]], buffer:to_string())
-		eq(highlights.BUTTON, buffer.lines[1].elements[1].highlight)
+		eq(highlights.BUTTON, buffer.lines[1].segments[1].highlight)
 	end)
 end)

@@ -3,7 +3,7 @@ pcall(require, "luacov")
 
 local Buffer = require("ascii-ui.buffer")
 local BufferLine = require("ascii-ui.buffer.bufferline")
-local Segment = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local eq = assert.are.same
 
 describe("buffer", function()
@@ -45,7 +45,7 @@ describe("buffer", function()
 	end)
 
 	describe("find_focusable", function()
-		it("should find the next focusable element", function()
+		it("should find the next focusable segment", function()
 			local target_a = Segment:new("this is focusable", true)
 			local target_b = Segment:new("another focusable", true)
 			local target_c = Segment:new("yet another focusable", true)
@@ -69,7 +69,7 @@ describe("buffer", function()
 			assert.is_nil(next())
 		end)
 
-		it("finds next focusable element from position", function()
+		it("finds next focusable segment from position", function()
 			local target_a = Segment:new({ content = "this is focusable", is_focusable = true })
 			local target_b = Segment:new("another focusable", true)
 			local target_c = Segment:new("yet another focusable", true)
@@ -145,7 +145,7 @@ describe("buffer", function()
 			eq({ found = false, pos = { line = 2, col = 10 } }, b:find_last_focusable({ line = 2, col = 10 }))
 		end)
 
-		it("finds the next colored element and its position", function()
+		it("finds the next colored segment and its position", function()
 			local highlight = "SomeHighlight"
 			local target_a = Segment:new("this is focusable", false, {}, highlight)
 			local target_b = Segment:new("another focusable", true, {}, highlight)
@@ -157,56 +157,56 @@ describe("buffer", function()
 				BufferLine.new(),
 				BufferLine.new(target_c)
 			)
-			local next = b:iter_colored_elements()
+			local next = b:iter_colored_segments()
 			local found_a = assert(next())
-			eq(target_a, found_a.element)
+			eq(target_a, found_a.segment)
 			eq({ line = 1, col = 22 }, found_a.position)
 
 			local found_b = assert(next())
-			eq(target_b, found_b.element)
+			eq(target_b, found_b.segment)
 			eq({ line = 2, col = 21 }, found_b.position)
 
 			local found_c = assert(next())
-			eq(target_c, found_c.element)
+			eq(target_c, found_c.segment)
 			eq({ line = 5, col = 1 }, found_c.position)
 
 			assert.is_nil(next())
 		end)
 
-		it("should find element by id", function()
-			local target = Segment:new("target element")
+		it("should find segment by id", function()
+			local target = Segment:new("target segment")
 			local b = Buffer.new(
-				BufferLine.new(Segment:new("some element A")),
-				BufferLine.new(Segment:new("some element B"), target),
+				BufferLine.new(Segment:new("some segment A")),
+				BufferLine.new(Segment:new("some segment B"), target),
 				BufferLine.new(Segment:new("some elmenent C", true))
 			)
 
-			local found = b:find_element_by_id(target.id)
+			local found = b:find_segment_by_id(target.id)
 			eq(target, found)
 		end)
 
-		it("should find element by position", function()
-			local target_a = Segment:new("target element")
-			local element_before_target = Segment:new("some element B")
+		it("should find segment by position", function()
+			local target_a = Segment:new("target segment")
+			local segment_before_target = Segment:new("some segment B")
 			local b = Buffer.new(
-				BufferLine.new(Segment:new("some element A")),
-				BufferLine.new(element_before_target, target_a),
-				BufferLine.new(Segment:new("some element C"))
+				BufferLine.new(Segment:new("some segment A")),
+				BufferLine.new(segment_before_target, target_a),
+				BufferLine.new(Segment:new("some segment C"))
 			)
 
-			eq(target_a, b:find_element_by_position({ line = 2, col = element_before_target:len() + 1 }))
-			eq(target_a, b:find_element_by_position({ line = 2, col = element_before_target:len() }))
+			eq(target_a, b:find_segment_by_position({ line = 2, col = segment_before_target:len() + 1 }))
+			eq(target_a, b:find_segment_by_position({ line = 2, col = segment_before_target:len() }))
 		end)
 
 		it("returns nil when not found", function()
 			local b = Buffer.new(
 				--
-				BufferLine.new(Segment:new("some element A")),
-				BufferLine.new(Segment:new("some element C"))
+				BufferLine.new(Segment:new("some segment A")),
+				BufferLine.new(Segment:new("some segment C"))
 			)
 
-			assert.is_nil(b:find_element_by_position({ line = math.huge, col = 1 }))
-			assert.is_nil(b:find_element_by_position({ line = 1, col = math.huge }))
+			assert.is_nil(b:find_segment_by_position({ line = math.huge, col = 1 }))
+			assert.is_nil(b:find_segment_by_position({ line = 1, col = math.huge }))
 		end)
 	end)
 end)

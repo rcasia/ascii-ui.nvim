@@ -178,15 +178,15 @@ function Window:update(buffer)
 			-- for that use: nvim_buf_set_extmark
 			vim.api.nvim_set_option_value("winhl", ("Normal:%s"):format(highlights.DEFAULT), { win = self.winid })
 
-			for element_result in buffer:iter_colored_elements() do
-				local pos = element_result.position
-				local element = element_result.element
-				local end_col = pos.col + element:raw_len()
+			for segment_result in buffer:iter_colored_segments() do
+				local pos = segment_result.position
+				local segment = segment_result.segment
+				local end_col = pos.col + segment:raw_len()
 
 				vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, pos.line - 1, pos.col - 1, {
 					end_col = end_col - 1,
 					strict = false,
-					hl_group = element.highlight,
+					hl_group = segment.highlight,
 				})
 			end
 		end

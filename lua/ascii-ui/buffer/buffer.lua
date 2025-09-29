@@ -2,7 +2,7 @@ local BufferLine = require("ascii-ui.buffer.bufferline")
 local logger = require("ascii-ui.logger")
 
 ---@alias ascii-ui.Position { line: integer, col: integer }
----@alias ascii-ui.Buffer.ElementFoundResult { element: ascii-ui.Segment, position: ascii-ui.Position }
+---@alias ascii-ui.Buffer.SegmentFoundResult { segment: ascii-ui.Segment, position: ascii-ui.Position }
 
 ---@class ascii-ui.Buffer
 ---@field lines ascii-ui.BufferLine[]
@@ -129,9 +129,9 @@ function Buffer:iter_focusables()
 
 	local iter = vim.iter(self.lines)
 		:map(function(line)
-			return vim.iter(line.elements)
-				:filter(function(element)
-					return element:is_focusable()
+			return vim.iter(line.segments)
+				:filter(function(segment)
+					return segment:is_focusable()
 				end)
 				:totable()
 		end)
@@ -141,22 +141,22 @@ function Buffer:iter_focusables()
 	end
 end
 
----@return fun(): ascii-ui.Buffer.ElementFoundResult | nil
-function Buffer:iter_colored_elements()
+---@return fun(): ascii-ui.Buffer.SegmentFoundResult | nil
+function Buffer:iter_colored_segments()
 	local iter = vim.iter(self.lines)
 		:enumerate()
 		:map(function(line_index, line)
 			-- local line_index, line = indexed_line
 			local col_offset = 1
 
-			return vim.iter(line.elements)
-				:map(function(element)
+			return vim.iter(line.segments)
+				:map(function(segment)
 					local current_col = col_offset
-					col_offset = col_offset + element:raw_len() -- o el método que dé el ancho
+					col_offset = col_offset + segment:raw_len() -- o el método que dé el ancho
 
-					if element:is_colored() then
+					if segment:is_colored() then
 						return {
-							element = element,
+							segment = segment,
 							position = { line = line_index, col = current_col },
 						}
 					else
@@ -206,11 +206,11 @@ end
 
 ---@param id string
 ---@return ascii-ui.Segment | nil
-function Buffer:find_element_by_id(id)
+function Buffer:find_segment_by_id(id)
 	return vim.iter(self.lines)
 		:map(function(line)
-			return vim.iter(line.elements):find(function(element)
-				return element.id == id
+			return vim.iter(line.segments):find(function(segment)
+				return segment.id == id
 			end)
 		end)
 		:take(1)
@@ -219,11 +219,11 @@ end
 
 ---@param position ascii-ui.Position
 ---@return ascii-ui.Segment | nil
-function Buffer:find_element_by_position(position)
+function Buffer:find_segment_by_position(position)
 	if not self.lines[position.line] then
 		return nil -- out of bound
 	end
-	return self.lines[position.line]:find_element_by_col(position.col)
+	return self.lines[position.line]:find_segment_by_col(position.col)
 end
 
 --- @param ... ascii-ui.BufferLine

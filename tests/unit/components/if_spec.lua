@@ -3,7 +3,7 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local If = require("ascii-ui.components.if")
 local renderer = require("ascii-ui.renderer"):new()
 local ui = require("ascii-ui")
@@ -13,7 +13,7 @@ describe("If", function()
 		props = props or {}
 
 		return function()
-			return { Element:new(props.content):wrap() }
+			return { Segment:new(props.content):wrap() }
 		end
 	end, { content = "string" })
 

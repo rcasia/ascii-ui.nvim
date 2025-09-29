@@ -3,7 +3,7 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local For = require("ascii-ui.components.for")
 local renderer = require("ascii-ui.renderer"):new()
 local ui = require("ascii-ui")
@@ -12,7 +12,7 @@ describe("For", function()
 	local DummyComponent = ui.createComponent("DummyComponent", function(props)
 		props = props or {}
 
-		return { Element:new(props.content):wrap() }
+		return { Segment:new(props.content):wrap() }
 	end, { content = "string" })
 
 	it("renders a list of components based on a list of props", function()

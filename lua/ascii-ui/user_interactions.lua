@@ -36,22 +36,22 @@ function UserInteractions:interact(opts)
 		return -- buffer has not been found
 	end
 
-	local element = buffer:find_element_by_position(opts.position)
+	local segment = buffer:find_segment_by_position(opts.position)
 
-	if not element then
+	if not segment then
 		logger.warn(
-			"element not found in buffer by position (%d, %d) and buffer dimensions being %d x %d",
+			"segment not found in buffer by position (%d, %d) and buffer dimensions being %d x %d",
 			opts.position.line,
 			opts.position.col,
 			buffer:height(),
 			buffer:width()
 		)
-		return -- there is no element to interact with
+		return -- there is no segment to interact with
 	end
 
 	assert(opts.interaction_type, "interaction type cannot be nil")
 
-	local interaction_function = element.interactions[opts.interaction_type]
+	local interaction_function = segment.interactions[opts.interaction_type]
 	if type(interaction_function) == "function" then
 		interaction_function()
 	end

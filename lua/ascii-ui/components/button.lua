@@ -1,4 +1,4 @@
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local createComponent = require("ascii-ui.components.create-component")
 local highlights = require("ascii-ui.highlights")
 local interaction_type = require("ascii-ui.interaction_type")
@@ -8,7 +8,7 @@ local interaction_type = require("ascii-ui.interaction_type")
 --- @param props ascii-ui.ButtonComponent.Props
 local function Button(props)
 	return {
-		Element:new({
+		Segment:new({
 			content = props.label,
 			highlight = highlights.BUTTON,
 			is_focusable = true,

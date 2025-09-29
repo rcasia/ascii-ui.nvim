@@ -3,7 +3,7 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local FiberNode = require("ascii-ui.fibernode")
 local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
@@ -14,7 +14,7 @@ local logger = require("ascii-ui.logger")
 local MyComponent = ui.createComponent("MyComponent", function(props)
 	props = props or {}
 	return function()
-		return { Element:new({ content = props.content or "Hello World" }):wrap() }
+		return { Segment:new({ content = props.content or "Hello World" }):wrap() }
 	end
 end, { content = "string" })
 
@@ -36,8 +36,8 @@ describe("Fiber", function()
 		local List = ui.createComponent("List", function()
 			return function()
 				return {
-					Element:new({ content = "Línea 1" }):wrap(),
-					Element:new({ content = "Línea 2" }):wrap(),
+					Segment:new({ content = "Línea 1" }):wrap(),
+					Segment:new({ content = "Línea 2" }):wrap(),
 				}
 			end
 		end, {})
@@ -49,7 +49,7 @@ describe("Fiber", function()
 
 	it("un componente compuesto", function()
 		local SomeComponent = ui.createComponent("SomeComponent", function()
-			return { Element:new({ content = "Componente Interno" }):wrap() }
+			return { Segment:new({ content = "Componente Interno" }):wrap() }
 		end, {})
 		local List = ui.createComponent("List", function()
 			return {
@@ -73,8 +73,8 @@ describe("Fiber", function()
 			count, setCount = useState(0)
 			active, setActive = useState(false)
 			return {
-				Element:new({ content = "c:" .. count }):wrap(),
-				Element:new({ content = "b:" .. tostring(active) }):wrap(),
+				Segment:new({ content = "c:" .. count }):wrap(),
+				Segment:new({ content = "b:" .. tostring(active) }):wrap(),
 			}
 		end, {})
 
@@ -103,7 +103,7 @@ describe("Fiber", function()
 				invocations = invocations + 1
 			end, {})
 
-			return { Element:new({ content = "foo" }):wrap() }
+			return { Segment:new({ content = "foo" }):wrap() }
 		end)
 
 		-- primer render
@@ -127,7 +127,7 @@ describe("Fiber", function()
 					-- registramos cada ejecución junto con el valor actual de count
 					runs[#runs + 1] = count
 				end, { count })
-				return { Element:new({ content = tostring(count) }):wrap() }
+				return { Segment:new({ content = tostring(count) }):wrap() }
 			end
 		end, {})
 
@@ -171,7 +171,7 @@ describe("Fiber", function()
 					end
 				end, { count })
 
-				return { Element:new({ content = tostring(count) }):wrap() }
+				return { Segment:new({ content = tostring(count) }):wrap() }
 			end
 		end, {})
 
@@ -201,7 +201,7 @@ describe("Fiber", function()
 					end
 				end)
 
-				return { Element:new({ content = "foo" }):wrap() }
+				return { Segment:new({ content = "foo" }):wrap() }
 			end
 		end, {})
 
@@ -235,7 +235,7 @@ describe("Fiber", function()
 					end
 				end)
 
-				return { Element:new({ content = "foo" }):wrap() }
+				return { Segment:new({ content = "foo" }):wrap() }
 			end
 		end, {})
 
@@ -268,7 +268,7 @@ describe("Fiber", function()
 						log[#log + 1] = "cleanup"
 					end
 				end, {}) -- deps vacías
-				return { Element:new({ content = tostring(val) }):wrap() }
+				return { Segment:new({ content = tostring(val) }):wrap() }
 			end
 		end, {})
 
@@ -282,7 +282,7 @@ describe("Fiber", function()
 			-- Hojas simples: cada una envuelve una única línea
 			local ChildA = ui.createComponent("ChildA", function()
 				return function()
-					return { Element:new({ content = "A" }):wrap() }
+					return { Segment:new({ content = "A" }):wrap() }
 				end
 			end, {})
 
@@ -290,7 +290,7 @@ describe("Fiber", function()
 			local ChildB = ui.createComponent("ChildB", function()
 				return function()
 					countB, setCountB = useState(0)
-					return { Element:new({ content = "B:" .. countB }):wrap() }
+					return { Segment:new({ content = "B:" .. countB }):wrap() }
 				end
 			end, {})
 
@@ -298,7 +298,7 @@ describe("Fiber", function()
 			local ChildC = ui.createComponent("ChildC", function()
 				return function()
 					countC, setCountC = useState(0)
-					return { Element:new({ content = "C:" .. countC }):wrap() }
+					return { Segment:new({ content = "C:" .. countC }):wrap() }
 				end
 			end, {})
 
@@ -308,7 +308,7 @@ describe("Fiber", function()
 				return function()
 					countApp, setCountApp = useState(0)
 
-					-- Llamamos a cada hijo y extraemos su FiberNode (primer elemento de la tabla)
+					-- Llamamos a cada hijo y extraemos su FiberNode (primer segmento de la tabla)
 					return ui.layout.Column(
 						ChildA(),
 						ChildB(),

@@ -2,7 +2,7 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local eq = assert.are.same
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local renderer = require("ascii-ui.renderer"):new()
 local ui = require("ascii-ui")
 
@@ -10,7 +10,7 @@ describe("ComponentCreator.createComponent", function()
 	local DummyComponent = ui.createComponent("DummyComponent", function(props)
 		props = props or {}
 
-		return { Element:new({ content = props.content, interactions = { on_select = props.on_select } }):wrap() }
+		return { Segment:new({ content = props.content, interactions = { on_select = props.on_select } }):wrap() }
 	end, { content = "string", on_select = "function" })
 
 	it("creates a component that can have nested nodes", function()

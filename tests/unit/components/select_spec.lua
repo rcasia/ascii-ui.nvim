@@ -9,7 +9,7 @@ local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 
 describe("SelectComponent", function()
-	it("renders elements", function()
+	it("renders segments", function()
 		local option_names = { "apple", "banana", "mango" }
 		local App = ui.createComponent("Test", function()
 			return Select({ options = option_names })
@@ -22,36 +22,36 @@ describe("SelectComponent", function()
 		}, fiber.render(App):to_lines())
 	end)
 
-	it("renders selected element with color", function()
+	it("renders selected segment with color", function()
 		local option_names = { "apple", "banana", "mango" }
 
 		local App = ui.createComponent("Test", function()
 			return Select({ options = option_names })
 		end)
 		local buffer, root = fiber.render(App)
-		local selected_element = assert(buffer:find_element_by_position({ line = 1, col = 1 })) -- the first element is selected
+		local selected_segment = assert(buffer:find_segment_by_position({ line = 1, col = 1 })) -- the first segment is selected
 
-		eq(Hightlights.SELECTION, selected_element.highlight)
-		eq(nil, buffer:find_element_by_position({ line = 2, col = 1 }).highlight)
-		eq(nil, buffer:find_element_by_position({ line = 3, col = 1 }).highlight)
+		eq(Hightlights.SELECTION, selected_segment.highlight)
+		eq(nil, buffer:find_segment_by_position({ line = 2, col = 1 }).highlight)
+		eq(nil, buffer:find_segment_by_position({ line = 3, col = 1 }).highlight)
 
-		local second_selected_element = assert(buffer:find_element_by_position({ line = 2, col = 1 }))
+		local second_selected_segment = assert(buffer:find_segment_by_position({ line = 2, col = 1 }))
 
-		second_selected_element.interactions["SELECT"]()
+		second_selected_segment.interactions["SELECT"]()
 
 		-- Re-renderiza para reflejar el nuevo estado
 		local new_buffer = fiber.rerender(root)
 
-		local newly_selected = assert(new_buffer:find_element_by_position({ line = 2, col = 1 }))
+		local newly_selected = assert(new_buffer:find_segment_by_position({ line = 2, col = 1 }))
 		eq(Hightlights.SELECTION, newly_selected.highlight)
 	end)
 
 	it("uses the user defined function on select", function()
 		local option_names = { "apple", "banana", "mango" }
 		local user_received_selected_option
-		local user_defined_on_select_fun = function(selected_element)
-			print("selected  " .. selected_element)
-			user_received_selected_option = selected_element
+		local user_defined_on_select_fun = function(selected_segment)
+			print("selected  " .. selected_segment)
+			user_received_selected_option = selected_segment
 		end
 
 		local App = ui.createComponent("Test", function()
@@ -59,9 +59,9 @@ describe("SelectComponent", function()
 		end)
 		local buffer = fiber.render(App)
 
-		local selected_element = assert(buffer:find_element_by_position({ line = 1, col = 1 })) -- the first element is selected
+		local selected_segment = assert(buffer:find_segment_by_position({ line = 1, col = 1 })) -- the first segment is selected
 
-		selected_element.interactions["SELECT"]()
+		selected_segment.interactions["SELECT"]()
 		eq("apple", user_received_selected_option)
 	end)
 

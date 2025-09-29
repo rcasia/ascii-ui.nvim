@@ -1,5 +1,5 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
-local Segment = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local createComponent = require("ascii-ui.components.create-component")
 
 local useState = require("ascii-ui.fiber").useState

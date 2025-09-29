@@ -6,11 +6,11 @@ local eq = assert.are.same
 
 local Buffer = require("ascii-ui.buffer")
 local Bufferline = require("ascii-ui.buffer.bufferline")
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local UserInteractions = require("ascii-ui.user_interactions")
 
 describe("UserInteractions", function()
-	it("can interact with element", function()
+	it("can interact with segment", function()
 		local has_called = {
 			on_select = false,
 			on_hover = false,
@@ -19,7 +19,7 @@ describe("UserInteractions", function()
 		local position = { line = 1, col = 1 }
 		local buffer_id = 1
 
-		local buffer = Buffer.new(Bufferline.new(Element:new("my text here", false, {
+		local buffer = Buffer.new(Bufferline.new(Segment:new("my text here", false, {
 			SELECT = function()
 				has_called.on_select = true
 			end,
@@ -45,14 +45,14 @@ describe("UserInteractions", function()
 		eq(true, has_called.on_hover)
 	end)
 
-	it("does nothing when element is not found in position", function()
+	it("does nothing when segment is not found in position", function()
 		local buffer_id = 1
 		local user_interactions = UserInteractions:new()
 		local is_called = false
 		local position = { line = math.huge, col = math.huge }
 		local type = INTERACTION_TYPE.SELECT
 
-		local buffer = Buffer.new(Bufferline.new(Element:new("my text here", false, {
+		local buffer = Buffer.new(Bufferline.new(Segment:new("my text here", false, {
 			on_select = function()
 				is_called = true
 			end,

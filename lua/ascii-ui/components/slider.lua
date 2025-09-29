@@ -1,5 +1,5 @@
 local Bufferline = require("ascii-ui.buffer.bufferline")
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local createComponent = require("ascii-ui.components.create-component")
 local interaction_type = require("ascii-ui.interaction_type")
 local useConfig = require("ascii-ui.hooks.use_config")
@@ -40,14 +40,14 @@ local function Slider(props)
 		local knob_position = math.floor(width * value / 100)
 
 		return {
-			props.title ~= "" and Element:new(props.title):wrap(),
+			props.title ~= "" and Segment:new(props.title):wrap(),
 			Bufferline.new(
-				Element:new({
+				Segment:new({
 					content = cc.horizontal:rep(knob_position),
 				}),
-				Element:new({ content = cc.thumb, interactions = interactions }),
-				Element:new({ content = cc.horizontal:rep(width - knob_position) }),
-				Element:new({ content = (" %d%%"):format(value) })
+				Segment:new({ content = cc.thumb, interactions = interactions }),
+				Segment:new({ content = cc.horizontal:rep(width - knob_position) }),
+				Segment:new({ content = (" %d%%"):format(value) })
 			),
 		}
 	end

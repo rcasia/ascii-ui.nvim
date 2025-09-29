@@ -5,7 +5,7 @@ local ui = require("ascii-ui")
 local it = require("plenary.async.tests").it
 local Bufferline = require("ascii-ui.buffer.bufferline")
 local Cursor = require("ascii-ui.cursor")
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 
 local function feed(keys)
 	vim.api.nvim_feedkeys(keys, "mtx", true)
@@ -41,17 +41,17 @@ end
 
 describe("Focusable", function()
 	it("when user moves cursor jumps to focusables (UP and DOWN)", function()
-		local non_focusable_line = Element:new({ content = "Not focusable" }):wrap()
-		local focusable_line = Element:new({ content = "Focusable", is_focusable = true }):wrap()
+		local non_focusable_line = Segment:new({ content = "Not focusable" }):wrap()
+		local focusable_line = Segment:new({ content = "Focusable", is_focusable = true }):wrap()
 		local App = ui.createComponent("App", function()
 			return {
 
-				Element:new({ content = "Not focusable" }):wrap(),
-				Element:new({ content = "Focusable", is_focusable = true }):wrap(),
+				Segment:new({ content = "Not focusable" }):wrap(),
+				Segment:new({ content = "Focusable", is_focusable = true }):wrap(),
 				non_focusable_line:append(focusable_line),
-				Element:new({ content = "Not focusable" }):wrap(),
-				Element:new({ content = "Focusable", is_focusable = true }):wrap(),
-				Element:new({ content = "Not focusable" }):wrap(),
+				Segment:new({ content = "Not focusable" }):wrap(),
+				Segment:new({ content = "Focusable", is_focusable = true }):wrap(),
+				Segment:new({ content = "Not focusable" }):wrap(),
 			}
 		end)
 
@@ -80,8 +80,8 @@ describe("Focusable", function()
 	end)
 
 	it("when user moves cursor jumps to focusables (LEFT and RIGHT)", function()
-		local unfocusable = Element:new({ content = "o" })
-		local focusable = Element:new({ content = "x", is_focusable = true })
+		local unfocusable = Segment:new({ content = "o" })
+		local focusable = Segment:new({ content = "x", is_focusable = true })
 		local App = ui.createComponent("App", function()
 			return {
 				Bufferline.new(focusable, unfocusable, focusable, unfocusable, focusable),

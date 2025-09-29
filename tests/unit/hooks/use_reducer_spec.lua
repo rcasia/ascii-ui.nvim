@@ -2,7 +2,7 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local eq = assert.are.same
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 local useReducer = require("ascii-ui.hooks.use_reducer")
@@ -17,7 +17,7 @@ describe("useReducer", function()
 		local C = ui.createComponent("C", function()
 			return function()
 				value, dispatch = useReducer(reducer, 5)
-				return { Element:new({ content = tostring(value) }):wrap() }
+				return { Segment:new({ content = tostring(value) }):wrap() }
 			end
 		end)
 

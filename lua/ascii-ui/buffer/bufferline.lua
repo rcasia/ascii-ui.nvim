@@ -1,21 +1,21 @@
-local Segment = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 
 ---@class ascii-ui.BufferLine
----@field elements ascii-ui.Segment[]
+---@field segments ascii-ui.Segment[]
 local BufferLine = {}
 BufferLine.__index = BufferLine
 
 ---@param ... ascii-ui.Segment | boolean
 ---@return ascii-ui.BufferLine
 function BufferLine.new(...)
-	local elements = vim.iter({ ... })
+	local segments = vim.iter({ ... })
 		:filter(function(segment)
 			return type(segment) == "table"
 		end)
 		:totable()
 
 	local state = {
-		elements = elements,
+		segments = segments,
 	}
 
 	setmetatable(state, BufferLine)
@@ -38,12 +38,12 @@ end
 
 ---@return number[] cols
 function BufferLine:find_focusable()
-	assert(self.elements, "bufferline component failed: segment cannot be nil")
+	assert(self.segments, "bufferline component failed: segment cannot be nil")
 
 	local col = 0
 	local cols = {}
 	---@param segment ascii-ui.Segment
-	vim.iter(self.elements):each(function(segment)
+	vim.iter(self.segments):each(function(segment)
 		if segment:is_focusable() then
 			cols[#cols + 1] = col
 		end
@@ -54,9 +54,9 @@ function BufferLine:find_focusable()
 end
 ---@param col number
 ---@return ascii-ui.Segment | nil
-function BufferLine:find_element_by_col(col)
+function BufferLine:find_segment_by_col(col)
 	local len = 0
-	for _, segment in ipairs(self.elements) do
+	for _, segment in ipairs(self.segments) do
 		len = len + segment:len()
 		if len > col then
 			return segment
@@ -68,7 +68,7 @@ end
 
 ---@return integer length
 function BufferLine:len()
-	return vim.iter(self.elements):fold(0, function(acc, segment)
+	return vim.iter(self.segments):fold(0, function(acc, segment)
 		return acc + segment:len()
 	end)
 end
@@ -81,7 +81,7 @@ end
 ---@return string
 function BufferLine:to_string()
 	return vim
-		.iter(self.elements)
+		.iter(self.segments)
 		---@param segment ascii-ui.Segment
 		:map(function(segment)
 			return segment:to_string()
@@ -101,27 +101,27 @@ function BufferLine:append(other_bufferline, delimiter)
 		)
 	)
 
-	local elements = self.elements
+	local segments = self.segments
 
 	if delimiter then
-		elements[#elements + 1] = delimiter
+		segments[#segments + 1] = delimiter
 	end
-	vim.iter(other_bufferline.elements):each(function(segment)
-		elements[#elements + 1] = segment
+	vim.iter(other_bufferline.segments):each(function(segment)
+		segments[#segments + 1] = segment
 	end)
 
-	return BufferLine.new(unpack(elements))
+	return BufferLine.new(unpack(segments))
 end
 
 --- @return boolean
 function BufferLine:is_empty()
-	return #self.elements == 0
+	return #self.segments == 0
 end
 
 --- @return { segment: ascii-ui.Segment, position: ascii-ui.Position }[]
 function BufferLine:focusable_segments(from_line)
 	local col = 0
-	return vim.iter(self.elements)
+	return vim.iter(self.segments)
 		:map(function(segment)
 			local current_col = col
 			col = col + segment:len()

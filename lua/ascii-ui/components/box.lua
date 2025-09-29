@@ -1,4 +1,4 @@
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local createComponent = require("ascii-ui.components.create-component")
 local useConfig = require("ascii-ui.hooks.use_config")
 
@@ -45,7 +45,7 @@ local function Box(props)
 
 	return vim.iter(output)
 		:map(function(line)
-			return Element:new(line):wrap()
+			return Segment:new(line):wrap()
 		end)
 		:totable()
 end

@@ -5,11 +5,11 @@ Buffer.from_lines()	ascii-ui.txt	/*Buffer.from_lines()*
 Buffer.is_buffer()	ascii-ui.txt	/*Buffer.is_buffer()*
 Buffer.new()	ascii-ui.txt	/*Buffer.new()*
 Buffer:add()	ascii-ui.txt	/*Buffer:add()*
-Buffer:find_element_by_id()	ascii-ui.txt	/*Buffer:find_element_by_id()*
-Buffer:find_element_by_position()	ascii-ui.txt	/*Buffer:find_element_by_position()*
 Buffer:find_last_focusable()	ascii-ui.txt	/*Buffer:find_last_focusable()*
 Buffer:find_next_focusable()	ascii-ui.txt	/*Buffer:find_next_focusable()*
-Buffer:iter_colored_elements()	ascii-ui.txt	/*Buffer:iter_colored_elements()*
+Buffer:find_segment_by_id()	ascii-ui.txt	/*Buffer:find_segment_by_id()*
+Buffer:find_segment_by_position()	ascii-ui.txt	/*Buffer:find_segment_by_position()*
+Buffer:iter_colored_segments()	ascii-ui.txt	/*Buffer:iter_colored_segments()*
 Buffer:iter_focusables()	ascii-ui.txt	/*Buffer:iter_focusables()*
 Buffer:to_lines()	ascii-ui.txt	/*Buffer:to_lines()*
 Buffer:width()	ascii-ui.txt	/*Buffer:width()*
@@ -18,8 +18,8 @@ BufferLine.from_string()	ascii-ui.txt	/*BufferLine.from_string()*
 BufferLine.is_bufferline()	ascii-ui.txt	/*BufferLine.is_bufferline()*
 BufferLine.new()	ascii-ui.txt	/*BufferLine.new()*
 BufferLine:append()	ascii-ui.txt	/*BufferLine:append()*
-BufferLine:find_element_by_col()	ascii-ui.txt	/*BufferLine:find_element_by_col()*
 BufferLine:find_focusable()	ascii-ui.txt	/*BufferLine:find_focusable()*
+BufferLine:find_segment_by_col()	ascii-ui.txt	/*BufferLine:find_segment_by_col()*
 BufferLine:focusable_segments()	ascii-ui.txt	/*BufferLine:focusable_segments()*
 BufferLine:is_empty()	ascii-ui.txt	/*BufferLine:is_empty()*
 BufferLine:len()	ascii-ui.txt	/*BufferLine:len()*
@@ -108,11 +108,6 @@ ascii-ui.hooks.useFunctionRegistry()	ascii-ui.txt	/*ascii-ui.hooks.useFunctionRe
 ascii-ui.hooks.useReducer()	ascii-ui.txt	/*ascii-ui.hooks.useReducer()*
 ascii-ui.hooks.useState()	ascii-ui.txt	/*ascii-ui.hooks.useState()*
 ascii-ui.hooks.useUserConfig()	ascii-ui.txt	/*ascii-ui.hooks.useUserConfig()*
-ascii-ui.nvim-ascii-ui.nvim	ascii-ui.nvim.txt	/*ascii-ui.nvim-ascii-ui.nvim*
-ascii-ui.nvim-ascii-ui.nvim-example	ascii-ui.nvim.txt	/*ascii-ui.nvim-ascii-ui.nvim-example*
-ascii-ui.nvim-links	ascii-ui.nvim.txt	/*ascii-ui.nvim-links*
-ascii-ui.nvim-table-of-contents	ascii-ui.nvim.txt	/*ascii-ui.nvim-table-of-contents*
-ascii-ui.nvim.txt	ascii-ui.nvim.txt	/*ascii-ui.nvim.txt*
 commitWork()	ascii-ui.txt	/*commitWork()*
 config	ascii-ui.txt	/*config*
 createComponent()	ascii-ui.txt	/*createComponent()*

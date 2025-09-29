@@ -1,4 +1,4 @@
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local highlights = require("ascii-ui.highlights")
 local interation_type = require("ascii-ui.interaction_type")
 local logger = require("ascii-ui.logger")
@@ -46,7 +46,7 @@ local function Select(props)
 				content = ("[ ] %s"):format(option.name)
 			end
 
-			return Element:new(content, true, {
+			return Segment:new(content, true, {
 				[interation_type.SELECT] = function()
 					setSelected(option.id)
 					if props.on_select then
@@ -55,13 +55,13 @@ local function Select(props)
 				end,
 			}, highlight)
 		end)
-		:map(function(element)
-			return element:wrap()
+		:map(function(segment)
+			return segment:wrap()
 		end)
 		:totable()
 
 	if vim.fn.empty(props.title) == 0 then
-		table.insert(bufferlines, 1, Element:new(props.title):wrap())
+		table.insert(bufferlines, 1, Segment:new(props.title):wrap())
 	end
 	return bufferlines
 end

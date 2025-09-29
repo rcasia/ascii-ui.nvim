@@ -1012,7 +1012,7 @@ Return ~
 ------------------------------------------------------------------------------
                                                                 *Segment:wrap()*
                                 `Segment:wrap`()
-Wraps the element in a ascii-ui.Bufferline object
+Wraps the segment in a ascii-ui.Bufferline object
 Return ~
 `(ascii)`-ui.BufferLine
 
@@ -1068,10 +1068,10 @@ Return ~
 `(fun(): ascii-ui.Segment | nil)`
 
 ------------------------------------------------------------------------------
-                                                *Buffer:iter_colored_elements()*
-                        `Buffer:iter_colored_elements`()
+                                                *Buffer:iter_colored_segments()*
+                        `Buffer:iter_colored_segments`()
 Return ~
-`(fun(): { element: ascii-ui.Segment, position: { line: integer, col: integer } } | nil)`
+`(fun(): { segment: ascii-ui.Segment, position: { line: integer, col: integer } } | nil)`
 
 ------------------------------------------------------------------------------
                                                            *Buffer.from_lines()*
@@ -1088,16 +1088,16 @@ Return ~
 `(string[])`
 
 ------------------------------------------------------------------------------
-                                                   *Buffer:find_element_by_id()*
-                       `Buffer:find_element_by_id`({id})
+                                                   *Buffer:find_segment_by_id()*
+                       `Buffer:find_segment_by_id`({id})
 Parameters ~
 {id} `(string)`
 Return ~
 `(ascii)`-ui.Segment | nil
 
 ------------------------------------------------------------------------------
-                                             *Buffer:find_element_by_position()*
-                 `Buffer:find_element_by_position`({position})
+                                             *Buffer:find_segment_by_position()*
+                 `Buffer:find_segment_by_position`({position})
 Parameters ~
 {position} `({ line: integer, col: integer })`
 Return ~
@@ -1117,7 +1117,7 @@ Return ~
 Class ~
 {ascii-ui.BufferLine}
 Fields ~
-{elements} `(ascii)`-ui.Segment[]
+{segments} `(ascii)`-ui.Segment[]
 
 ------------------------------------------------------------------------------
                                                               *BufferLine.new()*
@@ -1139,8 +1139,8 @@ Return ~
 `(number[])` cols
 
 ------------------------------------------------------------------------------
-                                              *BufferLine:find_element_by_col()*
-                    `BufferLine:find_element_by_col`({col})
+                                              *BufferLine:find_segment_by_col()*
+                    `BufferLine:find_segment_by_col`({col})
 Parameters ~
 {col} `(number)`
 Return ~

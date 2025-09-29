@@ -2,7 +2,7 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local renderer = require("ascii-ui.renderer"):new()
 local ui = require("ascii-ui")
 
@@ -14,9 +14,9 @@ describe("Row", function()
 
 		return function()
 			return {
-				Element:new(props.content):wrap(),
-				Element:new(props.content):wrap(),
-				Element:new("smol txt"):wrap(),
+				Segment:new(props.content):wrap(),
+				Segment:new(props.content):wrap(),
+				Segment:new("smol txt"):wrap(),
 			}
 		end
 	end, { content = "string" })
@@ -43,7 +43,7 @@ describe("Row", function()
 		return function()
 			return vim.iter(vim.fn.range(1, props.times))
 				:map(function()
-					return Element:new(props.content):wrap()
+					return Segment:new(props.content):wrap()
 				end)
 				:totable()
 		end

@@ -1,5 +1,5 @@
 local Bufferline = require("ascii-ui.buffer.bufferline")
-local Segment = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local logger = require("ascii-ui.logger")
 local mount = require("ascii-ui.mount")
 local user_config = require("ascii-ui.config.user_config")

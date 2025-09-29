@@ -7,7 +7,7 @@ local it = require("plenary.async.tests").it
 local Paragraph = ui.components.Paragraph
 local Slider = ui.components.Slider
 local useState = require("ascii-ui.fiber").useState
-local Element = require("ascii-ui.buffer.element")
+local Segment = require("ascii-ui.buffer.segment")
 local interaction_type = require("ascii-ui.interaction_type")
 
 local function feed(keys)
@@ -38,7 +38,7 @@ local function buffer_contains(bufnr, pattern)
 end
 
 describe("ascii-ui", function()
-	it("interacts with elements of a Select component", function()
+	it("interacts with segments of a Select component", function()
 		local App = ui.createComponent("App", function()
 			return Select({ options = {
 				"book",
@@ -108,7 +108,7 @@ describe("ascii-ui", function()
 			local App = ui.createComponent("App", function()
 				content, setContent = useState("hola mundo")
 				return {
-					Element:new({
+					Segment:new({
 						content = content,
 						interactions = {
 							[interaction_type.CURSOR_MOVE_RIGHT] = function()
@@ -137,7 +137,7 @@ describe("ascii-ui", function()
 		local SomeComponent = ui.createComponent("SomeComponent", function()
 			content, setContent = useState("hola mundo")
 			return {
-				Element:new({
+				Segment:new({
 					content = content,
 					interactions = {
 						[interaction_type.CURSOR_MOVE_RIGHT] = function()
