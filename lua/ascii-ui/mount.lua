@@ -1,3 +1,4 @@
+local Buffer = require("ascii-ui.buffer.buffer")
 local Cursor = require("ascii-ui.cursor")
 local EventListener = require("ascii-ui.events")
 local Window = require("ascii-ui.window")
@@ -82,10 +83,10 @@ return function(RootComponent)
 	logger.info("Attached buffer %s to user interactions", window.bufnr)
 
 	local key_map = {
-		["l"] = { interaction = i.CURSOR_MOVE_RIGHT, search_fn = rendered_buffer.find_next_focusable },
-		["h"] = { interaction = i.CURSOR_MOVE_LEFT, search_fn = rendered_buffer.find_last_focusable },
-		["j"] = { interaction = i.CURSOR_MOVE_DOWN, search_fn = rendered_buffer.find_next_focusable },
-		["k"] = { interaction = i.CURSOR_MOVE_UP, search_fn = rendered_buffer.find_last_focusable },
+		["l"] = { interaction = i.CURSOR_MOVE_RIGHT, search_fn = Buffer.find_next_focusable },
+		["h"] = { interaction = i.CURSOR_MOVE_LEFT, search_fn = Buffer.find_last_focusable },
+		["j"] = { interaction = i.CURSOR_MOVE_DOWN, search_fn = Buffer.find_next_focusable },
+		["k"] = { interaction = i.CURSOR_MOVE_UP, search_fn = Buffer.find_last_focusable },
 	}
 
 	vim.on_key(function(key, _)
