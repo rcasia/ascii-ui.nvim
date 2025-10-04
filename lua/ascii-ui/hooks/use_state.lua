@@ -8,16 +8,16 @@ local fiber = require("ascii-ui.fiber")
 ---
 --- Example:
 --- ```
---- local function MyComponent()
----   local count, setCount = useState(0)
----     return ui.layout.Column(
----       ui.components.Paragraph({ content = function() return ("Count: %d"):format(count()) end }),
+--- local MyComponent = ui.createComponent("MyComponent", function()
+---   local count, setCount = ui.hooks.useState(0)
+---     return {
+---       ui.components.Paragraph({ content = "Count: " .. count }),
 ---       ui.components.Button({
 ---         label = "Increment",
----         on_press = function() setCount(count() + 1) end
+---         on_press = function() setCount(count + 1) end
 ---       })
----     )
---- end
+---     }
+--- end)
 --- ```
 ---
 --- @generic T
