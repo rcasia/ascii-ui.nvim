@@ -755,9 +755,6 @@ Executes a callback function at specified intervals.
 ascii-ui.hooks.useReducer() *ascii-ui.hooks.useReducer()*
 
 ------------------------------------------------------------------------------
-@alias ascii-ui.ReducerAction {type: string, params: any}
-
-------------------------------------------------------------------------------
                                                                   *useReducer()*
                         `useReducer`({reducer}, {value})
 
@@ -773,13 +770,13 @@ local function reducer(state, action)
   return state
 end
 
-local function MyComponent()
+local MyComponent = ui.createComponent("MyComponent", function()
   local count, dispatch = ascii-ui.hooks.useReducer(reducer, 0)
     return ui.components.Button({
-      label = "Count: " .. count(),
+      label = "Count: " .. count,
       on_press = function() dispatch({type="increment"}) end
     })
-end
+end)
 ```
 
 @generic T

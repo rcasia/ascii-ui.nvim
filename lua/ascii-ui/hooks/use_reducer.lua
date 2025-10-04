@@ -3,8 +3,6 @@
 local logger = require("ascii-ui.logger")
 local useState = require("ascii-ui.hooks.use_state")
 
---- @alias ascii-ui.ReducerAction {type: string, params: any}
-
 ---
 --- Manages complex state logic by applying a reducer function to the current state and dispatched actions within an ascii-ui component.
 --- Returns getter and dispatch functions for the state.
@@ -18,13 +16,13 @@ local useState = require("ascii-ui.hooks.use_state")
 ---   return state
 --- end
 ---
---- local function MyComponent()
+--- local MyComponent = ui.createComponent("MyComponent", function()
 ---   local count, dispatch = ascii-ui.hooks.useReducer(reducer, 0)
 ---     return ui.components.Button({
----       label = "Count: " .. count(),
+---       label = "Count: " .. count,
 ---       on_press = function() dispatch({type="increment"}) end
 ---     })
---- end
+--- end)
 --- ```
 ---
 --- @generic T
