@@ -944,11 +944,18 @@ Re-renderiza el árbol de fibers a partir de la raíz dada
 
 ==============================================================================
 ------------------------------------------------------------------------------
+@class ascii-ui.SegmentColor
+@field fg? string foreground color
+@field bg? string background color
+
+------------------------------------------------------------------------------
 @class ascii-ui.SegmentOpts
 @field content string does not support newlines
 @field is_focusable? boolean whether the segment can be focused
 @field interactions? table<ascii-ui.UserInteractions.InteractionType, function> a map of interaction types to functions
 @field highlight? string a highlight group name to apply to the segment
+Fields ~
+{color} `(optional)` `(ascii)`-ui.SegmentColor
 
 ------------------------------------------------------------------------------
                                                                        *Segment*
@@ -962,6 +969,7 @@ Fields ~
 {content} `(string)`
 {interactions} `(table<ascii-ui.UserInteractions.InteractionType, function>)`
 {highlight} `(optional)` `(string)`
+{color} `(optional)` `(ascii)`-ui.SegmentColor
 {private} `(focusable)` boolean
 
 ------------------------------------------------------------------------------

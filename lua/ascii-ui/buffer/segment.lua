@@ -1,10 +1,15 @@
 local interaction_type = require("ascii-ui.interaction_type")
 
+--- @class ascii-ui.SegmentColor
+--- @field fg? string foreground color
+--- @field bg? string background color
+
 --- @class ascii-ui.SegmentOpts
 --- @field content string does not support newlines
 --- @field is_focusable? boolean whether the segment can be focused
 --- @field interactions? table<ascii-ui.UserInteractions.InteractionType, function> a map of interaction types to functions
 --- @field highlight? string a highlight group name to apply to the segment
+---@field color? ascii-ui.SegmentColor
 
 ---
 --- A segment is the minimal unit of a render in ascii-ui.
@@ -13,6 +18,7 @@ local interaction_type = require("ascii-ui.interaction_type")
 ---@field content string
 ---@field interactions table<ascii-ui.UserInteractions.InteractionType, function>
 ---@field highlight? string
+---@field color? ascii-ui.SegmentColor
 ---@field private focusable boolean
 local Segment = {}
 
@@ -61,6 +67,7 @@ function Segment:new(...)
 		id = generate_id(),
 		content = props.content,
 		highlight = props.highlight,
+		color = props.color,
 		focusable = props.is_focusable or false,
 		interactions = props.interactions or {},
 	}
@@ -108,7 +115,15 @@ function Segment:is_focusable()
 end
 
 function Segment:is_colored()
-	return self.highlight ~= nil
+	if self.highlight then
+		return true
+	end
+
+	if self.color and (self.color.bg or self.color.fg) then
+		return true
+	end
+
+	return false
 end
 
 function Segment:is_inputable()
