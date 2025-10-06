@@ -183,7 +183,7 @@ function Window:update(buffer)
 				local segment = segment_result.segment
 				local end_col = pos.col + segment:raw_len()
 
-				if segment.highlight == nil then
+				if segment.highlight then
 					vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, pos.line - 1, pos.col - 1, {
 						end_col = end_col - 1,
 						strict = false,
