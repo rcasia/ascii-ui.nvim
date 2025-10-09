@@ -1,5 +1,4 @@
 local Buffer = require("ascii-ui.buffer")
-local unpack = unpack or table.unpack
 local FiberNode = require("ascii-ui.fibernode")
 
 local logger = require("ascii-ui.logger")
@@ -257,86 +256,6 @@ local function rerender(root)
 	return buf, root
 end
 
---- @param fn function
---- @param deps? any[]
-local function _useEffect(fn, deps)
-	assert(currentFiber, "cannot call useEffect out of the component scope")
-	assert(type(deps) == "nil" or vim.isarray(deps), "deps should be an array or nil")
-
-	local fiber = currentFiber
-
-	logger.debug("running useEffect on %s", fiber.type)
-	logger.debug(
-		"running useEffect with deps: "
-			.. vim.inspect(deps)
-			.. " vs prev: "
-			.. vim.inspect(fiber.prevDeps[fiber.effectIndex])
-	)
-
-	local idx = fiber.effectIndex
-	local prev = fiber.prevDeps[idx]
-	local shouldRun = false
-
-	if deps == nil then
-		-- Sin array de deps: ejecutar en cada render y rerender
-		shouldRun = true
-	elseif #deps == 0 then
-		-- Array vacío: sólo montaje
-		shouldRun = (prev == nil)
-	else
-		if not prev then
-			shouldRun = true
-		else
-			-- Shallow compare
-			if #deps ~= #prev then
-				shouldRun = true
-			else
-				for i = 1, #deps do
-					if deps[i] ~= prev[i] then
-						shouldRun = true
-						break
-					end
-				end
-			end
-		end
-	end
-
-	logger.debug("shouldRun: " .. tostring(shouldRun))
-
-	if shouldRun then
-		local prevCleanup = fiber.cleanups[idx]
-
-		local effect_type = deps and "ONCE" or "REPEATING"
-		if effect_type == "ONCE" then
-			if prevCleanup then
-				fiber:add_cleanup(prevCleanup)
-			end
-			fiber:add_effect(function()
-				local newCleanup = fn()
-				fiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
-			end, effect_type)
-		else
-			fiber:add_effect(function()
-				if fiber.cleanups[idx] then
-					fiber.cleanups[idx]()
-				end
-				local newCleanup = fn()
-				fiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
-			end, effect_type)
-		end
-	end
-
-	-- guardar dependencias anteriores correctamente
-	if deps == nil then
-		fiber.prevDeps[idx] = nil
-	elseif #deps == 0 then
-		fiber.prevDeps[idx] = {} -- ← mantiene array vacío
-	else
-		fiber.prevDeps[idx] = { unpack(deps) }
-	end
-	fiber.effectIndex = fiber.effectIndex + 1
-end
-
 return {
 	render = render,
 	rerender = rerender,
@@ -345,8 +264,6 @@ return {
 	reconcileChildren = reconcileChildren,
 	commitWork = commitWork,
 	debugPrint = debugPrint,
-	-- hooks
-	_useEffect = _useEffect,
 	getCurrentFiber = function()
 		return currentFiber
 	end,

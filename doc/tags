@@ -101,7 +101,6 @@ Window:position()	ascii-ui.txt	/*Window:position()*
 Window:update()	ascii-ui.txt	/*Window:update()*
 _	ascii-ui.txt	/*_*
 _config	ascii-ui.txt	/*_config*
-_useEffect()	ascii-ui.txt	/*_useEffect()*
 as_lines()	ascii-ui.txt	/*as_lines()*
 ascii-ui.hooks.useEffect()	ascii-ui.txt	/*ascii-ui.hooks.useEffect()*
 ascii-ui.hooks.useFunctionRegistry()	ascii-ui.txt	/*ascii-ui.hooks.useFunctionRegistry()*

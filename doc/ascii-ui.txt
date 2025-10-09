@@ -928,12 +928,6 @@ Re-renderiza el árbol de fibers a partir de la raíz dada
 @param root ascii-ui.RootFiberNode
 @return ascii-ui.Buffer buffer con las líneas renderizadas
 
-------------------------------------------------------------------------------
-                                                                  *_useEffect()*
-                           `_useEffect`({fn}, {deps})
-@param fn function
-@param deps? any[]
-
 
 ==============================================================================
 ------------------------------------------------------------------------------
