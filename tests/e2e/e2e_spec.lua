@@ -6,7 +6,7 @@ local Select = ui.components.Select
 local it = require("plenary.async.tests").it
 local Paragraph = ui.components.Paragraph
 local Slider = ui.components.Slider
-local useState = require("ascii-ui.fiber").useState
+local useState = ui.hooks.useState
 local Segment = require("ascii-ui.buffer.segment")
 local interaction_type = require("ascii-ui.interaction_type")
 

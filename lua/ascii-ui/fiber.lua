@@ -1,10 +1,8 @@
 local Buffer = require("ascii-ui.buffer")
-local EventListener = require("ascii-ui.events")
 local unpack = unpack or table.unpack
 local FiberNode = require("ascii-ui.fibernode")
 
 local logger = require("ascii-ui.logger")
-local metrics = require("ascii-ui.utils.metrics")
 
 --- @type ascii-ui.FiberNode | nil
 local currentFiber
@@ -259,70 +257,6 @@ local function rerender(root)
 	return buf, root
 end
 
-local function useState(initial)
-	assert(currentFiber, "cannot call useState out of context")
-	local fiber = currentFiber
-
-	assert(fiber.root, "fiber should have root: " .. vim.inspect(fiber))
-	local idx = fiber.hookIndex
-	if fiber.hooks[idx] == nil then
-		fiber.hooks[idx] = initial
-		logger.debug("🥊 Initializing state for %s at index %d with value: %s", fiber.type, idx, vim.inspect(initial))
-	end
-	local snapshot = fiber.hooks[idx]
-
-	local function get()
-		return vim.deepcopy(snapshot) -- return a copy of the state to avoid mutation
-	end
-
-	local function set(value)
-		metrics.inc("hooks.useState.set.calls")
-		logger.debug("Metrics inner: " .. vim.inspect(metrics.all()))
-		logger.debug("🥊 State change detected: (component: %s, state: %s)", fiber.type, vim.inspect(value))
-
-		local new_value
-		if type(value) == "function" then
-			new_value = value(fiber.hooks[idx])
-		else
-			new_value = value
-		end
-
-		-- do nothing if the value is the same as before
-		if new_value == fiber.hooks[idx] then
-			logger.debug("🥊 No change in state, skipping re-render")
-			return
-		else
-			logger.debug("🥊 State changed from %s to %s", vim.inspect(fiber.hooks[idx]), vim.inspect(new_value))
-			fiber.hooks[idx] = new_value
-		end
-
-		-- ⇲ 2) P1 – ejecuta cleanups de efectos con deps no-vacíos ------
-		if fiber.cleanups then
-			for i, cu in ipairs(fiber.cleanups) do
-				local deps = fiber.prevDeps[i]
-				-- solo si deps existe y no está vacío
-				if deps and #deps > 0 and type(cu) == "function" then
-					cu() -- cleanup inmediato (mantiene valor viejo)
-					fiber.cleanups[i] = nil -- se reasignará en el nuevo render
-					fiber.prevDeps[i] = nil
-				end
-			end
-		end
-
-		local root = FiberNode.resetFrom(fiber)
-		vim.iter(fiber:iter()):each(function(n)
-			n.tag = "UPDATE"
-		end)
-
-		debugPrint(root)
-
-		EventListener:trigger("state_change")
-	end
-
-	fiber.hookIndex = idx + 1
-	return get(), set
-end
-
 --- @param fn function
 --- @param deps? any[]
 local function _useEffect(fn, deps)
@@ -412,6 +346,8 @@ return {
 	commitWork = commitWork,
 	debugPrint = debugPrint,
 	-- hooks
-	useState = useState,
 	_useEffect = _useEffect,
+	getCurrentFiber = function()
+		return currentFiber
+	end,
 }

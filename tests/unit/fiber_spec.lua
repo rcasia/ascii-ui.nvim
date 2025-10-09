@@ -7,7 +7,7 @@ local FiberNode = require("ascii-ui.fibernode")
 local Segment = require("ascii-ui.buffer.segment")
 local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
-local useState = fiber.useState
+local useState = ui.hooks.useState
 local useEffect = fiber._useEffect
 local logger = require("ascii-ui.logger")
 
