@@ -5,37 +5,57 @@ on:
     paths-ignore:
       - "**/*.md"
     branches:
-      - "main"
+      - main
 
   pull_request:
     paths-ignore:
       - "**/*.md"
     branches:
-      - "main"
+      - main
 
 jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
-      matrix:
-        nvim-versions: ["stable", "nightly"]
-        os: [ubuntu-latest, windows-latest, macos-latest]
       fail-fast: false
+      matrix:
+        nvim-versions: [stable, nightly]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
     name: Plenary Tests
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
       - name: Install cargo-binstall
         uses: taiki-e/install-action@cargo-binstall
 
-      - name: Install Lux
-        run: cargo binstall lux-cli --locked --features vendored
+      - name: Install lux-cli (prebuilt if possible; fallback to source with features)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            # macOS: avoid dylib mismatches by compiling from source with vendored deps
+            cargo install lux-cli --locked --features vendored
+          else
+            # Try prebuilt first (faster); if unavailable, compile from source
+            if ! cargo binstall -y lux-cli; then
+              cargo install lux-cli --locked --features vendored
+            fi
+          fi
+          lx --version
 
-      - name: checkout
-        uses: actions/checkout@v4
-
-      - uses: rhysd/action-setup-vim@v1
+      - name: Setup Neovim
+        uses: rhysd/action-setup-vim@v2
         with:
           neovim: true
           version: ${{ matrix.nvim-versions }}
 
-      - name: run tests
+      - name: Run tests
+        shell: bash
         run: lx test
