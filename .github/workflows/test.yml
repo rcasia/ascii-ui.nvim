@@ -27,7 +27,7 @@ jobs:
         uses: taiki-e/install-action@cargo-binstall
 
       - name: Install Lux
-        run: cargo binstall lux-cli
+        run: cargo binstall lux-cli --locked
 
       - name: checkout
         uses: actions/checkout@v4
