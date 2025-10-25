@@ -23,6 +23,12 @@ jobs:
       fail-fast: false
     name: Plenary Tests
     steps:
+      - name: Install cargo-binstall
+        uses: taiki-e/install-action@cargo-binstall
+
+      - name: Install Lux
+        run: cargo binstall lux-cli
+
       - name: checkout
         uses: actions/checkout@v4
 
