@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.6.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.5.0...v0.6.0) (2025-10-09)
+
+
+### Features
+
+* add color object to segment apil ([0f80055](https://github.com/rcasia/ascii-ui.nvim/commit/0f80055a7cb2d76027c98b61892aab0459773158))
+* allow component to have nil nodes ([2303993](https://github.com/rcasia/ascii-ui.nvim/commit/2303993064fd8a9bde4d498dc39dcbd699d8bc70))
+* allow components to return nested arrays of nodes ([8cb9746](https://github.com/rcasia/ascii-ui.nvim/commit/8cb97463cc51569ab93e778bd31fe3cdad883911))
+* segments are focusable if they can be interacted with ([964705c](https://github.com/rcasia/ascii-ui.nvim/commit/964705cd7c255b671108bb58b55b9d96f39e9640))
+
+
+### Bug Fixes
+
+* apply highlights counting strings with Segment:raw_len() ([7b29cff](https://github.com/rcasia/ascii-ui.nvim/commit/7b29cff9740fb03cc175f4b8751fe72e779af5c5))
+* calculate colored segments using raw length ([6dca91c](https://github.com/rcasia/ascii-ui.nvim/commit/6dca91cb72c708b28a2bc18acf36354952df4e21))
+* **hooks:** useInterval does nothing when delay is 0 or less ([e862ca3](https://github.com/rcasia/ascii-ui.nvim/commit/e862ca335f2e702c275c9cbeb564f0dd2db9c557))
+* still apply highlights if present ([6af0ef3](https://github.com/rcasia/ascii-ui.nvim/commit/6af0ef316ae589db8a62bb0f526dbf8684c2bd78))
+
 ## [0.5.0](https://github.com/rcasia/ascii-ui.nvim/compare/v0.4.0...v0.5.0) (2025-09-13)
 
 
