@@ -126,7 +126,8 @@ describe("useInterval", function()
 		eq({ "run:0", "cleanup:0", "run:1", "cleanup:1", "run:2" }, logs)
 	end)
 
-	it("execute cleanup on component unmount", function()
+	-- FIXME: there's not api to unmount an ui yet
+	pending("execute cleanup on component unmount", function()
 		local log = {}
 
 		local Test = ui.createComponent("Test", function()
@@ -184,5 +185,25 @@ describe("useInterval", function()
 			"effect1",
 			"effect2",
 		}, log, "Los cleanups se ejecutan en orden inverso, luego los efectos en orden")
+	end)
+
+	it("no ejecuta cleanup de effect [] al hacer setState", function()
+		local log = {}
+		local val, setVal
+
+		local C = ui.createComponent("C", function()
+			val, setVal = useState(0)
+			useEffect(function()
+				log[#log + 1] = "effect"
+				return function()
+					log[#log + 1] = "cleanup"
+				end
+			end, {}) -- deps vacías
+			return { Segment({ content = tostring(val) }):wrap() }
+		end, {})
+
+		ui.mount(C)
+		setVal(1) -- actualiza estado
+		eq({ "effect" }, log)
 	end)
 end)

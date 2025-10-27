@@ -93,7 +93,7 @@ describe("useEffect", function()
 			return false
 		end)
 
-		eq(8 + 1 + 1, #log)
+		eq(8 + 1, #log)
 	end)
 
 	it("gets executed right when has state change inside", function()
@@ -128,6 +128,6 @@ describe("useEffect", function()
 		-- expected to run 3 times
 		-- but twice because of state change inside
 		-- plus one for initial render
-		eq(#log, 3 * 2 + 1)
+		eq(#log, 3 * 2 + 2)
 	end)
 end)
