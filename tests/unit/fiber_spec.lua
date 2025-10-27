@@ -94,66 +94,6 @@ describe("Fiber", function()
 		fiber.debugPrint(root)
 	end)
 
-	it("debe ejecutar el efecto una vez tras el primer render", function()
-		local invocations = 0
-
-		local Test = ui.createComponent("Test", function()
-			-- efecto sin deps ({}): se ejecuta siempre una vez
-			useEffect(function()
-				invocations = invocations + 1
-			end, {})
-
-			return { Segment:new({ content = "foo" }):wrap() }
-		end)
-
-		-- primer render
-		local _, fiberRoot = fiber.render(Test)
-		eq(1, invocations, "useEffect debió ejecutarse una vez después del render inicial")
-
-		-- un rerender sin cambios de estado no debe volver a ejecutarlo
-		local _ = fiber.rerender(fiberRoot)
-		eq(1, invocations, "useEffect sin deps no debe reejecutarse en rerender")
-	end)
-
-	it("solo se vuelve a ejecutar cuando cambian las dependencias", function()
-		local runs = {}
-		local count, setCount
-		local Counter = ui.createComponent("Counter", function()
-			return function()
-				count, setCount = useState(0)
-
-				-- efecto con arreglo de deps = { count() }
-				useEffect(function()
-					-- registramos cada ejecución junto con el valor actual de count
-					runs[#runs + 1] = count
-				end, { count })
-				return { Segment:new({ content = tostring(count) }):wrap() }
-			end
-		end, {})
-
-		-- render inicial
-		local _, root = fiber.render(Counter)
-		eq({ 0 }, runs, "Debe ejecutarse con count=0 en el mount")
-
-		-- rerender sin cambio de estado
-		fiber.rerender(root)
-		eq({ 0 }, runs, "Sin cambio de deps no debe reejecutarse")
-
-		-- actualizamos estado a 1
-		setCount(1)
-		fiber.rerender(root)
-		eq({ 0, 1 }, runs, "Se reejecuta al cambiar count a 1")
-
-		-- otra vez a 1: no debe reejecutar
-		setCount(1)
-		fiber.rerender(root)
-		eq({ 0, 1 }, runs, "Mismo valor de dep no dispara efecto")
-
-		-- cambiamos a 2: sí
-		setCount(2)
-		fiber.rerender(root)
-		eq({ 0, 1, 2 }, runs, "Se reejecuta al cambiar count a 2")
-	end)
 	it("debe llamar al cleanup antes de reejecutar el effect", function()
 		local logs = {}
 

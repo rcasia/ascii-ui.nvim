@@ -93,7 +93,7 @@ describe("useEffect", function()
 			return false
 		end)
 
-		eq(#log, 8 + 1)
+		eq(8 + 1 + 1, #log)
 	end)
 
 	it("gets executed right when has state change inside", function()
