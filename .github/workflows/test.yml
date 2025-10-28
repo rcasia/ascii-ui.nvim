@@ -15,19 +15,17 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.job.target }}
+    runs-on: ${{ matrix.job.os }}
     strategy:
       fail-fast: false
       matrix:
-        nvim-versions: [stable, nightly]
-        os:
-          [ubuntu-latest, windows-2025, macos-latest]
-          # - { os: ubuntu-24.04, target: x86_64-linux }
-          # - { os: ubuntu-24.04-arm, target: aarch64-linux }
-          # - { os: macos-14, target: aarch64-darwin }
-          # - { os: windows-2025, target: x86_63-windows-msvc }
+        job:
+          - { os: ubuntu-24.04, target: x86_64-linux }
+          - { os: ubuntu-24.04-arm, target: aarch64-linux }
+          - { os: macos-14, target: aarch64-darwin }
+          - { os: windows-2025, target: x86_63-windows-msvc }
 
-    name: Plenary Tests
     steps:
       - name: Checkout
         uses: actions/checkout@v5
