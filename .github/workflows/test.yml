@@ -25,30 +25,19 @@ jobs:
     name: Plenary Tests
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install Lux
+        uses: lumen-oss/gh-actions-lux@main
+        with:
+          version: 0.18.7
 
-      - name: Install cargo-binstall
-        uses: taiki-e/install-action@cargo-binstall
-
-      - name: Install lux-cli (prebuilt if possible; fallback to source with features)
-        shell: bash
+      - name: Use lux-cli
         run: |
-          set -euo pipefail
-          if [[ "$RUNNER_OS" == "macOS" ]]; then
-            # macOS: avoid dylib mismatches by compiling from source with vendored deps
-            cargo install lux-cli --locked --features vendored
-          else
-            # Try prebuilt first (faster); if unavailable, compile from source
-            if ! cargo binstall -y lux-cli; then
-              cargo install lux-cli --locked --features vendored
-            fi
-          fi
           lx --version
+        shell: bash
 
       - name: Setup Neovim
         uses: rhysd/action-setup-vim@v1
