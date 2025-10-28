@@ -20,7 +20,12 @@ jobs:
       fail-fast: false
       matrix:
         nvim-versions: [stable, nightly]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os:
+          [ubuntu-latest, windows-2025, macos-latest]
+          # - { os: ubuntu-24.04, target: x86_64-linux }
+          # - { os: ubuntu-24.04-arm, target: aarch64-linux }
+          # - { os: macos-14, target: aarch64-darwin }
+          # - { os: windows-2025, target: x86_63-windows-msvc }
 
     name: Plenary Tests
     steps:
