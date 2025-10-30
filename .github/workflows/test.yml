@@ -37,12 +37,10 @@ jobs:
         if: endsWith(matrix.job.target, '-msvc')
 
       - name: Install Lux
-        uses: lumen-oss/gh-actions-lux@main
+        uses: lumen-oss/gh-actions-lux@v1
 
-      - name: Use lux-cli
-        run: |
-          lx --version
-        shell: bash
+      - name: Print lux version
+        run: lx --version
 
       - name: Setup Neovim
         uses: rhysd/action-setup-vim@v1
@@ -51,5 +49,4 @@ jobs:
           version: ${{ matrix.nvim-versions }}
 
       - name: Run tests
-        shell: bash
-        run: lx --lua-version '5.1' test
+        run: lx --lua-version luajit test
