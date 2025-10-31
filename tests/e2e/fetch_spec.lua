@@ -1,7 +1,11 @@
 pcall(require, "luacov")
 ---@module "luassert"
 
-local eq = assert.are.same
+local eq = require("tests.util.eq")
+
+local pending = function(desc, fn)
+	print("PENDING: " .. desc)
+end
 
 --- @param stdout string
 --- @return { status: string, headers: table, body: table }

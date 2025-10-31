@@ -1,7 +1,8 @@
 pcall(require, "luacov")
 ---@module "luassert"
 
-local eq = assert.are.same
+local eq = require("tests.util.eq")
+local assert = require("luassert")
 
 local FiberNode = require("ascii-ui.fibernode")
 local Segment = require("ascii-ui.buffer.segment")
@@ -274,7 +275,7 @@ describe("Fiber", function()
 
 		fiber.render(C)
 		setVal(1) -- actualiza estado
-		assert.are.same({ "effect" }, log)
+		eq({ "effect" }, log)
 	end)
 
 	describe("reconcileChildren", function()

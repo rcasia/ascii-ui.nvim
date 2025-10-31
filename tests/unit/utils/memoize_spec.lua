@@ -3,7 +3,7 @@ pcall(require, "luacov")
 
 local memoize = require("ascii-ui.utils.memoize")
 
-local eq = assert.are.same
+local eq = require("tests.util.eq")
 
 describe("util.memoize", function()
 	it("returns the same closure if the dependants are equal", function()

@@ -4,7 +4,7 @@ pcall(require, "luacov")
 local Cursor = require("ascii-ui.cursor")
 local EventListener = require("ascii-ui.events")
 
-local eq = assert.are.same
+local eq = require("tests.util.eq")
 
 local mocked_cursor_position = { line = 1, col = 1 }
 describe("Cursor", function()

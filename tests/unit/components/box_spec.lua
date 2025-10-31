@@ -5,7 +5,7 @@ local Box = require("ascii-ui.components.box")
 local Renderer = require("ascii-ui.renderer")
 local ui = require("ascii-ui")
 
-local eq = assert.are.same
+local eq = require("tests.util.eq")
 
 describe("renderer", function()
 	local config = {

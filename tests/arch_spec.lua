@@ -1,6 +1,8 @@
 pcall(require, "luacov")
 ---@module "luassert"
 
+local eq = require("tests.util.eq")
+
 describe("arch tests", function()
 	it("all test files start with line pcall(require, 'luacov')", function()
 		local expected_line = [[pcall(require, "luacov")]]
@@ -12,7 +14,7 @@ describe("arch tests", function()
 			local first_line = f:read("*l")
 			f:close()
 
-			assert.are.equal(expected_line, first_line, "File " .. file .. " does not start with the expected line")
+			eq(expected_line, first_line, "File " .. file .. " does not start with the expected line")
 		end
 		handle:close()
 	end)

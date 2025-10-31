@@ -3,7 +3,7 @@ pcall(require, "luacov")
 
 local props_are_equal = require("ascii-ui.utils.props_are_equal")
 
-local eq = assert.are.same
+local eq = require("tests.util.eq")
 
 describe("props_are_equal function", function()
 	it("not equals when differing on functions", function()

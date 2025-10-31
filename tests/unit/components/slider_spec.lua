@@ -1,6 +1,6 @@
 pcall(require, "luacov")
 
-local eq = assert.are.same
+local eq = require("tests.util.eq")
 local test_config = require("tests.config")
 
 local Renderer = require("ascii-ui.renderer")

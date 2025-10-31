@@ -2,7 +2,7 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local Renderer = require("ascii-ui.renderer")
-local eq = assert.are.same
+local eq = require("tests.util.eq")
 
 local DummyComponent = require("tests.util.dummy_functional_component")
 local ui = require("ascii-ui")

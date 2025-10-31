@@ -1,5 +1,11 @@
 .PHONY: test
 
+SHELL := /bin/bash
+NVIM  ?= nvim
+INIT  ?= tests/minimal.lua
+
+TEST_CMD = $(NVIM) --headless -u $(INIT) -c "lua MiniTest.run()"
+
 check:
 	# running luacheck...
 	
@@ -19,7 +25,10 @@ build:
 endif
 
 test: build
-	 bash scripts/test $(filter-out $@, $(MAKECMDGOALS))
+	 # bash scripts/test $(filter-out $@, $(MAKECMDGOALS))
+	@echo "🧪 Running tests at $$(date '+%Y-%m-%d %H:%M:%S')"
+	@$(TEST_CMD)
+	@echo "✅ Finished at $$(date '+%Y-%m-%d %H:%M:%S')"
 
 docs:
 	./scripts/gendocs

@@ -9,7 +9,7 @@ labels = []
 license = "MIT"
 
 [dependencies]
-"plenary.nvim" = "scm-1"
+"mini.test" = "0.16.0-1"
 
 [test]
 type = "command"

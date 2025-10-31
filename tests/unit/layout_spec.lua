@@ -1,6 +1,6 @@
 pcall(require, "luacov")
 local DummyComponent = require("tests.util.dummy_functional_component")
-local eq = assert.are.same
+local eq = require("tests.util.eq")
 
 local Column = require("ascii-ui.layout.column")
 local renderer = require("ascii-ui.renderer"):new()

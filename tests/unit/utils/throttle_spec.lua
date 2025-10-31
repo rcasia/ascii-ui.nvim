@@ -3,7 +3,7 @@ pcall(require, "luacov")
 
 local strict_throttle = require("ascii-ui.utils.strict_throttle")
 
-local eq = assert.are.same
+local eq = require("tests.util.eq")
 
 describe("throttle", function()
 	it("calls the function immediately on the first call", function()

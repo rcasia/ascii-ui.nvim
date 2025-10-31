@@ -2,7 +2,7 @@ pcall(require, "luacov")
 ---@module "luassert"
 local INTERACTION_TYPE = require("ascii-ui.interaction_type")
 
-local eq = assert.are.same
+local eq = require("tests.util.eq")
 
 local Buffer = require("ascii-ui.buffer")
 local Bufferline = require("ascii-ui.buffer.bufferline")

@@ -3,7 +3,6 @@ pcall(require, "luacov")
 
 local ui = require("ascii-ui")
 local Select = ui.components.Select
-local it = require("plenary.async.tests").it
 local Paragraph = ui.components.Paragraph
 local Slider = ui.components.Slider
 local useState = ui.hooks.useState
@@ -57,6 +56,8 @@ describe("ascii-ui", function()
 		feed(enter) -- simulate pressing Enter on the button
 
 		assert(buffer_contains(bufnr, "[x] pencil"))
+
+		assert(1 == 2, "fallo")
 	end)
 
 	describe("sliders", function()

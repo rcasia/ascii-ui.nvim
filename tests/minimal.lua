@@ -38,3 +38,19 @@ if RUNNING_ON_ACTIONS then
 		package.path,
 	}, ";")
 end
+
+-- ─────────────────────────────────────────────────────────────
+-- Enable mini.test
+-- ─────────────────────────────────────────────────────────────
+require("mini.test").setup({
+	collect = {
+		emulate_busted = true,
+		find_files = function()
+			return vim.fn.globpath("tests", "**/*_spec.lua", true, true)
+		end,
+	},
+	execute = {
+		reporter = require("mini.test").gen_reporter.stdout(),
+		stop_on_error = false,
+	},
+})

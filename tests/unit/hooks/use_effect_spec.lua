@@ -1,7 +1,7 @@
 pcall(require, "luacov")
 ---@module "luassert"
 
-local eq = assert.are.same
+local eq = require("tests.util.eq")
 local Segment = require("ascii-ui.buffer.segment")
 local ui = require("ascii-ui")
 local useEffect = require("ascii-ui.hooks.use_effect")

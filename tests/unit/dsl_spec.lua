@@ -4,7 +4,10 @@ pcall(require, "luacov")
 local _ = require("ascii-ui")
 local renderer = require("ascii-ui.renderer"):new()
 
-local eq = assert.are.same
+local eq = require("tests.util.eq")
+local pending = function(desc, fn)
+	print("PENDING: " .. desc)
+end
 
 ---@alias XmlNode { _type: "ROOT" | "ELEMENT", _name: string, _children: string, _attr: table<string, string> }
 
