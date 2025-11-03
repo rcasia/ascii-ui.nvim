@@ -38,6 +38,8 @@ jobs:
 
       - name: Install Lux
         uses: lumen-oss/gh-actions-lux@v1
+        with:
+          version: latest
 
       - name: Print lux version
         run: lx --version
