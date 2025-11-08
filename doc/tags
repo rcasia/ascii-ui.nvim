@@ -116,6 +116,7 @@ from_function_prop()	ascii-ui.txt	/*from_function_prop()*
 generateKey()	ascii-ui.txt	/*generateKey()*
 levels	ascii-ui.txt	/*levels*
 merge_bufferlines()	ascii-ui.txt	/*merge_bufferlines()*
+on_select()	ascii-ui.txt	/*on_select()*
 performUnitOfWork()	ascii-ui.txt	/*performUnitOfWork()*
 props_are_equal()	ascii-ui.txt	/*props_are_equal()*
 reconcileChildren()	ascii-ui.txt	/*reconcileChildren()*
