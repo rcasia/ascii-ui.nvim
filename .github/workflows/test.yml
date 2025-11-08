@@ -51,4 +51,4 @@ jobs:
           version: ${{ matrix.nvim-versions }}
 
       - name: Run tests
-        run: lx --lua-version 5.1 test
+        run: lx --lua-version 5.1 test --no-lock
