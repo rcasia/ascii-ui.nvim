@@ -51,4 +51,4 @@ jobs:
           version: ${{ matrix.nvim-versions }}
 
       - name: Run tests
-        run: lx --lua-version luajit test --no-lock
+        run: lx test
