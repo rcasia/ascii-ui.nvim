@@ -86,14 +86,7 @@ local useEffect = function(fn, dependencies)
 		end
 	end
 
-	-- guardar dependencias anteriores correctamente
-	if dependencies == nil then
-		currentFiber.prevDeps[idx] = nil
-	elseif #dependencies == 0 then
-		currentFiber.prevDeps[idx] = {} -- ← mantiene array vacío
-	else
-		currentFiber.prevDeps[idx] = { unpack(dependencies) }
-	end
+	currentFiber.prevDeps[idx] = dependencies
 	currentFiber.effectIndex = currentFiber.effectIndex + 1
 end
 
