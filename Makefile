@@ -3,8 +3,8 @@
 check:
 	# running luacheck...
 	
-	# skipping lx check for now, it does not support offline mode
-	lx lint
+	# lx lint
+	stylua --check .
 
 	# running doc check...
 	./scripts/check-docs
