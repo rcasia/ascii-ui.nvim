@@ -33,25 +33,25 @@ local useEffect = function(fn, dependencies)
 
 	local idx = currentFiber.effectIndex
 	local prev = currentFiber.prevDeps[idx]
-	local shouldRun = false
 
+	local reasons = {}
 	if dependencies == nil then
-		-- Sin array de deps: ejecutar en cada render y rerender
-		shouldRun = true
+		reasons[#reasons + 1] = "dependencies is nil, should run every time"
 	elseif #dependencies == 0 then
-		-- Array vacío: sólo montaje
-		shouldRun = (prev == nil)
+		if prev == nil then
+			reasons[#reasons + 1] = "dependencies is empty array did not run before"
+		end
 	else
 		if not prev then
-			shouldRun = true
+			reasons[#reasons + 1] = "no previous dependencies, effect never ran"
 		else
 			-- Shallow compare
 			if #dependencies ~= #prev then
-				shouldRun = true
+				reasons[#reasons + 1] = "dependencies length changed"
 			else
 				for i = 1, #dependencies do
 					if dependencies[i] ~= prev[i] then
-						shouldRun = true
+						reasons[#reasons + 1] = "at least the dependency at index " .. i .. " changed"
 						break
 					end
 				end
@@ -59,7 +59,9 @@ local useEffect = function(fn, dependencies)
 		end
 	end
 
-	logger.debug("shouldRun: " .. tostring(shouldRun))
+	local shouldRun = #reasons > 0
+
+	logger.debug("whether the effect should run reasons: " .. vim.inspect(reasons))
 
 	if shouldRun then
 		local prevCleanup = currentFiber.cleanups[idx]
