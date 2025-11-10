@@ -192,6 +192,27 @@ Parameters ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
+@class ascii-ui.EffectOpts
+@field fn fun(): function | nil
+
+------------------------------------------------------------------------------
+@alias ascii-ui.EffectStatus "INITIAL" | "MOUNTED" | "CLEANED_UP" | "DONE"
+
+------------------------------------------------------------------------------
+@class ascii-ui.Effect
+@field run fun(): function | nil
+@field cleanup fun(): nil
+@field get_status fun(): ascii-ui.EffectStatus
+
+------------------------------------------------------------------------------
+                                                                      *Effect()*
+                                `Effect`({opts})
+@param opts ascii-ui.EffectOpts
+@return ascii-ui.Effect
+
+
+==============================================================================
+------------------------------------------------------------------------------
 @class ascii-ui.RootFiberNode : ascii-ui.FiberNode
 @field pendingEffects? function[]
 @field pendingCleanups? function[]
@@ -217,6 +238,7 @@ Parameters ~
 @field cleanups? function[]
 @field prevDeps any[]
 @field effectIndex integer
+@field effects ascii-ui.Effect[]
 @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
 @field output? ascii-ui.FiberNode[]
 @field private _line ascii-ui.BufferLine

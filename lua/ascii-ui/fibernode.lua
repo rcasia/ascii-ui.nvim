@@ -1,5 +1,6 @@
 local Buffer = require("ascii-ui.buffer.buffer")
 local Bufferline = require("ascii-ui.buffer.bufferline")
+local Effect = require("ascii-ui.effect")
 local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
 local props_are_equal = require("ascii-ui.utils.props_are_equal")
@@ -26,6 +27,7 @@ local props_are_equal = require("ascii-ui.utils.props_are_equal")
 --- @field cleanups? function[]
 --- @field prevDeps any[]
 --- @field effectIndex integer
+--- @field effects ascii-ui.Effect[]
 --- @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
 --- @field output? ascii-ui.FiberNode[]
 --- @field private _line ascii-ui.BufferLine
@@ -370,6 +372,8 @@ function FiberNode:add_effect(eff, eff_type)
 		self.repeatingEffects = self.repeatingEffects or {}
 		self.repeatingEffects[self.effectIndex] = eff
 	end
+
+	self.effects[self.effectIndex] = Effect({ fn = eff })
 end
 
 --- @param cu function

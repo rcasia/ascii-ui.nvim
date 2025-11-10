@@ -32,6 +32,7 @@ Cursor	ascii-ui.txt	/*Cursor*
 Cursor.current_position()	ascii-ui.txt	/*Cursor.current_position()*
 Cursor.last_movement_direction()	ascii-ui.txt	/*Cursor.last_movement_direction()*
 Cursor.move_to()	ascii-ui.txt	/*Cursor.move_to()*
+Effect()	ascii-ui.txt	/*Effect()*
 EventListenter	ascii-ui.txt	/*EventListenter*
 EventListenter:listen()	ascii-ui.txt	/*EventListenter:listen()*
 EventListenter:trigger()	ascii-ui.txt	/*EventListenter:trigger()*
