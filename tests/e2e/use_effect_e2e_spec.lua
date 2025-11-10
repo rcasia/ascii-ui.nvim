@@ -25,11 +25,13 @@ end
 
 describe("useInterval", function()
 	it("executes useEffect after first render", function()
+		local times = 0
 		local App = ui.createComponent("App", function()
 			local message, setMessage = useState("Not updated :(")
 
 			useEffect(function()
-				setMessage("Updated! :)")
+				times = times + 1
+				setMessage("Updated " .. times .. " times! :)")
 			end, {})
 
 			return {
@@ -43,27 +45,12 @@ describe("useInterval", function()
 		end)
 
 		assert(buffer_contains(bufnr, ":)"))
-	end)
-
-	it("executes useEffect after first render", function()
-		local App = ui.createComponent("App", function()
-			local message, setMessage = useState("Not updated :(")
-
-			useEffect(function()
-				setMessage("Updated! :)")
-			end, {})
-
-			return {
-				Paragraph({ content = message }),
-			}
-		end)
-
-		local bufnr = ui.mount(App)
-		vim.wait(1000, function()
-			return false
-		end)
-
-		assert(buffer_contains(bufnr, ":)"))
+		assert(
+			vim.wait(1000, function()
+				return times == 1
+			end),
+			"useEffect debe ejecutarse solo una vez con deps vacías"
+		)
 	end)
 
 	it("executes when the dependencies change", function()
