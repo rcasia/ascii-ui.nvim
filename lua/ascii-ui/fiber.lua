@@ -227,8 +227,8 @@ local function render(Component)
 	commitWork(root, buffer)
 
 	-- third phase: execute pending effects
-	--- @param n ascii-ui.FiberNode
-	vim.iter(root:iter()):each(function(n)
+	--- @param _ ascii-ui.FiberNode
+	vim.iter(root:iter()):each(function(_)
 		-- n:run_pending()
 		-- n.tag = "NONE"
 	end)

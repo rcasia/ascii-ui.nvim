@@ -24,8 +24,6 @@ local function buffer_contains(bufnr, pattern)
 end
 
 describe("useInterval", function()
-	local useEffect_invocations = 0
-
 	it("executes useEffect after first render", function()
 		local App = ui.createComponent("App", function()
 			local message, setMessage = useState("Not updated :(")

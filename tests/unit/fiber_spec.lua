@@ -8,7 +8,6 @@ local Segment = require("ascii-ui.buffer.segment")
 local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 local useState = ui.hooks.useState
-local useEffect = ui.hooks.useEffect
 local logger = require("ascii-ui.logger")
 
 local MyComponent = ui.createComponent("MyComponent", function(props)
