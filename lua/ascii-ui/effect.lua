@@ -72,7 +72,7 @@ local Effect = function(opts)
 					end
 				end
 			end
-			return true, reasons
+			return #reasons > 0, reasons
 		end,
 	}
 end

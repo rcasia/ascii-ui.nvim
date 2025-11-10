@@ -29,7 +29,7 @@ describe("useEffect", function()
 			return #use_state_log > 1
 		end)
 
-		eq(log, { "useEffect called" })
+		eq({ "useEffect called" }, log)
 	end)
 
 	it("gets executed as much as dependencies change", function()

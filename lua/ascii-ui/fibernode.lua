@@ -170,6 +170,7 @@ function FiberNode.resetFrom(fiber)
 	fiber.hookIndex = 1
 	fiber.effectIndex = 1
 	fiber.hooks = fiber.hooks or {}
+	fiber.effects = fiber.effects or {}
 
 	return fiber
 end
@@ -373,8 +374,6 @@ function FiberNode:add_effect(eff, eff_type, dependencies)
 		self.repeatingEffects = self.repeatingEffects or {}
 		self.repeatingEffects[self.effectIndex] = eff
 	end
-
-	self.effects[self.effectIndex] = Effect({ fn = eff, dependencies = dependencies })
 end
 
 --- @param cu function
