@@ -1,12 +1,22 @@
 --- @class ascii-ui.EffectOpts
---- @field fn fun(): function | nil
+--- @field fn fun(): function
+--- @field dependencies any[] | nil
 
 --- @alias ascii-ui.EffectStatus "INITIAL" | "MOUNTED" | "CLEANED_UP" | "DONE"
+
+--- @enum ascii-ui.EffectReplacementReason
+local EFFECT_REPLACEMENT_REASON = {
+	DIFFERENT_VALUES = "DIFFERENT_VALUES",
+	DIFFERENT_COUNT_OF_VALUES = "DIFFERENT_COUNT_OF_VALUES",
+	NIL_DEPENDENCIES = "NIL_DEPENDENCIES",
+	EMPTY_AND_NOT_RUN = "EMPTY_AND_NOT_RUN",
+}
 
 --- @class ascii-ui.Effect
 --- @field run fun(): function | nil
 --- @field cleanup fun(): nil
 --- @field get_status fun(): ascii-ui.EffectStatus
+--- @field should_be_replaced fun(new_dependencies?: any[]): boolean, ascii-ui.EffectReplacementReason[]
 
 --- @param opts ascii-ui.EffectOpts
 --- @return ascii-ui.Effect
@@ -37,6 +47,32 @@ local Effect = function(opts)
 				fn()
 			end
 			status = "CLEANED_UP"
+		end,
+		should_be_replaced = function(new_deps)
+			local last_deps = opts.dependencies
+
+			local reasons = {}
+			if new_deps == nil then
+				reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.NIL_DEPENDENCIES
+			else
+				if not last_deps then
+					reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.NIL_DEPENDENCIES
+					reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.DIFFERENT_COUNT_OF_VALUES
+				else
+					-- Shallow compare
+					if #new_deps ~= #last_deps then
+						reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.DIFFERENT_COUNT_OF_VALUES
+					else
+						for i = 1, #new_deps do
+							if new_deps[i] ~= last_deps[i] then
+								reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.DIFFERENT_VALUES
+								break
+							end
+						end
+					end
+				end
+			end
+			return true, reasons
 		end,
 	}
 end

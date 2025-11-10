@@ -74,7 +74,7 @@ local useEffect = function(fn, dependencies)
 			currentFiber:add_effect(function()
 				local newCleanup = fn()
 				currentFiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
-			end, effect_type)
+			end, effect_type, dependencies)
 		else
 			currentFiber:add_effect(function()
 				if currentFiber.cleanups[idx] then
@@ -82,7 +82,7 @@ local useEffect = function(fn, dependencies)
 				end
 				local newCleanup = fn()
 				currentFiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
-			end, effect_type)
+			end, effect_type, dependencies)
 		end
 	end
 

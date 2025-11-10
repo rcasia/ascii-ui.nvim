@@ -193,16 +193,23 @@ Parameters ~
 ==============================================================================
 ------------------------------------------------------------------------------
 @class ascii-ui.EffectOpts
-@field fn fun(): function | nil
+@field fn fun(): function
+@field dependencies any[] | nil
 
 ------------------------------------------------------------------------------
 @alias ascii-ui.EffectStatus "INITIAL" | "MOUNTED" | "CLEANED_UP" | "DONE"
+
+------------------------------------------------------------------------------
+                                                     *EFFECT_REPLACEMENT_REASON*
+                          `EFFECT_REPLACEMENT_REASON`
+@enum ascii-ui.EffectReplacementReason
 
 ------------------------------------------------------------------------------
 @class ascii-ui.Effect
 @field run fun(): function | nil
 @field cleanup fun(): nil
 @field get_status fun(): ascii-ui.EffectStatus
+@field should_be_replaced fun(new_dependencies?: any[]): boolean, ascii-ui.EffectReplacementReason[]
 
 ------------------------------------------------------------------------------
                                                                       *Effect()*
@@ -333,9 +340,10 @@ hooks or effects.
 
 ------------------------------------------------------------------------------
                                                         *FiberNode:add_effect()*
-                   `FiberNode:add_effect`({eff}, {eff_type})
+           `FiberNode:add_effect`({eff}, {eff_type}, {dependencies})
 @param eff function
 @param eff_type "REPEATING" | "ONCE"
+@param dependencies any[] | nil
 
 ------------------------------------------------------------------------------
                                                        *FiberNode:add_cleanup()*

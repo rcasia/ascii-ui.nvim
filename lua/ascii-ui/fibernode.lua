@@ -361,7 +361,8 @@ end
 
 --- @param eff function
 --- @param eff_type "REPEATING" | "ONCE"
-function FiberNode:add_effect(eff, eff_type)
+--- @param dependencies any[] | nil
+function FiberNode:add_effect(eff, eff_type, dependencies)
 	logger.debug("Adding effect for fiber %s", self.type)
 	if eff_type == "ONCE" then
 		logger.debug("this effect is once")
@@ -373,7 +374,7 @@ function FiberNode:add_effect(eff, eff_type)
 		self.repeatingEffects[self.effectIndex] = eff
 	end
 
-	self.effects[self.effectIndex] = Effect({ fn = eff })
+	self.effects[self.effectIndex] = Effect({ fn = eff, dependencies = dependencies })
 end
 
 --- @param cu function
