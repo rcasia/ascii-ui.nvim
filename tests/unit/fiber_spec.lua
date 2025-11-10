@@ -13,15 +13,11 @@ local logger = require("ascii-ui.logger")
 
 local MyComponent = ui.createComponent("MyComponent", function(props)
 	props = props or {}
-	return function()
-		return { Segment:new({ content = props.content or "Hello World" }):wrap() }
-	end
+	return { Segment:new({ content = props.content or "Hello World" }):wrap() }
 end, { content = "string" })
 
 local App = ui.createComponent("App", function()
-	return function()
-		return MyComponent()
-	end
+	return MyComponent()
 end, {})
 
 describe("Fiber", function()
@@ -34,12 +30,10 @@ describe("Fiber", function()
 
 	it("renderiza List en dos líneas", function()
 		local List = ui.createComponent("List", function()
-			return function()
-				return {
-					Segment:new({ content = "Línea 1" }):wrap(),
-					Segment:new({ content = "Línea 2" }):wrap(),
-				}
-			end
+			return {
+				Segment:new({ content = "Línea 1" }):wrap(),
+				Segment:new({ content = "Línea 2" }):wrap(),
+			}
 		end, {})
 		local lines, rootFiber = fiber.render(List)
 		eq({ "Línea 1", "Línea 2" }, lines:to_lines())
@@ -218,25 +212,23 @@ describe("Fiber", function()
 		local log = {}
 
 		local Test = ui.createComponent("Test", function()
-			return function()
-				-- primer efecto
-				useEffect(function()
-					log[#log + 1] = "effect1"
-					return function()
-						log[#log + 1] = "cleanup1"
-					end
-				end)
+			-- primer efecto
+			useEffect(function()
+				log[#log + 1] = "effect1"
+				return function()
+					log[#log + 1] = "cleanup1"
+				end
+			end)
 
-				-- segundo efecto
-				useEffect(function()
-					log[#log + 1] = "effect2"
-					return function()
-						log[#log + 1] = "cleanup2"
-					end
-				end)
+			-- segundo efecto
+			useEffect(function()
+				log[#log + 1] = "effect2"
+				return function()
+					log[#log + 1] = "cleanup2"
+				end
+			end)
 
-				return { Segment:new({ content = "foo" }):wrap() }
-			end
+			return { Segment:new({ content = "foo" }):wrap() }
 		end, {})
 
 		-- mount inicial
@@ -260,16 +252,14 @@ describe("Fiber", function()
 		local val, setVal
 
 		local C = ui.createComponent("C", function()
-			return function()
-				val, setVal = useState(0)
-				useEffect(function()
-					log[#log + 1] = "effect"
-					return function()
-						log[#log + 1] = "cleanup"
-					end
-				end, {}) -- deps vacías
-				return { Segment:new({ content = tostring(val) }):wrap() }
-			end
+			val, setVal = useState(0)
+			useEffect(function()
+				log[#log + 1] = "effect"
+				return function()
+					log[#log + 1] = "cleanup"
+				end
+			end, {}) -- deps vacías
+			return { Segment:new({ content = tostring(val) }):wrap() }
 		end, {})
 
 		fiber.render(C)
@@ -281,41 +271,33 @@ describe("Fiber", function()
 		it("sets parent, root, child and sibling correctly", function()
 			-- Hojas simples: cada una envuelve una única línea
 			local ChildA = ui.createComponent("ChildA", function()
-				return function()
-					return { Segment:new({ content = "A" }):wrap() }
-				end
+				return { Segment:new({ content = "A" }):wrap() }
 			end, {})
 
 			local countB, setCountB
 			local ChildB = ui.createComponent("ChildB", function()
-				return function()
-					countB, setCountB = useState(0)
-					return { Segment:new({ content = "B:" .. countB }):wrap() }
-				end
+				countB, setCountB = useState(0)
+				return { Segment:new({ content = "B:" .. countB }):wrap() }
 			end, {})
 
 			local countC, setCountC
 			local ChildC = ui.createComponent("ChildC", function()
-				return function()
-					countC, setCountC = useState(0)
-					return { Segment:new({ content = "C:" .. countC }):wrap() }
-				end
+				countC, setCountC = useState(0)
+				return { Segment:new({ content = "C:" .. countC }):wrap() }
 			end, {})
 
 			local countApp, setCountApp
 			-- Componente raíz que agrupa los tres hijos, mismo estilo que tu List
 			local Test = ui.createComponent("App", function()
-				return function()
-					countApp, setCountApp = useState(0)
+				countApp, setCountApp = useState(0)
 
-					-- Llamamos a cada hijo y extraemos su FiberNode (primer segmento de la tabla)
-					return ui.layout.Column(
-						ChildA(),
-						ChildB(),
-						ChildC(),
-						MyComponent({ content = "App:" .. tostring(countApp) })
-					)
-				end
+				-- Llamamos a cada hijo y extraemos su FiberNode (primer segmento de la tabla)
+				return ui.layout.Column(
+					ChildA(),
+					ChildB(),
+					ChildC(),
+					MyComponent({ content = "App:" .. tostring(countApp) })
+				)
 			end)
 
 			local buf, root = fiber.render(Test)
