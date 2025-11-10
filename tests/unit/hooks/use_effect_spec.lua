@@ -61,7 +61,7 @@ describe("useEffect", function()
 			return false
 		end)
 
-		eq(#log, 3 + 1)
+		eq(3 + 1, #log)
 	end)
 
 	it("gets executed every render when there is nil dependencies", function()
