@@ -1,6 +1,5 @@
 local Buffer = require("ascii-ui.buffer.buffer")
 local Bufferline = require("ascii-ui.buffer.bufferline")
-local Effect = require("ascii-ui.effect")
 local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
 local props_are_equal = require("ascii-ui.utils.props_are_equal")
@@ -362,8 +361,7 @@ end
 
 --- @param eff function
 --- @param eff_type "REPEATING" | "ONCE"
---- @param dependencies any[] | nil
-function FiberNode:add_effect(eff, eff_type, dependencies)
+function FiberNode:add_effect(eff, eff_type)
 	logger.debug("Adding effect for fiber %s", self.type)
 	if eff_type == "ONCE" then
 		logger.debug("this effect is once")

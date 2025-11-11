@@ -340,10 +340,9 @@ hooks or effects.
 
 ------------------------------------------------------------------------------
                                                         *FiberNode:add_effect()*
-           `FiberNode:add_effect`({eff}, {eff_type}, {dependencies})
+                   `FiberNode:add_effect`({eff}, {eff_type})
 @param eff function
 @param eff_type "REPEATING" | "ONCE"
-@param dependencies any[] | nil
 
 ------------------------------------------------------------------------------
                                                        *FiberNode:add_cleanup()*

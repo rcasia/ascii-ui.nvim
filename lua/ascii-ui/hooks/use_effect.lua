@@ -41,7 +41,7 @@ local useEffect = function(fn, dependencies)
 	if shouldRun then
 		local effect_type = dependencies and "ONCE" or "REPEATING"
 		new_effect = Effect({ fn = fn, dependencies = dependencies })
-		currentFiber:add_effect(new_effect.run, effect_type, dependencies)
+		currentFiber:add_effect(new_effect.run, effect_type)
 	end
 
 	if new_effect then

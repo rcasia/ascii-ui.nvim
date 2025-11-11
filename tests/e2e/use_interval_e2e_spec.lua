@@ -15,7 +15,7 @@ describe("useInterval", function()
 
 	--- @return string current_time in HH:MM:SS format
 	local function useTimer()
-		local counter, set_counter = useState(0)
+		-- local counter, set_counter = useState(0)
 		-- assert(useTimer_invocations <= 100, "useTimer can only be called once per component render")
 		useTimer_invocations = useTimer_invocations + 1
 
