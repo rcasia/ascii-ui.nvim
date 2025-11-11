@@ -35,40 +35,37 @@ local useEffect = function(fn, dependencies)
 		shouldRun, reasons = lastEffect.should_be_replaced(dependencies)
 	end
 
-	logger.debug("whether the effect should run reasons: " .. vim.inspect(reasons))
+	logger.info("whether the effect should run reasons: " .. vim.inspect(reasons))
 
 	local new_effect
 	if shouldRun then
-		local prevCleanup = currentFiber.cleanups[idx]
-
 		local effect_type = dependencies and "ONCE" or "REPEATING"
 		if effect_type == "ONCE" then
-			if prevCleanup then
-				currentFiber:add_cleanup(prevCleanup)
-			end
 			local eff_fn = function()
-				local newCleanup = fn()
-				currentFiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
+				return fn()
 			end
 			new_effect = Effect({ fn = eff_fn, dependencies = dependencies })
 			currentFiber:add_effect(new_effect.run, effect_type, dependencies)
 		else
 			local efx = function()
-				if currentFiber.cleanups[idx] then
-					currentFiber.cleanups[idx]()
-				end
 				local newCleanup = fn()
 				currentFiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
+				return newCleanup
 			end
 			new_effect = Effect({
 				fn = efx,
 				dependencies = dependencies,
 			})
-			currentFiber:add_effect(efx, effect_type, dependencies)
+			currentFiber:add_effect(new_effect.run, effect_type, dependencies)
 		end
 	end
 
 	if new_effect then
+		if lastEffect and lastEffect.cleanup then
+			currentFiber:add_cleanup(function()
+				lastEffect.cleanup()
+			end)
+		end
 		currentFiber.effects[idx] = new_effect
 	end
 	currentFiber.prevDeps[idx] = dependencies

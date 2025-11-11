@@ -151,22 +151,21 @@ describe("Fiber", function()
 	it("debe llamar al cleanup antes de reejecutar el effect", function()
 		local logs = {}
 
-		local count, setCount
+		local setCountOutside
 		local Counter = ui.createComponent("Counter", function()
-			return function()
-				count, setCount = useState(0)
+			local count, setCount = useState(0)
+			setCountOutside = setCount
 
-				useEffect(function()
-					-- efecto: registramos la ejecución
-					logs[#logs + 1] = "run:" .. count
-					return function()
-						-- cleanup: registramos también
-						logs[#logs + 1] = "cleanup:" .. count
-					end
-				end, { count })
+			useEffect(function()
+				-- efecto: registramos la ejecución
+				logs[#logs + 1] = "run:" .. count
+				return function()
+					-- cleanup: registramos también
+					logs[#logs + 1] = "cleanup:" .. count
+				end
+			end, { count })
 
-				return { Segment:new({ content = tostring(count) }):wrap() }
-			end
+			return { Segment:new({ content = tostring(count) }):wrap() }
 		end, {})
 
 		-- primer render: effect se ejecuta, no hay cleanup aún
@@ -174,12 +173,12 @@ describe("Fiber", function()
 		eq({ "run:0" }, logs)
 
 		-- primer cambio de estado a 1: debe correrse cleanup(0) antes de run(1)
-		setCount(1)
+		setCountOutside(1)
 		fiber.rerender(root)
 		eq({ "run:0", "cleanup:0", "run:1" }, logs)
 
 		-- otro cambio a 2: cleanup(1) y run(2)
-		setCount(2)
+		setCountOutside(2)
 		fiber.rerender(root)
 		eq({ "run:0", "cleanup:0", "run:1", "cleanup:1", "run:2" }, logs)
 	end)
@@ -187,16 +186,14 @@ describe("Fiber", function()
 		local log = {}
 
 		local Test = ui.createComponent("Test", function()
-			return function()
-				useEffect(function()
-					log[#log + 1] = "mounted"
-					return function()
-						log[#log + 1] = "unmounted"
-					end
-				end)
+			useEffect(function()
+				log[#log + 1] = "mounted"
+				return function()
+					log[#log + 1] = "unmounted"
+				end
+			end)
 
-				return { Segment:new({ content = "foo" }):wrap() }
-			end
+			return { Segment:new({ content = "foo" }):wrap() }
 		end, {})
 
 		-- Mount

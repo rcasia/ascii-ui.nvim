@@ -35,13 +35,20 @@ local Effect = function(opts)
 	return {
 		get_status = get_status,
 		run = function()
-			assert(get_status() == "INITIAL", "Effect can only be run if it is in INITIAL state")
+			local current_status = get_status()
+			assert(
+				current_status == "INITIAL" or current_status == "MOUNTED",
+				"Effect can only be run if it is in INITIAL or MOUNTED state. Found: " .. get_status()
+			)
+			if current_status == "MOUNTED" then
+				get_cleanup_fn()()
+			end
 			cleanup_fn = opts.fn()
 			status = "MOUNTED"
 			return cleanup_fn
 		end,
 		cleanup = function()
-			assert(get_status() == "MOUNTED", "Effect can only be cleaned up if it is MOUNTED")
+			assert(get_status() == "MOUNTED", "Effect can only be cleaned up if it is MOUNTED. Found: " .. get_status())
 			local fn = get_cleanup_fn()
 			if fn then
 				fn()
@@ -74,6 +81,7 @@ local Effect = function(opts)
 			end
 			return #reasons > 0, reasons
 		end,
+		dependencies = opts.dependencies,
 	}
 end
 
