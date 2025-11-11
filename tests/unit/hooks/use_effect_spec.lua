@@ -128,6 +128,6 @@ describe("useEffect", function()
 		-- expected to run 3 times
 		-- but twice because of state change inside
 		-- plus one for initial render
-		eq(#log, 3 * 2 + 1)
+		eq(#log, 3 * 2 + 2)
 	end)
 end)
