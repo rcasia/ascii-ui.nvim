@@ -21,7 +21,7 @@ local EFFECT_REPLACEMENT_REASON = {
 --- @param opts ascii-ui.EffectOpts
 --- @return ascii-ui.Effect
 local Effect = function(opts)
-	local cleanup_fn = nil
+	local cleanup_fn = function() end
 	local get_cleanup_fn = function()
 		return cleanup_fn
 	end
