@@ -40,24 +40,8 @@ local useEffect = function(fn, dependencies)
 	local new_effect
 	if shouldRun then
 		local effect_type = dependencies and "ONCE" or "REPEATING"
-		if effect_type == "ONCE" then
-			local eff_fn = function()
-				return fn()
-			end
-			new_effect = Effect({ fn = eff_fn, dependencies = dependencies })
-			currentFiber:add_effect(new_effect.run, effect_type, dependencies)
-		else
-			local efx = function()
-				local newCleanup = fn()
-				currentFiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
-				return newCleanup
-			end
-			new_effect = Effect({
-				fn = efx,
-				dependencies = dependencies,
-			})
-			currentFiber:add_effect(new_effect.run, effect_type, dependencies)
-		end
+		new_effect = Effect({ fn = fn, dependencies = dependencies })
+		currentFiber:add_effect(new_effect.run, effect_type, dependencies)
 	end
 
 	if new_effect then

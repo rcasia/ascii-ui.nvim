@@ -397,13 +397,9 @@ function FiberNode:unmount()
 		end
 
 		-- 2) Luego ejecutamos los cleanups de este fiber en orden inverso (LIFO)
-		if fiber.cleanups then
-			for i = #fiber.cleanups, 1, -1 do
-				local cleanup = fiber.cleanups[i]
-				if type(cleanup) == "function" then
-					cleanup()
-				end
-			end
+		for i = #fiber.effects, 1, -1 do
+			local effect = fiber.effects[i]
+			effect.cleanup()
 		end
 	end
 
