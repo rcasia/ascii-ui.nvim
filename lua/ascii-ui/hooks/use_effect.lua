@@ -52,7 +52,6 @@ local useEffect = function(fn, dependencies)
 		end
 		currentFiber.effects[idx] = new_effect
 	end
-	currentFiber.prevDeps[idx] = dependencies
 	currentFiber.effectIndex = currentFiber.effectIndex + 1
 end
 

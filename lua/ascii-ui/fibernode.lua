@@ -23,8 +23,6 @@ local props_are_equal = require("ascii-ui.utils.props_are_equal")
 --- @field child? ascii-ui.FiberNode
 --- @field hooks? any[]
 --- @field hookIndex integer
---- @field cleanups? function[]
---- @field prevDeps any[]
 --- @field effectIndex integer
 --- @field effects ascii-ui.Effect[]
 --- @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
@@ -58,8 +56,6 @@ function FiberNode.new(fields)
 		effects = fields.effects or {},
 		effectIndex = fields.effectIndex or 1,
 		pendingEffects = fields.pendingEffects or {},
-		prevDeps = fields.prevDeps or {},
-		cleanups = fields.cleanups or {},
 	}
 
 	--- @type ascii-ui.FiberNode

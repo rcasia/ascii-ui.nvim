@@ -242,8 +242,6 @@ Parameters ~
 @field child? ascii-ui.FiberNode
 @field hooks? any[]
 @field hookIndex integer
-@field cleanups? function[]
-@field prevDeps any[]
 @field effectIndex integer
 @field effects ascii-ui.Effect[]
 @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
