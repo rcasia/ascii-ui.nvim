@@ -1,5 +1,6 @@
 local Buffer = require("ascii-ui.buffer.buffer")
 local Bufferline = require("ascii-ui.buffer.bufferline")
+local Effect = require("ascii-ui.effect")
 local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
 local props_are_equal = require("ascii-ui.utils.props_are_equal")
@@ -26,6 +27,7 @@ local props_are_equal = require("ascii-ui.utils.props_are_equal")
 --- @field cleanups? function[]
 --- @field prevDeps any[]
 --- @field effectIndex integer
+--- @field effects ascii-ui.Effect[]
 --- @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
 --- @field output? ascii-ui.FiberNode[]
 --- @field private _line ascii-ui.BufferLine
@@ -168,6 +170,7 @@ function FiberNode.resetFrom(fiber)
 	fiber.hookIndex = 1
 	fiber.effectIndex = 1
 	fiber.hooks = fiber.hooks or {}
+	fiber.effects = fiber.effects or {}
 
 	return fiber
 end
@@ -359,7 +362,8 @@ end
 
 --- @param eff function
 --- @param eff_type "REPEATING" | "ONCE"
-function FiberNode:add_effect(eff, eff_type)
+--- @param dependencies any[] | nil
+function FiberNode:add_effect(eff, eff_type, dependencies)
 	logger.debug("Adding effect for fiber %s", self.type)
 	if eff_type == "ONCE" then
 		logger.debug("this effect is once")
@@ -393,13 +397,9 @@ function FiberNode:unmount()
 		end
 
 		-- 2) Luego ejecutamos los cleanups de este fiber en orden inverso (LIFO)
-		if fiber.cleanups then
-			for i = #fiber.cleanups, 1, -1 do
-				local cleanup = fiber.cleanups[i]
-				if type(cleanup) == "function" then
-					cleanup()
-				end
-			end
+		for i = #fiber.effects, 1, -1 do
+			local effect = fiber.effects[i]
+			effect.cleanup()
 		end
 	end
 

@@ -64,19 +64,6 @@ local useState = function(value)
 			_fiber.hooks[idx] = new_value
 		end
 
-		-- ⇲ 2) P1 – ejecuta cleanups de efectos con deps no-vacíos ------
-		if _fiber.cleanups then
-			for i, cu in ipairs(_fiber.cleanups) do
-				local deps = _fiber.prevDeps[i]
-				-- solo si deps existe y no está vacío
-				if deps and #deps > 0 and type(cu) == "function" then
-					cu() -- cleanup inmediato (mantiene valor viejo)
-					_fiber.cleanups[i] = nil -- se reasignará en el nuevo render
-					_fiber.prevDeps[i] = nil
-				end
-			end
-		end
-
 		local root = FiberNode.resetFrom(_fiber)
 		vim.iter(_fiber:iter()):each(function(n)
 			n.tag = "UPDATE"

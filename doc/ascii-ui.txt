@@ -192,6 +192,34 @@ Parameters ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
+@class ascii-ui.EffectOpts
+@field fn fun(): function
+@field dependencies any[] | nil
+
+------------------------------------------------------------------------------
+@alias ascii-ui.EffectStatus "INITIAL" | "MOUNTED" | "CLEANED_UP" | "DONE"
+
+------------------------------------------------------------------------------
+                                                     *EFFECT_REPLACEMENT_REASON*
+                          `EFFECT_REPLACEMENT_REASON`
+@enum ascii-ui.EffectReplacementReason
+
+------------------------------------------------------------------------------
+@class ascii-ui.Effect
+@field run fun(): function | nil
+@field cleanup fun(): nil
+@field get_status fun(): ascii-ui.EffectStatus
+@field should_be_replaced fun(new_dependencies?: any[]): boolean, ascii-ui.EffectReplacementReason[]
+
+------------------------------------------------------------------------------
+                                                                      *Effect()*
+                                `Effect`({opts})
+@param opts ascii-ui.EffectOpts
+@return ascii-ui.Effect
+
+
+==============================================================================
+------------------------------------------------------------------------------
 @class ascii-ui.RootFiberNode : ascii-ui.FiberNode
 @field pendingEffects? function[]
 @field pendingCleanups? function[]
@@ -217,6 +245,7 @@ Parameters ~
 @field cleanups? function[]
 @field prevDeps any[]
 @field effectIndex integer
+@field effects ascii-ui.Effect[]
 @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
 @field output? ascii-ui.FiberNode[]
 @field private _line ascii-ui.BufferLine
@@ -311,9 +340,10 @@ hooks or effects.
 
 ------------------------------------------------------------------------------
                                                         *FiberNode:add_effect()*
-                   `FiberNode:add_effect`({eff}, {eff_type})
+           `FiberNode:add_effect`({eff}, {eff_type}, {dependencies})
 @param eff function
 @param eff_type "REPEATING" | "ONCE"
+@param dependencies any[] | nil
 
 ------------------------------------------------------------------------------
                                                        *FiberNode:add_cleanup()*

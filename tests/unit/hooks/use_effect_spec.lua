@@ -29,7 +29,7 @@ describe("useEffect", function()
 			return #use_state_log > 1
 		end)
 
-		eq(log, { "useEffect called" })
+		eq({ "useEffect called" }, log)
 	end)
 
 	it("gets executed as much as dependencies change", function()
@@ -61,7 +61,7 @@ describe("useEffect", function()
 			return false
 		end)
 
-		eq(#log, 3 + 1)
+		eq(3 + 1, #log)
 	end)
 
 	it("gets executed every render when there is nil dependencies", function()

@@ -3,6 +3,8 @@
 local fiber = require("ascii-ui.fiber")
 local logger = require("ascii-ui.logger")
 
+local Effect = require("ascii-ui.effect")
+
 ---
 --- Runs a side-effect function after component render and when specified observed values change, inside an ascii-ui component.
 ---
@@ -24,68 +26,32 @@ local useEffect = function(fn, dependencies)
 	assert(type(dependencies) == "nil" or vim.isarray(dependencies), "deps should be an array or nil")
 
 	logger.debug("running useEffect on %s", currentFiber.type)
-	logger.debug(
-		"running useEffect with deps: "
-			.. vim.inspect(dependencies)
-			.. " vs prev: "
-			.. vim.inspect(currentFiber.prevDeps[currentFiber.effectIndex])
-	)
 
 	local idx = currentFiber.effectIndex
-	local prev = currentFiber.prevDeps[idx]
 
-	local reasons = {}
-	if dependencies == nil then
-		reasons[#reasons + 1] = "dependencies is nil, should run every time"
-	elseif #dependencies == 0 then
-		if prev == nil then
-			reasons[#reasons + 1] = "dependencies is empty array did not run before"
-		end
-	else
-		if not prev then
-			reasons[#reasons + 1] = "no previous dependencies, effect never ran"
-		else
-			-- Shallow compare
-			if #dependencies ~= #prev then
-				reasons[#reasons + 1] = "dependencies length changed"
-			else
-				for i = 1, #dependencies do
-					if dependencies[i] ~= prev[i] then
-						reasons[#reasons + 1] = "at least the dependency at index " .. i .. " changed"
-						break
-					end
-				end
-			end
-		end
+	local lastEffect = currentFiber.effects[idx]
+	local shouldRun, reasons = not lastEffect, { "no last effect on idx: " .. idx }
+	if lastEffect then
+		shouldRun, reasons = lastEffect.should_be_replaced(dependencies)
 	end
 
-	local shouldRun = #reasons > 0
+	logger.info("whether the effect should run reasons: " .. vim.inspect(reasons))
 
-	logger.debug("whether the effect should run reasons: " .. vim.inspect(reasons))
-
+	local new_effect
 	if shouldRun then
-		local prevCleanup = currentFiber.cleanups[idx]
-
 		local effect_type = dependencies and "ONCE" or "REPEATING"
-		if effect_type == "ONCE" then
-			if prevCleanup then
-				currentFiber:add_cleanup(prevCleanup)
-			end
-			currentFiber:add_effect(function()
-				local newCleanup = fn()
-				currentFiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
-			end, effect_type)
-		else
-			currentFiber:add_effect(function()
-				if currentFiber.cleanups[idx] then
-					currentFiber.cleanups[idx]()
-				end
-				local newCleanup = fn()
-				currentFiber.cleanups[idx] = type(newCleanup) == "function" and newCleanup or nil
-			end, effect_type)
-		end
+		new_effect = Effect({ fn = fn, dependencies = dependencies })
+		currentFiber:add_effect(new_effect.run, effect_type, dependencies)
 	end
 
+	if new_effect then
+		if lastEffect and lastEffect.cleanup then
+			currentFiber:add_cleanup(function()
+				lastEffect.cleanup()
+			end)
+		end
+		currentFiber.effects[idx] = new_effect
+	end
 	currentFiber.prevDeps[idx] = dependencies
 	currentFiber.effectIndex = currentFiber.effectIndex + 1
 end
