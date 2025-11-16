@@ -944,12 +944,6 @@ Debug: Imprime el árbol de Fibers con indentación y valores de hooks
 @param fiber ascii-ui.RootFiberNode
 
 ------------------------------------------------------------------------------
-                                                                  *commitWork()*
-                        `commitWork`({fiber}, {buffer})
-@param fiber ascii-ui.FiberNode
-@param buffer ascii-ui.Buffer
-
-------------------------------------------------------------------------------
                                                                     *workLoop()*
                                `workLoop`({root})
 @param root ascii-ui.RootFiberNode

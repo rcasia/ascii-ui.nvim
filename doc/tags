@@ -108,7 +108,6 @@ ascii-ui.hooks.useFunctionRegistry()	ascii-ui.txt	/*ascii-ui.hooks.useFunctionRe
 ascii-ui.hooks.useReducer()	ascii-ui.txt	/*ascii-ui.hooks.useReducer()*
 ascii-ui.hooks.useState()	ascii-ui.txt	/*ascii-ui.hooks.useState()*
 ascii-ui.hooks.useUserConfig()	ascii-ui.txt	/*ascii-ui.hooks.useUserConfig()*
-commitWork()	ascii-ui.txt	/*commitWork()*
 config	ascii-ui.txt	/*config*
 createComponent()	ascii-ui.txt	/*createComponent()*
 debugPrint()	ascii-ui.txt	/*debugPrint()*
