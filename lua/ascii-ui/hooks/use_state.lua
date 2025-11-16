@@ -1,7 +1,6 @@
 --- ascii-ui.hooks.useState() *ascii-ui.hooks.useState()*
 
 local EventListener = require("ascii-ui.events")
-local FiberNode = require("ascii-ui.fibernode")
 local fiber = require("ascii-ui.fiber")
 local logger = require("ascii-ui.logger")
 local metrics = require("ascii-ui.utils.metrics")

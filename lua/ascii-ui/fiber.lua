@@ -1,4 +1,3 @@
-local Buffer = require("ascii-ui.buffer")
 local FiberNode = require("ascii-ui.fibernode")
 
 local logger = require("ascii-ui.logger")
@@ -203,8 +202,7 @@ end
 --- @return ascii-ui.RootFiberNode
 local function render(Component)
 	logger.debug("📺 FIBER.RENDER")
-	local fiberArr = Component()
-	local root = fiberArr --- @cast root ascii-ui.RootFiberNode
+	local root = Component() --- @cast root ascii-ui.RootFiberNode
 	-- reconcile
 	workLoop(root)
 
