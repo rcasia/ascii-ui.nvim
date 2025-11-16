@@ -22,7 +22,8 @@ end, {})
 
 describe("Fiber", function()
 	it("renderiza MyComponent en una sola línea", function()
-		local buffer, rootFiber = fiber.render(App)
+		local rootFiber = fiber.render(App)
+		local buffer = rootFiber:get_buffer()
 		eq({ "Hello World" }, buffer:to_lines())
 
 		fiber.debugPrint(rootFiber)
@@ -35,7 +36,8 @@ describe("Fiber", function()
 				Segment:new({ content = "Línea 2" }):wrap(),
 			}
 		end, {})
-		local lines, rootFiber = fiber.render(List)
+		local rootFiber = fiber.render(List)
+		local lines = rootFiber:get_buffer()
 		eq({ "Línea 1", "Línea 2" }, lines:to_lines())
 
 		fiber.debugPrint(rootFiber)
@@ -51,7 +53,8 @@ describe("Fiber", function()
 			}
 		end, {})
 
-		local lines, rootFiber = fiber.render(List)
+		local rootFiber = fiber.render(List)
+		local lines = rootFiber:get_buffer()
 		fiber.debugPrint(rootFiber, print)
 		eq({ "Componente Interno" }, lines:to_lines())
 		eq("List", rootFiber.type)
@@ -73,14 +76,16 @@ describe("Fiber", function()
 		end, {})
 
 		-- render inicial
-		local buf1, root = fiber.render(Counter)
+		local root = fiber.render(Counter)
+		local buf1 = root:get_buffer()
 		eq({ "c:0", "b:false" }, buf1:to_lines())
 
 		-- disparar actualización
 		setCount(5)
 		setActive(true)
 
-		local buf2 = fiber.rerender(root)
+		local root_result = fiber.rerender(root)
+		local buf2 = root_result:get_buffer()
 		-- tras el setState, el propio hook habrá vuelto a renderizar
 		local lines2 = buf2:to_lines()
 		eq({ "c:5", "b:true" }, lines2)
@@ -101,7 +106,7 @@ describe("Fiber", function()
 		end)
 
 		-- primer render
-		local _, fiberRoot = fiber.render(Test)
+		local fiberRoot = fiber.render(Test)
 		eq(1, invocations, "useEffect debió ejecutarse una vez después del render inicial")
 
 		-- un rerender sin cambios de estado no debe volver a ejecutarlo
@@ -126,7 +131,7 @@ describe("Fiber", function()
 		end, {})
 
 		-- render inicial
-		local _, root = fiber.render(Counter)
+		local root = fiber.render(Counter)
 		eq({ 0 }, runs, "Debe ejecutarse con count=0 en el mount")
 
 		-- rerender sin cambio de estado
@@ -169,7 +174,7 @@ describe("Fiber", function()
 		end, {})
 
 		-- primer render: effect se ejecuta, no hay cleanup aún
-		local _, root = fiber.render(Counter)
+		local root = fiber.render(Counter)
 		eq({ "run:0" }, logs)
 
 		-- primer cambio de estado a 1: debe correrse cleanup(0) antes de run(1)
@@ -197,7 +202,7 @@ describe("Fiber", function()
 		end, {})
 
 		-- Mount
-		local _, root = fiber.render(Test)
+		local root = fiber.render(Test)
 		eq({ "mounted" }, log, "solo debería haber corrido el efecto")
 
 		-- Unmount (lo que vamos a implementar)
@@ -229,7 +234,7 @@ describe("Fiber", function()
 		end, {})
 
 		-- mount inicial
-		local _, root = fiber.render(Test)
+		local root = fiber.render(Test)
 		eq({ "effect1", "effect2" }, log, "Los efectos deben correrse en orden declarado")
 
 		-- rerender genérico (sin deps, así siempre both effects vuelven a correr)
@@ -297,7 +302,8 @@ describe("Fiber", function()
 				)
 			end)
 
-			local buf, root = fiber.render(Test)
+			local root = fiber.render(Test)
+			local buf = root:get_buffer()
 
 			--- @param node ascii-ui.FiberNode
 			local child_c = vim.iter(root:iter()):find(function(node)

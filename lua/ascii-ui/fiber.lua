@@ -200,6 +200,7 @@ local function workLoop(root)
 end
 
 -- helper de alto nivel: recibe un componente y devuelve las líneas del buffer
+--- @return ascii-ui.RootFiberNode
 local function render(Component)
 	logger.debug("📺 FIBER.RENDER")
 	local fiberArr = Component()
@@ -214,12 +215,12 @@ local function render(Component)
 		n.tag = "NONE"
 	end)
 
-	return root:get_buffer(), root
+	return root
 end
 
 --- Re-renderiza el árbol de fibers a partir de la raíz dada
 --- @param root ascii-ui.RootFiberNode
---- @return ascii-ui.Buffer buffer con las líneas renderizadas
+--- @return ascii-ui.RootFiberNode
 local function rerender(root)
 	logger.debug("📺📺 FIBER.RERENDER")
 
@@ -231,7 +232,7 @@ local function rerender(root)
 		n.tag = "NONE"
 	end)
 
-	return root:get_buffer(), root
+	return root
 end
 
 return {

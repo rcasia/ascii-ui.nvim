@@ -15,7 +15,7 @@ describe("Tree Component", function()
 		local App = ui.createComponent("App", function()
 			return Tree({ tree = { text = "dummy_treenode" } })
 		end, {})
-		local buffer = fiber.render(App)
+		local buffer = fiber.render(App):get_buffer()
 
 		eq([[dummy_treenode]], buffer:to_string())
 	end)

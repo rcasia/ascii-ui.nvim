@@ -120,6 +120,7 @@ on_select()	ascii-ui.txt	/*on_select()*
 performUnitOfWork()	ascii-ui.txt	/*performUnitOfWork()*
 props_are_equal()	ascii-ui.txt	/*props_are_equal()*
 reconcileChildren()	ascii-ui.txt	/*reconcileChildren()*
+render()	ascii-ui.txt	/*render()*
 rerender()	ascii-ui.txt	/*rerender()*
 store	ascii-ui.txt	/*store*
 useConfig()	ascii-ui.txt	/*useConfig()*

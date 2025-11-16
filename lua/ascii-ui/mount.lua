@@ -24,8 +24,8 @@ return function(RootComponent)
 	end
 
 	-- does first render
-	-- local rendered_buffer = ascii_renderer:render(component)
-	local rendered_buffer, fiberRoot = render(RootComponent)
+	local fiberRoot = render(RootComponent)
+	local rendered_buffer = fiberRoot:get_buffer()
 
 	assert(fiberRoot, "fiberRoot cannot be nil")
 	fiber.debugPrint(fiberRoot, logger.debug)
@@ -46,10 +46,10 @@ return function(RootComponent)
 		logger.info("Rerendering on state change for window %d and buffer %d", window.winid, window.bufnr)
 		local current_lines_count = rendered_buffer:height()
 		-- rendered_buffer = ascii_renderer:render(Component) -- assign variable to have change the referenced value
-		rendered_buffer, fiberRoot = rerender(fiberRoot)
+		fiberRoot = rerender(fiberRoot)
 		fiber.debugPrint(fiberRoot, logger.debug)
-		local new_lines_count = rendered_buffer:height()
 		rendered_buffer = fiberRoot:get_buffer()
+		local new_lines_count = rendered_buffer:height()
 		window:update(rendered_buffer)
 
 		-- rebind the buffer to the window

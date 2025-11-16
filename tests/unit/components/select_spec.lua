@@ -19,7 +19,7 @@ describe("SelectComponent", function()
 			"[x] apple",
 			"[ ] banana",
 			"[ ] mango",
-		}, fiber.render(App):to_lines())
+		}, fiber.render(App):get_buffer():to_lines())
 	end)
 
 	it("renders selected segment with color", function()
@@ -28,7 +28,8 @@ describe("SelectComponent", function()
 		local App = ui.createComponent("Test", function()
 			return Select({ options = option_names })
 		end)
-		local buffer, root = fiber.render(App)
+		local root = fiber.render(App)
+		local buffer = root:get_buffer()
 		local selected_segment = assert(buffer:find_segment_by_position({ line = 1, col = 1 })) -- the first segment is selected
 
 		eq(Hightlights.SELECTION, selected_segment.highlight)
@@ -40,7 +41,8 @@ describe("SelectComponent", function()
 		second_selected_segment.interactions["SELECT"]()
 
 		-- Re-renderiza para reflejar el nuevo estado
-		local new_buffer = fiber.rerender(root)
+		local root_result = fiber.rerender(root)
+		local new_buffer = root_result:get_buffer()
 
 		local newly_selected = assert(new_buffer:find_segment_by_position({ line = 2, col = 1 }))
 		eq(Hightlights.SELECTION, newly_selected.highlight)
@@ -57,7 +59,7 @@ describe("SelectComponent", function()
 		local App = ui.createComponent("Test", function()
 			return Select({ options = option_names, on_select = user_defined_on_select_fun })
 		end)
-		local buffer = fiber.render(App)
+		local buffer = fiber.render(App):get_buffer()
 
 		local selected_segment = assert(buffer:find_segment_by_position({ line = 1, col = 1 })) -- the first segment is selected
 
@@ -73,7 +75,7 @@ describe("SelectComponent", function()
 			return Select({ options = option_names, title = title })
 		end)
 
-		local buffer = fiber.render(App)
+		local buffer = fiber.render(App):get_buffer()
 		eq({
 			"Select a fruit:",
 			"[x] apple",
