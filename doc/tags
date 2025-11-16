@@ -41,7 +41,6 @@ FiberNode	ascii-ui.txt	/*FiberNode*
 FiberNode.is_node()	ascii-ui.txt	/*FiberNode.is_node()*
 FiberNode.is_node_list()	ascii-ui.txt	/*FiberNode.is_node_list()*
 FiberNode.new()	ascii-ui.txt	/*FiberNode.new()*
-FiberNode.resetFrom()	ascii-ui.txt	/*FiberNode.resetFrom()*
 FiberNode:add_cleanup()	ascii-ui.txt	/*FiberNode:add_cleanup()*
 FiberNode:add_effect()	ascii-ui.txt	/*FiberNode:add_effect()*
 FiberNode:clone_for_diff()	ascii-ui.txt	/*FiberNode:clone_for_diff()*

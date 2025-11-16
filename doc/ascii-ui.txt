@@ -281,12 +281,6 @@ Return ~
 @return ascii-ui.BufferLine
 
 ------------------------------------------------------------------------------
-                                                         *FiberNode.resetFrom()*
-                         `FiberNode.resetFrom`({fiber})
-@param fiber ascii-ui.RootFiberNode
-@return ascii-ui.RootFiberNode
-
-------------------------------------------------------------------------------
                                                     *FiberNode:unwrap_closure()*
                           `FiberNode:unwrap_closure`()
 @return ascii-ui.FiberNode[] output

@@ -159,15 +159,11 @@ function FiberNode:get_line()
 	return self._line
 end
 
---- @param fiber ascii-ui.RootFiberNode
---- @return ascii-ui.RootFiberNode
-function FiberNode.resetFrom(fiber)
-	fiber.hookIndex = 1
-	fiber.effectIndex = 1
-	fiber.hooks = fiber.hooks or {}
-	fiber.effects = fiber.effects or {}
-
-	return fiber
+function FiberNode:reset()
+	self.hookIndex = 1
+	self.effectIndex = 1
+	self.hooks = self.hooks or {}
+	self.effects = self.effects or {}
 end
 
 --- @return ascii-ui.FiberNode[] output

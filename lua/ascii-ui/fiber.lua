@@ -113,7 +113,8 @@ local function performUnitOfWork(fiber)
 		return -- does not need work
 	end
 
-	currentFiber = FiberNode.resetFrom(fiber)
+	fiber:reset()
+	currentFiber = fiber
 	fiber.root = fiber
 
 	if fiber.closure then

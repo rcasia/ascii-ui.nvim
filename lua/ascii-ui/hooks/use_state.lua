@@ -64,12 +64,12 @@ local useState = function(value)
 			_fiber.hooks[idx] = new_value
 		end
 
-		local root = FiberNode.resetFrom(_fiber)
+		_fiber:reset()
 		vim.iter(_fiber:iter()):each(function(n)
 			n.tag = "UPDATE"
 		end)
 
-		fiber.debugPrint(root)
+		fiber.debugPrint(_fiber)
 
 		EventListener:trigger("state_change")
 	end
