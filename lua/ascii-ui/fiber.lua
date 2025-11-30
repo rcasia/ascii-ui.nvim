@@ -206,13 +206,6 @@ local function render(Component)
 	-- reconcile
 	workLoop(root)
 
-	-- execute pending effects
-	--- @param n ascii-ui.FiberNode
-	vim.iter(root:iter()):each(function(n)
-		n:run_pending()
-		n.tag = "NONE"
-	end)
-
 	return root
 end
 

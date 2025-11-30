@@ -107,10 +107,12 @@ describe("Fiber", function()
 
 		-- primer render
 		local fiberRoot = fiber.render(Test)
-		eq(1, invocations, "useEffect debió ejecutarse una vez después del render inicial")
-
-		-- un rerender sin cambios de estado no debe volver a ejecutarlo
 		local _ = fiber.rerender(fiberRoot)
+		local _ = fiber.rerender(fiberRoot)
+		local _ = fiber.rerender(fiberRoot)
+		local _ = fiber.rerender(fiberRoot)
+		-- un rerender sin cambios de estado no debe volver a ejecutarlo
+
 		eq(1, invocations, "useEffect sin deps no debe reejecutarse en rerender")
 	end)
 
@@ -118,24 +120,22 @@ describe("Fiber", function()
 		local runs = {}
 		local count, setCount
 		local Counter = ui.createComponent("Counter", function()
-			return function()
-				count, setCount = useState(0)
+			count, setCount = useState(0)
 
-				-- efecto con arreglo de deps = { count() }
-				useEffect(function()
-					-- registramos cada ejecución junto con el valor actual de count
-					runs[#runs + 1] = count
-				end, { count })
-				return { Segment:new({ content = tostring(count) }):wrap() }
-			end
+			-- efecto con arreglo de deps = { count() }
+			useEffect(function()
+				-- registramos cada ejecución junto con el valor actual de count
+				runs[#runs + 1] = count
+			end, { count })
+			return { Segment:new({ content = tostring(count) }):wrap() }
 		end, {})
 
 		-- render inicial
 		local root = fiber.render(Counter)
-		eq({ 0 }, runs, "Debe ejecutarse con count=0 en el mount")
-
-		-- rerender sin cambio de estado
 		fiber.rerender(root)
+		fiber.rerender(root)
+		fiber.rerender(root)
+		-- rerender sin cambio de estado
 		eq({ 0 }, runs, "Sin cambio de deps no debe reejecutarse")
 
 		-- actualizamos estado a 1
@@ -153,6 +153,7 @@ describe("Fiber", function()
 		fiber.rerender(root)
 		eq({ 0, 1, 2 }, runs, "Se reejecuta al cambiar count a 2")
 	end)
+
 	it("debe llamar al cleanup antes de reejecutar el effect", function()
 		local logs = {}
 
@@ -175,6 +176,7 @@ describe("Fiber", function()
 
 		-- primer render: effect se ejecuta, no hay cleanup aún
 		local root = fiber.render(Counter)
+		fiber.rerender(root)
 		eq({ "run:0" }, logs)
 
 		-- primer cambio de estado a 1: debe correrse cleanup(0) antes de run(1)
@@ -203,9 +205,10 @@ describe("Fiber", function()
 
 		-- Mount
 		local root = fiber.render(Test)
+		fiber.rerender(root)
 		eq({ "mounted" }, log, "solo debería haber corrido el efecto")
 
-		-- Unmount (lo que vamos a implementar)
+		-- Unmount
 		root:unmount()
 		eq({ "mounted", "unmounted" }, log, "el cleanup debe ejecutarse al unmount")
 	end)
@@ -214,7 +217,7 @@ describe("Fiber", function()
 		local log = {}
 
 		local Test = ui.createComponent("Test", function()
-			-- primer efecto
+			-- first effect
 			useEffect(function()
 				log[#log + 1] = "effect1"
 				return function()
@@ -222,7 +225,7 @@ describe("Fiber", function()
 				end
 			end)
 
-			-- segundo efecto
+			-- second effect
 			useEffect(function()
 				log[#log + 1] = "effect2"
 				return function()
@@ -233,8 +236,9 @@ describe("Fiber", function()
 			return { Segment:new({ content = "foo" }):wrap() }
 		end, {})
 
-		-- mount inicial
+		-- initial mount
 		local root = fiber.render(Test)
+		fiber.rerender(root)
 		eq({ "effect1", "effect2" }, log, "Los efectos deben correrse en orden declarado")
 
 		-- rerender genérico (sin deps, así siempre both effects vuelven a correr)
@@ -264,7 +268,8 @@ describe("Fiber", function()
 			return { Segment:new({ content = tostring(val) }):wrap() }
 		end, {})
 
-		fiber.render(C)
+		local node = fiber.render(C)
+		fiber.rerender(node)
 		setVal(1) -- actualiza estado
 		assert.are.same({ "effect" }, log)
 	end)

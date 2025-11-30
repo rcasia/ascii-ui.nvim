@@ -169,6 +169,7 @@ return function(RootComponent)
 		end,
 	})
 
+	EventListener:trigger("state_change")
 	local elapsed_ns = vim.uv.hrtime() - start
 	logger.info("First render time: %.3f ms", elapsed_ns / 1e6)
 	return window.bufnr
