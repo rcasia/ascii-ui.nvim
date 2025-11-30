@@ -6,15 +6,19 @@ local useConfig = require("ascii-ui.hooks.use_config")
 local useEffect = require("ascii-ui.hooks.use_effect")
 local useState = require("ascii-ui.hooks.use_state")
 
+local MIN_VALUE = 0
+local MAX_VALUE = 100
+local STEP = 10
+
 --- @param props? { title?: string, value?: integer, on_change?: fun(value: integer) }
 local function Slider(props)
 	local config = useConfig()
 	props = props or {}
-	props.value = props.value or 0
+	props.value = props.value or MIN_VALUE
 	props.title = props.title or ""
 
 	local cc = config.characters
-	local value, setValue = useState(props.value or 0)
+	local value, setValue = useState(props.value or MIN_VALUE)
 
 	useEffect(function()
 		if props.on_change then
@@ -22,21 +26,20 @@ local function Slider(props)
 		end
 	end, { value })
 
-	local interactions = {
-		[interaction_type.CURSOR_MOVE_RIGHT] = function()
-			setValue(function(v)
-				return math.min(v + 10, 100)
-			end)
-		end,
-		[interaction_type.CURSOR_MOVE_LEFT] = function()
-			setValue(function(v)
-				return math.max(v - 10, 0)
-			end)
-		end,
-	}
+	local decrease = function()
+		setValue(function(v)
+			return math.max(v - STEP, MIN_VALUE)
+		end)
+	end
 
-	local width = 10
-	local knob_position = math.floor(width * value / 100)
+	local increase = function()
+		setValue(function(v)
+			return math.min(v + STEP, MAX_VALUE)
+		end)
+	end
+
+	local width = STEP
+	local knob_position = math.floor(width * value / MAX_VALUE)
 
 	return {
 		props.title ~= "" and Segment:new(props.title):wrap(),
@@ -44,7 +47,13 @@ local function Slider(props)
 			Segment:new({
 				content = cc.horizontal:rep(knob_position),
 			}),
-			Segment:new({ content = cc.thumb, interactions = interactions }),
+			Segment:new({
+				content = cc.thumb,
+				interactions = {
+					[interaction_type.CURSOR_MOVE_RIGHT] = increase,
+					[interaction_type.CURSOR_MOVE_LEFT] = decrease,
+				},
+			}),
 			Segment:new({ content = cc.horizontal:rep(width - knob_position) }),
 			Segment:new({ content = (" %d%%"):format(value) })
 		),
