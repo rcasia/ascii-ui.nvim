@@ -1,7 +1,6 @@
 --- ascii-ui.hooks.useState() *ascii-ui.hooks.useState()*
 
 local EventListener = require("ascii-ui.events")
-local FiberNode = require("ascii-ui.fibernode")
 local fiber = require("ascii-ui.fiber")
 local logger = require("ascii-ui.logger")
 local metrics = require("ascii-ui.utils.metrics")
@@ -64,25 +63,12 @@ local useState = function(value)
 			_fiber.hooks[idx] = new_value
 		end
 
-		-- ⇲ 2) P1 – ejecuta cleanups de efectos con deps no-vacíos ------
-		if _fiber.cleanups then
-			for i, cu in ipairs(_fiber.cleanups) do
-				local deps = _fiber.prevDeps[i]
-				-- solo si deps existe y no está vacío
-				if deps and #deps > 0 and type(cu) == "function" then
-					cu() -- cleanup inmediato (mantiene valor viejo)
-					_fiber.cleanups[i] = nil -- se reasignará en el nuevo render
-					_fiber.prevDeps[i] = nil
-				end
-			end
-		end
-
-		local root = FiberNode.resetFrom(_fiber)
+		_fiber:reset()
 		vim.iter(_fiber:iter()):each(function(n)
 			n.tag = "UPDATE"
 		end)
 
-		fiber.debugPrint(root)
+		fiber.debugPrint(_fiber)
 
 		EventListener:trigger("state_change")
 	end

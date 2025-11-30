@@ -32,6 +32,8 @@ Cursor	ascii-ui.txt	/*Cursor*
 Cursor.current_position()	ascii-ui.txt	/*Cursor.current_position()*
 Cursor.last_movement_direction()	ascii-ui.txt	/*Cursor.last_movement_direction()*
 Cursor.move_to()	ascii-ui.txt	/*Cursor.move_to()*
+EFFECT_REPLACEMENT_REASON	ascii-ui.txt	/*EFFECT_REPLACEMENT_REASON*
+Effect()	ascii-ui.txt	/*Effect()*
 EventListenter	ascii-ui.txt	/*EventListenter*
 EventListenter:listen()	ascii-ui.txt	/*EventListenter:listen()*
 EventListenter:trigger()	ascii-ui.txt	/*EventListenter:trigger()*
@@ -39,7 +41,6 @@ FiberNode	ascii-ui.txt	/*FiberNode*
 FiberNode.is_node()	ascii-ui.txt	/*FiberNode.is_node()*
 FiberNode.is_node_list()	ascii-ui.txt	/*FiberNode.is_node_list()*
 FiberNode.new()	ascii-ui.txt	/*FiberNode.new()*
-FiberNode.resetFrom()	ascii-ui.txt	/*FiberNode.resetFrom()*
 FiberNode:add_cleanup()	ascii-ui.txt	/*FiberNode:add_cleanup()*
 FiberNode:add_effect()	ascii-ui.txt	/*FiberNode:add_effect()*
 FiberNode:clone_for_diff()	ascii-ui.txt	/*FiberNode:clone_for_diff()*
@@ -107,7 +108,6 @@ ascii-ui.hooks.useFunctionRegistry()	ascii-ui.txt	/*ascii-ui.hooks.useFunctionRe
 ascii-ui.hooks.useReducer()	ascii-ui.txt	/*ascii-ui.hooks.useReducer()*
 ascii-ui.hooks.useState()	ascii-ui.txt	/*ascii-ui.hooks.useState()*
 ascii-ui.hooks.useUserConfig()	ascii-ui.txt	/*ascii-ui.hooks.useUserConfig()*
-commitWork()	ascii-ui.txt	/*commitWork()*
 config	ascii-ui.txt	/*config*
 createComponent()	ascii-ui.txt	/*createComponent()*
 debugPrint()	ascii-ui.txt	/*debugPrint()*
@@ -116,9 +116,11 @@ from_function_prop()	ascii-ui.txt	/*from_function_prop()*
 generateKey()	ascii-ui.txt	/*generateKey()*
 levels	ascii-ui.txt	/*levels*
 merge_bufferlines()	ascii-ui.txt	/*merge_bufferlines()*
+on_select()	ascii-ui.txt	/*on_select()*
 performUnitOfWork()	ascii-ui.txt	/*performUnitOfWork()*
 props_are_equal()	ascii-ui.txt	/*props_are_equal()*
 reconcileChildren()	ascii-ui.txt	/*reconcileChildren()*
+render()	ascii-ui.txt	/*render()*
 rerender()	ascii-ui.txt	/*rerender()*
 store	ascii-ui.txt	/*store*
 useConfig()	ascii-ui.txt	/*useConfig()*

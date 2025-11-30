@@ -25,7 +25,8 @@ end
 ---@return ascii-ui.FiberNode?
 function Renderer:render(renderable)
 	if is_callable(renderable) then
-		return fiber.render(renderable)
+		local result = fiber.render(renderable)
+		return result:get_buffer(), result
 	end
 
 	if type(renderable) == "string" then
@@ -37,7 +38,8 @@ function Renderer:render(renderable)
 			end
 		end)
 
-		return fiber.render(Component)
+		local result = fiber.render(Component)
+		return result:get_buffer(), result
 	end
 
 	error("Cannot render: " .. vim.inspect(renderable))

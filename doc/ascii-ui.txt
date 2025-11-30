@@ -192,6 +192,34 @@ Parameters ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
+@class ascii-ui.EffectOpts
+@field fn fun(): function
+@field dependencies any[] | nil
+
+------------------------------------------------------------------------------
+@alias ascii-ui.EffectStatus "INITIAL" | "MOUNTED" | "CLEANED_UP" | "DONE"
+
+------------------------------------------------------------------------------
+                                                     *EFFECT_REPLACEMENT_REASON*
+                          `EFFECT_REPLACEMENT_REASON`
+@enum ascii-ui.EffectReplacementReason
+
+------------------------------------------------------------------------------
+@class ascii-ui.Effect
+@field run fun(): function | nil
+@field cleanup fun(): nil
+@field get_status fun(): ascii-ui.EffectStatus
+@field should_be_replaced fun(new_dependencies?: any[]): boolean, ascii-ui.EffectReplacementReason[]
+
+------------------------------------------------------------------------------
+                                                                      *Effect()*
+                                `Effect`({opts})
+@param opts ascii-ui.EffectOpts
+@return ascii-ui.Effect
+
+
+==============================================================================
+------------------------------------------------------------------------------
 @class ascii-ui.RootFiberNode : ascii-ui.FiberNode
 @field pendingEffects? function[]
 @field pendingCleanups? function[]
@@ -214,9 +242,8 @@ Parameters ~
 @field child? ascii-ui.FiberNode
 @field hooks? any[]
 @field hookIndex integer
-@field cleanups? function[]
-@field prevDeps any[]
 @field effectIndex integer
+@field effects ascii-ui.Effect[]
 @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
 @field output? ascii-ui.FiberNode[]
 @field private _line ascii-ui.BufferLine
@@ -252,12 +279,6 @@ Return ~
                                                           *FiberNode:get_line()*
                              `FiberNode:get_line`()
 @return ascii-ui.BufferLine
-
-------------------------------------------------------------------------------
-                                                         *FiberNode.resetFrom()*
-                         `FiberNode.resetFrom`({fiber})
-@param fiber ascii-ui.RootFiberNode
-@return ascii-ui.RootFiberNode
 
 ------------------------------------------------------------------------------
                                                     *FiberNode:unwrap_closure()*
@@ -891,6 +912,18 @@ Parameters ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
+@param window ascii-ui.Window
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                   *on_select()*
+                             `on_select`({window})
+@param window ascii-ui.Window
+
+
+==============================================================================
+------------------------------------------------------------------------------
 @type ascii-ui.FiberNode | nil
 
 ------------------------------------------------------------------------------
@@ -911,22 +944,21 @@ Debug: Imprime el árbol de Fibers con indentación y valores de hooks
 @param fiber ascii-ui.RootFiberNode
 
 ------------------------------------------------------------------------------
-                                                                  *commitWork()*
-                        `commitWork`({fiber}, {buffer})
-@param fiber ascii-ui.FiberNode
-@param buffer ascii-ui.Buffer
-
-------------------------------------------------------------------------------
                                                                     *workLoop()*
                                `workLoop`({root})
 @param root ascii-ui.RootFiberNode
+
+------------------------------------------------------------------------------
+                                                                      *render()*
+                             `render`({Component})
+@return ascii-ui.RootFiberNode
 
 ------------------------------------------------------------------------------
                                                                     *rerender()*
                                `rerender`({root})
 Re-renderiza el árbol de fibers a partir de la raíz dada
 @param root ascii-ui.RootFiberNode
-@return ascii-ui.Buffer buffer con las líneas renderizadas
+@return ascii-ui.RootFiberNode
 
 
 ==============================================================================

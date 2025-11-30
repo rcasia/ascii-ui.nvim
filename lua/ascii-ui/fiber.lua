@@ -1,4 +1,3 @@
-local Buffer = require("ascii-ui.buffer")
 local FiberNode = require("ascii-ui.fibernode")
 
 local logger = require("ascii-ui.logger")
@@ -113,7 +112,8 @@ local function performUnitOfWork(fiber)
 		return -- does not need work
 	end
 
-	currentFiber = FiberNode.resetFrom(fiber)
+	fiber:reset()
+	currentFiber = fiber
 	fiber.root = fiber
 
 	if fiber.closure then
@@ -188,23 +188,6 @@ local function performUnitOfWork(fiber)
 	end
 end
 
---- @param fiber ascii-ui.FiberNode
---- @param buffer ascii-ui.Buffer
-local function commitWork(fiber, buffer)
-	assert(fiber, "Fiber cannot be nil")
-
-	if fiber:is_leaf() then
-		buffer:add(fiber:get_line())
-		return
-	end
-
-	local child = fiber.child
-	while child do
-		commitWork(child, buffer)
-		child = child.sibling
-	end
-end
-
 -- recorre todos los Units of Work automáticamente
 --- @param root ascii-ui.RootFiberNode
 local function workLoop(root)
@@ -216,35 +199,23 @@ local function workLoop(root)
 end
 
 -- helper de alto nivel: recibe un componente y devuelve las líneas del buffer
+--- @return ascii-ui.RootFiberNode
 local function render(Component)
 	logger.debug("📺 FIBER.RENDER")
-	local fiberArr = Component()
-	local root = fiberArr --- @cast root ascii-ui.RootFiberNode
-	-- first phase: reconcile
+	local root = Component() --- @cast root ascii-ui.RootFiberNode
+	-- reconcile
 	workLoop(root)
-	local buffer = Buffer.new()
-	-- second phase: commit
-	commitWork(root, buffer)
 
-	-- third phase: execute pending effects
-	--- @param n ascii-ui.FiberNode
-	vim.iter(root:iter()):each(function(n)
-		n:run_pending()
-		n.tag = "NONE"
-	end)
-
-	return buffer, root
+	return root
 end
 
 --- Re-renderiza el árbol de fibers a partir de la raíz dada
 --- @param root ascii-ui.RootFiberNode
---- @return ascii-ui.Buffer buffer con las líneas renderizadas
+--- @return ascii-ui.RootFiberNode
 local function rerender(root)
 	logger.debug("📺📺 FIBER.RERENDER")
-	local buf = Buffer.new()
 
 	workLoop(root)
-	commitWork(root, buf)
 
 	--- @param n ascii-ui.FiberNode
 	vim.iter(root:iter()):each(function(n)
@@ -252,8 +223,7 @@ local function rerender(root)
 		n.tag = "NONE"
 	end)
 
-	logger.debug("MYBUF" .. buf:to_string())
-	return buf, root
+	return root
 end
 
 return {
@@ -262,7 +232,6 @@ return {
 	workLoop = workLoop,
 	performUnitOfWork = performUnitOfWork,
 	reconcileChildren = reconcileChildren,
-	commitWork = commitWork,
 	debugPrint = debugPrint,
 	getCurrentFiber = function()
 		return currentFiber

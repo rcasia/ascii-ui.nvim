@@ -29,7 +29,7 @@ describe("useEffect", function()
 			return #use_state_log > 1
 		end)
 
-		eq(log, { "useEffect called" })
+		eq({ "useEffect called" }, log)
 	end)
 
 	it("gets executed as much as dependencies change", function()
@@ -61,7 +61,7 @@ describe("useEffect", function()
 			return false
 		end)
 
-		eq(#log, 3 + 1)
+		eq(3 + 1, #log)
 	end)
 
 	it("gets executed every render when there is nil dependencies", function()
@@ -93,7 +93,7 @@ describe("useEffect", function()
 			return false
 		end)
 
-		eq(#log, 8 + 1)
+		eq(8 + 1, #log)
 	end)
 
 	it("gets executed right when has state change inside", function()
@@ -128,6 +128,6 @@ describe("useEffect", function()
 		-- expected to run 3 times
 		-- but twice because of state change inside
 		-- plus one for initial render
-		eq(#log, 3 * 2 + 1)
+		eq(3 * 2 + 2, #log)
 	end)
 end)

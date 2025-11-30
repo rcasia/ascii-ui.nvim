@@ -23,9 +23,8 @@ local props_are_equal = require("ascii-ui.utils.props_are_equal")
 --- @field child? ascii-ui.FiberNode
 --- @field hooks? any[]
 --- @field hookIndex integer
---- @field cleanups? function[]
---- @field prevDeps any[]
 --- @field effectIndex integer
+--- @field effects ascii-ui.Effect[]
 --- @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
 --- @field output? ascii-ui.FiberNode[]
 --- @field private _line ascii-ui.BufferLine
@@ -57,8 +56,6 @@ function FiberNode.new(fields)
 		effects = fields.effects or {},
 		effectIndex = fields.effectIndex or 1,
 		pendingEffects = fields.pendingEffects or {},
-		prevDeps = fields.prevDeps or {},
-		cleanups = fields.cleanups or {},
 	}
 
 	--- @type ascii-ui.FiberNode
@@ -162,14 +159,11 @@ function FiberNode:get_line()
 	return self._line
 end
 
---- @param fiber ascii-ui.RootFiberNode
---- @return ascii-ui.RootFiberNode
-function FiberNode.resetFrom(fiber)
-	fiber.hookIndex = 1
-	fiber.effectIndex = 1
-	fiber.hooks = fiber.hooks or {}
-
-	return fiber
+function FiberNode:reset()
+	self.hookIndex = 1
+	self.effectIndex = 1
+	self.hooks = self.hooks or {}
+	self.effects = self.effects or {}
 end
 
 --- @return ascii-ui.FiberNode[] output
@@ -393,13 +387,9 @@ function FiberNode:unmount()
 		end
 
 		-- 2) Luego ejecutamos los cleanups de este fiber en orden inverso (LIFO)
-		if fiber.cleanups then
-			for i = #fiber.cleanups, 1, -1 do
-				local cleanup = fiber.cleanups[i]
-				if type(cleanup) == "function" then
-					cleanup()
-				end
-			end
+		for i = #fiber.effects, 1, -1 do
+			local effect = fiber.effects[i]
+			effect.cleanup()
 		end
 	end
 

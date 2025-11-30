@@ -21,16 +21,19 @@ describe("useReducer", function()
 			end
 		end)
 
-		local buf, root = fiber.render(C)
+		local root = fiber.render(C)
+		local buf = root:get_buffer()
 		eq({ "5" }, buf:to_lines())
 
 		-- dispatch via closure
 		dispatch("inc")
-		local new_buf = fiber.rerender(root)
+		local root_result = fiber.rerender(root)
+		local new_buf = root_result:get_buffer()
 		eq({ "6" }, new_buf:to_lines())
 
 		dispatch("dec")
-		local new_buf2 = fiber.rerender(root)
+		local root_result2 = fiber.rerender(root)
+		local new_buf2 = root_result2:get_buffer()
 		eq({ "5" }, new_buf2:to_lines())
 	end)
 end)
