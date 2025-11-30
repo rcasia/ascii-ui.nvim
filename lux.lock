@@ -42,30 +42,29 @@
           "source": "sha256-jjdB95Vr5iVsh5T7E84WwZMW6/5H2k2R/ny2VBs2l3I="
         }
       },
-      "e979389dab6913034a620a7b176733ae22e6b46a6233b7aba9221c0aa611aead": {
+      "c00abab54b42135a2957c647032e5487fc18e4171039d79dd48e7d9f84b5759e": {
         "name": "plenary.nvim",
-        "version": "scm-1",
+        "version": "0.1.4-1",
         "pinned": false,
         "opt": false,
         "dependencies": [
           "acdfde00d122aac481c18c906d483478bb536741beb025becc11782a075d125b"
         ],
-        "constraint": "==scm",
+        "constraint": "==0.1.4",
         "binaries": [],
         "source": "luarocks_rockspec+https://luarocks.org/",
         "source_url": {
-          "type": "git",
-          "url": "https://github.com/nvim-lua/plenary.nvim",
-          "ref": "b9fd5226c2f76c951fc8ed5923d85e4de065e509"
+          "type": "url",
+          "url": "https://github.com/nvim-lua/plenary.nvim/archive/v0.1.4.zip"
         },
         "hashes": {
-          "rockspec": "sha256-r0jP0L52Bjijhhwn/6j9FhToew/BGCKTVtDoCCw25ik=",
-          "source": "sha256-9Un7ekhBxcnmFE1xjCCFTZ7eqIbmXvQexpnhduAg4M0="
+          "rockspec": "sha256-0EdepFBCsLc5D7HJKX66yMw/NbIgCmQib/+yqpJ9FFE=",
+          "source": "sha256-cJ2EfkbTOiEJ8IPVnoO77alXynBv+nJ2ql/vfYOTSJI="
         }
       }
     },
     "entrypoints": [
-      "e979389dab6913034a620a7b176733ae22e6b46a6233b7aba9221c0aa611aead"
+      "c00abab54b42135a2957c647032e5487fc18e4171039d79dd48e7d9f84b5759e"
     ]
   }
 }
