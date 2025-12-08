@@ -9,6 +9,7 @@ license = "MIT"
 
 [source]
 url = "https://github.com/rcasia/$(PACKAGE)/archive/refs/tags/v$(VERSION).zip"
+dev = "git+https://github.com/rcasia/$(PACKAGE).git"
 
 [dependencies]
 "plenary.nvim" = "scm-1"
