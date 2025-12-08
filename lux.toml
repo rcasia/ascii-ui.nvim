@@ -1,5 +1,4 @@
 package = "ascii-ui.nvim"
-version = "0.2.0"
 lua = "==5.1"
 
 [description]
@@ -7,6 +6,9 @@ summary = "A WIP extensible ui framework with no non-sense apis (hopefully) for 
 maintainer = "rcasia"
 labels = []
 license = "MIT"
+
+[source]
+url = "https://github.com/rcasia/$(PACKAGE)/archive/refs/tags/v$(VERSION).zip"
 
 [dependencies]
 "plenary.nvim" = "scm-1"
