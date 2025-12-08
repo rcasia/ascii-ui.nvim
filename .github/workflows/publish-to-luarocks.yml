@@ -1,0 +1,21 @@
+name: Lux Publish
+on:
+  push:
+    tags: # Will upload to luarocks.org when a tag is pushed
+      - "*"
+  workflow_dispatch:
+jobs:
+  luarocks-upload:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install Lux
+        uses: lumen-oss/gh-actions-lux@v1
+
+      - name: Upload
+        run: |
+          lx upload
+        env:
+          LUX_API_KEY: ${{ secrets.LUX_API_KEY }}
