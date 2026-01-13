@@ -15,7 +15,7 @@ build:
 else
 build:
 	echo "Building project..."
-	lx build
+	lx --lua-version 5.1 build
 endif
 
 test: build

@@ -30,7 +30,6 @@ end
 ---@alias ascii-ui.UserInteractions.InteractionOpts { buffer_id: integer, position: ascii-ui.Position, interaction_type: ascii-ui.UserInteractions.InteractionType | string }
 ---@param opts ascii-ui.UserInteractions.InteractionOpts
 function UserInteractions:interact(opts)
-	assert(opts.buffer_id, "buffer_id cannot be nil")
 	local buffer = self.buffers[opts.buffer_id]
 	if not buffer then
 		return -- buffer has not been found
@@ -48,8 +47,6 @@ function UserInteractions:interact(opts)
 		)
 		return -- there is no segment to interact with
 	end
-
-	assert(opts.interaction_type, "interaction type cannot be nil")
 
 	local interaction_function = segment.interactions[opts.interaction_type]
 	if type(interaction_function) == "function" then

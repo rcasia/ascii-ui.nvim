@@ -38,8 +38,6 @@ end
 
 ---@return number[] cols
 function BufferLine:find_focusable()
-	assert(self.segments, "bufferline component failed: segment cannot be nil")
-
 	local col = 0
 	local cols = {}
 	---@param segment ascii-ui.Segment
@@ -80,9 +78,7 @@ end
 
 ---@return string
 function BufferLine:to_string()
-	return vim
-		.iter(self.segments)
-		---@param segment ascii-ui.Segment
+	return vim.iter(self.segments)
 		:map(function(segment)
 			return segment:to_string()
 		end)

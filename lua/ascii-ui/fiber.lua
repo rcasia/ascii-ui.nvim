@@ -106,8 +106,6 @@ end
 
 --- @param fiber ascii-ui.RootFiberNode
 local function performUnitOfWork(fiber)
-	assert(fiber, "Fiber cannot be nil")
-
 	if fiber.tag == "NONE" then
 		return -- does not need work
 	end

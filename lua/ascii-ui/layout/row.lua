@@ -7,9 +7,7 @@ local createComponent = require("ascii-ui.components.create-component")
 --- @return ascii-ui.BufferLine[]
 local function merge_bufferlines(bufferlines, other_bufferlines)
 	local max_index = math.max(#bufferlines, #other_bufferlines)
-	local max_bufferline_width = vim
-		.iter(bufferlines)
-		--- @param bufferline ascii-ui.BufferLine
+	local max_bufferline_width = vim.iter(bufferlines)
 		:map(function(bufferline)
 			return bufferline:len()
 		end)
@@ -42,9 +40,7 @@ local function Row(...)
 	local fiber_nodes = { ... }
 
 	return function()
-		return vim
-			.iter(fiber_nodes)
-			--- @param node ascii-ui.FiberNode
+		return vim.iter(fiber_nodes)
 			:map(function(node)
 				return node:unwrap_closure()
 			end)

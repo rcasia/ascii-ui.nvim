@@ -55,11 +55,9 @@ function Buffer:find_next_focusable(position)
 	position = position or {}
 	position = { line = position.line or 1, col = position.col or 0 }
 
-	local pos = vim
-		.iter(self.lines)
+	local pos = vim.iter(self.lines)
 		:skip(position.line - 1)
 		:enumerate()
-		--- @param line ascii-ui.BufferLine
 		:map(function(index, line)
 			return line:focusable_segments(index)
 		end)
@@ -88,12 +86,10 @@ function Buffer:find_last_focusable(position)
 		return { pos = position, found = false }
 	end
 
-	local pos = vim
-		.iter(self.lines)
+	local pos = vim.iter(self.lines)
 		:enumerate()
 		:rev()
 		:skip(math.abs(#self.lines - position.line))
-		--- @param line ascii-ui.BufferLine
 		:map(function(index, line)
 			return vim.iter(line:focusable_segments(index)):rev():totable()
 		end)
@@ -125,8 +121,6 @@ end
 
 ---@return fun(): ascii-ui.Segment | nil
 function Buffer:iter_focusables()
-	assert(self.lines, "buffer component failed: lines cannot be nil")
-
 	local iter = vim.iter(self.lines)
 		:map(function(line)
 			return vim.iter(line.segments)

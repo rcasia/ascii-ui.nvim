@@ -35,20 +35,23 @@ local function Tree(props)
 	local toggle_expanded = function()
 		set_expanded(not is_expanded)
 	end
-	props.level = props.level or 0
-	props.has_siblings = props.has_siblings or false
-	props.is_last = props.is_last or false
+	local level = props.level or 0
+	local has_siblings = props.has_siblings or false
+	local is_last = props.is_last or false
+	props.level = level
+	props.has_siblings = has_siblings
+	props.is_last = is_last
 	local children_count = props.tree.children and #props.tree.children or 0
 	local has_children_siblings = children_count > 1
-	local is_head = props.level == 0
+	local is_head = level == 0
 
 	-- if is leaf node
 	local has_children = props.tree and props.tree.children and #props.tree.children > 0
 	if not has_children then
 		local prefix = ""
-		if props.is_last then
+		if is_last then
 			prefix = LEAF_PREFIX
-		elseif props.level > 0 then
+		elseif level > 0 then
 			prefix = LEFT_TREE_PREFIX
 		end
 		return {
