@@ -4,11 +4,11 @@
 --- @param t2 table
 --- @return boolean
 local function props_are_equal(t1, t2)
-	t1 = t1 or {}
-	t2 = t2 or {}
 	if t1 == t2 then
 		return true
 	end
+	t1 = t1 or {}
+	t2 = t2 or {}
 	if type(t1) ~= "table" or type(t2) ~= "table" then
 		return false
 	end

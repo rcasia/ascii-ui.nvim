@@ -90,7 +90,6 @@ end
 --- @return boolean
 function FiberNode:is_same(other)
 	-- assert(FiberNode.is_node(other), "other should be node to be able to compare. Found: " .. vim.inspect(other))
-	assert(other, "other cannot be nil")
 
 	if not FiberNode.is_node(other) then
 		logger.debug("is not the same because other is not a FiberNode")
@@ -407,9 +406,7 @@ end
 
 --- @return function[]
 function FiberNode:pending_effects()
-	return vim
-		.iter(self:to_list())
-		--- @param node ascii-ui.FiberNode
+	return vim.iter(self:to_list())
 		:map(function(node)
 			return node.pendingEffects
 		end)

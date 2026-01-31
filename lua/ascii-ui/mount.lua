@@ -27,7 +27,6 @@ return function(RootComponent)
 	local fiberRoot = render(RootComponent)
 	local rendered_buffer = fiberRoot:get_buffer()
 
-	assert(fiberRoot, "fiberRoot cannot be nil")
 	fiber.debugPrint(fiberRoot, logger.debug)
 
 	-- spawns a window

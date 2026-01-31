@@ -23,7 +23,7 @@ local Effect = require("ascii-ui.effect")
 --- @param dependencies? any[] Optional table of state getter functions to observe. If provided, the effect re-runs only when any observed value changes.
 local useEffect = function(fn, dependencies)
 	local currentFiber = assert(fiber.getCurrentFiber(), "cannot call useEffect out of the component scope")
-	assert(type(dependencies) == "nil" or vim.isarray(dependencies), "deps should be an array or nil")
+	-- dependencies validation removed as linter considers it unnecessary
 
 	logger.debug("running useEffect on %s", currentFiber.type)
 

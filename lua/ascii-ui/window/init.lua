@@ -54,12 +54,14 @@ function Window:open()
 	local center = { line = math.floor(height / 2), col = math.floor(width / 2) }
 
 	-- Open a floating window with the new buffer
+	local win_width = self.opts.width or Window.default_opts.width or 40
+	local win_height = self.opts.height or Window.default_opts.height or 20
 	local win = vim.api.nvim_open_win(buf, true, {
 		relative = "editor",
-		width = self.opts.width,
-		height = self.opts.height,
-		col = center.col - math.floor(self.opts.width / 2),
-		row = center.line - math.floor(self.opts.height / 2),
+		width = win_width,
+		height = win_height,
+		col = center.col - math.floor(win_width / 2),
+		row = center.line - math.floor(win_height / 2),
 		style = "minimal",
 		border = "rounded",
 	})

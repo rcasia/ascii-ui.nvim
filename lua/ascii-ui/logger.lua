@@ -8,12 +8,13 @@ local levels = {
 	INFO = "INFO",
 	WARN = "WARN",
 	ERROR = "ERROR",
+	QUIET = "QUIET",
 }
 
 local RUNNING_ON_ACTIONS = os.getenv("GITHUB_ACTIONS") == "true"
 
 -- Set default log level
-Logger.level = RUNNING_ON_ACTIONS and levels.DEBUG or levels.INFO
+Logger.level = RUNNING_ON_ACTIONS and levels.DEBUG or levels.QUIET
 
 -- Get log file path
 local log_dir = vim.fn.stdpath("data") .. "/ascii-ui"

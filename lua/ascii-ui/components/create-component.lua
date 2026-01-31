@@ -4,8 +4,6 @@ local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
 local memoize = require("ascii-ui.utils.memoize")
 
---- @generic T
---- @generic P : ascii-ui.ComponentProps
 --- @alias ComponentClosure fun(): ascii-ui.BufferLine[]
 --- @alias ascii-ui.ComponentProp<T> T | fun(): T
 --- @alias ascii-ui.ComponentProps table<string, ascii-ui.ComponentProp<any>>
