@@ -23,10 +23,14 @@ local AsciiUI = {
 
 	--- @generic T
 	--- @param items T[]
-	--- @param render_fn fun(item: T): ascii-ui.FiberNode
+	--- @param render_fn fun(item: T, i: integer): ascii-ui.FiberNode
 	--- @return ascii-ui.FiberNode[]
 	map = function(items, render_fn)
-		return vim.iter(items):map(render_fn):totable()
+		return vim.iter(ipairs(items))
+			:map(function(i, item)
+				return render_fn(item, i)
+			end)
+			:totable()
 	end,
 }
 

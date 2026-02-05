@@ -15,12 +15,12 @@ describe("ui.map", function()
 
 		eq(
 			{
-				MyComponent({ item = "apple" }),
-				MyComponent({ item = "banana" }),
-				MyComponent({ item = "cherry" }),
+				MyComponent({ item = "apple1" }),
+				MyComponent({ item = "banana2" }),
+				MyComponent({ item = "cherry3" }),
 			},
-			ui.map(items, function(item)
-				return MyComponent({ item = item })
+			ui.map(items, function(item, i)
+				return MyComponent({ item = item .. i })
 			end)
 		)
 	end)
