@@ -1,8 +1,6 @@
 local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
-local Column = ui.layout.Column
 local Button = ui.components.Button
-local For = ui.components.For
 local useReducer = ui.hooks.useReducer
 
 --- @type ascii-ui.FunctionalComponent
@@ -14,25 +12,20 @@ local App = ui.createComponent("App", function()
 		return state
 	end, { "this is 1", "this is 2" })
 
-	return Column(
+	return {
 		Paragraph({
 			content = "There are " .. #items .. " items in the list",
 		}),
-		For({
-			items = items,
-			transform = function(item)
-				return { content = item }
-			end,
-			component = Paragraph,
-		}),
-
+		ui.map(items, function(item)
+			return Paragraph({ content = item })
+		end),
 		Button({
 			label = "Add more",
 			on_press = function()
 				dispatch({ type = "add" })
 			end,
-		})
-	)
+		}),
+	}
 end)
 
 ui.mount(App)
