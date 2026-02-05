@@ -4,7 +4,6 @@ pcall(require, "luacov")
 local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
 local Button = ui.components.Button
-local Column = ui.layout.Column
 local useState = ui.hooks.useState
 local useEffect = ui.hooks.useEffect
 
@@ -47,15 +46,15 @@ describe("UI updates", function()
 			end
 		end, { count })
 
-		return Column(
+		return {
 			Paragraph({ content = message }),
 			Button({
 				label = "Press me",
 				on_press = function()
 					setCount(count + 1)
 				end,
-			})
-		)
+			}),
+		}
 	end)
 
 	it("does run just once", function()

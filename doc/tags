@@ -26,7 +26,6 @@ BufferLine:len()	ascii-ui.txt	/*BufferLine:len()*
 BufferLine:to_string()	ascii-ui.txt	/*BufferLine:to_string()*
 Button()	ascii-ui.txt	/*Button()*
 Checkbox()	ascii-ui.txt	/*Checkbox()*
-Column()	ascii-ui.txt	/*Column()*
 Components	ascii-ui.txt	/*Components*
 Cursor	ascii-ui.txt	/*Cursor*
 Cursor.current_position()	ascii-ui.txt	/*Cursor.current_position()*

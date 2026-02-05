@@ -1,6 +1,5 @@
 local Segment = require("ascii-ui.buffer.segment")
 local ui = require("ascii-ui")
-local Column = ui.layout.Column
 local Paragraph = ui.components.Paragraph
 local useState = ui.hooks.useState
 local useInterval = ui.hooks.useInterval
