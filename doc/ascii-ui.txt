@@ -516,12 +516,6 @@ Genera una clave única basada en una tabla
 
 ==============================================================================
 ------------------------------------------------------------------------------
-@alias ComponentClosure fun(): ascii-ui.BufferLine[]
-@alias ascii-ui.ComponentProp<T> T | fun(): T
-@alias ascii-ui.ComponentProps table<string, ascii-ui.ComponentProp<any>>
-@alias ascii-ui.FunctionalComponent<P> fun(props: P): ComponentClosure
-
-------------------------------------------------------------------------------
 @alias ascii-ui.PropsType
 "nil"
 "number"
@@ -547,14 +541,23 @@ Genera una clave única basada en una tabla
 @alias ascii-ui.TemplateString string
 
 ------------------------------------------------------------------------------
+@generic ascii-ui.ComponentClosure, T
+@alias ascii-ui.SimpleComponentFunction fun(props: T): ascii-ui.FiberNode[]
+
+------------------------------------------------------------------------------
+@alias ascii-ui.FunctionalComponent<P> fun(props?: P): ascii-ui.FiberNode
+
+------------------------------------------------------------------------------
                                                              *createComponent()*
            `createComponent`({name}, {functional_component}, {types})
 Crea un componente personalizado y lo registra
 @generic ascii-ui.ComponentClosure, T
 @param name string Nombre del componente
-@param functional_component fun(props: T): ascii-ui.FiberNode[] | ascii-ui.TemplateString
+@param functional_component fun(props: T): ascii-ui.FiberNode[]
 @param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
-@return fun(props?: T): ascii-ui.ComponentClosure component_closure (El closure que renderiza el componente)
+@return ascii-ui.FunctionalComponent
+
+@overload fun(functional_component: ascii-ui.SimpleComponentFunction): ascii-ui.FunctionalComponent
 
 
 ==============================================================================
