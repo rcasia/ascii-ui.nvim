@@ -180,11 +180,6 @@ function FiberNode:unwrap_closure()
 		current = current + 1
 		output = output()
 
-		if type(output) == "string" then
-			local renderer = require("ascii-ui.renderer")
-			output = renderer:render_xml(output)
-		end
-
 		if FiberNode.is_node(output) then
 			output = output:closure()
 		end

@@ -1,9 +1,7 @@
 local FiberNode = require("ascii-ui.fibernode")
-local dom = require("ascii-ui.lib.dom-handler")
 local fiber = require("ascii-ui.fiber")
 local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
-local xml = require("ascii-ui.lib.xml2lua")
 
 ---@class ascii-ui.Renderer
 local Renderer = {}
@@ -26,19 +24,6 @@ end
 function Renderer:render(renderable)
 	if is_callable(renderable) then
 		local result = fiber.render(renderable)
-		return result:get_buffer(), result
-	end
-
-	if type(renderable) == "string" then
-		local fibernodes = self:render_xml(renderable)
-		local createComponent = require("ascii-ui.components.create-component")
-		local Component = createComponent("innerxml", function()
-			return function()
-				return fibernodes
-			end
-		end)
-
-		local result = fiber.render(Component)
 		return result:get_buffer(), result
 	end
 
@@ -77,29 +62,6 @@ function Renderer:render_by_tag(tag_name, props, children)
 	end
 
 	error("not expected. found: " .. vim.inspect(instance))
-end
-
---- @param xml_content string
---- @return ascii-ui.FiberNode[]
-function Renderer:render_xml(xml_content)
-	--- @return XmlNode
-	local function xml_parse(dsl)
-		local _dom = vim.deepcopy(dom) -- NOTE: copy the dom object to avoid modifying the original
-		local parser = xml.parser(_dom)
-		parser:parse(dsl)
-		return vim.deepcopy(_dom.root._children[3])
-	end
-
-	local result = xml_parse(xml_content)
-	logger.info(vim.inspect(result))
-
-	local tag_name = result._name
-
-	local props = result._attr
-
-	local component = self:render_by_tag(tag_name, props, result._children)
-
-	return component
 end
 
 return Renderer

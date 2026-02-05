@@ -76,7 +76,6 @@ Renderer	ascii-ui.txt	/*Renderer*
 Renderer:new()	ascii-ui.txt	/*Renderer:new()*
 Renderer:render()	ascii-ui.txt	/*Renderer:render()*
 Renderer:render_by_tag()	ascii-ui.txt	/*Renderer:render_by_tag()*
-Renderer:render_xml()	ascii-ui.txt	/*Renderer:render_xml()*
 Row()	ascii-ui.txt	/*Row()*
 Segment	ascii-ui.txt	/*Segment*
 Segment.is_segment()	ascii-ui.txt	/*Segment.is_segment()*
@@ -104,7 +103,6 @@ _	ascii-ui.txt	/*_*
 _config	ascii-ui.txt	/*_config*
 as_lines()	ascii-ui.txt	/*as_lines()*
 ascii-ui.hooks.useEffect()	ascii-ui.txt	/*ascii-ui.hooks.useEffect()*
-ascii-ui.hooks.useFunctionRegistry()	ascii-ui.txt	/*ascii-ui.hooks.useFunctionRegistry()*
 ascii-ui.hooks.useReducer()	ascii-ui.txt	/*ascii-ui.hooks.useReducer()*
 ascii-ui.hooks.useState()	ascii-ui.txt	/*ascii-ui.hooks.useState()*
 ascii-ui.hooks.useUserConfig()	ascii-ui.txt	/*ascii-ui.hooks.useUserConfig()*
@@ -125,7 +123,6 @@ rerender()	ascii-ui.txt	/*rerender()*
 store	ascii-ui.txt	/*store*
 useConfig()	ascii-ui.txt	/*useConfig()*
 useEffect()	ascii-ui.txt	/*useEffect()*
-useFunctionRegistry()	ascii-ui.txt	/*useFunctionRegistry()*
 useInterval()	ascii-ui.txt	/*useInterval()*
 useReducer()	ascii-ui.txt	/*useReducer()*
 useState()	ascii-ui.txt	/*useState()*
