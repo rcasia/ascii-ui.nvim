@@ -102,12 +102,6 @@ Return ~
            `Renderer:render_by_tag`({tag_name}, {props}, {children})
 @return ascii-ui.FiberNode[]
 
-------------------------------------------------------------------------------
-                                                         *Renderer:render_xml()*
-                      `Renderer:render_xml`({xml_content})
-@param xml_content string
-@return ascii-ui.FiberNode[]
-
 
 ==============================================================================
 ------------------------------------------------------------------------------
@@ -730,32 +724,6 @@ end)
 @param value T The initial state value.
 @return T value A deep copy of the current state value.
 @return fun(value: T | fun(value: T): T) setValue Sets the state to a new value and triggers a state change event.
-
-
-==============================================================================
-------------------------------------------------------------------------------
-ascii-ui.hooks.useFunctionRegistry() *ascii-ui.hooks.useFunctionRegistry()*
-
-------------------------------------------------------------------------------
-                                                         *useFunctionRegistry()*
-                          `useFunctionRegistry`({fn})
-Registers a Lua function and returns a string key reference to be used in ascii-ui component markup or as an indirect callback.
-This allows the UI runtime to invoke the function later.
-
-Example:
-```
-local function MyComponent()
-  local ref = ui.hooks.useFunctionRegistry(function()
-    print("Button pressed!")
-  end)
-  return function()
-    return ui.components.Button({ label = "Click Me", on_press = ref })
-  end
-end
-```
-
-@param fn function The Lua function to register in the global registry.
-@return string reference String key that can be used to retrieve and call the function.
 
 
 ==============================================================================
