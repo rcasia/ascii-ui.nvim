@@ -49,7 +49,7 @@ local function MetroMap(props)
 	)
 
 	-- Points and horizontal lines
-	for i, station in ipairs(stations) do
+	for i, _ in ipairs(stations) do
 		local is_current = i == current_station
 		local station_marker = is_current and "●" or "○"
 

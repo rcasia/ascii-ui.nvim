@@ -71,8 +71,8 @@ Metrics.set()	ascii-ui.txt	/*Metrics.set()*
 Metrics.show()	ascii-ui.txt	/*Metrics.show()*
 Paragraph()	ascii-ui.txt	/*Paragraph()*
 Renderer	ascii-ui.txt	/*Renderer*
+Renderer.render()	ascii-ui.txt	/*Renderer.render()*
 Renderer:new()	ascii-ui.txt	/*Renderer:new()*
-Renderer:render()	ascii-ui.txt	/*Renderer:render()*
 Row()	ascii-ui.txt	/*Row()*
 Segment	ascii-ui.txt	/*Segment*
 Segment.is_segment()	ascii-ui.txt	/*Segment.is_segment()*
@@ -107,7 +107,6 @@ config	ascii-ui.txt	/*config*
 createComponent()	ascii-ui.txt	/*createComponent()*
 debugPrint()	ascii-ui.txt	/*debugPrint()*
 from()	ascii-ui.txt	/*from()*
-from_function_prop()	ascii-ui.txt	/*from_function_prop()*
 generateKey()	ascii-ui.txt	/*generateKey()*
 levels	ascii-ui.txt	/*levels*
 merge_bufferlines()	ascii-ui.txt	/*merge_bufferlines()*

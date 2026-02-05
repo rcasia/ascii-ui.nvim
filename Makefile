@@ -3,7 +3,7 @@
 check:
 	# running luacheck...
 	
-	# lx lint
+	lx --lua-version 5.1 lint
 	stylua --check .
 
 	# running doc check...

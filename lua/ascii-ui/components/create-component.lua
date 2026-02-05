@@ -31,23 +31,6 @@ local function validate_props(props, types)
 	end)
 end
 
---- @param props table<string, any>
---- @param types table<string, ascii-ui.PropsType>
---- @return table<string, any>
-local function from_function_prop(props, types)
-	return vim.iter(types)
-		:map(function(key, indicated_type)
-			if indicated_type ~= "function" and type(props[key]) == "function" then
-				return key, props[key]()
-			end
-			return key, props[key]
-		end)
-		:fold({}, function(acc, key, value)
-			acc[key] = value
-			return acc
-		end)
-end
-
 --- @alias ascii-ui.TemplateString string
 
 --- @generic ascii-ui.ComponentClosure, T
@@ -89,7 +72,6 @@ local function createComponent(name, functional_component, types)
 			local factory, props
 
 			if #_args == 1 and type(_args[1]) == "table" then
-				-- props = from_function_prop(_args[1], opts.types)
 				props = _args[1] or {}
 				validate_props(props, opts.types)
 				function factory()

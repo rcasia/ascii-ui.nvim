@@ -88,8 +88,8 @@ Class ~
 @return ascii-ui.Renderer
 
 ------------------------------------------------------------------------------
-                                                             *Renderer:render()*
-                        `Renderer:render`({renderable})
+                                                             *Renderer.render()*
+                    `Renderer.render`({_self}, {renderable})
 Parameters ~
 {renderable} `(string | fun(): ascii-ui.FiberNode[])`
 Return ~
@@ -529,13 +529,6 @@ Genera una clave única basada en una tabla
                        `validate_props`({props}, {types})
 @param props table<string, any>
 @param types table<string, ascii-ui.PropsType>
-
-------------------------------------------------------------------------------
-                                                          *from_function_prop()*
-                     `from_function_prop`({props}, {types})
-@param props table<string, any>
-@param types table<string, ascii-ui.PropsType>
-@return table<string, any>
 
 ------------------------------------------------------------------------------
 @alias ascii-ui.TemplateString string

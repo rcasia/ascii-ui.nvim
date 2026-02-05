@@ -19,7 +19,7 @@ end
 ---@param renderable string | fun(): ascii-ui.FiberNode[]
 ---@return ascii-ui.Buffer
 ---@return ascii-ui.FiberNode?
-function Renderer:render(renderable)
+function Renderer.render(_self, renderable)
 	if is_callable(renderable) then
 		local result = fiber.render(renderable)
 		return result:get_buffer(), result
