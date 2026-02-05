@@ -597,16 +597,6 @@ Crea un componente personalizado y lo registra
 
 ==============================================================================
 ------------------------------------------------------------------------------
-@alias ascii-ui.IfComponentProps { child: ascii-ui.FiberNode, fallback: ascii-ui.FiberNode, condition: fun(): boolean }
-
-------------------------------------------------------------------------------
-                                                                          *If()*
-                                 `If`({props})
-@param props ascii-ui.IfComponentProps
-
-
-==============================================================================
-------------------------------------------------------------------------------
 @class ascii-ui.TreeComponentProps.TreeNode
 @field text string
 @field children? ascii-ui.TreeComponentProps.TreeNode[]

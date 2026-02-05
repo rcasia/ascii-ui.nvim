@@ -59,7 +59,6 @@ HexaColor:get_highlight()	ascii-ui.txt	/*HexaColor:get_highlight()*
 Highligths	ascii-ui.txt	/*Highligths*
 Hooks	ascii-ui.txt	/*Hooks*
 INTERACTION_TYPE	ascii-ui.txt	/*INTERACTION_TYPE*
-If()	ascii-ui.txt	/*If()*
 Layout	ascii-ui.txt	/*Layout*
 Logger	ascii-ui.txt	/*Logger*
 Logger.set_level()	ascii-ui.txt	/*Logger.set_level()*
