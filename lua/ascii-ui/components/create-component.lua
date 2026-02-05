@@ -45,11 +45,6 @@ local function from_function_prop(props, types)
 			if indicated_type ~= "function" and type(props[key]) == "function" then
 				return key, props[key]()
 			end
-			if indicated_type == "function" and type(props[key]) == "string" then
-				logger.debug("Resolving function reference for key '%s': %s", key, props[key])
-				local fn = assert(_G.ascii_ui_function_registry[props[key]], "Function not found: " .. props[key])
-				return key, fn
-			end
 			return key, props[key]
 		end)
 		:fold({}, function(acc, key, value)
