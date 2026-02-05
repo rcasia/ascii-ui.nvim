@@ -74,7 +74,6 @@ Paragraph()	ascii-ui.txt	/*Paragraph()*
 Renderer	ascii-ui.txt	/*Renderer*
 Renderer:new()	ascii-ui.txt	/*Renderer:new()*
 Renderer:render()	ascii-ui.txt	/*Renderer:render()*
-Renderer:render_by_tag()	ascii-ui.txt	/*Renderer:render_by_tag()*
 Row()	ascii-ui.txt	/*Row()*
 Segment	ascii-ui.txt	/*Segment*
 Segment.is_segment()	ascii-ui.txt	/*Segment.is_segment()*
