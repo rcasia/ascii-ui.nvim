@@ -509,21 +509,6 @@ Genera una clave única basada en una tabla
 
 ==============================================================================
 ------------------------------------------------------------------------------
-@class ascii-ui.ForComponentProps
-@field props? table[]
-@field items? any[] | fun(): any[]
-@field component ascii-ui.FunctionalComponent
-@field transform? fun(item: any): table
-
-------------------------------------------------------------------------------
-                                                                         *For()*
-                                 `For`({props})
-@param props ascii-ui.ForComponentProps
-@return fun(): ascii-ui.BufferLine[]
-
-
-==============================================================================
-------------------------------------------------------------------------------
                                                                       *Slider()*
                                `Slider`({props})
 @param props? { title?: string, value?: integer, on_change?: fun(value: integer) }
