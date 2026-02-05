@@ -31,6 +31,20 @@ local props_are_equal = require("ascii-ui.utils.props_are_equal")
 local FiberNode = {}
 FiberNode.__index = FiberNode
 
+--- Metatable equality operator
+--- This allows using `==` or framework comparison utilities directly on nodes.
+--- @param other any
+--- @return boolean
+function FiberNode:__eq(other)
+	-- If it's not a node at all, it can't be equal
+	if not FiberNode.is_node(other) then
+		return false
+	end
+
+	-- Delegate to the logical comparison logic already defined
+	return self:is_same(other)
+end
+
 ---Create a new FiberNode instance
 ---@param fields table<string, any>
 ---@return ascii-ui.FiberNode

@@ -20,6 +20,14 @@ local AsciiUI = {
 	--- This contains the layout class
 	layout = require("ascii-ui.layout"),
 	mount = mount,
+
+	--- @generic T
+	--- @param items T[]
+	--- @param render_fn fun(item: T): ascii-ui.FiberNode
+	--- @return ascii-ui.FiberNode[]
+	map = function(items, render_fn)
+		return vim.iter(items):map(render_fn):totable()
+	end,
 }
 
 function AsciiUI.setup(config)

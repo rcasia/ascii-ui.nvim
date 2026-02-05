@@ -243,6 +243,14 @@ Parameters ~
 @field private _line ascii-ui.BufferLine
 
 ------------------------------------------------------------------------------
+                                                              *FiberNode:__eq()*
+                           `FiberNode:__eq`({other})
+Metatable equality operator
+This allows using `==` or framework comparison utilities directly on nodes.
+@param other any
+@return boolean
+
+------------------------------------------------------------------------------
                                                                *FiberNode.new()*
                            `FiberNode.new`({fields})
 a new FiberNode instance
