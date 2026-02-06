@@ -21,10 +21,10 @@ local AsciiUI = {
 	layout = require("ascii-ui.layout"),
 	mount = mount,
 
-	--- @generic T
+	--- @generic T, U
 	--- @param items T[]
-	--- @param render_fn fun(item: T, i: integer): ascii-ui.FiberNode
-	--- @return ascii-ui.FiberNode[]
+	--- @param render_fn fun(item: T, i: integer): U
+	--- @return U[]
 	map = function(items, render_fn)
 		return vim.iter(ipairs(items))
 			:map(function(i, item)
