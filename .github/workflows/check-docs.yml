@@ -25,4 +25,4 @@ jobs:
           neovim: true
           version: stable
 
-      - run: ./scripts/check-docs
+      - run: make docs-check
