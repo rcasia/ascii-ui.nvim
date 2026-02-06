@@ -11,8 +11,12 @@ A WIP extensible ui framework with no non-sense apis (hopefully) for nvim.
 <table align="center">
   <tr>
     <td><img src="https://github.com/user-attachments/assets/0d2729e1-1518-430f-93f1-e52755b6f347" height="250"></td>
-    <td><img src="https://github.com/user-attachments/assets/419ab99a-424a-46e5-bc1c-8f177cbef298" height="250"></td>
     <td><img src="https://github.com/user-attachments/assets/1df3c920-0ced-46a0-90c7-97231ad33ba9" height="250"></td>
+  </tr>
+    <tr>
+      
+ <td><img src="https://github.com/user-attachments/assets/419ab99a-424a-46e5-bc1c-8f177cbef298" height="250"></td>
+       <td><img src="https://github.com/user-attachments/assets/2819673b-92dd-49e8-b48d-42dd5d347f31" height="250"></td>
   </tr>
 </table>
 
