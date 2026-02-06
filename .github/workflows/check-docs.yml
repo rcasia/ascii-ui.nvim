@@ -15,7 +15,6 @@ on:
 
 jobs:
   docs:
-    if: false # not working yet
     runs-on: ubuntu-latest
     name: Check
     steps:
@@ -26,4 +25,4 @@ jobs:
           neovim: true
           version: stable
 
-      - run: ./scripts/check-docs
+      - run: make docs-check
