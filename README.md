@@ -4,6 +4,13 @@
 
 A WIP extensible ui framework with no non-sense apis (hopefully) for nvim.
 
+<br/>
+<img height="300" alt="image" src="https://github.com/user-attachments/assets/0d2729e1-1518-430f-93f1-e52755b6f347" />
+<img  height="275" alt="image" src="https://github.com/user-attachments/assets/419ab99a-424a-46e5-bc1c-8f177cbef298" />
+<img height="275" alt="image" src="https://github.com/user-attachments/assets/1df3c920-0ced-46a0-90c7-97231ad33ba9" />
+
+# Installation
+
 ```lua
 return {
   { 
@@ -13,7 +20,7 @@ return {
 }
 ```
 
-## API example
+## Usage
 
 ```lua
 
@@ -22,7 +29,7 @@ local Paragraph = ui.components.Paragraph
 local Button = ui.components.Button
 local useState = ui.hooks.useState
 
-local App = ui.createComponent("App", function()
+local App = ui.createComponent(function(props)
   local content, setContent = useState("initial content")
   return {
    Paragraph({ content = content }),
@@ -38,51 +45,3 @@ end)
 ui.mount(App)
 
 ```
-
-## 🔹 Minimal Example
-
-<p align="center">
-  <img width="90%" alt="image" align="center" src="https://github.com/user-attachments/assets/aacb716f-34ff-4c2b-b064-21994d23fe33" />
-</p>
-
-
-<details>
-<summary>📜 See code snippet</summary>
-
-```lua
-local ui = require("ascii-ui")
-local Paragraph = ui.components.Paragraph
-local Column = ui.layout.Column
-local Row = ui.layout.Row
-local Button = ui.components.Button
-local useState = ui.hooks.useState
-
-local App = ui.createComponent("App", function()
-	local content, setContent = useState("initial content")
-	local count, setCount = useState(0)
-
-	return Column(
-		Paragraph({ content = "📝 " .. content }),
-		Row(
-			Button({
-				label = "[ Change Text ]",
-				on_press = function()
-					setContent("content changed at " .. os.date("%H:%M:%S"))
-				end,
-			}),
-			Button({
-				label = "[ +1 Counter ]",
-				on_press = function()
-					setCount(count + 1)
-				end,
-			})
-		),
-		Paragraph({ content = "🔢 Counter: " .. count })
-	)
-end)
-
-ui.mount(App)
-```
-
-</details>
-
