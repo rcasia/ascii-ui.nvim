@@ -37,6 +37,8 @@ local project_files = vim.iter(handle:lines())
 
 handle:close()
 
+table.sort(project_files)
+
 local mini = require("mini.doc")
 mini.setup()
 
