@@ -876,6 +876,7 @@ Executes a callback function after a specified delay.
 ------------------------------------------------------------------------------
 Parameters ~
 {RootComponent} `(ascii)`-ui.FunctionalComponent
+{window} `(optional)` `(ascii)`-ui.Window Optional window to render into. If not provided, creates a default centered floating window.
 Return ~
 `(integer)` bufnr
 
@@ -1072,6 +1073,57 @@ It will exclude the functions from the comparison
 
 ==============================================================================
 ------------------------------------------------------------------------------
+Class ~
+{ascii-ui.BufferWindowOpts} : ascii-ui.WindowOpts
+Fields ~
+{bufnr} `(integer)` The buffer number to render into
+
+------------------------------------------------------------------------------
+                                               *ascii-ui.window.buffer.create()*
+
+                               `M.create`({opts})
+Creates a window wrapper for an existing buffer provided by the user.
+Parameters ~
+{opts} `(ascii)`-ui.BufferWindowOpts
+Return ~
+`(ascii)`-ui.Window
+
+
+==============================================================================
+------------------------------------------------------------------------------
+Class ~
+{ascii-ui.FloatingWindowOpts} : ascii-ui.WindowOpts
+Fields ~
+{row} `(optional)` `(integer)` Row position (defaults to centered)
+{col} `(optional)` `(integer)` Column position (defaults to centered)
+{border} `(optional)` `(string)` Border style (defaults to "rounded")
+{relative} `(optional)` `(string)` Relative positioning (defaults to "editor")
+
+------------------------------------------------------------------------------
+                                             *ascii-ui.window.floating.create()*
+
+                               `M.create`({opts})
+Creates a floating window (centered by default, or at specified position).
+Parameters ~
+{opts} `(optional)` `(ascii)`-ui.FloatingWindowOpts
+Return ~
+`(ascii)`-ui.Window
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                           *ascii-ui.window.fullscreen.create()*
+
+                               `M.create`({opts})
+Creates a fullscreen window that takes up the entire editor.
+Parameters ~
+{opts} `(optional)` `(ascii)`-ui.WindowOpts
+Return ~
+`(ascii)`-ui.Window
+
+
+==============================================================================
+------------------------------------------------------------------------------
                                                                         *Window*
                                     `Window`
 Class ~
@@ -1130,6 +1182,25 @@ Parameters ~
                                                                    *on_select()*
                              `on_select`({window})
 @param window ascii-ui.Window
+
+
+==============================================================================
+------------------------------------------------------------------------------
+Class ~
+{ascii-ui.SplitWindowOpts} : { width?: integer, height?: integer }
+Fields ~
+{position} `(optional)` "`(left)`" | "right" | "top" | "bottom" Position of the split (defaults to "right")
+{size} `(optional)` `(integer)` Size of the split (width for left/right, height for top/bottom)
+
+------------------------------------------------------------------------------
+                                                *ascii-ui.window.split.create()*
+
+                               `M.create`({opts})
+Creates a split window (lateral or horizontal).
+Parameters ~
+{opts} `(optional)` `(ascii)`-ui.SplitWindowOpts
+Return ~
+`(ascii)`-ui.Window
 
 
  vim:tw=78:ts=8:noet:ft=help:norl:

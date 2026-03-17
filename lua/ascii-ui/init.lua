@@ -20,6 +20,17 @@ local AsciiUI = {
 	--- This contains the layout class
 	layout = require("ascii-ui.layout"),
 	mount = mount,
+	--- Window factories for different window types
+	window = {
+		--- Creates a centered floating window (default)
+		floating = require("ascii-ui.window.floating"),
+		--- Creates a split window (left, right, top, or bottom)
+		split = require("ascii-ui.window.split"),
+		--- Creates a fullscreen window
+		fullscreen = require("ascii-ui.window.fullscreen"),
+		--- Wraps an existing user-provided buffer
+		buffer = require("ascii-ui.window.buffer"),
+	},
 
 	--- @generic T, U
 	--- @param items T[]

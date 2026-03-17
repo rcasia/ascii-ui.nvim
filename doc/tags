@@ -103,6 +103,10 @@ ascii-ui.hooks.useEffect()	ascii-ui.txt	/*ascii-ui.hooks.useEffect()*
 ascii-ui.hooks.useReducer()	ascii-ui.txt	/*ascii-ui.hooks.useReducer()*
 ascii-ui.hooks.useState()	ascii-ui.txt	/*ascii-ui.hooks.useState()*
 ascii-ui.hooks.useUserConfig()	ascii-ui.txt	/*ascii-ui.hooks.useUserConfig()*
+ascii-ui.window.buffer.create()	ascii-ui.txt	/*ascii-ui.window.buffer.create()*
+ascii-ui.window.floating.create()	ascii-ui.txt	/*ascii-ui.window.floating.create()*
+ascii-ui.window.fullscreen.create()	ascii-ui.txt	/*ascii-ui.window.fullscreen.create()*
+ascii-ui.window.split.create()	ascii-ui.txt	/*ascii-ui.window.split.create()*
 config	ascii-ui.txt	/*config*
 createComponent()	ascii-ui.txt	/*createComponent()*
 debugPrint()	ascii-ui.txt	/*debugPrint()*

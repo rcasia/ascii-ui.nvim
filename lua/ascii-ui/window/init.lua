@@ -66,10 +66,7 @@ function Window:open()
 		border = "rounded",
 	})
 
-	vim.api.nvim_win_get_buf(win)
-
-	-- Assume `buf` is the buffer ID associated with your window.
-	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+	vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
 
 	self.winid = win
 	self.bufnr = buf
@@ -154,11 +151,26 @@ function Window:update(buffer)
 			vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
 		end
 
-		-- resize window
-		vim.api.nvim_win_set_config(self.winid, {
-			width = buffer:width(),
-			height = buffer:height(),
-		})
+		-- resize window based on window type
+		if self.is_split then
+			-- For split windows, only resize if no fixed size was specified
+			if not self.fixed_size then
+				local position = self.split_position or "right"
+				if position == "left" or position == "right" then
+					vim.api.nvim_win_set_width(self.winid, buffer:width())
+				else
+					vim.api.nvim_win_set_height(self.winid, buffer:height())
+				end
+			end
+			-- If fixed_size is set, keep the original size (no action needed)
+		elseif not self.is_fullscreen then
+			-- For floating windows, use set_config to resize
+			-- Fullscreen windows don't resize (no action needed)
+			vim.api.nvim_win_set_config(self.winid, {
+				width = buffer:width(),
+				height = buffer:height(),
+			})
+		end
 		-- adjust scroll
 		vim.api.nvim_win_call(0, function()
 			local win = vim.api.nvim_get_current_win()

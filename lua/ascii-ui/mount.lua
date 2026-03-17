@@ -1,7 +1,6 @@
 local Buffer = require("ascii-ui.buffer.buffer")
 local Cursor = require("ascii-ui.cursor")
 local EventListener = require("ascii-ui.events")
-local Window = require("ascii-ui.window")
 local i = require("ascii-ui.interaction_type")
 local logger = require("ascii-ui.logger")
 local user_interations = require("ascii-ui.user_interactions")
@@ -12,8 +11,9 @@ local rerender = fiber.rerender
 local is_callable = require("ascii-ui.utils.is_callable")
 
 ---@param RootComponent ascii-ui.FunctionalComponent
+---@param window? ascii-ui.Window Optional window to render into. If not provided, creates a default centered floating window.
 ---@return integer bufnr
-return function(RootComponent)
+return function(RootComponent, window)
 	local start = vim.uv.hrtime()
 	logger.info("------------------")
 	logger.info("Mounting component")
@@ -29,8 +29,12 @@ return function(RootComponent)
 
 	fiber.debugPrint(fiberRoot, logger.debug)
 
-	-- spawns a window
-	local window = Window.new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
+	-- spawns a window (or uses provided window)
+	if not window then
+		-- Default: create a centered floating window
+		local FloatingWindow = require("ascii-ui.window.floating")
+		window = FloatingWindow.create({ width = rendered_buffer:width(), height = rendered_buffer:height() })
+	end
 	window:open()
 
 	-- updates the window with the rendered buffer
