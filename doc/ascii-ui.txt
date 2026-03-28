@@ -268,9 +268,10 @@ Parameters ~
 
 ------------------------------------------------------------------------------
                                                               *validate_props()*
-                       `validate_props`({props}, {types})
+              `validate_props`({props}, {types}, {component_name})
 @param props table<string, any>
 @param types table<string, ascii-ui.PropsType>
+@param component_name string
 
 ------------------------------------------------------------------------------
 @alias ascii-ui.TemplateString string
@@ -482,6 +483,13 @@ Debug: Imprime el árbol de Fibers con indentación y valores de hooks
                  `reconcileChildren`({parent}, {new_children})
 @param parent ascii-ui.FiberNode
 @param new_children ascii-ui.FiberNode[]
+
+------------------------------------------------------------------------------
+                                                               *componentPath()*
+                            `componentPath`({node})
+Walks the parent chain of a fiber node and returns a path string like "Root > Outer > Inner"
+@param node ascii-ui.FiberNode
+@return string
 
 ------------------------------------------------------------------------------
                                                            *performUnitOfWork()*

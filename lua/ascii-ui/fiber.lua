@@ -104,6 +104,21 @@ local function reconcileChildren(parent, new_children)
 	end
 end
 
+--- Walks the parent chain of a fiber node and returns a path string like "Root > Outer > Inner"
+--- @param node ascii-ui.FiberNode
+--- @return string
+local function componentPath(node)
+	local parts = {}
+	local current = node
+	while current do
+		if current.type then
+			table.insert(parts, 1, current.type)
+		end
+		current = current.parent
+	end
+	return table.concat(parts, " > ")
+end
+
 --- @param fiber ascii-ui.RootFiberNode
 local function performUnitOfWork(fiber)
 	if fiber.tag == "NONE" then
@@ -115,7 +130,18 @@ local function performUnitOfWork(fiber)
 	fiber.root = fiber
 
 	if fiber.closure then
-		local new_children = fiber:unwrap_closure()
+		local ok, result = xpcall(function()
+			return fiber:unwrap_closure()
+		end, function(err)
+			local path = componentPath(fiber)
+			return string.format("component error [%s]: %s", path, err)
+		end)
+
+		if not ok then
+			error(result, 0)
+		end
+
+		local new_children = result
 		assert(FiberNode.is_node_list(new_children), "Expected FiberNode. Found: " .. vim.inspect(new_children))
 		local old_child = fiber.output and fiber.output or {}
 		local new_child = new_children[1]

@@ -14,7 +14,8 @@ local memoize = require("ascii-ui.utils.memoize")
 
 --- @param props table<string, any>
 --- @param types table<string, ascii-ui.PropsType>
-local function validate_props(props, types)
+--- @param component_name string
+local function validate_props(props, types, component_name)
 	vim.iter(types):each(function(key, indicated_type)
 		local actual_prop_type = type(props[key])
 		if actual_prop_type == "nil" then
@@ -25,7 +26,12 @@ local function validate_props(props, types)
 		end
 		if actual_prop_type ~= indicated_type then
 			error(
-				("Invalid prop type for '%s'. Expected '%s', got '%s'."):format(key, indicated_type, actual_prop_type)
+				("Invalid prop '%s' in <%s>: expected '%s', got '%s'."):format(
+					key,
+					component_name,
+					indicated_type,
+					actual_prop_type
+				)
 			)
 		end
 	end)
@@ -73,7 +79,7 @@ local function createComponent(name, functional_component, types)
 
 			if #_args == 1 and type(_args[1]) == "table" then
 				props = _args[1] or {}
-				validate_props(props, opts.types)
+				validate_props(props, opts.types, opts.name)
 				function factory()
 					-- dentro del workLoop, currentFiber ya está seteado
 					return function()
