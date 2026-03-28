@@ -12,6 +12,7 @@ require("ascii-ui.logger").set_level("QUIET")
 -- Budgets are intentionally generous to survive slow CI runners
 -- (ubuntu-latest, macos-latest, windows-latest, stable + nightly).
 
+local HexaColor = require("ascii-ui.hexacolor")
 local Segment = require("ascii-ui.buffer.segment")
 local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
@@ -197,5 +198,138 @@ describe("performance", function()
 
 		-- budget: diffing 10 children must stay under 5 ms on average
 		assert(r.avg < 5, string.format("avg %.3fms exceeds 5ms budget", r.avg))
+	end)
+end)
+
+-- ─────────────────────────────────────────────────────────────
+-- stress tests
+-- ─────────────────────────────────────────────────────────────
+
+describe("stress", function()
+	-- ── S1. 100 colored segments ───────────────────────────────
+	-- Each leaf carries a unique hex color, stressing HexaColor
+	-- highlight-group registration and colored-segment rendering.
+	it("first render — 100 uniquely colored segments", function()
+		local N = 20
+		-- Pre-build a palette of 100 distinct hex colors.
+		local palette = {}
+		for i = 0, 99 do
+			palette[i + 1] = string.format("#%02x%02x%02x", (i * 13) % 256, (i * 37) % 256, (i * 71) % 256)
+		end
+
+		local ColorList = ui.createComponent("StressColorList", function()
+			local segs = {}
+			for i, hex in ipairs(palette) do
+				local color = HexaColor.new(hex)
+				segs[i] = Segment:new({ content = "■", highlight = color:get_highlight() }):wrap()
+			end
+			return segs
+		end)
+
+		local r = timeit(N, function()
+			fiber.render(ColorList)
+		end)
+		report("stress / 100 colored segments", N, r)
+
+		-- budget: 100 colored leaves must render in under 200 ms on average
+		assert(r.avg < 200, string.format("avg %.3fms exceeds 200ms budget", r.avg))
+	end)
+
+	-- ── S2. Clock-like component — rapid time-string rerenders ──
+	-- Simulates a clock ticking: a stateful component whose content
+	-- is replaced on every cycle (always a different string).
+	it("rerender — clock-like rapid state updates (200 ticks)", function()
+		local N = 200
+		local set_time
+		local Clock = ui.createComponent("StressClock", function()
+			local time, setTime = useState("00:00:00")
+			set_time = setTime
+			return { Segment:new({ content = tostring(time) }):wrap() }
+		end)
+
+		local root = fiber.render(Clock)
+		-- prime the upvalue
+		fiber.rerender(root)
+
+		local tick = 0
+		local r = timeit(N, function()
+			tick = tick + 1
+			local h = math.floor(tick / 3600) % 24
+			local m = math.floor(tick / 60) % 60
+			local s = tick % 60
+			set_time(string.format("%02d:%02d:%02d", h, m, s))
+			fiber.rerender(root)
+		end)
+		report("stress / clock rerender (200 ticks)", N, r)
+
+		-- budget: each tick rerender must stay under 5 ms on average
+		assert(r.avg < 5, string.format("avg %.3fms exceeds 5ms budget", r.avg))
+	end)
+
+	-- ── S3. Many independent stateful components ───────────────
+	-- 20 stateful components rendered in a flat list; all setters
+	-- are fired before each rerender, maximising reconciler churn.
+	it("rerender — 20 concurrent stateful components", function()
+		local N = 100
+		local setters = {}
+
+		local children = {}
+		for i = 1, 20 do
+			local comp = ui.createComponent("StressStateful" .. i, function()
+				local val, setVal = useState("v0")
+				setters[i] = setVal
+				return { Segment:new({ content = tostring(val) }):wrap() }
+			end)
+			children[i] = comp()
+		end
+
+		local Parent = ui.createComponent("StressParent20", function()
+			return children
+		end)
+		local root = fiber.render(Parent)
+		-- prime all setters
+		fiber.rerender(root)
+
+		local cycle = 0
+		local r = timeit(N, function()
+			cycle = cycle + 1
+			for _, setter in ipairs(setters) do
+				setter("v" .. cycle)
+			end
+			fiber.rerender(root)
+		end)
+		report("stress / 20 stateful components rerender", N, r)
+
+		-- budget: 20 concurrent stateful rerenders must stay under 50 ms on average
+		assert(r.avg < 50, string.format("avg %.3fms exceeds 50ms budget", r.avg))
+	end)
+
+	-- ── S4. Deep nested component tree ─────────────────────────
+	-- A chain of 10 wrapper components (each renders its child),
+	-- stressing recursive fiber.render and get_buffer tree walking.
+	it("first render + get_buffer — 10-level deep nested tree", function()
+		local N = 50
+		-- Build inside-out: innermost is a plain leaf.
+		local innermost = ui.createComponent("StressDeep_0", function()
+			return { Segment:new({ content = "deep" }):wrap() }
+		end)
+
+		local current = innermost
+		for depth = 1, 9 do
+			local child = current
+			current = ui.createComponent("StressDeep_" .. depth, function()
+				return { child() }
+			end)
+		end
+		local DeepTree = current
+
+		local r = timeit(N, function()
+			local root = fiber.render(DeepTree)
+			root:get_buffer()
+		end)
+		report("stress / 10-level deep tree render+get_buffer", N, r)
+
+		-- budget: a 10-level deep tree must render + collect in under 100 ms
+		assert(r.avg < 100, string.format("avg %.3fms exceeds 100ms budget", r.avg))
 	end)
 end)
