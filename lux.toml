@@ -13,7 +13,7 @@ url = "https://github.com/rcasia/$(PACKAGE)/archive/refs/tags/v$(VERSION).zip"
 dev = "git+https://github.com/rcasia/$(PACKAGE).git"
 
 [dependencies]
-"plenary.nvim" = "scm-1"
+"plenary.nvim" = "0.1.4-1"
 
 [test]
 type = "command"
