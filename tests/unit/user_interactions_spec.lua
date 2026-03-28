@@ -68,6 +68,30 @@ describe("UserInteractions", function()
 		eq(false, is_called)
 	end)
 
+	it("reports the interaction type when a callback throws", function()
+		local user_interactions = UserInteractions:new()
+		local buffer_id = 1
+		local position = { line = 1, col = 1 }
+
+		local buffer = Buffer.new(Bufferline.new(Segment:new("click me", false, {
+			SELECT = function()
+				error("boom")
+			end,
+		})))
+
+		user_interactions:attach_buffer(buffer, buffer_id)
+
+		local ok, err = pcall(user_interactions.interact, user_interactions, {
+			buffer_id = buffer_id,
+			position = position,
+			interaction_type = INTERACTION_TYPE.SELECT,
+		})
+
+		assert.is_false(ok)
+		assert.truthy(err:find("SELECT"), "error should mention the interaction type")
+		assert.truthy(err:find("boom"), "error should contain the original error reason")
+	end)
+
 	it("does nothing when buffer is not found", function()
 		local buffer_id = 1
 		local user_interactions = UserInteractions:new()
