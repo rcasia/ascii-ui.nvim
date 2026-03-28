@@ -169,6 +169,43 @@ function Buffer:iter_colored_segments()
 	end
 end
 
+--- Like `iter_colored_segments` but only yields segments whose 0-indexed row
+--- is present in `dirty_rows`.  Avoids iterating unchanged lines entirely.
+---@param dirty_rows table<integer, boolean>  set of 0-indexed row numbers
+---@return fun(): ascii-ui.Buffer.SegmentFoundResult | nil
+function Buffer:iter_colored_segments_on_lines(dirty_rows)
+	local iter = vim.iter(self.lines)
+		:enumerate()
+		:filter(function(line_index, _)
+			return dirty_rows[line_index - 1] == true
+		end)
+		:map(function(line_index, line)
+			local col_offset = 1
+			return vim.iter(line.segments)
+				:map(function(segment)
+					local current_col = col_offset
+					col_offset = col_offset + segment:raw_len()
+					if segment:is_colored() then
+						return {
+							segment = segment,
+							position = { line = line_index, col = current_col },
+						}
+					else
+						return nil
+					end
+				end)
+				:filter(function(e)
+					return e ~= nil
+				end)
+				:totable()
+		end)
+		:flatten()
+
+	return function()
+		return iter:next()
+	end
+end
+
 ---@param lines string[]
 ---@return ascii-ui.Buffer
 function Buffer.from_lines(lines)

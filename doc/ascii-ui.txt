@@ -53,6 +53,16 @@ Return ~
 `(fun(): { segment: ascii-ui.Segment, position: { line: integer, col: integer } } | nil)`
 
 ------------------------------------------------------------------------------
+                                       *Buffer:iter_colored_segments_on_lines()*
+             `Buffer:iter_colored_segments_on_lines`({dirty_rows})
+Like `iter_colored_segments` but only yields segments whose 0-indexed row
+is present in `dirty_rows`.  Avoids iterating unchanged lines entirely.
+Parameters ~
+{dirty_rows} `(table<integer, boolean>)`  set of 0-indexed row numbers
+Return ~
+`(fun(): { segment: ascii-ui.Segment, position: { line: integer, col: integer } } | nil)`
+
+------------------------------------------------------------------------------
                                                            *Buffer.from_lines()*
                           `Buffer.from_lines`({lines})
 Parameters ~
@@ -1418,12 +1428,24 @@ Closes the floating window and releases the buffer handle.
 After this call `winid` and `bufnr` are `nil`.
 
 ------------------------------------------------------------------------------
+                                           *Window:_apply_highlights_for_rows()*
+          `Window:_apply_highlights_for_rows`({buffer}, {dirty_rows})
+Applies highlight extmarks for all colored segments on a specific set of
+0-indexed row numbers. Clears the namespace on those rows first so stale
+marks from a previous render are removed without touching unchanged rows.
+Anonymous color highlight groups are registered with `nvim_set_hl` only
+once per unique color pair; subsequent renders reuse the cached group name.
+Parameters ~
+{buffer} `(ascii)`-ui.Buffer
+{dirty_rows} `(table<integer, boolean>)`  set of 0-indexed row numbers to refresh
+
+------------------------------------------------------------------------------
                                                                *Window:update()*
                            `Window:update`({buffer})
 Renders `buffer` into the Neovim window.
-Schedules a `vim.schedule` call that writes lines, applies highlights/colors,
-resizes the floating window to match the buffer dimensions and adjusts scroll.
-Errors if the window is not open.
+Only lines that changed since the last render are rewritten; extmarks are
+refreshed only for those rows. Resizes the floating window when dimensions
+change and adjusts scroll. Errors if the window is not open.
 Parameters ~
 {buffer} `(ascii)`-ui.Buffer
 

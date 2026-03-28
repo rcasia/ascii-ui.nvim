@@ -10,6 +10,7 @@ Buffer:find_next_focusable()	ascii-ui.txt	/*Buffer:find_next_focusable()*
 Buffer:find_segment_by_id()	ascii-ui.txt	/*Buffer:find_segment_by_id()*
 Buffer:find_segment_by_position()	ascii-ui.txt	/*Buffer:find_segment_by_position()*
 Buffer:iter_colored_segments()	ascii-ui.txt	/*Buffer:iter_colored_segments()*
+Buffer:iter_colored_segments_on_lines()	ascii-ui.txt	/*Buffer:iter_colored_segments_on_lines()*
 Buffer:iter_focusables()	ascii-ui.txt	/*Buffer:iter_focusables()*
 Buffer:to_lines()	ascii-ui.txt	/*Buffer:to_lines()*
 Buffer:width()	ascii-ui.txt	/*Buffer:width()*
@@ -104,6 +105,7 @@ UserInteractions:interact()	ascii-ui.txt	/*UserInteractions:interact()*
 UserInteractions:new()	ascii-ui.txt	/*UserInteractions:new()*
 Window	ascii-ui.txt	/*Window*
 Window.new()	ascii-ui.txt	/*Window.new()*
+Window:_apply_highlights_for_rows()	ascii-ui.txt	/*Window:_apply_highlights_for_rows()*
 Window:close()	ascii-ui.txt	/*Window:close()*
 Window:disable_edits()	ascii-ui.txt	/*Window:disable_edits()*
 Window:enable_edits()	ascii-ui.txt	/*Window:enable_edits()*
