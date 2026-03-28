@@ -1,4 +1,4 @@
-.PHONY: test
+.PHONY: test bench
 
 check:
 	# running luacheck...
@@ -20,6 +20,9 @@ endif
 
 test: build
 	 bash scripts/test $(filter-out $@, $(MAKECMDGOALS))
+
+bench: build
+	bash scripts/bench
 
 docs-check:
 	./scripts/check-docs

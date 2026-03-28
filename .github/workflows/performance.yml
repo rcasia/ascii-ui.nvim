@@ -1,0 +1,24 @@
+name: Performance
+
+on:
+  push:
+    paths-ignore: ["**/*.md"]
+    branches: ["main"]
+  pull_request:
+    paths-ignore: ["**/*.md"]
+    branches: ["main"]
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    name: Benchmark
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: stable
+
+      - name: run benchmarks
+        run: make bench
