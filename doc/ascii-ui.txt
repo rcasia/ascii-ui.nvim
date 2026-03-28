@@ -1160,9 +1160,42 @@ Fields ~
                                                                  *hex_to_ansi()*
                          `hex_to_ansi`({hex}, {is_bg})
 Convert a hex color string like "#rrggbb" to an ANSI truecolor escape.
-@param hex string
-@param is_bg boolean
-@return string
+Parameters ~
+{hex} `(string)`
+{is_bg} `(boolean)`
+Return ~
+`(string)`
+
+------------------------------------------------------------------------------
+                                                                 *seg_to_ansi()*
+                              `seg_to_ansi`({seg})
+Build the ANSI escape prefix for a colored segment.
+Pure: depends only on its argument, no side effects.
+Parameters ~
+{seg} `(ascii)`-ui.Segment
+Return ~
+`(string)`  ANSI escape sequence (empty string if segment has no color)
+
+------------------------------------------------------------------------------
+                                                             *build_color_map()*
+                          `build_color_map`({buffer})
+Build a map of `{ [line_index] = { {col, len, ansi}, ... } }` from the
+buffer's colored segments. Pure: reads from buffer, returns a new table.
+Parameters ~
+{buffer} `(ascii)`-ui.Buffer
+Return ~
+`(table<integer, {col:integer, len:integer, ansi:string}[]>)`
+
+------------------------------------------------------------------------------
+                                                                 *render_line()*
+                         `render_line`({line}, {spans})
+Render a single plain-text line with ANSI color spans applied.
+Pure: depends only on its arguments, no side effects.
+Parameters ~
+{line} `(string)`         Plain text for this line.
+{spans} `({col:integer, len:integer, ansi:string}[]|nil)`  Color spans (unsorted).
+Return ~
+`(string)`
 
 ------------------------------------------------------------------------------
                                                           *StdoutViewport.new()*

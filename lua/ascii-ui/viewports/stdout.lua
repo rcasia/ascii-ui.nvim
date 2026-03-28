@@ -44,18 +44,80 @@
 local StdoutViewport = {}
 StdoutViewport.__index = StdoutViewport
 
-local RESET = "\027[0m"
+local ESC = "\027"
+local RESET = ESC .. "[0m"
+local CLEAR_SCREEN = ESC .. "[H" .. ESC .. "[2J"
+local ANSI_SGR_FMT = ESC .. "[%d;2;%d;%d;%dm"
+local SGR_FG = 38 -- ANSI SGR code: set foreground color (truecolor)
+local SGR_BG = 48 -- ANSI SGR code: set background color (truecolor)
+local HEX_R = { 2, 3 } -- byte positions of red channel in "#rrggbb"
+local HEX_G = { 4, 5 } -- byte positions of green channel
+local HEX_B = { 6, 7 } -- byte positions of blue channel
 
 --- Convert a hex color string like "#rrggbb" to an ANSI truecolor escape.
---- @param hex string
---- @param is_bg boolean
---- @return string
+---@param hex string
+---@param is_bg boolean
+---@return string
 local function hex_to_ansi(hex, is_bg)
-	local r = tonumber(hex:sub(2, 3), 16)
-	local g = tonumber(hex:sub(4, 5), 16)
-	local b = tonumber(hex:sub(6, 7), 16)
-	local code = is_bg and 48 or 38
-	return ("\027[%d;2;%d;%d;%dm"):format(code, r, g, b)
+	local r = tonumber(hex:sub(HEX_R[1], HEX_R[2]), 16)
+	local g = tonumber(hex:sub(HEX_G[1], HEX_G[2]), 16)
+	local b = tonumber(hex:sub(HEX_B[1], HEX_B[2]), 16)
+	return ANSI_SGR_FMT:format(is_bg and SGR_BG or SGR_FG, r, g, b)
+end
+
+--- Build the ANSI escape prefix for a colored segment.
+--- Pure: depends only on its argument, no side effects.
+---@param seg ascii-ui.Segment
+---@return string  ANSI escape sequence (empty string if segment has no color)
+local function seg_to_ansi(seg)
+	if not seg.color then
+		return ""
+	end
+	local fg = seg.color.fg and hex_to_ansi(seg.color.fg, false) or ""
+	local bg = seg.color.bg and hex_to_ansi(seg.color.bg, true) or ""
+	return fg .. bg
+end
+
+--- Build a map of `{ [line_index] = { {col, len, ansi}, ... } }` from the
+--- buffer's colored segments. Pure: reads from buffer, returns a new table.
+---@param buffer ascii-ui.Buffer
+---@return table<integer, {col:integer, len:integer, ansi:string}[]>
+local function build_color_map(buffer)
+	return vim.iter(buffer:iter_colored_segments()):fold({}, function(acc, result)
+		local pos = result.position
+		local seg = result.segment
+		if not acc[pos.line] then
+			acc[pos.line] = {}
+		end
+		table.insert(acc[pos.line], { col = pos.col, len = seg:raw_len(), ansi = seg_to_ansi(seg) })
+		return acc
+	end)
+end
+
+--- Render a single plain-text line with ANSI color spans applied.
+--- Pure: depends only on its arguments, no side effects.
+---@param line string         Plain text for this line.
+---@param spans {col:integer, len:integer, ansi:string}[]|nil  Color spans (unsorted).
+---@return string
+local function render_line(line, spans)
+	if not spans or #spans == 0 then
+		return line
+	end
+	table.sort(spans, function(a, b)
+		return a.col < b.col
+	end)
+	local state = vim.iter(spans):fold({ result = "", cursor = 1 }, function(s, span)
+		if span.col > s.cursor then
+			s.result = s.result .. line:sub(s.cursor, span.col - 1)
+		end
+		s.result = s.result .. span.ansi .. line:sub(span.col, span.col + span.len - 1) .. RESET
+		s.cursor = span.col + span.len
+		return s
+	end)
+	if state.cursor <= #line then
+		state.result = state.result .. line:sub(state.cursor)
+	end
+	return state.result
 end
 
 --- Creates a new StdoutViewport.
@@ -82,57 +144,13 @@ function StdoutViewport.close(_) end
 --- of each line is written as plain text.
 ---@param buffer ascii-ui.Buffer
 function StdoutViewport:update(buffer)
-	-- Build a map of { [line][col] = ansi_prefix } from colored segments
-	local color_map = {}
-	for result in buffer:iter_colored_segments() do
-		local pos = result.position
-		local seg = result.segment
-		if not color_map[pos.line] then
-			color_map[pos.line] = {}
-		end
-		local ansi = ""
-		if seg.color then
-			if seg.color.fg then
-				ansi = ansi .. hex_to_ansi(seg.color.fg, false)
-			end
-			if seg.color.bg then
-				ansi = ansi .. hex_to_ansi(seg.color.bg, true)
-			end
-		end
-		-- store: start col, length, ansi prefix
-		table.insert(color_map[pos.line], { col = pos.col, len = seg:raw_len(), ansi = ansi })
-	end
-
-	local plain_lines = buffer:to_lines()
-	local out = { "\027[H\027[2J" }
-
-	for line_idx, line in ipairs(plain_lines) do
-		local spans = color_map[line_idx]
-		if not spans or #spans == 0 then
-			table.insert(out, line)
-		else
-			-- sort spans by col ascending
-			table.sort(spans, function(a, b)
-				return a.col < b.col
-			end)
-			local result = ""
-			local cursor = 1 -- byte position in `line` (1-based)
-			for _, span in ipairs(spans) do
-				local start = span.col -- 1-based byte col
-				if start > cursor then
-					result = result .. line:sub(cursor, start - 1)
-				end
-				result = result .. span.ansi .. line:sub(start, start + span.len - 1) .. RESET
-				cursor = start + span.len
-			end
-			if cursor <= #line then
-				result = result .. line:sub(cursor)
-			end
-			table.insert(out, result)
-		end
-	end
-
-	self.write(table.concat(out, "\n") .. "\n")
+	local color_map = build_color_map(buffer)
+	local rendered = vim.iter(ipairs(buffer:to_lines()))
+		:map(function(i, line)
+			return render_line(line, color_map[i])
+		end)
+		:totable()
+	self.write(CLEAR_SCREEN .. table.concat(rendered, "\n") .. "\n")
 end
 
 --- Always returns `false`. Stdout has no concept of focus.

@@ -121,6 +121,7 @@ ascii-ui.hooks.useEffect()	ascii-ui.txt	/*ascii-ui.hooks.useEffect()*
 ascii-ui.hooks.useReducer()	ascii-ui.txt	/*ascii-ui.hooks.useReducer()*
 ascii-ui.hooks.useState()	ascii-ui.txt	/*ascii-ui.hooks.useState()*
 ascii-ui.hooks.useUserConfig()	ascii-ui.txt	/*ascii-ui.hooks.useUserConfig()*
+build_color_map()	ascii-ui.txt	/*build_color_map()*
 config	ascii-ui.txt	/*config*
 createComponent()	ascii-ui.txt	/*createComponent()*
 debugPrint()	ascii-ui.txt	/*debugPrint()*
@@ -134,7 +135,9 @@ performUnitOfWork()	ascii-ui.txt	/*performUnitOfWork()*
 props_are_equal()	ascii-ui.txt	/*props_are_equal()*
 reconcileChildren()	ascii-ui.txt	/*reconcileChildren()*
 render()	ascii-ui.txt	/*render()*
+render_line()	ascii-ui.txt	/*render_line()*
 rerender()	ascii-ui.txt	/*rerender()*
+seg_to_ansi()	ascii-ui.txt	/*seg_to_ansi()*
 store	ascii-ui.txt	/*store*
 useConfig()	ascii-ui.txt	/*useConfig()*
 useEffect()	ascii-ui.txt	/*useEffect()*
