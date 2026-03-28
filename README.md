@@ -1,8 +1,25 @@
 <img align="right" width="100px" src="./logo.png" alt="Ascii-UI Logo" />
 
+[![Test](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/test.yml/badge.svg)](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/test.yml)
+[![Lux Publish](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/publish-to-luarocks.yml/badge.svg)](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/publish-to-luarocks.yml)
+[![Docs](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/check-docs.yml/badge.svg)](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/check-docs.yml)
+
 # ascii-ui.nvim
 
+
 A WIP extensible ui framework with no non-sense apis (hopefully) for nvim.
+<table align="center">
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/0d2729e1-1518-430f-93f1-e52755b6f347" height="250"></td>
+    <td><img src="https://github.com/user-attachments/assets/1df3c920-0ced-46a0-90c7-97231ad33ba9" height="250"></td>
+  </tr>
+  <tr>
+       <td><img src="https://github.com/user-attachments/assets/419ab99a-424a-46e5-bc1c-8f177cbef298" height="250"></td>
+       <td><img src="https://github.com/user-attachments/assets/1e9ecc74-9e1a-4e67-b3c1-9d04b5c4755e" height="250"></td>
+  </tr>
+</table>
+
+# Installation
 
 ```lua
 return {
@@ -13,7 +30,7 @@ return {
 }
 ```
 
-## API example
+## Usage
 
 ```lua
 
@@ -22,7 +39,7 @@ local Paragraph = ui.components.Paragraph
 local Button = ui.components.Button
 local useState = ui.hooks.useState
 
-local App = ui.createComponent("App", function()
+local App = ui.createComponent(function(props)
   local content, setContent = useState("initial content")
   return {
    Paragraph({ content = content }),
@@ -38,51 +55,3 @@ end)
 ui.mount(App)
 
 ```
-
-## 🔹 Minimal Example
-
-<p align="center">
-  <img width="90%" alt="image" align="center" src="https://github.com/user-attachments/assets/aacb716f-34ff-4c2b-b064-21994d23fe33" />
-</p>
-
-
-<details>
-<summary>📜 See code snippet</summary>
-
-```lua
-local ui = require("ascii-ui")
-local Paragraph = ui.components.Paragraph
-local Column = ui.layout.Column
-local Row = ui.layout.Row
-local Button = ui.components.Button
-local useState = ui.hooks.useState
-
-local App = ui.createComponent("App", function()
-	local content, setContent = useState("initial content")
-	local count, setCount = useState(0)
-
-	return Column(
-		Paragraph({ content = "📝 " .. content }),
-		Row(
-			Button({
-				label = "[ Change Text ]",
-				on_press = function()
-					setContent("content changed at " .. os.date("%H:%M:%S"))
-				end,
-			}),
-			Button({
-				label = "[ +1 Counter ]",
-				on_press = function()
-					setCount(count + 1)
-				end,
-			})
-		),
-		Paragraph({ content = "🔢 Counter: " .. count })
-	)
-end)
-
-ui.mount(App)
-```
-
-</details>
-

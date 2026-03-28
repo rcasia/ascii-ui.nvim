@@ -71,7 +71,6 @@ local function render_bar_chart(values, labels, bar_height)
 	local max_value = 100 -- Fixed max for color calculation
 	local num_bars = #values
 	local chart_lines = {}
-	local column_width = 3 -- Each column is 3 characters wide (bar + 2 spaces for alignment)
 
 	-- Render bar section (from top to bottom)
 	for row = bar_height, 1, -1 do

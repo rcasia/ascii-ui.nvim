@@ -3,7 +3,7 @@
 check:
 	# running luacheck...
 	
-	# lx lint
+	lx --lua-version 5.1 lint
 	stylua --check .
 
 	# running doc check...
@@ -20,6 +20,9 @@ endif
 
 test: build
 	 bash scripts/test $(filter-out $@, $(MAKECMDGOALS))
+
+docs-check:
+	./scripts/check-docs
 
 docs:
 	./scripts/gendocs

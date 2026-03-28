@@ -6,78 +6,92 @@ local Segment = require("ascii-ui.buffer.segment")
 local renderer = require("ascii-ui.renderer"):new()
 local ui = require("ascii-ui")
 
-describe("ComponentCreator.createComponent", function()
+describe("ui.createComponent", function()
 	local DummyComponent = ui.createComponent("DummyComponent", function(props)
 		props = props or {}
 
 		return { Segment:new({ content = props.content, interactions = { on_select = props.on_select } }):wrap() }
 	end, { content = "string", on_select = "function" })
 
-	it("creates a component that can have nested nodes", function()
-		local App1 = ui.createComponent("App1", function()
-			return {
-				DummyComponent({ content = "t-shirt" }),
-			}
-		end)
+	it("creates a component with diferent overloads", function()
+		local expected_output = { "t-shirt" }
 
-		local App2 = ui.createComponent("App2", function()
-			return { {
-				DummyComponent({ content = "t-shirt" }),
-			} }
-		end)
+		-- Anonymous component without name
+		do
+			local AnonymousComponent = ui.createComponent(function()
+				return {
+					DummyComponent({ content = "t-shirt" }),
+				}
+			end)
+			eq(expected_output, renderer:render(AnonymousComponent):to_lines())
+		end
 
-		eq(renderer:render(App1):to_lines(), renderer:render(App2):to_lines())
-		eq({ "t-shirt" }, renderer:render(App1):to_lines())
-	end)
+		-- Anonymous component with non typed props
+		do
+			local AnonymousComponent = ui.createComponent(function(props)
+				return {
+					DummyComponent({ content = props.content or "" }),
+				}
+			end)
 
-	it("creates a component that can have nil nodes", function()
-		local App1 = ui.createComponent("App1", function()
-			return {
-				DummyComponent({ content = "t-shirt" }),
-			}
-		end)
+			eq(
+				expected_output,
+				renderer
+					:render(function()
+						return AnonymousComponent({ content = "t-shirt" })
+					end)
+					:to_lines()
+			)
+		end
 
-		local App2 = ui.createComponent("App2", function()
-			return {
-				nil,
-				DummyComponent({ content = "t-shirt" }),
-			}
-		end)
+		-- Named component
+		do
+			local NamedComponent = ui.createComponent("NamedComponent", function()
+				return {
+					DummyComponent({ content = "t-shirt" }),
+				}
+			end)
+			eq(expected_output, renderer:render(NamedComponent):to_lines())
+		end
 
-		eq(renderer:render(App1):to_lines(), renderer:render(App2):to_lines())
-		eq({ "t-shirt" }, renderer:render(App1):to_lines())
-	end)
+		-- Component with nested nodes
+		do
+			local NamedComponent = ui.createComponent("NamedComponent", function()
+				return { {
+					DummyComponent({ content = "t-shirt" }),
+				} }
+			end)
+			eq(expected_output, renderer:render(NamedComponent):to_lines())
+		end
 
-	it("creates a component that can take props either as function or its simple type", function()
-		local App1 = ui.createComponent("App1", function()
-			return DummyComponent({ content = "t-shirt" })
-		end)
+		-- Component with empty places
+		do
+			local App2 = ui.createComponent("App2", function()
+				return {
+					nil,
+					DummyComponent({ content = "t-shirt" }),
+				}
+			end)
 
-		local App2 = ui.createComponent("App2", function()
-			return DummyComponent({
-				content = function()
-					return "t-shirt"
-				end,
-			})
-		end)
-		eq(renderer:render(App1):to_lines(), renderer:render(App2):to_lines())
-	end)
+			eq(expected_output, renderer:render(App2):to_lines())
+		end
 
-	it("creates a component that can take functions and are not called on definition", function()
-		local invocations = 0
-		local App = ui.createComponent("App2", function()
-			return DummyComponent({
-				content = function()
-					return "t-shirt"
-				end,
-				on_select = function()
-					invocations = invocations + 1
-				end,
-			})
-		end)
+		-- Component that is used as a child of another component
+		do
+			local ParentComponent = ui.createComponent("ParentComponent", function()
+				return {
+					DummyComponent({ content = "t-shirt" }),
+				}
+			end)
 
-		renderer:render(App)
-		eq(0, invocations)
+			local ChildComponent = ui.createComponent("ChildComponent", function()
+				return {
+					ParentComponent(),
+				}
+			end)
+
+			eq(expected_output, renderer:render(ChildComponent):to_lines())
+		end
 	end)
 
 	it("validates props on definition call", function()

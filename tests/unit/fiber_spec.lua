@@ -299,12 +299,12 @@ describe("Fiber", function()
 				countApp, setCountApp = useState(0)
 
 				-- Llamamos a cada hijo y extraemos su FiberNode (primer segmento de la tabla)
-				return ui.layout.Column(
+				return {
 					ChildA(),
 					ChildB(),
 					ChildC(),
-					MyComponent({ content = "App:" .. tostring(countApp) })
-				)
+					MyComponent({ content = "App:" .. tostring(countApp) }),
+				}
 			end)
 
 			local root = fiber.render(Test)

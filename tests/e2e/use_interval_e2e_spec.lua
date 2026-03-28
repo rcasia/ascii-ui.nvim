@@ -4,7 +4,6 @@ pcall(require, "luacov")
 local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
 local Button = ui.components.Button
-local Column = ui.layout.Column
 local Row = ui.layout.Row
 local useState = ui.hooks.useState
 local useInterval = ui.hooks.useInterval
@@ -33,11 +32,11 @@ describe("useInterval", function()
 	it("does run just once", function()
 		local App = ui.createComponent("App", function()
 			local time = useTimer()
-			return Column(
+			return {
 				Paragraph({ content = "These are some clocks!" }),
 				--
-				Row(Button({ label = time }), Button({ label = time }))
-			)
+				Row(Button({ label = time }), Button({ label = time })),
+			}
 		end)
 
 		ui.mount(App)

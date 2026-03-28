@@ -1,7 +1,6 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
 local Segment = require("ascii-ui.buffer.segment")
 local ui = require("ascii-ui")
-local Column = ui.layout.Column
 local Paragraph = ui.components.Paragraph
 local useState = ui.hooks.useState
 local useInterval = ui.hooks.useInterval
@@ -50,7 +49,7 @@ local function MetroMap(props)
 	)
 
 	-- Points and horizontal lines
-	for i, station in ipairs(stations) do
+	for i, _ in ipairs(stations) do
 		local is_current = i == current_station
 		local station_marker = is_current and "●" or "○"
 
