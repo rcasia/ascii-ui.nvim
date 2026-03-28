@@ -20,6 +20,9 @@ local AsciiUI = {
 	--- This contains the layout class
 	layout = require("ascii-ui.layout"),
 	mount = mount,
+	viewports = {
+		StdoutViewport = require("ascii-ui.viewports.stdout"),
+	},
 
 	--- @generic T, U
 	--- @param items T[]

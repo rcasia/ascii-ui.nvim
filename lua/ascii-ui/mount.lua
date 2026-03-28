@@ -12,8 +12,9 @@ local rerender = fiber.rerender
 local is_callable = require("ascii-ui.utils.is_callable")
 
 ---@param RootComponent ascii-ui.FunctionalComponent
+---@param viewport? ascii-ui.Viewport
 ---@return integer bufnr
-return function(RootComponent)
+return function(RootComponent, viewport)
 	local start = vim.uv.hrtime()
 	logger.info("------------------")
 	logger.info("Mounting component")
@@ -29,8 +30,8 @@ return function(RootComponent)
 
 	fiber.debugPrint(fiberRoot, logger.debug)
 
-	-- spawns a window
-	local window = Window.new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
+	-- spawns a window (or use the provided viewport)
+	local window = viewport or Window.new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
 	window:open()
 
 	-- updates the window with the rendered buffer
@@ -42,7 +43,7 @@ return function(RootComponent)
 		logger.info("Rerendering component")
 		logger.info("------------------")
 
-		logger.info("Rerendering on state change for window %d and buffer %d", window.winid, window.bufnr)
+		logger.info("Rerendering on state change for window %d and buffer %d", window:get_id(), window:get_bufnr())
 		local current_lines_count = rendered_buffer:height()
 		-- rendered_buffer = ascii_renderer:render(Component) -- assign variable to have change the referenced value
 		fiberRoot = rerender(fiberRoot)
@@ -52,10 +53,10 @@ return function(RootComponent)
 		window:update(rendered_buffer)
 
 		-- rebind the buffer to the window
-		user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
+		user_interations:instance():attach_buffer(rendered_buffer, window:get_bufnr())
 
 		if current_lines_count ~= new_lines_count then
-			logger.info("Window %d resized from %d to %d lines", window.winid, current_lines_count, new_lines_count)
+			logger.info("Window %d resized from %d to %d lines", window:get_id(), current_lines_count, new_lines_count)
 
 			-- TODO: this will not work for all cases
 			local current_segment = rendered_buffer:find_segment_by_position(Cursor.current_position())
@@ -68,7 +69,7 @@ return function(RootComponent)
 				logger.debug("next position: %s", vim.inspect(result))
 				local next_position = result.pos
 				vim.schedule(function()
-					Cursor.move_to(next_position, window.winid)
+					Cursor.move_to(next_position, window:get_id())
 				end)
 			end
 		end
@@ -78,8 +79,8 @@ return function(RootComponent)
 	end)
 
 	-- binds to user interaction
-	user_interations:instance():attach_buffer(rendered_buffer, window.bufnr)
-	logger.info("Attached buffer %s to user interactions", window.bufnr)
+	user_interations:instance():attach_buffer(rendered_buffer, window:get_bufnr())
+	logger.info("Attached buffer %s to user interactions", window:get_bufnr())
 
 	local key_map = {
 		["l"] = { interaction = i.CURSOR_MOVE_RIGHT, search_fn = Buffer.find_next_focusable },
@@ -100,7 +101,7 @@ return function(RootComponent)
 		local position = Cursor.current_position()
 
 		user_interations:instance():interact({
-			buffer_id = window.bufnr,
+			buffer_id = window:get_bufnr(),
 			position = position,
 			interaction_type = action.interaction,
 		})
@@ -109,7 +110,7 @@ return function(RootComponent)
 			local result = action.search_fn(rendered_buffer, position)
 			if result then
 				local next_position = result.pos
-				Cursor.move_to(next_position, window.winid, window.bufnr)
+				Cursor.move_to(next_position, window:get_id(), window:get_bufnr())
 				logger.debug(
 					"Cursor moved to next focusable position: " .. next_position.line .. ", " .. next_position.col
 				)
@@ -121,13 +122,13 @@ return function(RootComponent)
 				)
 			end
 		end)
-	end, window.ns_id)
+	end, window:get_ns_id())
 
 	local autocommand_id = vim.api.nvim_create_autocmd("CursorMoved", {
 		callback = function(args)
 			local win_id = tonumber(args.match)
 
-			if win_id ~= window.winid then
+			if win_id ~= window:get_id() then
 				return -- not our window
 			end
 
@@ -149,16 +150,16 @@ return function(RootComponent)
 		callback = function(args)
 			local win_id = tonumber(args.match)
 
-			if win_id ~= window.winid then
+			if win_id ~= window:get_id() then
 				return -- not our window
 			end
 			EventListener:trigger("ui_close")
 
 			-- detach from user interactions
-			user_interations:instance():detach_buffer(window.bufnr)
-			vim.on_key(nil, window.ns_id)
+			user_interations:instance():detach_buffer(window:get_bufnr())
+			vim.on_key(nil, window:get_ns_id())
 			vim.api.nvim_del_autocmd(autocommand_id)
-			logger.info("Detached buffer %s from user interactions", window.bufnr)
+			logger.info("Detached buffer %s from user interactions", window:get_bufnr())
 
 			window:close()
 			logger.info("Closed window %d", win_id)
@@ -171,5 +172,5 @@ return function(RootComponent)
 	EventListener:trigger("state_change")
 	local elapsed_ns = vim.uv.hrtime() - start
 	logger.info("First render time: %.3f ms", elapsed_ns / 1e6)
-	return window.bufnr
+	return window:get_bufnr()
 end

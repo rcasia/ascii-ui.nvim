@@ -5,7 +5,18 @@ local logger = require("ascii-ui.logger")
 
 ---@alias ascii-ui.WindowOpts { width?: integer, height?: integer }
 
----@class ascii-ui.Window
+---@class ascii-ui.Viewport
+---@field get_id fun(self: ascii-ui.Viewport): integer
+---@field get_bufnr fun(self: ascii-ui.Viewport): integer
+---@field get_ns_id fun(self: ascii-ui.Viewport): integer
+---@field open fun(self: ascii-ui.Viewport)
+---@field close fun(self: ascii-ui.Viewport)
+---@field update fun(self: ascii-ui.Viewport, buffer: ascii-ui.Buffer)
+---@field is_focused fun(self: ascii-ui.Viewport): boolean
+---@field enable_edits fun(self: ascii-ui.Viewport)
+---@field disable_edits fun(self: ascii-ui.Viewport)
+
+---@class ascii-ui.Window : ascii-ui.Viewport
 ---@field winid integer
 ---@field bufnr integer
 ---@field ns_id integer
@@ -219,6 +230,21 @@ function Window:is_focused()
 	local cur_win = vim.api.nvim_get_current_win()
 
 	return self.winid == cur_win
+end
+
+---@return integer
+function Window:get_id()
+	return self.winid
+end
+
+---@return integer
+function Window:get_bufnr()
+	return self.bufnr
+end
+
+---@return integer
+function Window:get_ns_id()
+	return self.ns_id
 end
 
 return Window

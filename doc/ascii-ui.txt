@@ -876,6 +876,7 @@ Executes a callback function after a specified delay.
 ------------------------------------------------------------------------------
 Parameters ~
 {RootComponent} `(ascii)`-ui.FunctionalComponent
+{viewport} `(optional)` `(ascii)`-ui.Viewport
 Return ~
 `(integer)` bufnr
 
@@ -1072,10 +1073,80 @@ It will exclude the functions from the comparison
 
 ==============================================================================
 ------------------------------------------------------------------------------
+                                                                *StdoutViewport*
+                                `StdoutViewport`
+Class ~
+{ascii-ui.StdoutViewport} : ascii-ui.Viewport
+Fields ~
+{private} `(write)` fun(s: string)
+
+------------------------------------------------------------------------------
+                                                                 *hex_to_ansi()*
+                         `hex_to_ansi`({hex}, {is_bg})
+Convert a hex color string like "#rrggbb" to an ANSI truecolor escape.
+@param hex string
+@param is_bg boolean
+@return string
+
+------------------------------------------------------------------------------
+                                                          *StdoutViewport.new()*
+                         `StdoutViewport.new`({writer})
+Parameters ~
+{writer} `(optional)` `(fun(s: string))` defaults to io.write
+Return ~
+`(ascii)`-ui.StdoutViewport
+
+------------------------------------------------------------------------------
+                                                       *StdoutViewport:update()*
+                       `StdoutViewport:update`({buffer})
+Parameters ~
+{buffer} `(ascii)`-ui.Buffer
+
+------------------------------------------------------------------------------
+                                                   *StdoutViewport.is_focused()*
+                        `StdoutViewport.is_focused`({_})
+Return ~
+`(boolean)`
+
+------------------------------------------------------------------------------
+                                                       *StdoutViewport.get_id()*
+                          `StdoutViewport.get_id`({_})
+Return ~
+`(integer)`
+
+------------------------------------------------------------------------------
+                                                    *StdoutViewport.get_bufnr()*
+                        `StdoutViewport.get_bufnr`({_})
+Return ~
+`(integer)`
+
+------------------------------------------------------------------------------
+                                                    *StdoutViewport.get_ns_id()*
+                        `StdoutViewport.get_ns_id`({_})
+Return ~
+`(integer)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+Class ~
+{ascii-ui.Viewport}
+Fields ~
+{get_id} `(fun(self: ascii-ui.Viewport): integer)`
+{get_bufnr} `(fun(self: ascii-ui.Viewport): integer)`
+{get_ns_id} `(fun(self: ascii-ui.Viewport): integer)`
+{open} `(fun(self: ascii-ui.Viewport))`
+{close} `(fun(self: ascii-ui.Viewport))`
+{update} `(fun(self: ascii-ui.Viewport, buffer: ascii-ui.Buffer))`
+{is_focused} `(fun(self: ascii-ui.Viewport): boolean)`
+{enable_edits} `(fun(self: ascii-ui.Viewport))`
+{disable_edits} `(fun(self: ascii-ui.Viewport))`
+
+------------------------------------------------------------------------------
                                                                         *Window*
                                     `Window`
 Class ~
-{ascii-ui.Window}
+{ascii-ui.Window} : ascii-ui.Viewport
 Fields ~
 {winid} `(integer)`
 {bufnr} `(integer)`
@@ -1118,6 +1189,24 @@ Parameters ~
                                                            *Window:is_focused()*
                              `Window:is_focused`()
 @return boolean is_focused
+
+------------------------------------------------------------------------------
+                                                               *Window:get_id()*
+                               `Window:get_id`()
+Return ~
+`(integer)`
+
+------------------------------------------------------------------------------
+                                                            *Window:get_bufnr()*
+                              `Window:get_bufnr`()
+Return ~
+`(integer)`
+
+------------------------------------------------------------------------------
+                                                            *Window:get_ns_id()*
+                              `Window:get_ns_id`()
+Return ~
+`(integer)`
 
 
 ==============================================================================
