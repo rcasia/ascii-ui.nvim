@@ -1,4 +1,5 @@
 local Segment = require("ascii-ui.buffer.segment")
+local interaction_type = require("ascii-ui.interaction_type")
 local ui = require("ascii-ui")
 
 --- @alias ascii-ui.InputProps { value?: string }
@@ -12,7 +13,7 @@ return ui.createComponent("Input", function(props)
 			content = props.value,
 			is_focusable = true,
 			interactions = {
-				ON_INPUT = function() end,
+				[interaction_type.INPUT] = function() end,
 			},
 		}):wrap(),
 	}

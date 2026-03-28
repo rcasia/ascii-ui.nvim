@@ -1,6 +1,6 @@
 local Buffer = require("ascii-ui.buffer.buffer")
 local Cursor = require("ascii-ui.cursor")
-local EventListener = require("ascii-ui.events")
+local EventBus = require("ascii-ui.events")
 local Window = require("ascii-ui.window")
 local i = require("ascii-ui.interaction_type")
 local logger = require("ascii-ui.logger")
@@ -59,8 +59,13 @@ return function(RootComponent, viewport)
 		error("should be a functional component. Found: " .. type(RootComponent))
 	end
 
+	-- create an isolated event bus for this mount
+	local bus = EventBus.new()
+
 	-- does first render
 	local fiberRoot = render(RootComponent)
+	-- inject the bus so hooks (use_state) can trigger state_change on this instance only
+	fiberRoot.bus = bus
 	local rendered_buffer = fiberRoot:get_buffer()
 
 	fiber.debugPrint(fiberRoot, logger.debug)
@@ -72,7 +77,7 @@ return function(RootComponent, viewport)
 	-- updates the window with the rendered buffer
 	window:update(rendered_buffer)
 
-	EventListener:listen("state_change", function()
+	bus:listen("state_change", function()
 		local rerender_start = vim.uv.hrtime()
 		logger.info("------------------")
 		logger.info("Rerendering component")
@@ -80,8 +85,8 @@ return function(RootComponent, viewport)
 
 		logger.info("Rerendering on state change for window %d and buffer %d", window:get_id(), window:get_bufnr())
 		local current_lines_count = rendered_buffer:height()
-		-- rendered_buffer = ascii_renderer:render(Component) -- assign variable to have change the referenced value
 		fiberRoot = rerender(fiberRoot)
+		fiberRoot.bus = bus
 		fiber.debugPrint(fiberRoot, logger.debug)
 		rendered_buffer = fiberRoot:get_buffer()
 		local new_lines_count = rendered_buffer:height()
@@ -159,19 +164,19 @@ return function(RootComponent, viewport)
 		end)
 	end, window:get_ns_id())
 
-	local autocommand_id = vim.api.nvim_create_autocmd("CursorMoved", {
+	-- Single CursorMoved autocmd handles inputable-segment detection.
+	-- Position tracking (for direction detection) is handled by cursor.lua's own autocmd.
+	local cursor_autocmd_id = vim.api.nvim_create_autocmd("CursorMoved", {
 		callback = function(args)
+			-- enable/disable edits based on whether cursor is on an inputable segment
 			local win_id = tonumber(args.match)
-
 			if win_id ~= window:get_id() then
-				return -- not our window
+				return
 			end
-
 			local segment = rendered_buffer:find_segment_by_position(Cursor.current_position())
 			if not segment then
 				return
 			end
-
 			if segment:is_inputable() then
 				window:enable_edits()
 			else
@@ -188,23 +193,23 @@ return function(RootComponent, viewport)
 			if win_id ~= window:get_id() then
 				return -- not our window
 			end
-			EventListener:trigger("ui_close")
+			bus:trigger("ui_close")
 
 			-- detach from user interactions
 			user_interations:instance():detach_buffer(window:get_bufnr())
 			vim.on_key(nil, window:get_ns_id())
-			vim.api.nvim_del_autocmd(autocommand_id)
+			vim.api.nvim_del_autocmd(cursor_autocmd_id)
 			logger.info("Detached buffer %s from user interactions", window:get_bufnr())
 
 			window:close()
 			logger.info("Closed window %d", win_id)
 			fiberRoot:unmount()
 
-			EventListener:clear()
+			bus:clear()
 		end,
 	})
 
-	EventListener:trigger("state_change")
+	bus:trigger("state_change")
 	local elapsed_ns = vim.uv.hrtime() - start
 	logger.info("First render time: %.3f ms", elapsed_ns / 1e6)
 	return window:get_bufnr()

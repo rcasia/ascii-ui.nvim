@@ -23,7 +23,7 @@ describe("UserInteractions", function()
 			SELECT = function()
 				has_called.on_select = true
 			end,
-			on_hover = function()
+			HOVER = function()
 				has_called.on_hover = true
 			end,
 		})))

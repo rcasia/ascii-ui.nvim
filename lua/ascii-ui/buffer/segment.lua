@@ -127,7 +127,7 @@ function Segment:is_colored()
 end
 
 function Segment:is_inputable()
-	return self.interactions[interaction_type.ON_INPUT] ~= nil
+	return self.interactions[interaction_type.INPUT] ~= nil
 end
 
 --- Wraps the segment in a ascii-ui.Bufferline object

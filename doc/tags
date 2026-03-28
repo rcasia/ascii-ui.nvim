@@ -33,9 +33,11 @@ Cursor.last_movement_direction()	ascii-ui.txt	/*Cursor.last_movement_direction()
 Cursor.move_to()	ascii-ui.txt	/*Cursor.move_to()*
 EFFECT_REPLACEMENT_REASON	ascii-ui.txt	/*EFFECT_REPLACEMENT_REASON*
 Effect()	ascii-ui.txt	/*Effect()*
-EventListenter	ascii-ui.txt	/*EventListenter*
-EventListenter:listen()	ascii-ui.txt	/*EventListenter:listen()*
-EventListenter:trigger()	ascii-ui.txt	/*EventListenter:trigger()*
+EventBus	ascii-ui.txt	/*EventBus*
+EventBus.new()	ascii-ui.txt	/*EventBus.new()*
+EventBus:clear()	ascii-ui.txt	/*EventBus:clear()*
+EventBus:listen()	ascii-ui.txt	/*EventBus:listen()*
+EventBus:trigger()	ascii-ui.txt	/*EventBus:trigger()*
 FiberNode	ascii-ui.txt	/*FiberNode*
 FiberNode.is_node()	ascii-ui.txt	/*FiberNode.is_node()*
 FiberNode.is_node_list()	ascii-ui.txt	/*FiberNode.is_node_list()*
@@ -122,6 +124,7 @@ ascii-ui.hooks.useReducer()	ascii-ui.txt	/*ascii-ui.hooks.useReducer()*
 ascii-ui.hooks.useState()	ascii-ui.txt	/*ascii-ui.hooks.useState()*
 ascii-ui.hooks.useUserConfig()	ascii-ui.txt	/*ascii-ui.hooks.useUserConfig()*
 build_color_map()	ascii-ui.txt	/*build_color_map()*
+componentPath()	ascii-ui.txt	/*componentPath()*
 config	ascii-ui.txt	/*config*
 createComponent()	ascii-ui.txt	/*createComponent()*
 debugPrint()	ascii-ui.txt	/*debugPrint()*

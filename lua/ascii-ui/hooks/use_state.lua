@@ -1,6 +1,5 @@
 --- ascii-ui.hooks.useState() *ascii-ui.hooks.useState()*
 
-local EventListener = require("ascii-ui.events")
 local fiber = require("ascii-ui.fiber")
 local logger = require("ascii-ui.logger")
 local metrics = require("ascii-ui.utils.metrics")
@@ -70,7 +69,10 @@ local useState = function(value)
 
 		fiber.debugPrint(_fiber)
 
-		EventListener:trigger("state_change")
+		local bus = _fiber.root and _fiber.root.bus
+		if bus then
+			bus:trigger("state_change")
+		end
 	end
 
 	_fiber.hookIndex = idx + 1

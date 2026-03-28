@@ -8,6 +8,7 @@ local props_are_equal = require("ascii-ui.utils.props_are_equal")
 --- @field pendingEffects? function[]
 --- @field pendingCleanups? function[]
 --- @field lastRendered? ascii-ui.Buffer
+--- @field bus? ascii-ui.EventBus
 
 --- @class ascii-ui.FiberNode
 --- @field private repeatingEffects? function[]

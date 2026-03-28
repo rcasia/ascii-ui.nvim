@@ -1,7 +1,16 @@
 local logger = require("ascii-ui.logger")
 
---- @class ascii-ui.Events
-local EventListenter = {}
+--- @class ascii-ui.EventBus
+local EventBus = {}
+EventBus.__index = EventBus
+
+--- Creates a new, isolated EventBus instance.
+--- Each call to `ascii-ui.mount` should create its own bus so that multiple
+--- mounted UIs never share listeners.
+--- @return ascii-ui.EventBus
+function EventBus.new()
+	return setmetatable({}, EventBus)
+end
 
 --- @enum (key) ascii-ui.EventType
 local _ = {
@@ -14,14 +23,13 @@ local _ = {
 
 --- @param ev_type ascii-ui.EventType
 --- @param fn function
-function EventListenter:listen(ev_type, fn)
+function EventBus:listen(ev_type, fn)
 	self[ev_type] = self[ev_type] or {}
-
 	table.insert(self[ev_type], fn)
 end
 
 --- @param ev_type ascii-ui.EventType
-function EventListenter:trigger(ev_type)
+function EventBus:trigger(ev_type)
 	if not self[ev_type] then
 		return
 	end
@@ -35,9 +43,12 @@ function EventListenter:trigger(ev_type)
 	end
 end
 
-function EventListenter:clear()
-	logger.info("Cleared event listeners")
-	self.state_change = nil
+--- Removes all registered listeners from every event type.
+function EventBus:clear()
+	logger.info("Cleared all event listeners")
+	for k in pairs(self) do
+		self[k] = nil
+	end
 end
 
-return EventListenter
+return EventBus

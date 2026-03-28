@@ -447,9 +447,17 @@ Return ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
-                                                                *EventListenter*
-                                `EventListenter`
-@class ascii-ui.Events
+                                                                      *EventBus*
+                                   `EventBus`
+@class ascii-ui.EventBus
+
+------------------------------------------------------------------------------
+                                                                *EventBus.new()*
+                                `EventBus.new`()
+Creates a new, isolated EventBus instance.
+Each call to `ascii-ui.mount` should create its own bus so that multiple
+mounted UIs never share listeners.
+@return ascii-ui.EventBus
 
 ------------------------------------------------------------------------------
                                                                              *_*
@@ -457,15 +465,20 @@ Return ~
 @enum (key) ascii-ui.EventType
 
 ------------------------------------------------------------------------------
-                                                       *EventListenter:listen()*
-                    `EventListenter:listen`({ev_type}, {fn})
+                                                             *EventBus:listen()*
+                       `EventBus:listen`({ev_type}, {fn})
 @param ev_type ascii-ui.EventType
 @param fn function
 
 ------------------------------------------------------------------------------
-                                                      *EventListenter:trigger()*
-                      `EventListenter:trigger`({ev_type})
+                                                            *EventBus:trigger()*
+                         `EventBus:trigger`({ev_type})
 @param ev_type ascii-ui.EventType
+
+------------------------------------------------------------------------------
+                                                              *EventBus:clear()*
+                               `EventBus:clear`()
+Removes all registered listeners from every event type.
 
 
 ==============================================================================
@@ -520,6 +533,7 @@ Re-renderiza el árbol de fibers a partir de la raíz dada
 @field pendingEffects? function[]
 @field pendingCleanups? function[]
 @field lastRendered? ascii-ui.Buffer
+@field bus? ascii-ui.EventBus
 
 ------------------------------------------------------------------------------
                                                                      *FiberNode*

@@ -8,12 +8,12 @@ local UserInteractions = {
 }
 
 function UserInteractions.instance()
-	if UserInteractions.singleton_intance then
-		return UserInteractions.singleton_intance
+	if UserInteractions.singleton_instance then
+		return UserInteractions.singleton_instance
 	end
 
-	UserInteractions.singleton_intance = UserInteractions:new()
-	return UserInteractions.singleton_intance
+	UserInteractions.singleton_instance = UserInteractions:new()
+	return UserInteractions.singleton_instance
 end
 
 ---@return ascii-ui.UserInteractions
