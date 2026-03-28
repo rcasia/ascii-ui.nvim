@@ -6,8 +6,10 @@
 
 # ascii-ui.nvim
 
-
 A WIP extensible ui framework with no non-sense apis (hopefully) for nvim.
+
+check out the [docs](https://rcasia.github.io/ascii-ui-docs/) to learn more.
+
 <table align="center">
   <tr>
     <td><img src="https://github.com/user-attachments/assets/0d2729e1-1518-430f-93f1-e52755b6f347" height="250"></td>
