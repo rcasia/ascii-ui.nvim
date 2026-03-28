@@ -127,7 +127,11 @@ local function performUnitOfWork(fiber)
 
 	fiber:reset()
 	currentFiber = fiber
-	fiber.root = fiber
+	-- Only the true root (no parent) sets root = self.
+	-- Child nodes already have root assigned by reconcileChildren and must not overwrite it.
+	if not fiber.parent then
+		fiber.root = fiber
+	end
 
 	if fiber.closure then
 		local ok, result = xpcall(function()

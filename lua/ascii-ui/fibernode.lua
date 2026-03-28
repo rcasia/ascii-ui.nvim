@@ -8,6 +8,7 @@ local props_are_equal = require("ascii-ui.utils.props_are_equal")
 --- @field pendingEffects? function[]
 --- @field pendingCleanups? function[]
 --- @field lastRendered? ascii-ui.Buffer
+--- @field bus? ascii-ui.EventBus
 
 --- @class ascii-ui.FiberNode
 --- @field private repeatingEffects? function[]
@@ -335,10 +336,21 @@ function FiberNode:run_pending()
 		logger.debug("pendingEffects: %s", tostring(self.pendingEffects[1]))
 	end
 
+	local component_name = self.type or "unknown"
+
+	local function wrap_call(fn, kind)
+		local ok, err = xpcall(fn, function(e)
+			return string.format("effect error in <%s> [%s]: %s", component_name, kind, e)
+		end)
+		if not ok then
+			error(err, 0)
+		end
+	end
+
 	if self.pendingCleanups and #self.pendingCleanups > 0 then
 		vim.iter(self.pendingCleanups):each(function(cu)
 			logger.debug("running pending cleanup for %s", self.type)
-			cu()
+			wrap_call(cu, "cleanup")
 		end)
 	end
 	self.pendingCleanups = {}
@@ -346,14 +358,14 @@ function FiberNode:run_pending()
 	if self.repeatingEffects and #self.repeatingEffects > 0 then
 		vim.iter(self.repeatingEffects):each(function(reff)
 			logger.debug("running repeating effect for %s", self.type)
-			reff()
+			wrap_call(reff, "repeating effect")
 		end)
 	end
 
 	if self.pendingEffects and #self.pendingEffects > 0 then
 		vim.iter(self.pendingEffects):each(function(eff)
 			logger.debug("running pending effect for %s", self.type)
-			eff()
+			wrap_call(eff, "effect")
 		end)
 	end
 	self.pendingEffects = {}

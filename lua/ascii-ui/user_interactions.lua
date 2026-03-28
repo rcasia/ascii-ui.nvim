@@ -8,12 +8,12 @@ local UserInteractions = {
 }
 
 function UserInteractions.instance()
-	if UserInteractions.singleton_intance then
-		return UserInteractions.singleton_intance
+	if UserInteractions.singleton_instance then
+		return UserInteractions.singleton_instance
 	end
 
-	UserInteractions.singleton_intance = UserInteractions:new()
-	return UserInteractions.singleton_intance
+	UserInteractions.singleton_instance = UserInteractions:new()
+	return UserInteractions.singleton_instance
 end
 
 ---@return ascii-ui.UserInteractions
@@ -50,7 +50,12 @@ function UserInteractions:interact(opts)
 
 	local interaction_function = segment.interactions[opts.interaction_type]
 	if type(interaction_function) == "function" then
-		interaction_function()
+		local ok, err = xpcall(interaction_function, function(e)
+			return string.format("interaction error [%s]: %s", opts.interaction_type, e)
+		end)
+		if not ok then
+			error(err, 0)
+		end
 	end
 end
 

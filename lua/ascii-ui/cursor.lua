@@ -1,4 +1,3 @@
-local EventListener = require("ascii-ui.events")
 local logger = require("ascii-ui.logger")
 
 --- @class ascii-ui.Cursor
@@ -14,12 +13,6 @@ local Cursor = {
 		NORTH = "NORTH",
 		EAST = "EAST",
 		WEST = "WEST",
-	},
-	EVENTS = {
-		SOUTH = "CursorMovedSouth",
-		NORTH = "CursorMovedNorth",
-		EAST = "CursorMovedEast",
-		WEST = "CursorMovedWest",
 	},
 	_current_position = nil,
 	last_position = nil,
@@ -40,14 +33,6 @@ end
 function Cursor.trigger_move_event()
 	Cursor.last_position = Cursor._current_position or Cursor.current_position()
 	Cursor._current_position = Cursor.current_position()
-
-	local last_movement_direction = Cursor.last_movement_direction()
-
-	if last_movement_direction == "NONE" then
-		return
-	end
-
-	EventListener:trigger(Cursor.EVENTS[Cursor.last_movement_direction()])
 
 	logger.debug("CursorMoved to %s", vim.inspect(Cursor._current_position))
 end
