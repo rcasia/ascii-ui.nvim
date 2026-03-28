@@ -11,9 +11,44 @@ local render = fiber.render
 local rerender = fiber.rerender
 local is_callable = require("ascii-ui.utils.is_callable")
 
----@param RootComponent ascii-ui.FunctionalComponent
----@param viewport? ascii-ui.Viewport
----@return integer bufnr
+--- Mounts a root component into a viewport and starts the render loop.
+---
+--- The simplest call opens a centered Neovim floating window automatically:
+--- ```lua
+--- local ui = require("ascii-ui")
+--- ui.mount(MyComponent)
+--- ```
+---
+--- Pass an explicit viewport to render into a different target.
+--- Any object that satisfies the `ascii-ui.Viewport` interface is accepted:
+---
+--- ```lua
+--- -- Built-in: stdout (useful for headless scripts / CI)
+--- local ui = require("ascii-ui")
+--- local viewport = ui.viewports.StdoutViewport.new()
+--- ui.mount(MyComponent, viewport)
+--- ```
+---
+--- ```lua
+--- -- Built-in: Neovim floating window with custom dimensions
+--- local ui   = require("ascii-ui")
+--- local Win  = require("ascii-ui.window")
+--- ui.mount(MyComponent, Win.new({ width = 80, height = 24 }))
+--- ```
+---
+--- The viewport lifecycle is:
+---   1. `viewport:open()`   — called once, immediately after the first render
+---   2. `viewport:update(buffer)` — called on every state-change re-render
+---   3. `viewport:close()` — called when the `WinClosed` autocmd fires
+---
+--- @note When `viewport` is a non-Neovim target (e.g. `StdoutViewport`), the
+--- autocmd and `vim.on_key` bindings that are registered below will fire but
+--- have no visible effect because `viewport:is_focused()` returns `false` and
+--- `viewport:get_id()` / `viewport:get_bufnr()` return `-1`.
+---
+---@param RootComponent ascii-ui.FunctionalComponent  The root component to render.
+---@param viewport? ascii-ui.Viewport  Rendering target. Defaults to a new `ascii-ui.Window`.
+---@return integer bufnr  The buffer number used by the viewport (`-1` for non-Neovim targets).
 return function(RootComponent, viewport)
 	local start = vim.uv.hrtime()
 	logger.info("------------------")

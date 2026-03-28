@@ -874,11 +874,46 @@ Executes a callback function after a specified delay.
 
 ==============================================================================
 ------------------------------------------------------------------------------
+Mounts a root component into a viewport and starts the render loop.
+
+The simplest call opens a centered Neovim floating window automatically:
+```lua
+local ui = require("ascii-ui")
+ui.mount(MyComponent)
+```
+
+Pass an explicit viewport to render into a different target.
+Any object that satisfies the `ascii-ui.Viewport` interface is accepted:
+
+```lua
+-- Built-in: stdout (useful for headless scripts / CI)
+local ui = require("ascii-ui")
+local viewport = ui.viewports.StdoutViewport.new()
+ui.mount(MyComponent, viewport)
+```
+
+```lua
+-- Built-in: Neovim floating window with custom dimensions
+local ui   = require("ascii-ui")
+local Win  = require("ascii-ui.window")
+ui.mount(MyComponent, Win.new({ width = 80, height = 24 }))
+```
+
+The viewport lifecycle is:
+  1. `viewport:open()`   — called once, immediately after the first render
+  2. `viewport:update(buffer)` — called on every state-change re-render
+  3. `viewport:close()` — called when the `WinClosed` autocmd fires
+
+@note When `viewport` is a non-Neovim target (e.g. `StdoutViewport`), the
+autocmd and `vim.on_key` bindings that are registered below will fire but
+have no visible effect because `viewport:is_focused()` returns `false` and
+`viewport:get_id()` / `viewport:get_bufnr()` return `-1`.
+
 Parameters ~
-{RootComponent} `(ascii)`-ui.FunctionalComponent
-{viewport} `(optional)` `(ascii)`-ui.Viewport
+{RootComponent} `(ascii)`-ui.FunctionalComponent  The root component to render.
+{viewport} `(optional)` `(ascii)`-ui.Viewport  Rendering target. Defaults to a new `ascii-ui.Window`.
 Return ~
-`(integer)` bufnr
+`(integer)` bufnr  The buffer number used by the viewport (`-1` for non-Neovim targets).
 
 
 ==============================================================================
@@ -1073,8 +1108,49 @@ It will exclude the functions from the comparison
 
 ==============================================================================
 ------------------------------------------------------------------------------
+Writer function type used by StdoutViewport to emit output.
+Defaults to `io.write`. Override this in tests or custom environments
+where you need to capture or redirect the output.
+
+------------------------------------------------------------------------------
                                                                 *StdoutViewport*
                                 `StdoutViewport`
+A viewport implementation that renders the UI to terminal stdout using
+ANSI truecolor escape codes.
+
+`StdoutViewport` implements `ascii-ui.Viewport` and can be passed directly to
+`ui.mount` as an alternative to the default Neovim floating window. It is useful
+for headless scripts, CI pipelines, or any context where Neovim's windowing API
+is not available.
+
+**Basic usage**
+```lua
+local ui = require("ascii-ui")
+
+local viewport = ui.viewports.StdoutViewport.new()
+ui.mount(MyComponent, viewport)
+```
+
+**Custom writer** (e.g. for testing or piping to a file)
+```lua
+local lines = {}
+local viewport = ui.viewports.StdoutViewport.new(function(s)
+  table.insert(lines, s)
+end)
+ui.mount(MyComponent, viewport)
+```
+
+**Color support**
+Segments with a `.color` field (`{ fg = "#rrggbb", bg = "#rrggbb" }`) are wrapped
+in ANSI SGR truecolor sequences (`ESC[38;2;r;g;bm` for foreground,
+`ESC[48;2;r;g;bm` for background) followed by a reset (`ESC[0m`).
+Segments without color are emitted as plain text.
+
+**Limitations**
+- `is_focused()` always returns `false`; keyboard-driven interactions are not
+  supported in a stdout context.
+- `get_id()`, `get_bufnr()`, and `get_ns_id()` return `-1` (not applicable).
+- `open()`, `close()`, `enable_edits()`, and `disable_edits()` are no-ops.
 Class ~
 {ascii-ui.StdoutViewport} : ascii-ui.Viewport
 Fields ~
@@ -1091,75 +1167,164 @@ Convert a hex color string like "#rrggbb" to an ANSI truecolor escape.
 ------------------------------------------------------------------------------
                                                           *StdoutViewport.new()*
                          `StdoutViewport.new`({writer})
+Creates a new StdoutViewport.
 Parameters ~
-{writer} `(optional)` `(fun(s: string))` defaults to io.write
+{writer} `(optional)` `(fun(s: string))`  Output function. Defaults to `io.write`.
 Return ~
 `(ascii)`-ui.StdoutViewport
 
 ------------------------------------------------------------------------------
+                                                         *StdoutViewport.open()*
+                           `StdoutViewport.open`({_})
+No-op. StdoutViewport requires no initialisation.
+
+------------------------------------------------------------------------------
+                                                        *StdoutViewport.close()*
+                          `StdoutViewport.close`({_})
+No-op. StdoutViewport requires no teardown.
+
+------------------------------------------------------------------------------
                                                        *StdoutViewport:update()*
                        `StdoutViewport:update`({buffer})
+Renders `buffer` to stdout.
+
+Each call clears the terminal (`ESC[H ESC[2J`) and writes every line.
+Colored segments are wrapped in ANSI truecolor sequences; the remainder
+of each line is written as plain text.
 Parameters ~
 {buffer} `(ascii)`-ui.Buffer
 
 ------------------------------------------------------------------------------
                                                    *StdoutViewport.is_focused()*
                         `StdoutViewport.is_focused`({_})
+Always returns `false`. Stdout has no concept of focus.
 Return ~
 `(boolean)`
 
 ------------------------------------------------------------------------------
+                                                 *StdoutViewport.enable_edits()*
+                       `StdoutViewport.enable_edits`({_})
+No-op. Stdout is always writable.
+
+------------------------------------------------------------------------------
+                                                *StdoutViewport.disable_edits()*
+                      `StdoutViewport.disable_edits`({_})
+No-op. Stdout is always writable.
+
+------------------------------------------------------------------------------
                                                        *StdoutViewport.get_id()*
                           `StdoutViewport.get_id`({_})
+Returns `-1`. Window ids are not applicable to stdout.
 Return ~
 `(integer)`
 
 ------------------------------------------------------------------------------
                                                     *StdoutViewport.get_bufnr()*
                         `StdoutViewport.get_bufnr`({_})
+Returns `-1`. Buffer numbers are not applicable to stdout.
 Return ~
 `(integer)`
 
 ------------------------------------------------------------------------------
                                                     *StdoutViewport.get_ns_id()*
                         `StdoutViewport.get_ns_id`({_})
+Returns `-1`. Namespace ids are not applicable to stdout.
 Return ~
 `(integer)`
 
 
 ==============================================================================
 ------------------------------------------------------------------------------
+The Viewport interface defines the contract that all rendering targets must satisfy.
+
+`ascii-ui.mount` accepts any object implementing this interface as its optional second
+argument, allowing you to render UI into targets other than a Neovim floating window.
+
+Built-in implementations:
+  - `ascii-ui.Window`          — centered floating Neovim window (default)
+  - `ascii-ui.StdoutViewport`  — terminal stdout via ANSI escape codes
+
+To implement a custom viewport, create a table whose metatable provides all the
+methods listed below, then pass an instance to `ui.mount`:
+
+```lua
+local ui = require("ascii-ui")
+
+---@class MyViewport : ascii-ui.Viewport
+local MyViewport = {}
+MyViewport.__index = MyViewport
+
+function MyViewport.new() return setmetatable({}, MyViewport) end
+function MyViewport.open(_) end
+function MyViewport.close(_) end
+function MyViewport:update(buffer) ... end   -- called every frame
+function MyViewport.is_focused(_) return false end
+function MyViewport.enable_edits(_) end
+function MyViewport.disable_edits(_) end
+function MyViewport.get_id(_) return -1 end
+function MyViewport.get_bufnr(_) return -1 end
+function MyViewport.get_ns_id(_) return -1 end
+
+ui.mount(MyComponent, MyViewport.new())
+```
+
+Methods that are not relevant for a given target (e.g. `get_bufnr` for a non-Neovim
+target) should return `-1` as a sentinel value.
 Class ~
 {ascii-ui.Viewport}
 Fields ~
-{get_id} `(fun(self: ascii-ui.Viewport): integer)`
-{get_bufnr} `(fun(self: ascii-ui.Viewport): integer)`
-{get_ns_id} `(fun(self: ascii-ui.Viewport): integer)`
-{open} `(fun(self: ascii-ui.Viewport))`
-{close} `(fun(self: ascii-ui.Viewport))`
-{update} `(fun(self: ascii-ui.Viewport, buffer: ascii-ui.Buffer))`
-{is_focused} `(fun(self: ascii-ui.Viewport): boolean)`
-{enable_edits} `(fun(self: ascii-ui.Viewport))`
-{disable_edits} `(fun(self: ascii-ui.Viewport))`
+{get_id}     `(fun(self: ascii-ui.Viewport): integer)`   Returns the Neovim window id, or -1 if not applicable.
+{get_bufnr}  `(fun(self: ascii-ui.Viewport): integer)`   Returns the Neovim buffer number, or -1 if not applicable.
+{get_ns_id}  `(fun(self: ascii-ui.Viewport): integer)`   Returns the Neovim namespace id, or -1 if not applicable.
+{open}       `(fun(self: ascii-ui.Viewport))`            Opens / initialises the viewport.
+{close}      `(fun(self: ascii-ui.Viewport))`            Closes / tears down the viewport.
+{update}     `(fun(self: ascii-ui.Viewport, buffer: ascii-ui.Buffer))`  Renders the given buffer to the target. Called every frame.
+{is_focused} `(fun(self: ascii-ui.Viewport): boolean)`   Returns true when the viewport currently has user focus.
+{enable_edits}  `(fun(self: ascii-ui.Viewport))`         Allows the user to type into the viewport (e.g. for Input widgets).
+{disable_edits} `(fun(self: ascii-ui.Viewport))`         Reverts the viewport to read-only mode.
 
 ------------------------------------------------------------------------------
                                                                         *Window*
                                     `Window`
+The default `ascii-ui.Viewport` implementation.
+
+`Window` opens a centered Neovim floating window and is the viewport used by
+`ui.mount` when no explicit viewport is provided.
+
+```lua
+local ui = require("ascii-ui")
+
+-- Explicit construction (equivalent to the default behaviour of ui.mount):
+local win = require("ascii-ui.window").new({ width = 60, height = 20 })
+ui.mount(MyComponent, win)
+
+-- Default (Window is created automatically):
+ui.mount(MyComponent)
+```
 Class ~
 {ascii-ui.Window} : ascii-ui.Viewport
 Fields ~
-{winid} `(integer)`
-{bufnr} `(integer)`
-{ns_id} `(integer)`
+{winid} `(integer)`  Neovim window handle, available after `open()`.
+{bufnr} `(integer)`  Neovim buffer handle, available after `open()`.
+{ns_id} `(integer)`  Neovim namespace id used for highlight extmarks.
 {opts} `({ width?: integer, height?: integer })`
 
 ------------------------------------------------------------------------------
                                                                   *Window.new()*
                               `Window.new`({opts})
+Creates a new Window instance. The window is **not** opened yet; call `open()` to
+create the Neovim buffer and floating window.
 Parameters ~
-{opts} `(optional)` `({ width?: integer, height?: integer })`
+{opts} `(optional)` `({ width?: integer, height?: integer })`  Optional size overrides. Defaults: width=40, height=20.
 Return ~
 `(ascii)`-ui.Window
+
+------------------------------------------------------------------------------
+                                                                 *Window:open()*
+                                `Window:open`()
+Opens the floating window. Creates a scratch buffer, then a centered floating
+window over the current editor layout. Sets up window key-maps.
+Must be called before `update()`.
 
 ------------------------------------------------------------------------------
                                                              *Window:position()*
@@ -1174,37 +1339,63 @@ Move the window to a specific position
 @param position { line: integer, col: integer }
 
 ------------------------------------------------------------------------------
+                                                         *Window:enable_edits()*
+                            `Window:enable_edits`()
+Allows the buffer to be edited by the user (used by Input widgets).
+Errors if the window is not open.
+
+------------------------------------------------------------------------------
+                                                        *Window:disable_edits()*
+                            `Window:disable_edits`()
+Reverts the buffer to read-only (non-modifiable) mode.
+Errors if the window is not open.
+
+------------------------------------------------------------------------------
                                                               *Window:is_open()*
                                `Window:is_open`()
 Return ~
 `(boolean)`
 
 ------------------------------------------------------------------------------
+                                                                *Window:close()*
+                                `Window:close`()
+Closes the floating window and releases the buffer handle.
+After this call `winid` and `bufnr` are `nil`.
+
+------------------------------------------------------------------------------
                                                                *Window:update()*
                            `Window:update`({buffer})
+Renders `buffer` into the Neovim window.
+Schedules a `vim.schedule` call that writes lines, applies highlights/colors,
+resizes the floating window to match the buffer dimensions and adjusts scroll.
+Errors if the window is not open.
 Parameters ~
 {buffer} `(ascii)`-ui.Buffer
 
 ------------------------------------------------------------------------------
                                                            *Window:is_focused()*
                              `Window:is_focused`()
+Returns `true` when this window is the currently focused Neovim window.
 @return boolean is_focused
 
 ------------------------------------------------------------------------------
                                                                *Window:get_id()*
                                `Window:get_id`()
+Returns the Neovim window handle (`winid`). Available after `open()`.
 Return ~
 `(integer)`
 
 ------------------------------------------------------------------------------
                                                             *Window:get_bufnr()*
                               `Window:get_bufnr`()
+Returns the Neovim buffer handle (`bufnr`). Available after `open()`.
 Return ~
 `(integer)`
 
 ------------------------------------------------------------------------------
                                                             *Window:get_ns_id()*
                               `Window:get_ns_id`()
+Returns the Neovim namespace id used for color/highlight extmarks.
 Return ~
 `(integer)`
 

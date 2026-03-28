@@ -20,6 +20,20 @@ local AsciiUI = {
 	--- This contains the layout class
 	layout = require("ascii-ui.layout"),
 	mount = mount,
+	--- Built-in viewport implementations.
+	---
+	--- A viewport is any object satisfying the `ascii-ui.Viewport` interface; pass
+	--- one as the second argument to `ui.mount` to control where the UI is rendered.
+	---
+	--- Available viewports:
+	---   - `StdoutViewport` — renders to terminal stdout with ANSI truecolor codes.
+	---     Useful for headless scripts, animations, or CI pipelines.
+	---
+	--- Example:
+	--- ```lua
+	--- local ui = require("ascii-ui")
+	--- ui.mount(MyComponent, ui.viewports.StdoutViewport.new())
+	--- ```
 	viewports = {
 		StdoutViewport = require("ascii-ui.viewports.stdout"),
 	},
