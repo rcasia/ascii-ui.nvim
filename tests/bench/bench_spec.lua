@@ -1,5 +1,8 @@
 pcall(require, "luacov")
 
+-- Silence all framework logs so they don't pollute benchmark output.
+require("ascii-ui.logger").set_level("QUIET")
+
 -- Performance benchmarks for ascii-ui.nvim
 --
 -- Each benchmark runs a hot path N times and reports:
