@@ -100,6 +100,11 @@ function Window.new(opts)
 		ns_id = ns_id,
 		opts = opts,
 		edits_enabled = false,
+		-- cache of anonymous color hl groups already registered this session
+		registered_hl = {},
+		-- last rendered dimensions; used to skip redundant nvim_win_set_config calls
+		last_width = nil,
+		last_height = nil,
 	}
 
 	setmetatable(state, Window)
@@ -134,8 +139,14 @@ function Window:open()
 
 	vim.api.nvim_win_get_buf(win)
 
-	-- Assume `buf` is the buffer ID associated with your window.
-	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+	-- Disable undo history: this is a scratch render buffer, not a user-edited file.
+	-- Without this, every nvim_buf_set_lines call allocates an undo entry.
+	vim.api.nvim_set_option_value("undolevels", -1, { buf = buf })
+	-- Keep the buffer permanently modifiable; we guard against user edits via
+	-- keymaps and interaction_type, not via the modifiable flag.
+	vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
+	-- winhl never changes after open; set it once here instead of on every frame.
+	vim.api.nvim_set_option_value("winhl", ("Normal:%s"):format(highlights.DEFAULT), { win = win })
 
 	self.winid = win
 	self.bufnr = buf
@@ -174,7 +185,6 @@ function Window:enable_edits()
 	end
 	logger.debug("Edits are enabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = true
-	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
 end
 
 --- Reverts the buffer to read-only (non-modifiable) mode.
@@ -185,7 +195,6 @@ function Window:disable_edits()
 	end
 	logger.debug("Edits are disabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = false
-	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
 end
 
 ---@return boolean
@@ -203,9 +212,6 @@ function Window:close()
 	vim.api.nvim_win_close(self.winid, true)
 	self.winid = nil
 	self.bufnr = nil
-
-	-- restore modifiable for the bufnr
-	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
 end
 
 --- Renders `buffer` into the Neovim window.
@@ -221,20 +227,15 @@ function Window:update(buffer)
 	end
 	vim.schedule(function()
 		-- buffer content
-		if not self.edits_enabled then
-			vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
-		end
 		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer:to_lines())
 
-		if not self.edits_enabled then
-			vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+		-- resize window only when dimensions actually changed
+		local w, h = buffer:width(), buffer:height()
+		if w ~= self.last_width or h ~= self.last_height then
+			vim.api.nvim_win_set_config(self.winid, { width = w, height = h })
+			self.last_width = w
+			self.last_height = h
 		end
-
-		-- resize window
-		vim.api.nvim_win_set_config(self.winid, {
-			width = buffer:width(),
-			height = buffer:height(),
-		})
 		-- adjust scroll
 		vim.api.nvim_win_call(0, function()
 			local win = vim.api.nvim_get_current_win()
@@ -250,11 +251,6 @@ function Window:update(buffer)
 		-- coloring
 		local function apply_highlight()
 			vim.api.nvim_buf_clear_namespace(self.bufnr, self.ns_id, 0, -1)
-
-			-- NOTE: Good for updating all the window
-			-- but unoptimal for just parts of the window or buffer
-			-- for that use: nvim_buf_set_extmark
-			vim.api.nvim_set_option_value("winhl", ("Normal:%s"):format(highlights.DEFAULT), { win = self.winid })
 
 			for segment_result in buffer:iter_colored_segments() do
 				local pos = segment_result.position
@@ -275,7 +271,10 @@ function Window:update(buffer)
 						segment.color.bg or "NONE"
 					)):gsub("#", "")
 
-					vim.api.nvim_set_hl(0, anonymous_group, { fg = segment.color.fg, bg = segment.color.bg })
+					if not self.registered_hl[anonymous_group] then
+						vim.api.nvim_set_hl(0, anonymous_group, { fg = segment.color.fg, bg = segment.color.bg })
+						self.registered_hl[anonymous_group] = true
+					end
 
 					vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, pos.line - 1, pos.col - 1, {
 						end_col = end_col - 1,
