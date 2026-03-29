@@ -134,8 +134,12 @@ function Window:open()
 
 	vim.api.nvim_win_get_buf(win)
 
-	-- Assume `buf` is the buffer ID associated with your window.
-	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+	-- Disable undo history: this is a scratch render buffer, not a user-edited file.
+	-- Without this, every nvim_buf_set_lines call allocates an undo entry.
+	vim.api.nvim_set_option_value("undolevels", -1, { buf = buf })
+	-- Keep the buffer permanently modifiable; we guard against user edits via
+	-- keymaps and interaction_type, not via the modifiable flag.
+	vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
 
 	self.winid = win
 	self.bufnr = buf
@@ -174,7 +178,6 @@ function Window:enable_edits()
 	end
 	logger.debug("Edits are enabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = true
-	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
 end
 
 --- Reverts the buffer to read-only (non-modifiable) mode.
@@ -185,7 +188,6 @@ function Window:disable_edits()
 	end
 	logger.debug("Edits are disabled for window/buffer (%d/%d)", self.winid, self.bufnr)
 	self.edits_enabled = false
-	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
 end
 
 ---@return boolean
@@ -203,9 +205,6 @@ function Window:close()
 	vim.api.nvim_win_close(self.winid, true)
 	self.winid = nil
 	self.bufnr = nil
-
-	-- restore modifiable for the bufnr
-	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
 end
 
 --- Renders `buffer` into the Neovim window.
@@ -221,14 +220,7 @@ function Window:update(buffer)
 	end
 	vim.schedule(function()
 		-- buffer content
-		if not self.edits_enabled then
-			vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
-		end
 		vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, buffer:to_lines())
-
-		if not self.edits_enabled then
-			vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
-		end
 
 		-- resize window
 		vim.api.nvim_win_set_config(self.winid, {
