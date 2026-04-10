@@ -1,5 +1,3 @@
---- ascii-ui.hooks.useEffect() *ascii-ui.hooks.useEffect()*
-
 local fiber = require("ascii-ui.fiber")
 local logger = require("ascii-ui.logger")
 
