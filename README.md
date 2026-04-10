@@ -10,6 +10,16 @@ A WIP extensible ui framework with no non-sense apis (hopefully) for nvim.
 
 check out the [docs](https://rcasia.github.io/ascii-ui-docs/) to learn more.
 
+## AI Agent Skill
+
+Use ascii-ui.nvim with AI coding agents (OpenCode, Claude, etc.) by installing the official agent skill:
+
+```sh
+npx skills add rcasia/agent-skills --skill ascii-ui-nvim
+```
+
+The skill gives agents a mental model of the component system, hooks, and common patterns so they can generate correct ascii-ui code without hallucinating APIs. Source: [rcasia/agent-skills](https://github.com/rcasia/agent-skills).
+
 <table align="center">
   <tr>
     <td><img src="https://github.com/user-attachments/assets/0d2729e1-1518-430f-93f1-e52755b6f347" height="250"></td>

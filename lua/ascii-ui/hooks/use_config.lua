@@ -1,5 +1,3 @@
---- ascii-ui.hooks.useUserConfig() *ascii-ui.hooks.useUserConfig()*
-
 local useState = require("ascii-ui.hooks.use_state")
 local userConfig = require("ascii-ui.config.user_config")
 
