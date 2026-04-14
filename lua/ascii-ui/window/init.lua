@@ -132,10 +132,7 @@ function Window:open()
 		border = "rounded",
 	})
 
-	vim.api.nvim_win_get_buf(win)
-
-	-- Assume `buf` is the buffer ID associated with your window.
-	vim.api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
+	vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
 
 	self.winid = win
 	self.bufnr = buf
@@ -203,9 +200,6 @@ function Window:close()
 	vim.api.nvim_win_close(self.winid, true)
 	self.winid = nil
 	self.bufnr = nil
-
-	-- restore modifiable for the bufnr
-	vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
 end
 
 --- Renders `buffer` into the Neovim window.
@@ -220,6 +214,17 @@ function Window:update(buffer)
 		error("Window is not open")
 	end
 	vim.schedule(function()
+		-- Guard against the race where close() ran before this callback executed.
+		-- Without this check, self.bufnr / self.winid are nil and every subsequent
+		-- nvim_* call that receives { buf = nil } silently targets buf=0 (the current
+		-- buffer), corrupting whatever buffer is active at that moment.
+		if not self.bufnr or not vim.api.nvim_buf_is_valid(self.bufnr) then
+			return
+		end
+		if not self.winid or not vim.api.nvim_win_is_valid(self.winid) then
+			return
+		end
+
 		-- buffer content
 		if not self.edits_enabled then
 			vim.api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
