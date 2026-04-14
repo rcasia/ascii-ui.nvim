@@ -47,4 +47,5 @@ test/xdg/local/state/nvim
 
 # Local debug playground — not versioned
 debug.lua
+debug/
 

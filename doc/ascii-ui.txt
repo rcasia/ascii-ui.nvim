@@ -298,16 +298,6 @@ Crea un componente personalizado y lo registra
 
 ==============================================================================
 ------------------------------------------------------------------------------
-@alias ascii-ui.FancyButton.Props { label: string, on_press?: fun() }
-
-------------------------------------------------------------------------------
-                                             *ascii-ui.components.FancyButton()*
-                   `ascii-ui.components.FancyButton`({props})
-@param props ascii-ui.FancyButton.Props
-
-
-==============================================================================
-------------------------------------------------------------------------------
                                                 *ascii-ui.components.Components*
                         `ascii-ui.components.Components`
 @class ascii-ui.Components
