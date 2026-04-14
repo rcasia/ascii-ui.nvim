@@ -1,0 +1,16 @@
+id: component-prop-param-naming
+language: Lua
+message: "Prop type reference should follow the ascii-ui.XxxComponent.Props convention"
+severity: warning
+note: |
+  Canonical form: ascii-ui.XxxComponent.Props (e.g. ascii-ui.ButtonComponent.Props)
+  Found variants: XxxComponentProps, XxxComponentOpts, XxxProps — update the @param annotation
+  to match the renamed type declaration.
+files:
+  - "lua/ascii-ui/components/**"
+rule:
+  kind: comment
+  all:
+    - regex: "@param\\s+props\\??\\s+ascii-ui\\.\\w+(Props|Opts)"
+    - not:
+        regex: "@param\\s+props\\??\\s+ascii-ui\\.\\w+Component\\."

@@ -6,6 +6,9 @@ check:
 	lx --lua-version 5.1 lint
 	stylua --check .
 
+	# running ast-grep rules...
+	ast-grep scan lua/ --error=no-print-statements
+
 	# running doc check...
 	./scripts/check-docs
 

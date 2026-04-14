@@ -1,0 +1,13 @@
+id: no-print-statements
+language: Lua
+message: "Avoid print() — use logger.debug/info/warn/error instead"
+severity: warning
+note: |
+  Direct print() calls bypass the logger and always write to stdout,
+  which pollutes Neovim's output. Use the logger module:
+    local logger = require("ascii-ui.logger")
+    logger.debug("message")
+files:
+  - "lua/ascii-ui/**"
+rule:
+  pattern: print($$$)

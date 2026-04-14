@@ -29,7 +29,8 @@ local function debugPrint(fiber, print_fn)
 		if node:is_leaf() then
 			line = string.format("%s %s", line, node:get_line():to_string())
 		end
-		print(line)
+		-- ast-grep-ignore: no-print-statements
+		print(line) -- `print` is a local alias for `print_fn` or `logger.debug`, not the global
 		-- Recorre hijos
 		local children = {}
 		local child = node.child

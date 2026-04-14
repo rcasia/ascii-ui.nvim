@@ -36,6 +36,7 @@ local function write_log(level, msg, ...)
 
 	if RUNNING_ON_ACTIONS then
 		-- If running on GitHub Actions, log to stdout instead of file
+		-- ast-grep-ignore: no-print-statements
 		print(string.format("[%s] %s", level, msg))
 		return
 	end
