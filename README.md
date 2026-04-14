@@ -67,3 +67,50 @@ end)
 ui.mount(App)
 
 ```
+
+## Live Reload (Experimental)
+
+> **Experimental:** This feature is under active development and the API may change.
+
+ascii-ui.nvim ships a live-reload debug mode that lets you iterate on your UI without leaving the terminal. Save any `.lua` file in the plugin and the running Neovim instance automatically tears down the current UI, unloads all `ascii-ui` modules, and re-executes your script from scratch.
+
+**Requirements:** `nvim` on `$PATH`.
+
+### Quick start
+
+1. Create a `debug.lua` in the repository root (it is git-ignored):
+
+```lua
+local ui       = require("ascii-ui")
+local useState = ui.hooks.useState
+local Paragraph = ui.components.Paragraph
+local Button    = ui.components.Button
+
+local App = ui.createComponent("App", function()
+  local count, setCount = useState(0)
+  return {
+    Paragraph({ content = "count: " .. count }),
+    Button({ label = "+1", on_press = function() setCount(count + 1) end }),
+  }
+end)
+
+ui.mount(App)
+```
+
+2. Start the session:
+
+```sh
+make debug
+# or
+./scripts/debug
+```
+
+Every time you save a `.lua` file under `lua/ascii-ui/` or `debug.lua` itself, the UI reloads automatically. Errors in `debug.lua` are shown as Neovim notifications without crashing the session.
+
+### How it works
+
+| File | Role |
+|---|---|
+| `lua/ascii-ui/dev/init.lua` | Live-reload module — watches the plugin directory, debounces events, unloads modules, re-runs `debug.lua` |
+| `scripts/debug-init.lua` | Minimal Neovim init used for the debug session (no user config loaded) |
+| `scripts/debug` | Shell launcher — resolves paths, exports env vars, opens Neovim |

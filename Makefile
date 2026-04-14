@@ -1,4 +1,4 @@
-.PHONY: test bench
+.PHONY: test bench debug
 
 check:
 	# running luacheck...
@@ -26,6 +26,9 @@ bench: build
 
 docs-check:
 	./scripts/check-docs
+
+debug:
+	bash scripts/debug
 
 docs:
 	./scripts/gendocs

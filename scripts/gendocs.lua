@@ -3,6 +3,7 @@ print("gendocs.lua running...")
 local mini_doc_path = "./.deps/mini.doc"
 local EXCLUDED_FILES = {
 	".-/lib/.-",
+	".-/dev/.-", -- experimental dev-only module, not public API
 }
 
 local function matches_any(path, patterns)

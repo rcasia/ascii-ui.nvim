@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# EXPERIMENTAL: scripts/debug — start an ascii-ui.nvim live-reload debug session.
+#
+# This script is NOT part of the public plugin API and may change or be
+# removed in any future release.  It is intended for contributors and plugin
+# authors who want a fast inner-loop while working on ascii-ui.
+#
+# Usage:
+#   ./scripts/debug           (uses debug.lua in the repo root)
+#   make debug
+#
+# The user should have a debug.lua in the repository root. Example:
+#
+#   local ui     = require("ascii-ui")
+#   local Para   = ui.components.Paragraph
+#   local Button = ui.components.Button
+#   local useState = ui.hooks.useState
+#
+#   local App = ui.createComponent("App", function()
+#     local count, set = useState(0)
+#     return {
+#       Para({ content = "count: " .. count }),
+#       Button({ label = "increment", on_press = function() set(count + 1) end }),
+#     }
+#   end)
+#
+#   ui.mount(App)
+#
+# Any time you save a file under lua/ascii-ui/ or debug.lua itself the running
+# nvim instance automatically closes the current UI, unloads all ascii-ui
+# modules, and re-runs debug.lua from scratch.
+
+set -e
+
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+DEBUG_FILE="${PLUGIN_DIR}/debug.lua"
+
+if [[ ! -f "$DEBUG_FILE" ]]; then
+  cat >&2 <<'EOF'
+No debug.lua found in the repository root.
+
+Create one to get started. Minimal example:
+
+  local ui       = require("ascii-ui")
+  local Paragraph = ui.components.Paragraph
+
+  local App = ui.createComponent("App", function()
+    return { Paragraph({ content = "Hello from debug!" }) }
+  end)
+
+  ui.mount(App)
+
+Then run `make debug` or `./scripts/debug` again.
+EOF
+  exit 1
+fi
+
+export ASCII_UI_PLUGIN_DIR="$PLUGIN_DIR"
+export ASCII_UI_DEBUG_FILE="$DEBUG_FILE"
+
+exec nvim -u "$PLUGIN_DIR/scripts/debug-init.lua"
