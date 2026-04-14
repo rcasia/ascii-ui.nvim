@@ -61,8 +61,12 @@ local AsciiUI = {
 --- running Neovim session:
 ---   `:lua require("ascii-ui").debug("lua/myplugin/MyComp.lua")`
 ---
+--- When a `watcher` is not provided, a `BufWritePost` autocmd is registered
+--- for the loaded file. Each save closes the current window and re-mounts
+--- the component automatically (live-reload).
+---
 --- @param file string Path to a Lua file that returns a component.
---- @param opts? { loader?: fun(path: string): any, mounter?: fun(comp: any): integer, notifier?: fun(msg: string, level: integer) }
+--- @param opts? { loader?: fun(path: string): any, mounter?: fun(comp: any): integer, notifier?: fun(msg: string, level: integer), watcher?: fun(path: string, bufnr: integer, reload: fun()) }
 --- @return integer|nil bufnr
 function AsciiUI.debug(file, opts)
 	opts = opts or {}
@@ -77,7 +81,38 @@ function AsciiUI.debug(file, opts)
 		return nil
 	end
 
-	return mounter(result)
+	local bufnr = mounter(result)
+
+	-- Determine the watcher to use.
+	-- • opts.watcher provided → caller controls watching (useful for tests and custom setups)
+	-- • opts.watcher absent   → register a default BufWritePost autocmd so that saving the
+	--   component file closes the old window and re-mounts automatically (live-reload).
+	local watcher = opts.watcher
+	if watcher == nil then
+		watcher = function(path, buf, reload)
+			local winid = vim.fn.bufwinid(buf or -1)
+			local autocmd_id
+			autocmd_id = vim.api.nvim_create_autocmd("BufWritePost", {
+				pattern = path,
+				callback = function()
+					-- Remove ourselves; the re-mount will register a fresh watcher.
+					vim.api.nvim_del_autocmd(autocmd_id)
+					if vim.api.nvim_win_is_valid(winid) then
+						vim.api.nvim_win_close(winid, true)
+					end
+					vim.schedule(reload)
+				end,
+			})
+		end
+	end
+
+	if type(watcher) == "function" then
+		watcher(abs_path, bufnr, function()
+			AsciiUI.debug(file, opts)
+		end)
+	end
+
+	return bufnr
 end
 
 function AsciiUI.setup(config)

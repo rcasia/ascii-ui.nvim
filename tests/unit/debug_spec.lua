@@ -97,4 +97,80 @@ describe("ui.debug", function()
 			assert.is_true(found)
 		end)
 	end)
+
+	describe("live-reload watcher", function()
+		local function make_component()
+			return ui.createComponent("Fixture", function()
+				return {}
+			end)
+		end
+
+		it("calls watcher with (abs_path, bufnr, reload) after a successful mount", function()
+			local abs = vim.fn.fnamemodify("any/comp.lua", ":p")
+			local captured = nil
+
+			ui.debug("any/comp.lua", {
+				loader = function(_)
+					return make_component()
+				end,
+				mounter = function(_)
+					return 77
+				end,
+				watcher = function(path, bufnr, reload)
+					captured = { path = path, bufnr = bufnr, reload = reload }
+				end,
+			})
+
+			assert.is_not_nil(captured, "expected watcher to be called")
+			assert.are.same(abs, captured.path)
+			assert.are.same(77, captured.bufnr)
+			assert.is_function(captured.reload)
+		end)
+
+		it("calling reload re-runs loader and mounter", function()
+			local load_count = 0
+			local mount_count = 0
+			local captured_reload = nil
+
+			ui.debug("any/comp.lua", {
+				loader = function(_)
+					load_count = load_count + 1
+					return make_component()
+				end,
+				mounter = function(_)
+					mount_count = mount_count + 1
+					return mount_count
+				end,
+				watcher = function(_, _, reload)
+					captured_reload = reload
+				end,
+			})
+
+			assert.is_not_nil(captured_reload, "expected watcher to be called with reload fn")
+			assert.are.same(1, load_count)
+			assert.are.same(1, mount_count)
+
+			captured_reload()
+
+			assert.are.same(2, load_count)
+			assert.are.same(2, mount_count)
+		end)
+
+		it("does not call watcher when loader throws", function()
+			local watcher_called = false
+
+			ui.debug("bad/path.lua", {
+				loader = function(_)
+					error("broken")
+				end,
+				mounter = function(_) end,
+				notifier = function(_) end,
+				watcher = function(_, _, _)
+					watcher_called = true
+				end,
+			})
+
+			assert.is_false(watcher_called)
+		end)
+	end)
 end)
