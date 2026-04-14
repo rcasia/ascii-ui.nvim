@@ -78,26 +78,31 @@ ascii-ui.nvim ships a live-reload debug mode that lets you iterate on your UI wi
 
 ### Quick start
 
-1. Create a `debug.lua` in the repository root (it is git-ignored):
+1. Write your component in any `.lua` file and return it:
 
 ```lua
-local ui       = require("ascii-ui")
+-- lua/myplugin/MyComp.lua
+local ui = require("ascii-ui")
 local useState = ui.hooks.useState
 local Paragraph = ui.components.Paragraph
 local Button    = ui.components.Button
 
-local App = ui.createComponent("App", function()
+return ui.createComponent("MyComp", function()
   local count, setCount = useState(0)
   return {
     Paragraph({ content = "count: " .. count }),
     Button({ label = "+1", on_press = function() setCount(count + 1) end }),
   }
 end)
-
-ui.mount(App)
 ```
 
-2. Start the session:
+2. Create a `debug.lua` in the repository root (it is git-ignored) that points at it:
+
+```lua
+require("ascii-ui").debug("lua/myplugin/MyComp.lua")
+```
+
+3. Start the session:
 
 ```sh
 make debug
@@ -105,12 +110,19 @@ make debug
 ./scripts/debug
 ```
 
-Every time you save a `.lua` file under `lua/ascii-ui/` or `debug.lua` itself, the UI reloads automatically. Errors in `debug.lua` are shown as Neovim notifications without crashing the session.
+Every time you save any `.lua` file under `lua/` or `debug.lua` itself, the UI reloads automatically. Errors are shown as Neovim notifications without crashing the session.
+
+`ui.debug` also works from any running Neovim session without `make debug`:
+
+```
+:lua require("ascii-ui").debug("lua/myplugin/MyComp.lua")
+```
 
 ### How it works
 
-| File | Role |
+| File / API | Role |
 |---|---|
+| `ui.debug(file)` | Loads the component file with `dofile`, mounts it, and returns the `bufnr` |
 | `lua/ascii-ui/dev/init.lua` | Live-reload module — watches the plugin directory, debounces events, unloads modules, re-runs `debug.lua` |
 | `scripts/debug-init.lua` | Minimal Neovim init used for the debug session (no user config loaded) |
 | `scripts/debug` | Shell launcher — resolves paths, exports env vars, opens Neovim |
