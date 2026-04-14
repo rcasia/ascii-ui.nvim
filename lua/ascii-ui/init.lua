@@ -51,6 +51,35 @@ local AsciiUI = {
 	end,
 }
 
+--- EXPERIMENTAL: Load a component from a file and mount it.
+---
+--- Resolves `file` against cwd (relative paths work naturally when called
+--- from `debug.lua` launched by `make debug`).  Executes the file with
+--- `dofile()` and mounts the returned component.
+---
+--- Designed for the live-reload debug session but also works from a
+--- running Neovim session:
+---   `:lua require("ascii-ui").debug("lua/myplugin/MyComp.lua")`
+---
+--- @param file string Path to a Lua file that returns a component.
+--- @param opts? { loader?: fun(path: string): any, mounter?: fun(comp: any): integer, notifier?: fun(msg: string, level: integer) }
+--- @return integer|nil bufnr
+function AsciiUI.debug(file, opts)
+	opts = opts or {}
+	local loader = opts.loader or dofile
+	local mounter = opts.mounter or mount
+	local notifier = opts.notifier or vim.notify
+
+	local abs_path = vim.fn.fnamemodify(file, ":p")
+	local ok, result = pcall(loader, abs_path)
+	if not ok then
+		notifier("[ascii-ui] debug: error loading " .. file .. ":\n" .. tostring(result), vim.log.levels.ERROR)
+		return nil
+	end
+
+	return mounter(result)
+end
+
 function AsciiUI.setup(config)
 	config = config or {}
 	user_config.set(config)

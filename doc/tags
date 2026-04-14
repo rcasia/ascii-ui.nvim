@@ -1,4 +1,5 @@
 ascii-ui.AsciiUI	ascii-ui.txt	/*ascii-ui.AsciiUI*
+ascii-ui.AsciiUI.debug()	ascii-ui.txt	/*ascii-ui.AsciiUI.debug()*
 ascii-ui.Cursor	ascii-ui.txt	/*ascii-ui.Cursor*
 ascii-ui.Cursor.current_position()	ascii-ui.txt	/*ascii-ui.Cursor.current_position()*
 ascii-ui.Cursor.last_movement_direction()	ascii-ui.txt	/*ascii-ui.Cursor.last_movement_direction()*
@@ -78,6 +79,7 @@ ascii-ui.components.Box()	ascii-ui.txt	/*ascii-ui.components.Box()*
 ascii-ui.components.Button()	ascii-ui.txt	/*ascii-ui.components.Button()*
 ascii-ui.components.Checkbox()	ascii-ui.txt	/*ascii-ui.components.Checkbox()*
 ascii-ui.components.Components	ascii-ui.txt	/*ascii-ui.components.Components*
+ascii-ui.components.FancyButton()	ascii-ui.txt	/*ascii-ui.components.FancyButton()*
 ascii-ui.components.Paragraph()	ascii-ui.txt	/*ascii-ui.components.Paragraph()*
 ascii-ui.components.Select()	ascii-ui.txt	/*ascii-ui.components.Select()*
 ascii-ui.components.Slider()	ascii-ui.txt	/*ascii-ui.components.Slider()*

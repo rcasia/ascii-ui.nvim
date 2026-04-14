@@ -845,6 +845,23 @@ Executes a callback function after a specified delay.
                                `ascii-ui.AsciiUI`
 @class ascii-ui.AsciiUI
 
+------------------------------------------------------------------------------
+                                                      *ascii-ui.AsciiUI.debug()*
+                    `ascii-ui.AsciiUI.debug`({file}, {opts})
+EXPERIMENTAL: Load a component from a file and mount it.
+
+Resolves `file` against cwd (relative paths work naturally when called
+from `debug.lua` launched by `make debug`).  Executes the file with
+`dofile()` and mounts the returned component.
+
+Designed for the live-reload debug session but also works from a
+running Neovim session:
+  `:lua require("ascii-ui").debug("lua/myplugin/MyComp.lua")`
+
+@param file string Path to a Lua file that returns a component.
+@param opts? { loader?: fun(path: string): any, mounter?: fun(comp: any): integer, notifier?: fun(msg: string, level: integer) }
+@return integer|nil bufnr
+
 
 ==============================================================================
 ------------------------------------------------------------------------------
