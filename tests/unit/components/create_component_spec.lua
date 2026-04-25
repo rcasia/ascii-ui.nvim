@@ -120,4 +120,25 @@ describe("ui.createComponent", function()
 		assert.truthy(err:find("string"), "error should mention expected type 'string'")
 		assert.truthy(err:find("number"), "error should mention actual type 'number'")
 	end)
+	-- layout metadata: createComponent con tercer arg extendido { props, layout }
+	describe("extended third arg", function()
+		it("stores layout metadata on the fiber node", function()
+			local fiber = require("ascii-ui.fiber")
+
+			local WithLayout = ui.createComponent("WithLayout", function(props)
+				return { Segment:new({ content = props.label }):wrap() }
+			end, {
+				props = { label = "string" },
+				layout = { direction = "row" },
+			})
+
+			local root = fiber.render(function()
+				return WithLayout({ label = "hello" })
+			end)
+
+			assert.is_not_nil(root.child, "component should appear as child fiber")
+			assert.is_not_nil(root.child.layout, "fiber should expose layout field")
+			assert.are.equal("row", root.child.layout.direction)
+		end)
+	end)
 end)
