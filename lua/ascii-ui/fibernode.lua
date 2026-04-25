@@ -18,6 +18,7 @@ local props_are_equal = require("ascii-ui.utils.props_are_equal")
 --- @field type string
 --- @field tag "PLACEMENT" | "REPLACEMENT" | "UPDATE" | "NONE"
 --- @field props table | nil
+--- @field layout? ascii-ui.LayoutHint
 --- @field root? ascii-ui.RootFiberNode
 --- @field parent? ascii-ui.FiberNode
 --- @field sibling? ascii-ui.FiberNode
@@ -71,6 +72,7 @@ function FiberNode.new(fields)
 		effects = fields.effects or {},
 		effectIndex = fields.effectIndex or 1,
 		pendingEffects = fields.pendingEffects or {},
+		layout = fields.layout,
 	}
 
 	--- @type ascii-ui.FiberNode
@@ -316,6 +318,7 @@ function FiberNode:clone_for_diff()
 		output = self.output,
 		child = self.child,
 		sibling = self.sibling,
+		layout = self.layout,
 	})
 end
 
@@ -376,81 +379,43 @@ end
 function FiberNode:add_effect(eff, eff_type)
 	logger.debug("Adding effect for fiber %s", self.type)
 	if eff_type == "ONCE" then
-		logger.debug("this effect is once")
-		self.pendingEffects[#self.pendingEffects + 1] = eff
-	end
-	if eff_type == "REPEATING" then
-		logger.debug("this effect is repeating")
+		logger.debug("Adding ONCE effect for fiber %s", self.type)
+		table.insert(self.pendingEffects, eff)
+	else
+		logger.debug("Adding REPEATING effect for fiber %s", self.type)
 		self.repeatingEffects = self.repeatingEffects or {}
-		self.repeatingEffects[self.effectIndex] = eff
+		table.insert(self.repeatingEffects, eff)
 	end
 end
 
---- @param cu function
-function FiberNode:add_cleanup(cu)
-	logger.debug("Adding cleanup for fiber %s", self.type)
-	self.pendingCleanups[#self.pendingCleanups + 1] = cu
+--- @param cleanup function
+function FiberNode:add_cleanup(cleanup)
+	self.pendingCleanups = self.pendingCleanups or {}
+	table.insert(self.pendingCleanups, cleanup)
 end
 
-function FiberNode:unmount()
-	--- @param fiber ascii-ui.FiberNode
-	local function traverse(fiber)
-		-- 1) Primero descendemos a todos los hijos (post-order)
-		local children = {}
-		local child = fiber.child
-		while child do
-			children[#children + 1] = child
-			child = child.sibling
-		end
-		for _, c in ipairs(children) do
-			traverse(c)
-		end
-
-		-- 2) Luego ejecutamos los cleanups de este fiber en orden inverso (LIFO)
-		for i = #fiber.effects, 1, -1 do
-			local effect = fiber.effects[i]
-			effect.cleanup()
-		end
+--- @return ascii-ui.Buffer | nil
+function FiberNode:get_last_rendered()
+	if self.root then
+		return self.root.lastRendered
 	end
-
-	traverse(self)
+	return nil
 end
 
---- @return ascii-ui.FiberNode[]
-function FiberNode:to_list()
-	return vim.iter(self:iter())
-		:map(function(node)
-			return vim.deepcopy(node)
-		end)
-		:totable()
+function FiberNode:set_last_rendered(buffer)
+	if self.root then
+		self.root.lastRendered = buffer
+	end
 end
 
---- @return function[]
-function FiberNode:pending_effects()
-	return vim.iter(self:to_list())
-		:map(function(node)
-			return node.pendingEffects
-		end)
-		:flatten()
-		:totable()
-end
-
-function FiberNode:has_pending_effects()
-	return #self:pending_effects() > 0
-end
-
---- @return ascii-ui.Buffer
-function FiberNode:get_buffer()
-	local buffer = Buffer.new()
-
-	--- @param node ascii-ui.FiberNode
-	vim.iter(self.root:iter()):each(function(node)
-		if node:is_leaf() then
-			buffer:add(node:get_line())
-		end
-	end)
-
-	return buffer
+--- Returns true if this fiber node needs to be reconciled / re-rendered
+--- @param prev ascii-ui.FiberNode
+--- @return boolean
+function FiberNode:needs_update(prev)
+	if not prev then
+		return true
+	end
+	return not self:is_same(prev)
 end
 
 return FiberNode
