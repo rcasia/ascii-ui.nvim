@@ -43,7 +43,7 @@ end
 --- @alias ascii-ui.SimpleComponentFunction fun(props: T): ascii-ui.FiberNode[]
 ---
 
--- - @generic P : table<string, any>
+--- - @generic P : table<string, any>
 --- @alias ascii-ui.FunctionalComponent<P> fun(props?: P): ascii-ui.FiberNode
 
 --- Crea un componente personalizado y lo registra
