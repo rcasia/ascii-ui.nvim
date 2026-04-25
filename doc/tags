@@ -79,7 +79,6 @@ ascii-ui.components.Box()	ascii-ui.txt	/*ascii-ui.components.Box()*
 ascii-ui.components.Button()	ascii-ui.txt	/*ascii-ui.components.Button()*
 ascii-ui.components.Checkbox()	ascii-ui.txt	/*ascii-ui.components.Checkbox()*
 ascii-ui.components.Components	ascii-ui.txt	/*ascii-ui.components.Components*
-ascii-ui.components.FancyButton()	ascii-ui.txt	/*ascii-ui.components.FancyButton()*
 ascii-ui.components.Paragraph()	ascii-ui.txt	/*ascii-ui.components.Paragraph()*
 ascii-ui.components.Select()	ascii-ui.txt	/*ascii-ui.components.Select()*
 ascii-ui.components.Slider()	ascii-ui.txt	/*ascii-ui.components.Slider()*

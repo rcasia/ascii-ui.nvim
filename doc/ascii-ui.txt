@@ -848,8 +848,12 @@ Designed for the live-reload debug session but also works from a
 running Neovim session:
   `:lua require("ascii-ui").debug("lua/myplugin/MyComp.lua")`
 
+When a `watcher` is not provided, a `BufWritePost` autocmd is registered
+for the loaded file. Each save closes the current window and re-mounts
+the component automatically (live-reload).
+
 @param file string Path to a Lua file that returns a component.
-@param opts? { loader?: fun(path: string): any, mounter?: fun(comp: any): integer, notifier?: fun(msg: string, level: integer) }
+@param opts? { loader?: fun(path: string): any, mounter?: fun(comp: any): integer, notifier?: fun(msg: string, level: integer), watcher?: fun(path: string, bufnr: integer, reload: fun()) }
 @return integer|nil bufnr
 
 
