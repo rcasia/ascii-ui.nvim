@@ -130,9 +130,14 @@ describe("ui.createComponent", function()
 			end, { text = "string" })
 
 			-- valid call works
-			eq({ "hello" }, renderer:render(function()
-				return Flat({ text = "hello" })
-			end):to_lines())
+			eq(
+				{ "hello" },
+				renderer
+					:render(function()
+						return Flat({ text = "hello" })
+					end)
+					:to_lines()
+			)
 
 			-- invalid prop still raises
 			local ok, err = pcall(function()
@@ -155,9 +160,14 @@ describe("ui.createComponent", function()
 			})
 
 			-- renders correctly
-			eq({ "hello" }, renderer:render(function()
-				return WithLayout({ label = "hello" })
-			end):to_lines())
+			eq(
+				{ "hello" },
+				renderer
+					:render(function()
+						return WithLayout({ label = "hello" })
+					end)
+					:to_lines()
+			)
 
 			-- fiber carries layout metadata
 			local root = fiber.render(function()
