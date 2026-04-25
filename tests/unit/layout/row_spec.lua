@@ -46,7 +46,7 @@ describe("Row", function()
 					return Segment:new(props.content):wrap()
 				end)
 				:totable()
-		end
+			end
 	end, { content = "string", times = "number" })
 
 	it("should render components respecting the empty space on the left", function()
@@ -63,5 +63,52 @@ describe("Row", function()
 			"            component 2 component 3",
 			"                        component 3",
 		}, renderer:render(App):to_lines())
+	end)
+
+	-- NEW: layout descriptor contract
+	-- Row({ children = {...} }) should expose layout metadata and
+	-- its children as real child/sibling fibers in the tree,
+	-- so the layout pass can place them without running the render closure.
+	describe("layout descriptor", function()
+		it("Row fiber should carry layout.direction = 'row'", function()
+			local fiber = require("ascii-ui.fiber")
+
+			local App = ui.createComponent("DescriptorApp", function()
+				return Row({
+					children = {
+						DummyComponent({ content = "left" }),
+						DummyComponent({ content = "right" }),
+					},
+				})
+			end)
+
+			local root = fiber.render(App)
+			local row_fiber = root.child
+
+			assert.is_not_nil(row_fiber, "Row should be a child fiber of App")
+			assert.are.equal("Row", row_fiber.type)
+			assert.is_not_nil(row_fiber.layout, "Row fiber should have a layout field")
+			assert.are.equal("row", row_fiber.layout.direction)
+		end)
+
+		it("Row children should be materialized as child/sibling fibers in the tree", function()
+			local fiber = require("ascii-ui.fiber")
+
+			local App = ui.createComponent("ChildrenApp", function()
+				return Row({
+					children = {
+						DummyComponent({ content = "left" }),
+						DummyComponent({ content = "right" }),
+					},
+				})
+			end)
+
+			local root = fiber.render(App)
+			local row_fiber = root.child
+
+			assert.is_not_nil(row_fiber.child, "Row should have a first child fiber")
+			assert.is_not_nil(row_fiber.child.sibling, "First child should have a sibling")
+			assert.is_nil(row_fiber.child.sibling.sibling, "Should be exactly two children")
+		end)
 	end)
 end)
