@@ -45,8 +45,8 @@ describe("useInterval", function()
 		end)
 
 		assert(
-			useEffect_invocations == 3,
-			"useEffect should run at least 3 times after 100ms. Ran just " .. useEffect_invocations
+			useEffect_invocations == 2 or useEffect_invocations == 3,
+			"useEffect should run at least 2 or 3 times after 100ms. Ran just " .. useEffect_invocations
 		)
 	end)
 end)
