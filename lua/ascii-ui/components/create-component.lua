@@ -12,6 +12,16 @@ local memoize = require("ascii-ui.utils.memoize")
 ---| "table"
 ---| "function"
 
+--- @class ascii-ui.LayoutHint
+--- @field algorithm? string
+--- @field direction? "row" | "column"
+--- @field gap? integer
+--- @field align? string
+
+--- @class ascii-ui.ComponentMeta
+--- @field props? table<string, ascii-ui.PropsType>
+--- @field layout? ascii-ui.LayoutHint
+
 --- @param props table<string, any>
 --- @param types table<string, ascii-ui.PropsType>
 --- @param component_name string
@@ -37,6 +47,29 @@ local function validate_props(props, types, component_name)
 	end)
 end
 
+--- Normalises the third argument of createComponent.
+---
+--- Accepts two shapes:
+---   flat (legacy):  { key = "type", ... }
+---   extended:       { props = { key = "type" }, layout = { direction = "row" } }
+---
+--- Always returns { types = table, layout = table|nil }.
+---
+--- @param meta table | nil
+--- @return table types, ascii-ui.LayoutHint | nil layout
+local function normalise_meta(meta)
+	if meta == nil then
+		return {}, nil
+	end
+	-- Extended form is detected by the presence of a `props` or `layout` key
+	-- whose value is a table (not a PropsType string).
+	if type(meta.props) == "table" or type(meta.layout) == "table" then
+		return meta.props or {}, meta.layout or nil
+	end
+	-- Flat legacy form: the whole table is the prop-type map.
+	return meta, nil
+end
+
 --- @alias ascii-ui.TemplateString string
 
 --- @generic ascii-ui.ComponentClosure, T
@@ -50,17 +83,25 @@ end
 --- @generic ascii-ui.ComponentClosure, T
 --- @param name string Nombre del componente
 --- @param functional_component fun(props: T): ascii-ui.FiberNode[]
---- @param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
+--- @param meta? table<string, ascii-ui.PropsType> | ascii-ui.ComponentMeta
 --- @return ascii-ui.FunctionalComponent
 ---
 --- @overload fun(functional_component: ascii-ui.SimpleComponentFunction): ascii-ui.FunctionalComponent
-local function createComponent(name, functional_component, types)
-	local opts = { name = name, functional_component = functional_component, types = types or {} }
+local function createComponent(name, functional_component, meta)
+	local prop_types, layout_hint = normalise_meta(meta)
+
+	local opts = {
+		name = name,
+		functional_component = functional_component,
+		types = prop_types,
+		layout = layout_hint,
+	}
 
 	if type(opts.name) == "function" then
 		opts.functional_component = opts.name
 		opts.name = "anonymous"
-		opts.types = types or {}
+		opts.types = {}
+		opts.layout = nil
 	end
 
 	-- Validar que el nombre sea único
@@ -101,6 +142,7 @@ local function createComponent(name, functional_component, types)
 				type = opts.name,
 				props = props or _args,
 				closure = closure,
+				layout = opts.layout,
 			})
 		end,
 	})
