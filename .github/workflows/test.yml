@@ -11,26 +11,33 @@ on:
       - "scripts/**"
       - "*.lua"
       - "Makefile"
+      - "lux.toml"
       - ".github/workflows/test.yml"
   workflow_call:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    name: Neovim ${{ matrix.nvim-version }}
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
         nvim-version: [stable, v0.11.7, nightly]
     steps:
-      - name: checkout
+      - name: Checkout repository
         uses: actions/checkout@v6
 
-      - uses: rhysd/action-setup-vim@v1
+      - name: Setup Neovim
+        uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
           version: ${{ matrix.nvim-version }}
 
+      - name: Install Lux
+        uses: lumen-oss/gh-actions-lux@v1
+        with:
+          version: "0.40.3"
+
       - name: Run tests
-        run: make test
+        run: lx test
         timeout-minutes: 3
