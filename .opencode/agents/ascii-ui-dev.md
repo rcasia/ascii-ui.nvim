@@ -46,6 +46,12 @@ Neovim Floating Window or Stdout
 
 ### Before Making Changes
 
+0. **Rebase from origin/main**: Before any work, ensure your branch is up to date:
+   ```bash
+   git fetch origin
+   git rebase origin/main
+   ```
+   Always work on the latest code. Stale branches cause merge conflicts and wasted effort.
 1. **Understand the context**: Read relevant files, check existing patterns
 2. **Check conventions**: Follow the module pattern, component pattern, naming conventions
 3. **Plan the approach**: Consider how changes affect the fiber tree, rendering, and state
@@ -105,6 +111,26 @@ make test                          # Full suite
 make test tests/unit/my_spec.lua   # Single file
 ```
 
+#### Async E2E Testing
+
+E2E test helpers that check buffer content or cursor position must use `vim.wait()` to poll for async operations:
+
+```lua
+-- CORRECT: poll until condition met or timeout
+function M.bufferContains(text)
+    vim.wait(2000, function()
+        -- check buffer content
+    end, 50)
+end
+
+-- WRONG: single check without waiting
+function M.bufferContains(text)
+    return string.find(buf_content, text) ~= nil
+end
+```
+
+This matches the behavior of existing E2E tests where rendering is async.
+
 ### Code Quality
 
 Always run before committing:
@@ -117,6 +143,14 @@ make test     # Run tests
 - **luacheck**: no warnings or errors
 - **Type annotations**: LuaCATS format with `ascii-ui.` prefix
 
+#### Docs Generation in /tmp Workspaces
+
+`make docs` uses `vim.loop.cwd()` tail for output filename. When working in `/tmp/ascii-ui-xxx/`, it generates `doc/ascii-ui-xxx.txt` instead of `doc/ascii-ui.txt`. Fix with env var:
+
+```bash
+DOC_OUTPUT_FILE=doc/ascii-ui.txt make docs
+```
+
 ### Before Committing
 
 **MANDATORY**: Before any commit, you MUST:
@@ -124,6 +158,21 @@ make test     # Run tests
 1. **Consult convention-reviewer**: Request a review of your changes. Do NOT commit without explicit approval from convention-reviewer.
 2. **Wait for approval**: If convention-reviewer finds violations, fix them before committing.
 3. **Verify CI will pass**: Local `make check` and `make test` must pass, but this is not sufficient.
+
+#### Pushing and PR Creation
+
+When working in `/tmp/` workspaces, `origin` remote may point to the local repo (not GitHub). Before pushing:
+
+```bash
+git remote -v   # verify remote URLs
+```
+
+If `origin` is a local path, push to the `github` remote instead:
+```bash
+git push github feature/my-branch
+```
+
+If `gh` CLI is not authenticated, delegate PR creation to task-scheduler. Push the branch and report — task-scheduler will create the PR.
 
 ### Definition of Done
 
@@ -145,6 +194,19 @@ A task is NOT done when:
 **Local tests passing ≠ done.** You must verify the pipeline is green on main after merge. If CI fails on GitHub, you must fix it.
 
 ## Common Patterns
+
+### Module Structure for Submodules
+
+When creating a module exposed as `require("ascii-ui.foo")`, use the directory + `init.lua` pattern:
+
+```
+lua/ascii-ui/foo/
+├── init.lua          # re-exports public API
+├── bar.lua
+└── baz.lua
+```
+
+Do NOT use `lua/ascii-ui/foo.lua` — this causes `mini.doc` duplicate tag issues because the docs generator uses the directory name as module prefix. The `init.lua` pattern ensures proper `ascii-ui.foo` prefix in generated docs.
 
 ### Creating a New Component
 
@@ -307,6 +369,9 @@ Global skills (listed in `available_skills` by the runtime) are general-purpose 
 4. Patterns become permanent improvements to the agent system
 
 ## Changelog
+
+- 2026-08-08: Added async E2E testing guidance (vim.wait pattern), docs generation /tmp workaround (DOC_OUTPUT_FILE), remote verification for /tmp workspaces, PR delegation fallback, and module structure guidance (init.lua pattern for submodules)
+- 2026-08-08: Added mandatory rebase from origin/main step before implementation
 
 - 2026-08-08: Forbidden from writing to `.opencode/` — only agent-teacher may modify agent files
 - 2026-08-08: Made convention-reviewer consultation mandatory before commits
