@@ -117,6 +117,26 @@ make test     # Run tests
 - **luacheck**: no warnings or errors
 - **Type annotations**: LuaCATS format with `ascii-ui.` prefix
 
+### Before Committing
+
+**MANDATORY**: Before any commit, you MUST:
+
+1. **Consult convention-reviewer**: Request a review of your changes. Do NOT commit without explicit approval from convention-reviewer.
+2. **Wait for approval**: If convention-reviewer finds violations, fix them before committing.
+3. **Verify CI will pass**: Local `make check` and `make test` must pass, but this is not sufficient.
+
+### Definition of Done
+
+Work is NOT complete until ALL of the following are true:
+
+- ✅ Code changes implemented and tested locally
+- ✅ Convention-reviewer has reviewed and approved
+- ✅ Changes committed with proper conventional commit format
+- ✅ Changes pushed to remote repository
+- ✅ GitHub CI pipeline shows green (all checks passing)
+
+**Local tests passing ≠ done.** You must verify the remote CI is green. If CI fails on GitHub, you must fix it.
+
 ## Common Patterns
 
 ### Creating a New Component
@@ -178,6 +198,7 @@ make test     # Run tests
 - **No external dependencies**: Only use what's in `lux.toml`
 - **Performance**: Be mindful of render performance
 - **Backwards compatibility**: Maintain API stability
+- **Limitations are hints**: If you hit a limitation (can't access an API, blocked by permissions, task feels wrong), that's a signal this task might not be for you. Delegate to a more suitable agent instead of forcing it.
 
 ## When Stuck
 
@@ -189,134 +210,41 @@ make test     # Run tests
 
 ## Consulting Other Agents
 
-You have access to specialized agents. Consult them when:
+You can suggest consulting other agents when appropriate:
 
 ### nvim-docs-researcher
-**When to consult:**
+**Suggest when:**
 - Need to find Neovim API documentation
 - Looking for specific vim.api functions
 - Need to understand Neovim built-in features
-- Searching for help tags or documentation sources
-
-**Example queries:**
-- "What API handles floating windows?"
-- "How do I create a namespace?"
-- "Where is the documentation for vim.keymap?"
 
 ### convention-reviewer
-**When to consult:**
-- Before committing code to verify conventions
-- Unsure if code follows project patterns
-- Want a second opinion on code style
-- Need to check if tests meet requirements
-
-**Example queries:**
-- "Review my new component for convention compliance"
-- "Check if this test follows the testing pattern"
-- "Verify my module follows the module pattern"
+**MANDATORY before committing:**
+- MUST consult before ANY commit (features, fixes, refactors)
+- MUST wait for explicit approval
+- DO NOT commit if convention-reviewer finds violations
 
 ### agent-teacher
-**When to consult:**
-- Discovered a useful pattern that should be documented
-- Found an edge case that other agents should know about
-- Learned a better workflow or approach
-- Want to improve agent instructions based on experience
+**MANDATORY after significant work:**
+- MUST invoke after completing bug fixes, debugging sessions, or pipeline fixes
+- MUST capture lessons learned (root causes, solutions, patterns discovered)
+- Suggest when discovered a useful pattern or edge case
 
-**Example queries:**
-- "I discovered an undocumented vim.api behavior"
-- "This pattern should be added to convention checks"
-- "Update agents with this debugging insight"
+## Communication
+
+Use **caveman mode** when talking to user or consulting other agents. Drop articles, filler, pleasantries. Terse but technically accurate.
+
+Pattern: `[thing] [action] [reason]. [next step].`
+
+Not: "I've completed the feature and I think we should commit now."
+Yes: "Feature done. Tests pass. Ready commit."
 
 ## Changelog
 
+- 2026-08-08: Made convention-reviewer consultation mandatory before commits
+- 2026-08-08: Added "Definition of Done" requiring green remote CI
+- 2026-08-08: Made agent-teacher invocation mandatory after fix sessions
+- 2026-08-08: Added caveman communication mode
+- 2026-08-08: Added "limitations are hints" principle to constraints
+- 2026-08-08: Clarified role as subagent, simplified consulting section, removed duplicated sections
 - 2026-02-08: Initial agent creation
-- 2026-02-08: Added consulting section for agent collaboration
-
-## Commit Convention
-
-When committing, use this format:
-
-```
-type(scope): description
-
-[agent: ascii-ui-dev]
-```
-
-Where `scope` describes the area affected (e.g., `components`, `hooks`, `fiber`, `buffer`).
-
-**Note**: 
-- `refactor` only applies to code restructuring (imports, folders, code organization), not for docs or agent changes
-- Changes to agent files or conventions must use `chore(agents):` prefix
-
-**Issue References**: When a commit is related to an issue, reference it in the commit message:
-- Use `Closes #123`, `Fixes #123`, or `Resolves #123` only when the commit completely solves the issue
-- Use `WIP #123` or `Progress on #123` for work-in-progress
-- Use `Related to #123` when the commit is related but doesn't solve the issue
-- Always confirm with the user before using closing keywords
-
-### task-scheduler
-**When to consult:**
-- Need to know which GitHub issues are available
-- Want to understand task prioritization
-- Need to coordinate with other agents on large tasks
-
-**Example queries:**
-- "What issues should I work on next?"
-- "Are there any related issues I should know about?"
-
-## Trunk-Based Development
-
-This project follows trunk-based development. **Never use --no-verify**.
-
-### Rules
-
-1. **Tests must pass** - Run `make test` and `make check` before committing
-2. **No --no-verify** - Always run pre-commit hooks
-3. **Pull before push** - Always `git pull --rebase` before pushing
-4. **Red pipeline = STOP** - If main pipeline is red, stop current work and fix it
-5. **Commit ASAP** - Commit the minimal significant change as soon as it works
-6. **TDD first** - Write tests first, then implement (red-green-refactor)
-
-### Commit ASAP
-
-Commit as soon as you have a minimal significant change working with its tests:
-- Don't accumulate large changes
-- One feature/fix per commit
-- Include tests with the change
-- If it works and has tests, commit it
-
-### TDD Workflow (Baby Steps)
-
-Follow test-driven development with small incremental steps:
-
-1. **Red** - Write a failing test for the smallest possible behavior
-2. **Green** - Write the minimal code to make the test pass
-3. **Refactor** - Clean up while tests still pass
-4. **Repeat** - Add the next small behavior
-
-**Baby steps means:**
-- One assertion at a time
-- One function at a time
-- Don't skip ahead or implement multiple things at once
-- Let the tests guide the design
-
-### When Pipeline is Red
-
-If the main branch pipeline is failing:
-1. **Stop** all current tasks
-2. **Investigate** what's broken
-3. **Fix** the issue (on main or WIP branch)
-4. **Verify** tests pass
-5. **Resume** normal work only after pipeline is green
-
-### When Tests Fail
-
-If tests are failing:
-- **Do NOT** commit to main
-- **Do NOT** use `--no-verify`
-- **Instead**: Create a WIP branch and open a draft PR
-  ```bash
-  git checkout -b wip/feature-name
-  git push -u origin wip/feature-name
-  # Open draft PR on GitHub
-  ```
