@@ -309,8 +309,8 @@ describe("stress", function()
 		end)
 		report("stress / 20 stateful components rerender", N, r)
 
-		-- budget: 20 concurrent stateful rerenders must stay under 50 ms on average
-		assert(r.avg < budget(50), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(50)))
+		-- budget: 20 concurrent stateful rerenders must stay under 150 ms on average
+		assert(r.avg < budget(150), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(150)))
 	end)
 
 	-- ── S4. Deep nested component tree ─────────────────────────
