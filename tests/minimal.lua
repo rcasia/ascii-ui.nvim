@@ -12,8 +12,8 @@ local add_to_luapath = function(dir)
 	}, ";")
 end
 
--- add project dir first
-add_to_luapath(".")
+-- add project dir first (lua source directory)
+add_to_luapath("./lua")
 
 -- add lux test dependencies
 for _, dir in ipairs(lux_dependencies) do
