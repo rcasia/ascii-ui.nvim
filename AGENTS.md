@@ -572,3 +572,43 @@ agent-teacher can create new specialized agents when gaps are identified.
 5. Document in `AGENTS.md`
 6. Test on sample tasks
 7. Commit immediately
+
+## Documentation Sync
+
+When changes are made to `lua/ascii-ui/` or `doc/ascii-ui.txt`, the Docusaurus documentation at [ascii-ui-docs](https://github.com/rcasia/ascii-ui-docs) may need to be updated.
+
+### Automatic Notifications
+
+A GitHub Actions workflow (`.github/workflows/docs-sync.yml`) automatically creates an issue in the ascii-ui-docs repo when docs-relevant files change on main.
+
+### Manual Sync
+
+To manually update the docs:
+
+```bash
+# Clone or update the docs repo
+./scripts/sync-docs.sh
+
+# Or if you have it locally:
+cd /path/to/ascii-ui-docs
+git pull
+
+# Make changes to docs/
+# ...
+
+# Verify build
+npm run build
+
+# Commit and create PR
+git add .
+git commit -m "docs: update for latest changes"
+git push
+gh pr create
+```
+
+### What to Update
+
+- **API changes** (lua/ascii-ui/) → Update component/hook documentation
+- **New features** → Add new documentation pages
+- **Breaking changes** → Update migration guides
+- **Vimdocs changes** (doc/ascii-ui.txt) → Review if Docusaurus docs need updates
