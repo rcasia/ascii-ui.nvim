@@ -1,0 +1,65 @@
+pcall(require, "luacov")
+local testing_e2e = require("ascii-ui.testing.e2e")
+local ui = require("ascii-ui")
+local Select = ui.components.Select
+local Paragraph = ui.components.Paragraph
+local it = require("plenary.async.tests").it
+
+describe("testing.e2e library", function()
+	it("mount returns an E2EScreen", function()
+		local App = ui.createComponent("Test", function()
+			return Paragraph({ content = "hello" })
+		end)
+		local screen = testing_e2e.mount(App)
+		assert.is_not_nil(screen)
+		assert.is_not_nil(screen._bufnr)
+	end)
+
+	it("bufferContains checks nvim buffer content", function()
+		local App = ui.createComponent("Test", function()
+			return Paragraph({ content = "hello world" })
+		end)
+		local screen = testing_e2e.mount(App)
+		assert.is_true(screen:bufferContains("hello"))
+		assert.is_false(screen:bufferContains("missing"))
+	end)
+
+	it("waitForText waits for text to appear", function()
+		local App = ui.createComponent("Test", function()
+			return Paragraph({ content = "hello" })
+		end)
+		local screen = testing_e2e.mount(App)
+		assert.is_true(screen:waitForText("hello"))
+	end)
+
+	it("hasText works on nvim buffer", function()
+		local App = ui.createComponent("Test", function()
+			return Select({ options = { "a", "b" } })
+		end)
+		local screen = testing_e2e.mount(App)
+		assert.is_true(screen:hasText("[x] a"))
+	end)
+
+	it("press simulates keypress", function()
+		local App = ui.createComponent("Test", function()
+			return Select({ options = { "a", "b", "c" } })
+		end)
+		local screen = testing_e2e.mount(App)
+		assert.is_true(screen:waitForText("[x] a"))
+
+		screen:press("j")
+		-- After pressing j, cursor should move to next focusable
+		-- (This is a basic test - full cursor assertion would need cursorIsAt)
+	end)
+
+	it("toLines returns nvim buffer lines", function()
+		local App = ui.createComponent("Test", function()
+			return Select({ options = { "a", "b" } })
+		end)
+		local screen = testing_e2e.mount(App)
+		screen:waitForText("[x] a")
+		local lines = screen:toLines()
+		-- Should contain the select options
+		assert.is_true(#lines >= 2)
+	end)
+end)

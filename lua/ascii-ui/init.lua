@@ -34,6 +34,7 @@ local AsciiUI = {
 	--- local ui = require("ascii-ui")
 	--- ui.mount(MyComponent, ui.viewports.StdoutViewport.new())
 	--- ```
+	testing = require("ascii-ui.testing"),
 	viewports = {
 		StdoutViewport = require("ascii-ui.viewports.stdout"),
 	},
