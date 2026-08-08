@@ -59,6 +59,15 @@ local function report(label, n, r)
 	print(string.format("[bench] %-42s  n=%-5d  min=%.3fms  avg=%.3fms  max=%.3fms", label, n, r.min, r.avg, r.max))
 end
 
+local IS_WINDOWS = vim.uv.os_uname().sysname == "Windows_NT"
+
+local function budget(ms)
+	if IS_WINDOWS then
+		return ms * 4
+	end
+	return ms
+end
+
 -- ─────────────────────────────────────────────────────────────
 -- fixtures
 -- ─────────────────────────────────────────────────────────────
@@ -105,7 +114,7 @@ describe("performance", function()
 		report("first render / single leaf", N, r)
 
 		-- budget: avg render of one leaf must stay under 5 ms
-		assert(r.avg < 5, string.format("avg %.3fms exceeds 5ms budget", r.avg))
+		assert(r.avg < budget(5), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(5)))
 	end)
 
 	-- ── 2. rerender with a state change ───────────────────────
@@ -124,7 +133,7 @@ describe("performance", function()
 		report("rerender / state change every cycle", N, r)
 
 		-- budget: avg rerender must stay under 5 ms
-		assert(r.avg < 5, string.format("avg %.3fms exceeds 5ms budget", r.avg))
+		assert(r.avg < budget(5), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(5)))
 	end)
 
 	-- ── 3. rerender with NO state change (NONE path) ──────────
@@ -139,7 +148,7 @@ describe("performance", function()
 		report("rerender / no state change (NONE)", N, r)
 
 		-- budget: the NONE fast-path should be very cheap
-		assert(r.avg < 2, string.format("avg %.3fms exceeds 2ms budget", r.avg))
+		assert(r.avg < budget(2), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(2)))
 	end)
 
 	-- ── 4. get_buffer — tree walk ──────────────────────────────
@@ -154,7 +163,7 @@ describe("performance", function()
 		report("get_buffer / 20-leaf tree", N, r)
 
 		-- budget: collecting lines from a 20-node tree must stay under 5 ms
-		assert(r.avg < 5, string.format("avg %.3fms exceeds 5ms budget", r.avg))
+		assert(r.avg < budget(5), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(5)))
 	end)
 
 	-- ── 5. render — wider flat tree (stress) ──────────────────
@@ -169,7 +178,7 @@ describe("performance", function()
 
 		-- budget: 50 leaves must render in under 100 ms on average
 		-- (component creation + memoize key gen is expensive; this is a stress test)
-		assert(r.avg < 100, string.format("avg %.3fms exceeds 100ms budget", r.avg))
+		assert(r.avg < budget(100), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(100)))
 	end)
 
 	-- ── 6. reconcileChildren — repeated diffing ────────────────
@@ -197,7 +206,7 @@ describe("performance", function()
 		report("reconcileChildren / 10 children", N, r)
 
 		-- budget: diffing 10 children must stay under 5 ms on average
-		assert(r.avg < 5, string.format("avg %.3fms exceeds 5ms budget", r.avg))
+		assert(r.avg < budget(5), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(5)))
 	end)
 end)
 
@@ -232,7 +241,7 @@ describe("stress", function()
 		report("stress / 100 colored segments", N, r)
 
 		-- budget: 100 colored leaves must render in under 200 ms on average
-		assert(r.avg < 200, string.format("avg %.3fms exceeds 200ms budget", r.avg))
+		assert(r.avg < budget(200), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(200)))
 	end)
 
 	-- ── S2. Clock-like component — rapid time-string rerenders ──
@@ -263,7 +272,7 @@ describe("stress", function()
 		report("stress / clock rerender (200 ticks)", N, r)
 
 		-- budget: each tick rerender must stay under 5 ms on average
-		assert(r.avg < 5, string.format("avg %.3fms exceeds 5ms budget", r.avg))
+		assert(r.avg < budget(5), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(5)))
 	end)
 
 	-- ── S3. Many independent stateful components ───────────────
@@ -301,7 +310,7 @@ describe("stress", function()
 		report("stress / 20 stateful components rerender", N, r)
 
 		-- budget: 20 concurrent stateful rerenders must stay under 50 ms on average
-		assert(r.avg < 50, string.format("avg %.3fms exceeds 50ms budget", r.avg))
+		assert(r.avg < budget(50), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(50)))
 	end)
 
 	-- ── S4. Deep nested component tree ─────────────────────────
@@ -330,6 +339,6 @@ describe("stress", function()
 		report("stress / 10-level deep tree render+get_buffer", N, r)
 
 		-- budget: a 10-level deep tree must render + collect in under 100 ms
-		assert(r.avg < 100, string.format("avg %.3fms exceeds 100ms budget", r.avg))
+		assert(r.avg < budget(100), string.format("avg %.3fms exceeds %dms budget", r.avg, budget(100)))
 	end)
 end)
