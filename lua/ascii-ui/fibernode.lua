@@ -1,9 +1,20 @@
 local Buffer = require("ascii-ui.buffer.buffer")
 local Bufferline = require("ascii-ui.buffer.bufferline")
+local Segment = require("ascii-ui.buffer.segment")
 local error_handler = require("ascii-ui.utils.error_handler")
 local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
 local props_are_equal = require("ascii-ui.utils.props_are_equal")
+
+--- @class ascii-ui.Frame
+--- @field x integer
+--- @field y integer
+--- @field width integer
+--- @field height integer
+
+--- @class ascii-ui.Layout
+--- @field direction "row" | "column"
+--- @field gap? integer
 
 --- @class ascii-ui.RootFiberNode : ascii-ui.FiberNode
 --- @field pendingEffects? function[]
@@ -30,6 +41,8 @@ local props_are_equal = require("ascii-ui.utils.props_are_equal")
 --- @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
 --- @field output? ascii-ui.FiberNode[]
 --- @field private _line ascii-ui.BufferLine
+--- @field layout? ascii-ui.Layout
+--- @field frame? ascii-ui.Frame
 local FiberNode = {}
 FiberNode.__index = FiberNode
 
@@ -72,6 +85,8 @@ function FiberNode.new(fields)
 		effects = fields.effects or {},
 		effectIndex = fields.effectIndex or 1,
 		pendingEffects = fields.pendingEffects or {},
+		layout = fields.layout,
+		frame = fields.frame,
 	}
 
 	--- @type ascii-ui.FiberNode
@@ -329,6 +344,8 @@ function FiberNode:clone_for_diff()
 		output = self.output,
 		child = self.child,
 		sibling = self.sibling,
+		layout = self.layout,
+		frame = self.frame,
 	})
 end
 
@@ -457,12 +474,86 @@ end
 function FiberNode:get_buffer()
 	local buffer = Buffer.new()
 
-	--- @param node ascii-ui.FiberNode
-	vim.iter(self.root:iter()):each(function(node)
-		if node:is_leaf() then
-			buffer:add(node:get_line())
+	-- Check if we have layout frames (new layout system)
+	local has_layout = false
+	for node in self.root:iter() do
+		if node.frame then
+			has_layout = true
+			break
 		end
-	end)
+	end
+
+	if has_layout then
+		-- New layout system: position content based on frames
+		-- Collect all leaf nodes with their frames
+		local leaf_nodes = {}
+		local max_y = 0
+
+		for node in self.root:iter() do
+			if node:is_leaf() and node.frame then
+				leaf_nodes[#leaf_nodes + 1] = node
+				max_y = math.max(max_y, node.frame.y)
+			end
+		end
+
+		-- Group leaf nodes by y coordinate
+		local lines_by_y = {}
+		for _, node in ipairs(leaf_nodes) do
+			local y = node.frame.y
+			if not lines_by_y[y] then
+				lines_by_y[y] = {}
+			end
+			lines_by_y[y][#lines_by_y[y] + 1] = node
+		end
+
+		-- Build final buffer lines
+		local final_lines = {}
+		for y = 0, max_y do
+			if lines_by_y[y] then
+				-- Sort nodes at this y by x coordinate
+				table.sort(lines_by_y[y], function(a, b)
+					return a.frame.x < b.frame.x
+				end)
+
+				-- Build segments for this line with proper spacing
+				local segments = {}
+				local current_x = 0
+
+				for _, node in ipairs(lines_by_y[y]) do
+					local node_x = node.frame.x
+					local line = node:get_line()
+
+					-- Add spacing if there's a gap
+					if node_x > current_x then
+						local spacing = node_x - current_x
+						segments[#segments + 1] = Segment:new((" "):rep(spacing))
+					end
+
+					-- Add all segments from this leaf node
+					for _, segment in ipairs(line.segments) do
+						segments[#segments + 1] = segment
+					end
+
+					-- Update current position
+					current_x = node_x + line:len()
+				end
+
+				final_lines[#final_lines + 1] = Bufferline.new(unpack(segments))
+			else
+				-- Empty line for gap
+				final_lines[#final_lines + 1] = Bufferline.new()
+			end
+		end
+
+		buffer.lines = final_lines
+	else
+		-- Legacy system: sequential line appending
+		for node in self.root:iter() do
+			if node:is_leaf() then
+				buffer:add(node:get_line())
+			end
+		end
+	end
 
 	return buffer
 end

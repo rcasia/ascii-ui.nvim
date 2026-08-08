@@ -529,11 +529,24 @@ Parameters ~
 "function"
 
 ------------------------------------------------------------------------------
+@alias ascii-ui.ComponentOptions { name: string, functional_component: function, types: table<string, ascii-ui.PropsType>, layout: ascii-ui.Layout | nil }
+
+------------------------------------------------------------------------------
                                           *ascii-ui.components.validate_props()*
     `ascii-ui.components.validate_props`({props}, {types}, {component_name})
 @param props table<string, any>
 @param types table<string, ascii-ui.PropsType>
 @param component_name string
+
+------------------------------------------------------------------------------
+                                          *ascii-ui.components.normalize_opts()*
+             `ascii-ui.components.normalize_opts`({types_or_opts})
+Normalizes the third argument of createComponent into a consistent format.
+Supports both the legacy flat format and the new extended format.
+@param name string
+@param types_or_opts table<string, ascii-ui.PropsType> | { props?: table<string, ascii-ui.PropsType>, layout?: ascii-ui.Layout }
+@return table<string, ascii-ui.PropsType> types
+@return ascii-ui.Layout | nil layout
 
 ------------------------------------------------------------------------------
 @alias ascii-ui.TemplateString string
@@ -547,12 +560,12 @@ Parameters ~
 
 ------------------------------------------------------------------------------
                                          *ascii-ui.components.createComponent()*
- `ascii-ui.components.createComponent`({name}, {functional_component}, {types})
+`ascii-ui.components.createComponent`({name}, {functional_component}, {types_or_opts})
 Creates a custom component and registers it
 @generic ascii-ui.ComponentClosure, T
 @param name string Component name
 @param functional_component fun(props: T): ascii-ui.FiberNode[]
-@param types? table<string, ascii-ui.PropsType> Component prop types
+@param types_or_opts? table<string, ascii-ui.PropsType> | { props?: table<string, ascii-ui.PropsType>, layout?: ascii-ui.Layout }
 @return ascii-ui.FunctionalComponent
 
 @overload fun(functional_component: ascii-ui.SimpleComponentFunction): ascii-ui.FunctionalComponent
@@ -832,6 +845,18 @@ Re-renders the fiber tree from the given root
 
 ==============================================================================
 ------------------------------------------------------------------------------
+@class ascii-ui.Frame
+@field x integer
+@field y integer
+@field width integer
+@field height integer
+
+------------------------------------------------------------------------------
+@class ascii-ui.Layout
+@field direction "row" | "column"
+@field gap? integer
+
+------------------------------------------------------------------------------
 @class ascii-ui.RootFiberNode : ascii-ui.FiberNode
 @field pendingEffects? function[]
 @field pendingCleanups? function[]
@@ -860,6 +885,8 @@ Re-renders the fiber tree from the given root
 @field closure fun(config?: ascii-ui.Config): ascii-ui.FiberNode[]
 @field output? ascii-ui.FiberNode[]
 @field private _line ascii-ui.BufferLine
+@field layout? ascii-ui.Layout
+@field frame? ascii-ui.Frame
 
 ------------------------------------------------------------------------------
                                                      *ascii-ui.FiberNode:__eq()*
@@ -1172,6 +1199,61 @@ the component automatically (live-reload).
 
 ==============================================================================
 ------------------------------------------------------------------------------
+@class ascii-ui.Column.Props
+@field children? ascii-ui.FiberNode[]
+@field gap? integer
+
+------------------------------------------------------------------------------
+                                                      *ascii-ui.layout.Column()*
+               `ascii-ui.layout.Column`({props_or_child1}, {...})
+Column layout component - arranges children vertically.
+
+Can be called in two ways:
+1. With props table: `Column({ children = {...}, gap = 1 })`
+2. With varargs: `Column(child1, child2, child3)`
+
+@param props_or_child1 ascii-ui.Column.Props | ascii-ui.FiberNode
+@param ... ascii-ui.FiberNode
+@return ascii-ui.FiberNode[]
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                  *ascii-ui.layout.LayoutEngine*
+                         `ascii-ui.layout.LayoutEngine`
+@class ascii-ui.LayoutEngine
+
+------------------------------------------------------------------------------
+                                        *ascii-ui.layout.LayoutEngine.measure()*
+                `ascii-ui.layout.LayoutEngine.measure`({fiber})
+Measures a fiber node's dimensions based on its content.
+For leaf nodes, measures the BufferLine dimensions.
+For layout nodes, recursively measures children first.
+@param fiber ascii-ui.FiberNode
+@return integer width
+@return integer height
+
+------------------------------------------------------------------------------
+                                        *ascii-ui.layout.LayoutEngine.arrange()*
+  `ascii-ui.layout.LayoutEngine.arrange`({fiber}, {x}, {y}, {width}, {height})
+Arranges fiber nodes within a given rectangle.
+Sets the frame (x, y, width, height) for each fiber.
+@param fiber ascii-ui.FiberNode
+@param x integer
+@param y integer
+@param width integer
+@param height integer
+
+------------------------------------------------------------------------------
+                                         *ascii-ui.layout.LayoutEngine.layout()*
+                 `ascii-ui.layout.LayoutEngine.layout`({root})
+Performs a complete layout pass on the fiber tree.
+Measures all nodes and arranges them starting from (0, 0).
+@param root ascii-ui.FiberNode
+
+
+==============================================================================
+------------------------------------------------------------------------------
                                                         *ascii-ui.layout.Layout*
                             `ascii-ui.layout.Layout`
 @class ascii-ui.Layout
@@ -1179,17 +1261,22 @@ the component automatically (live-reload).
 
 ==============================================================================
 ------------------------------------------------------------------------------
-                                           *ascii-ui.layout.merge_bufferlines()*
-    `ascii-ui.layout.merge_bufferlines`({bufferlines}, {other_bufferlines})
-@param bufferlines ascii-ui.BufferLine[]
-@param other_bufferlines ascii-ui.BufferLine[]
-@return ascii-ui.BufferLine[]
+@class ascii-ui.Row.Props
+@field children? ascii-ui.FiberNode[]
+@field gap? integer
 
 ------------------------------------------------------------------------------
                                                          *ascii-ui.layout.Row()*
-                          `ascii-ui.layout.Row`({...})
-@param ... fun(): ascii-ui.BufferLine[]
-@return fun(): ascii-ui.BufferLine[]
+                `ascii-ui.layout.Row`({props_or_child1}, {...})
+Row layout component - arranges children horizontally.
+
+Can be called in two ways:
+1. With props table: `Row({ children = {...}, gap = 1 })`
+2. With varargs (legacy): `Row(child1, child2, child3)`
+
+@param props_or_child1 ascii-ui.Row.Props | ascii-ui.FiberNode
+@param ... ascii-ui.FiberNode
+@return ascii-ui.FiberNode[]
 
 
 ==============================================================================

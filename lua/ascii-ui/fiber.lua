@@ -1,4 +1,5 @@
 local FiberNode = require("ascii-ui.fibernode")
+local LayoutEngine = require("ascii-ui.layout.engine")
 local error_handler = require("ascii-ui.utils.error_handler")
 
 local logger = require("ascii-ui.logger")
@@ -259,6 +260,9 @@ local function render(Component)
 	-- reconcile
 	workLoop(root)
 
+	-- run layout pass
+	LayoutEngine.layout(root)
+
 	return root
 end
 
@@ -269,6 +273,9 @@ local function rerender(root)
 	logger.debug("📺📺 FIBER.RERENDER")
 
 	workLoop(root)
+
+	-- run layout pass
+	LayoutEngine.layout(root)
 
 	--- @param n ascii-ui.FiberNode
 	vim.iter(root:iter()):each(function(n)
