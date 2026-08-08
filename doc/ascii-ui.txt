@@ -949,29 +949,6 @@ Return ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
-                                                             *ascii-ui.Renderer*
-                              `ascii-ui.Renderer`
-Class ~
-{ascii-ui.Renderer}
-
-------------------------------------------------------------------------------
-                                                       *ascii-ui.Renderer:new()*
-                           `ascii-ui.Renderer:new`()
-@return ascii-ui.Renderer
-
-------------------------------------------------------------------------------
-                                                    *ascii-ui.Renderer.render()*
-               `ascii-ui.Renderer.render`({_self}, {renderable})
-Parameters ~
-{renderable} `(string | fun(): ascii-ui.FiberNode[])`
-Return ~
-`(ascii)`-ui.Buffer
-Return ~
-`(ascii)`-ui.FiberNode `(optional)`
-
-
-==============================================================================
-------------------------------------------------------------------------------
                                                      *ascii-ui.UserInteractions*
                           `ascii-ui.UserInteractions`
 Class ~

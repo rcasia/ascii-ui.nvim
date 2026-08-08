@@ -1,8 +1,9 @@
 local FiberNode = require("ascii-ui.fibernode")
-local Renderer = require("ascii-ui.renderer")
 local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
 local memoize = require("ascii-ui.utils.memoize")
+
+local component_tags = {}
 
 --- @alias ascii-ui.PropsType
 ---| "nil"
@@ -64,7 +65,7 @@ local function createComponent(name, functional_component, types)
 	end
 
 	-- Validate that the name is unique
-	if Renderer.component_tags[opts.name] then
+	if component_tags[opts.name] then
 		logger.error(("El componente con nombre '%s' ya está registrado."):format(opts.name))
 	end
 
@@ -105,8 +106,8 @@ local function createComponent(name, functional_component, types)
 		end,
 	})
 
-	if not Renderer.component_tags[name] then
-		Renderer.component_tags[name] = component_function
+	if not component_tags[name] then
+		component_tags[name] = component_function
 	end
 
 	return component_function

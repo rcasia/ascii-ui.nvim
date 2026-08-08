@@ -3,7 +3,7 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 local Segment = require("ascii-ui.buffer.segment")
-local renderer = require("ascii-ui.renderer"):new()
+local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 
 describe("ui.createComponent", function()
@@ -23,7 +23,7 @@ describe("ui.createComponent", function()
 					DummyComponent({ content = "t-shirt" }),
 				}
 			end)
-			eq(expected_output, renderer:render(AnonymousComponent):to_lines())
+			eq(expected_output, fiber.render(AnonymousComponent):get_buffer():to_lines())
 		end
 
 		-- Anonymous component with non typed props
@@ -36,10 +36,11 @@ describe("ui.createComponent", function()
 
 			eq(
 				expected_output,
-				renderer
-					:render(function()
+				fiber
+					.render(function()
 						return AnonymousComponent({ content = "t-shirt" })
 					end)
+					:get_buffer()
 					:to_lines()
 			)
 		end
@@ -51,7 +52,7 @@ describe("ui.createComponent", function()
 					DummyComponent({ content = "t-shirt" }),
 				}
 			end)
-			eq(expected_output, renderer:render(NamedComponent):to_lines())
+			eq(expected_output, fiber.render(NamedComponent):get_buffer():to_lines())
 		end
 
 		-- Component with nested nodes
@@ -61,7 +62,7 @@ describe("ui.createComponent", function()
 					DummyComponent({ content = "t-shirt" }),
 				} }
 			end)
-			eq(expected_output, renderer:render(NamedComponent):to_lines())
+			eq(expected_output, fiber.render(NamedComponent):get_buffer():to_lines())
 		end
 
 		-- Component with empty places
@@ -73,7 +74,7 @@ describe("ui.createComponent", function()
 				}
 			end)
 
-			eq(expected_output, renderer:render(App2):to_lines())
+			eq(expected_output, fiber.render(App2):get_buffer():to_lines())
 		end
 
 		-- Component that is used as a child of another component
@@ -90,7 +91,7 @@ describe("ui.createComponent", function()
 				}
 			end)
 
-			eq(expected_output, renderer:render(ChildComponent):to_lines())
+			eq(expected_output, fiber.render(ChildComponent):get_buffer():to_lines())
 		end
 	end)
 

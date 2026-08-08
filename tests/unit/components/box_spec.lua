@@ -2,24 +2,12 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local Box = require("ascii-ui.components.box")
-local Renderer = require("ascii-ui.renderer")
+local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 
 local eq = assert.are.same
 
 describe("renderer", function()
-	local config = {
-		characters = {
-			top_left = ".",
-			top_right = ".",
-			bottom_left = ".",
-			bottom_right = ".",
-			horizontal = ".",
-			vertical = ".",
-		},
-	}
-	local renderer = Renderer:new(config)
-
 	describe("Box", function()
 		it("should render a box", function()
 			eq(
@@ -29,7 +17,7 @@ describe("renderer", function()
 					"│             │",
 					"╰─────────────╯",
 				},
-				renderer:render(Box):to_lines()
+				fiber.render(Box):get_buffer():to_lines()
 			)
 		end)
 
@@ -44,7 +32,7 @@ describe("renderer", function()
 					return Box(box_props)
 				end)
 
-				local buffer = renderer:render(App)
+				local buffer = fiber.render(App):get_buffer()
 
 				eq(box_props.width, buffer:width())
 				eq(box_props.height, buffer:height())
@@ -62,7 +50,7 @@ describe("renderer", function()
 				"│     Hello!    │",
 				"│               │",
 				"╰───────────────╯",
-			}, renderer:render(App):to_lines())
+			}, fiber.render(App):get_buffer():to_lines())
 
 			local App2 = ui.createComponent("App", function()
 				return Box({ width = 17, height = 5, content = "World!" })
@@ -73,7 +61,7 @@ describe("renderer", function()
 				"│     World!    │",
 				"│               │",
 				"╰───────────────╯",
-			}, renderer:render(App2):to_lines())
+			}, fiber.render(App2):get_buffer():to_lines())
 		end)
 	end)
 end)
