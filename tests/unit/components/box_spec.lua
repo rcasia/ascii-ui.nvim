@@ -2,7 +2,7 @@ pcall(require, "luacov")
 ---@module "luassert"
 
 local Box = require("ascii-ui.components.box")
-local fiber = require("ascii-ui.fiber")
+local testing = require("ascii-ui.testing")
 local ui = require("ascii-ui")
 
 local eq = assert.are.same
@@ -17,7 +17,7 @@ describe("renderer", function()
 					"│             │",
 					"╰─────────────╯",
 				},
-				fiber.render(Box):get_buffer():to_lines()
+				testing.render(Box):toLines()
 			)
 		end)
 
@@ -32,7 +32,8 @@ describe("renderer", function()
 					return Box(box_props)
 				end)
 
-				local buffer = fiber.render(App):get_buffer()
+				local screen = testing.render(App)
+				local buffer = screen:_get_buffer()
 
 				eq(box_props.width, buffer:width())
 				eq(box_props.height, buffer:height())
@@ -50,7 +51,7 @@ describe("renderer", function()
 				"│     Hello!    │",
 				"│               │",
 				"╰───────────────╯",
-			}, fiber.render(App):get_buffer():to_lines())
+			}, testing.render(App):toLines())
 
 			local App2 = ui.createComponent("App", function()
 				return Box({ width = 17, height = 5, content = "World!" })
@@ -61,7 +62,7 @@ describe("renderer", function()
 				"│     World!    │",
 				"│               │",
 				"╰───────────────╯",
-			}, fiber.render(App2):get_buffer():to_lines())
+			}, testing.render(App2):toLines())
 		end)
 	end)
 end)

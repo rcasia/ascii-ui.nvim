@@ -3,7 +3,7 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 local Segment = require("ascii-ui.buffer.segment")
-local fiber = require("ascii-ui.fiber")
+local testing = require("ascii-ui.testing")
 local ui = require("ascii-ui")
 
 describe("ui.createComponent", function()
@@ -23,7 +23,7 @@ describe("ui.createComponent", function()
 					DummyComponent({ content = "t-shirt" }),
 				}
 			end)
-			eq(expected_output, fiber.render(AnonymousComponent):get_buffer():to_lines())
+			eq(expected_output, testing.render(AnonymousComponent):toLines())
 		end
 
 		-- Anonymous component with non typed props
@@ -36,12 +36,11 @@ describe("ui.createComponent", function()
 
 			eq(
 				expected_output,
-				fiber
+				testing
 					.render(function()
 						return AnonymousComponent({ content = "t-shirt" })
 					end)
-					:get_buffer()
-					:to_lines()
+					:toLines()
 			)
 		end
 
@@ -52,7 +51,7 @@ describe("ui.createComponent", function()
 					DummyComponent({ content = "t-shirt" }),
 				}
 			end)
-			eq(expected_output, fiber.render(NamedComponent):get_buffer():to_lines())
+			eq(expected_output, testing.render(NamedComponent):toLines())
 		end
 
 		-- Component with nested nodes
@@ -62,7 +61,7 @@ describe("ui.createComponent", function()
 					DummyComponent({ content = "t-shirt" }),
 				} }
 			end)
-			eq(expected_output, fiber.render(NamedComponent):get_buffer():to_lines())
+			eq(expected_output, testing.render(NamedComponent):toLines())
 		end
 
 		-- Component with empty places
@@ -74,7 +73,7 @@ describe("ui.createComponent", function()
 				}
 			end)
 
-			eq(expected_output, fiber.render(App2):get_buffer():to_lines())
+			eq(expected_output, testing.render(App2):toLines())
 		end
 
 		-- Component that is used as a child of another component
@@ -91,7 +90,7 @@ describe("ui.createComponent", function()
 				}
 			end)
 
-			eq(expected_output, fiber.render(ChildComponent):get_buffer():to_lines())
+			eq(expected_output, testing.render(ChildComponent):toLines())
 		end
 	end)
 

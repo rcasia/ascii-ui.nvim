@@ -3,7 +3,7 @@ pcall(require, "luacov")
 local eq = assert.are.same
 
 local Slider = require("ascii-ui.components.slider")
-local fiber = require("ascii-ui.fiber")
+local testing = require("ascii-ui.testing")
 local ui = require("ascii-ui")
 
 describe("SliderComponent", function()
@@ -12,8 +12,8 @@ describe("SliderComponent", function()
 		local App = ui.createComponent("App", function()
 			return Slider(props)
 		end)
-		local buffer = fiber.render(App):get_buffer()
-		return buffer:to_string()
+		local screen = testing.render(App)
+		return screen:toSnapshot()
 	end
 
 	it("renders", function()

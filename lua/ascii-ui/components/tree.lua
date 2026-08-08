@@ -1,4 +1,5 @@
 local BufferLine = require("ascii-ui.buffer.bufferline")
+local FiberNode = require("ascii-ui.fibernode")
 local Segment = require("ascii-ui.buffer.segment")
 local createComponent = require("ascii-ui.components.create-component")
 
@@ -8,7 +9,7 @@ local useState = require("ascii-ui.hooks.use_state")
 
 --- @class ascii-ui.TreeComponentProps.TreeNode
 --- @field text string
---- @field children? ascii-ui.TreeComponentProps.TreeNode[]
+--- @field children? (ascii-ui.TreeComponentProps.TreeNode|ascii-ui.FiberNode)[]
 --- @field expanded? boolean
 
 --- @class ascii-ui.TreeComponentProps
@@ -16,6 +17,13 @@ local useState = require("ascii-ui.hooks.use_state")
 --- @field level? integer
 --- @field has_siblings? boolean
 --- @field is_last? boolean
+
+--- Check if a child is a TreeNode (has text field) or a component
+--- @param child any
+--- @return boolean
+local function is_tree_node(child)
+	return type(child) == "table" and type(child.text) == "string"
+end
 
 --- @param props ascii-ui.TreeComponentProps
 local function Tree(props)
@@ -86,12 +94,53 @@ local function Tree(props)
 	local lines = vim.iter(props.tree.children)
 		:enumerate()
 		:map(function(index, child)
-			return Tree({
-				tree = child,
-				level = props.level + 1,
-				has_siblings = has_children_siblings,
-				is_last = index == children_count,
-			})
+			local is_child_last = index == children_count
+			local child_lines
+
+			if is_tree_node(child) then
+				-- Child is a TreeNode, recurse
+				child_lines = Tree({
+					tree = child,
+					level = props.level + 1,
+					has_siblings = has_children_siblings,
+					is_last = is_child_last,
+				})
+			else
+				-- Child is a component (FiberNode or BufferLine)
+				-- Determine prefix based on position
+				local prefix
+				if is_child_last then
+					prefix = LEAF_PREFIX
+				else
+					prefix = LEFT_TREE_PREFIX
+				end
+
+				-- Render the component and wrap with prefix
+				if FiberNode.is_node(child) then
+					-- It's a FiberNode, unwrap it to get BufferLines
+					local unwrapped = child:unwrap_closure()
+					child_lines = vim.iter(unwrapped)
+						:enumerate()
+						:map(function(idx, node)
+							if idx == 1 then
+								-- First line gets the prefix
+								return BufferLine.new(Segment:new({ content = prefix })):append(node:get_line())
+							else
+								-- Subsequent lines get indentation
+								local indent = cc.whitespace:rep(#prefix)
+								return BufferLine.new(Segment:new({ content = indent })):append(node:get_line())
+							end
+						end)
+						:totable()
+				elseif BufferLine.is_bufferline(child) then
+					-- It's already a BufferLine
+					child_lines = { BufferLine.new(Segment:new({ content = prefix })):append(child) }
+				else
+					error("Tree child must be a TreeNode, FiberNode, or BufferLine")
+				end
+			end
+
+			return child_lines
 		end)
 		:flatten()
 		:map(function(child)

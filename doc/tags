@@ -101,6 +101,7 @@ ascii-ui.components.Slider()	ascii-ui.txt	/*ascii-ui.components.Slider()*
 ascii-ui.components.Tree()	ascii-ui.txt	/*ascii-ui.components.Tree()*
 ascii-ui.components.createComponent()	ascii-ui.txt	/*ascii-ui.components.createComponent()*
 ascii-ui.components.from()	ascii-ui.txt	/*ascii-ui.components.from()*
+ascii-ui.components.is_tree_node()	ascii-ui.txt	/*ascii-ui.components.is_tree_node()*
 ascii-ui.components.validate_props()	ascii-ui.txt	/*ascii-ui.components.validate_props()*
 ascii-ui.config	ascii-ui.txt	/*ascii-ui.config*
 ascii-ui.config._config	ascii-ui.txt	/*ascii-ui.config._config*

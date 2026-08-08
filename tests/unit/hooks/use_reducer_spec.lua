@@ -3,7 +3,7 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 local Segment = require("ascii-ui.buffer.segment")
-local fiber = require("ascii-ui.fiber")
+local testing = require("ascii-ui.testing")
 local ui = require("ascii-ui")
 local useReducer = require("ascii-ui.hooks.use_reducer")
 
@@ -21,19 +21,16 @@ describe("useReducer", function()
 			end
 		end)
 
-		local root = fiber.render(C)
-		local buf = root:get_buffer()
-		eq({ "5" }, buf:to_lines())
+		local screen = testing.render(C)
+		eq({ "5" }, screen:toLines())
 
 		-- dispatch via closure
 		dispatch("inc")
-		local root_result = fiber.rerender(root)
-		local new_buf = root_result:get_buffer()
-		eq({ "6" }, new_buf:to_lines())
+		screen:_rerender()
+		eq({ "6" }, screen:toLines())
 
 		dispatch("dec")
-		local root_result2 = fiber.rerender(root)
-		local new_buf2 = root_result2:get_buffer()
-		eq({ "5" }, new_buf2:to_lines())
+		screen:_rerender()
+		eq({ "5" }, screen:toLines())
 	end)
 end)

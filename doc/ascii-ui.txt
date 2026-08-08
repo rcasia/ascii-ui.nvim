@@ -617,7 +617,7 @@ Return ~
 ------------------------------------------------------------------------------
 @class ascii-ui.TreeComponentProps.TreeNode
 @field text string
-@field children? ascii-ui.TreeComponentProps.TreeNode[]
+@field children? (ascii-ui.TreeComponentProps.TreeNode|ascii-ui.FiberNode)[]
 @field expanded? boolean
 
 ------------------------------------------------------------------------------
@@ -626,6 +626,13 @@ Return ~
 @field level? integer
 @field has_siblings? boolean
 @field is_last? boolean
+
+------------------------------------------------------------------------------
+                                            *ascii-ui.components.is_tree_node()*
+                  `ascii-ui.components.is_tree_node`({child})
+Check if a child is a TreeNode (has text field) or a component
+@param child any
+@return boolean
 
 ------------------------------------------------------------------------------
                                                     *ascii-ui.components.Tree()*

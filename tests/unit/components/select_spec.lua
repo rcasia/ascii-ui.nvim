@@ -5,7 +5,7 @@ local eq = assert.are.same
 
 local Hightlights = require("ascii-ui.highlights")
 local Select = require("ascii-ui.components.select")
-local fiber = require("ascii-ui.fiber")
+local testing = require("ascii-ui.testing")
 local ui = require("ascii-ui")
 
 describe("SelectComponent", function()
@@ -19,7 +19,7 @@ describe("SelectComponent", function()
 			"[x] apple",
 			"[ ] banana",
 			"[ ] mango",
-		}, fiber.render(App):get_buffer():to_lines())
+		}, testing.render(App):toLines())
 	end)
 
 	it("renders selected segment with color", function()
@@ -28,8 +28,8 @@ describe("SelectComponent", function()
 		local App = ui.createComponent("Test", function()
 			return Select({ options = option_names })
 		end)
-		local root = fiber.render(App)
-		local buffer = root:get_buffer()
+		local screen = testing.render(App)
+		local buffer = screen:_get_buffer()
 		local selected_segment = assert(buffer:find_segment_by_position({ line = 1, col = 1 })) -- the first segment is selected
 
 		eq(Hightlights.SELECTION, selected_segment.highlight)
@@ -41,8 +41,8 @@ describe("SelectComponent", function()
 		second_selected_segment.interactions["SELECT"]()
 
 		-- Re-renderiza para reflejar el nuevo estado
-		local root_result = fiber.rerender(root)
-		local new_buffer = root_result:get_buffer()
+		screen:_rerender()
+		local new_buffer = screen:_get_buffer()
 
 		local newly_selected = assert(new_buffer:find_segment_by_position({ line = 2, col = 1 }))
 		eq(Hightlights.SELECTION, newly_selected.highlight)
@@ -59,7 +59,8 @@ describe("SelectComponent", function()
 		local App = ui.createComponent("Test", function()
 			return Select({ options = option_names, on_select = user_defined_on_select_fun })
 		end)
-		local buffer = fiber.render(App):get_buffer()
+		local screen = testing.render(App)
+		local buffer = screen:_get_buffer()
 
 		local selected_segment = assert(buffer:find_segment_by_position({ line = 1, col = 1 })) -- the first segment is selected
 
@@ -75,7 +76,7 @@ describe("SelectComponent", function()
 			return Select({ options = option_names, title = title })
 		end)
 
-		local buffer = fiber.render(App):get_buffer()
+		local buffer = testing.render(App):_get_buffer()
 		eq({
 			"Select a fruit:",
 			"[x] apple",

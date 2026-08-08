@@ -3,8 +3,9 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
+local Segment = require("ascii-ui.buffer.segment")
 local Tree = require("ascii-ui.components.tree")
-local fiber = require("ascii-ui.fiber")
+local testing = require("ascii-ui.testing")
 local ui = require("ascii-ui")
 
 describe("Tree Component", function()
@@ -12,7 +13,8 @@ describe("Tree Component", function()
 		local App = ui.createComponent("App", function()
 			return Tree({ tree = { text = "dummy_treenode" } })
 		end, {})
-		local buffer = fiber.render(App):get_buffer()
+		local screen = testing.render(App)
+		local buffer = screen:_get_buffer()
 
 		eq([[dummy_treenode]], buffer:to_string())
 	end)
@@ -34,7 +36,7 @@ describe("Tree Component", function()
 			vim.trim([[node-1
  ├─ node-1-1
  ╰─ node-1-2]]),
-			fiber.render(App):get_buffer():to_string()
+			testing.render(App):toSnapshot()
 		)
 	end)
 
@@ -57,7 +59,7 @@ describe("Tree Component", function()
 			" ╰╮─ ▾ node-1-1",
 			" │╰─ node-1-1-1",
 			" ╰─ node-1-2",
-		}, fiber.render(App):get_buffer():to_lines())
+		}, testing.render(App):toLines())
 	end)
 
 	it("renders last level one node with space before its children", function()
@@ -81,7 +83,7 @@ describe("Tree Component", function()
 			" ╰╮─ ▾ node-1-3",
 			"  ╰╮─ ▾ node-1-3-1",
 			"   ╰─ node-1-3-1-1",
-		}, fiber.render(App):get_buffer():to_lines())
+		}, testing.render(App):toLines())
 	end)
 
 	it("renders nodes that are not expanded", function()
@@ -101,7 +103,7 @@ describe("Tree Component", function()
 		local App = ui.createComponent("App", function()
 			return Tree({ tree = tree })
 		end, {})
-		local result = fiber.render(App):get_buffer():to_string()
+		local result = testing.render(App):toSnapshot()
 
 		eq(
 			[[node-1
@@ -110,5 +112,83 @@ describe("Tree Component", function()
  ╰─ ▸ node-1-3]],
 			result
 		)
+	end)
+
+	it("renders component children", function()
+		local CustomComponent = ui.createComponent("CustomComponent", function(props)
+			return { Segment:new({ content = "[CUSTOM: " .. props.label .. "]" }):wrap() }
+		end, { label = "string" })
+
+		--- @type ascii-ui.TreeComponentProps.TreeNode
+		local tree = {
+			text = "root",
+			children = {
+				CustomComponent({ label = "item1" }),
+				CustomComponent({ label = "item2" }),
+			},
+		}
+		local App = ui.createComponent("App", function()
+			return Tree({ tree = tree })
+		end, {})
+
+		eq({
+			"root",
+			" ├─ [CUSTOM: item1]",
+			" ╰─ [CUSTOM: item2]",
+		}, testing.render(App):toLines())
+	end)
+
+	it("renders mixed text and component children", function()
+		local CustomComponent = ui.createComponent("CustomComponent", function(props)
+			return { Segment:new({ content = "[COMP:" .. props.text .. "]" }):wrap() }
+		end, { text = "string" })
+
+		--- @type ascii-ui.TreeComponentProps.TreeNode
+		local tree = {
+			text = "root",
+			children = {
+				{ text = "text-node" },
+				CustomComponent({ text = "comp-node" }),
+				{ text = "another-text" },
+			},
+		}
+		local App = ui.createComponent("App", function()
+			return Tree({ tree = tree })
+		end, {})
+
+		eq({
+			"root",
+			" ├─ text-node",
+			" ├─ [COMP:comp-node]",
+			" ╰─ another-text",
+		}, testing.render(App):toLines())
+	end)
+
+	it("renders nested component children", function()
+		local CustomComponent = ui.createComponent("CustomComponent", function(props)
+			return { Segment:new({ content = "nested-" .. props.value }):wrap() }
+		end, { value = "string" })
+
+		--- @type ascii-ui.TreeComponentProps.TreeNode
+		local tree = {
+			text = "level-0",
+			children = {
+				{
+					text = "level-1",
+					children = {
+						CustomComponent({ value = "deep" }),
+					},
+				},
+			},
+		}
+		local App = ui.createComponent("App", function()
+			return Tree({ tree = tree })
+		end, {})
+
+		eq({
+			"level-0",
+			" ╰╮─ ▾ level-1",
+			"  ╰─ nested-deep",
+		}, testing.render(App):toLines())
 	end)
 end)
