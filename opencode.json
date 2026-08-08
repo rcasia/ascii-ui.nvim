@@ -5,7 +5,8 @@
       ".opencode/agents/ascii-ui-dev.md",
       ".opencode/agents/nvim-docs-researcher.md",
       ".opencode/agents/convention-reviewer.md",
-      ".opencode/agents/agent-teacher.md"
+      ".opencode/agents/agent-teacher.md",
+      ".opencode/agents/task-scheduler.md"
     ]
   }
 }

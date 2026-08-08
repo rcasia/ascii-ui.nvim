@@ -254,6 +254,16 @@ Where `scope` describes the area affected (e.g., `components`, `hooks`, `fiber`,
 - Use `Related to #123` when the commit is related but doesn't solve the issue
 - Always confirm with the user before using closing keywords
 
+### task-scheduler
+**When to consult:**
+- Need to know which GitHub issues are available
+- Want to understand task prioritization
+- Need to coordinate with other agents on large tasks
+
+**Example queries:**
+- "What issues should I work on next?"
+- "Are there any related issues I should know about?"
+
 ## Trunk-Based Development
 
 This project follows trunk-based development. **Never use --no-verify**.
