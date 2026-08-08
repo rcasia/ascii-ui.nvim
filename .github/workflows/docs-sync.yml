@@ -10,7 +10,7 @@ on:
 jobs:
   notify-docs-repo:
     runs-on: ubuntu-latest
-    if: ${{ secrets.DOCS_SYNC_TOKEN != '' }}
+    if: secrets.DOCS_SYNC_TOKEN != ''
     steps:
       - name: Create issue in ascii-ui-docs
         uses: actions/github-script@v7
