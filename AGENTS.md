@@ -4,57 +4,115 @@
 
 ## Commit Convention
 
-All commits must follow conventional commits and specify which agent is acting in the footer:
+**MANDATORY**: All commits MUST follow the [Conventional Commits](https://www.conventionalcommits.org/) specification. No exceptions.
+
+This project enforces conventional commits to enable automated changelogs, semantic versioning, and clear commit history. Every commit message must conform to this format:
 
 ```
-type(scope): description
+<type>(<scope>): <description>
 
-[agent: agent-name]
+[optional body]
+
+[optional footer(s)]
+[agent: <agent-name>]
 ```
 
-- `type` — conventional commit type (`feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`)
-  - `refactor` — only for code restructuring (imports, folders, code organization), not for docs or agent changes
-- `scope` — area of the codebase affected (e.g., `components`, `hooks`, `fiber`, `agents`, `buffer`)
-- `[agent: agent-name]` — footer identifying which agent made the commit
+### Format Rules
 
-### Agent Identifiers
+#### Type (required)
 
-- `ascii-ui-dev` - Primary development agent
-- `nvim-docs-researcher` - Documentation research agent
-- `convention-reviewer` - Convention validation agent
-- `agent-teacher` - Meta-learning agent
+Must be one of the following. No other types allowed.
 
-### Examples
+| Type | When to use |
+|------|-------------|
+| `feat` | A new feature (user-facing or API-visible) |
+| `fix` | A bug fix |
+| `docs` | Documentation only changes (Lua annotations, vimdocs, README, comments explaining *why*) |
+| `style` | Code style changes that do not affect meaning (formatting, missing semicolons, whitespace) |
+| `refactor` | Code restructuring that neither fixes a bug nor adds a feature (imports, folder moves, code organization). **NOT** for docs or agent changes |
+| `perf` | A code change that improves performance |
+| `test` | Adding missing tests or correcting existing tests |
+| `build` | Changes that affect the build system or external dependencies (`lux.toml`, Makefile) |
+| `ci` | Changes to CI configuration files and scripts (GitHub Actions) |
+| `chore` | Maintenance tasks that don't fit other types (agent files, config, tooling). **All agent-related changes MUST use `chore` with scope `agents`** |
+| `revert` | Reverts a previous commit |
+
+#### Scope (required)
+
+The area of the codebase affected. Must be lowercase, single word or hyphenated.
+
+**Valid scopes for this project:**
+
+| Scope | What it covers |
+|-------|---------------|
+| `components` | Built-in components (Paragraph, Button, Box, Select, etc.) |
+| `hooks` | Hook implementations (useState, useEffect, useReducer, etc.) |
+| `fiber` | Fiber reconciler and fibernode |
+| `buffer` | Buffer rendering primitives (Segment, BufferLine, Buffer) |
+| `layout` | Layout primitives (Row) |
+| `window` | Neovim floating window viewport |
+| `viewports` | Viewport implementations |
+| `mount` | Component mounting and render loop |
+| `events` | EventBus |
+| `config` | Configuration |
+| `utils` | Utility modules |
+| `tests` | Test infrastructure and helpers |
+| `bench` | Benchmarks |
+| `docs` | Documentation files (README, vimdocs) |
+| `agents` | Agent files, conventions, and configuration (MUST use with `chore` type) |
+| `build` | Build system, Makefile, lux.toml |
+| `ci` | CI/CD configuration |
+
+If a change spans multiple scopes, pick the most significant one or split into multiple commits.
+
+#### Description (required)
+
+- **Imperative mood**: "add feature" not "added feature" or "adds feature"
+- **Lowercase first letter**: "add Input component" not "Add Input component"
+- **No period at the end**: "add Input component" not "add Input component."
+- **Max 72 characters**: Keep it concise and scannable
+- **Explain WHAT, not WHY**: The description explains what changed; the body explains why
+
+#### Body (optional)
+
+- Separated from description by a blank line
+- Explains **what** and **why**, not **how**
+- Wrap at 72 characters
+- Use for complex changes that need context beyond the description
+
+#### Footer (optional)
+
+- Separated from body (or description) by a blank line
+- Used for breaking changes and issue references
+- Format: `Token: value` or `Closes #123`
+
+### Breaking Changes
+
+A breaking change MUST be indicated by:
+
+1. `!` after the type/scope: `feat(components)!: remove deprecated prop`
+2. OR `BREAKING CHANGE:` in the footer:
 
 ```
-feat(components): add new Input component
+feat(components): redesign Select component API
+
+BREAKING CHANGE: `options` prop renamed to `items`. Migration required.
 
 [agent: ascii-ui-dev]
 ```
 
-```
-docs(hooks): document useEffect cleanup behavior
+### Agent Footer (required)
 
-[agent: nvim-docs-researcher]
-```
+Every commit MUST include an `[agent: <name>]` footer identifying which agent made the commit:
 
-```
-chore(agents): update review checklist for hooks
-
-[agent: convention-reviewer]
-```
-
-```
-chore(agents): improve agent consulting patterns
-
-[agent: agent-teacher]
-```
-
-**Note**: All agent-related changes (updates to agent files, conventions, or configuration) must use `chore` type with `agents` scope.
+- `ascii-ui-dev` — Primary development agent
+- `nvim-docs-researcher` — Documentation research agent
+- `convention-reviewer` — Convention validation agent
+- `agent-teacher` — Meta-learning agent
 
 ### Issue References
 
-When a commit is related to an issue, reference it in the commit message:
+When a commit relates to an issue, add a closing keyword in the footer:
 
 ```
 feat(components): add Input component with validation
@@ -64,12 +122,81 @@ Closes #42
 [agent: ascii-ui-dev]
 ```
 
-**Use closing keywords carefully:**
+**Closing keywords:**
 - `Closes #123`, `Fixes #123`, `Resolves #123` — only when the commit **completely solves** the issue
-- `WIP #123` or `Progress on #123` — for work-in-progress that doesn't fully solve it yet
-- `Related to #123` — when the commit is related but doesn't solve the issue
+- `WIP #123` or `Progress on #123` — for work-in-progress
+- `Related to #123` — when related but doesn't solve the issue
 
-**Important:** Always confirm with the user before using closing keywords. Some issues may need verification or have additional requirements.
+**Important:** Always confirm with the user before using closing keywords.
+
+### Good vs Bad Examples
+
+✅ **Good:**
+```
+feat(components): add Input component with validation
+
+[agent: ascii-ui-dev]
+```
+
+✅ **Good:**
+```
+fix(hooks): prevent useEffect from firing on unmounted components
+
+The effect callback was being invoked after component unmount
+when async operations resolved. Add a mounted ref guard.
+
+Fixes #23
+
+[agent: ascii-ui-dev]
+```
+
+✅ **Good:**
+```
+chore(agents): update convention-reviewer checklist
+
+[agent: agent-teacher]
+```
+
+❌ **Bad — missing type:**
+```
+add Input component
+
+[agent: ascii-ui-dev]
+```
+
+❌ **Bad — wrong mood:**
+```
+feat(components): added new Input component
+
+[agent: ascii-ui-dev]
+```
+
+❌ **Bad — uppercase first letter:**
+```
+feat(components): Add new Input component
+
+[agent: ascii-ui-dev]
+```
+
+❌ **Bad — period at end:**
+```
+feat(components): add new Input component.
+
+[agent: ascii-ui-dev]
+```
+
+❌ **Bad — missing agent footer:**
+```
+feat(components): add new Input component
+```
+
+❌ **Bad — wrong type for agent changes:**
+```
+refactor(agents): update convention-reviewer checklist
+
+[agent: agent-teacher]
+```
+(Should be `chore(agents):`)
 
 ## Trunk-Based Development
 
