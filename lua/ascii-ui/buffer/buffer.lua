@@ -55,13 +55,16 @@ function Buffer:find_next_focusable(position)
 	position = position or {}
 	position = { line = position.line or 1, col = position.col or 0 }
 
-	local pos = vim.iter(self.lines)
-		:skip(position.line - 1)
-		:enumerate()
-		:map(function(index, line)
-			return line:focusable_segments(index)
-		end)
-		:flatten()
+	local start_line = position.line
+	local pos = vim.iter(self.lines):skip(start_line - 1):fold({ idx = start_line, results = {} }, function(acc, line)
+		local results = acc.results
+		for _, r in ipairs(line:focusable_segments(acc.idx)) do
+			results[#results + 1] = r
+		end
+		return { idx = acc.idx + 1, results = results }
+	end).results
+
+	local found = vim.iter(pos)
 		:map(function(result)
 			logger.debug("considering position: (%d, %d)", result.position.line, result.position.col)
 			return result.position
@@ -75,7 +78,7 @@ function Buffer:find_next_focusable(position)
 		:take(1)
 		:last()
 
-	return { pos = pos or position, found = pos ~= nil }
+	return { pos = found or position, found = found ~= nil }
 end
 
 ---@param position ascii-ui.Position
@@ -86,20 +89,21 @@ function Buffer:find_last_focusable(position)
 		return { pos = position, found = false }
 	end
 
-	local pos = vim.iter(self.lines)
-		:enumerate()
-		:rev()
-		:skip(math.abs(#self.lines - position.line))
-		:map(function(index, line)
-			return vim.iter(line:focusable_segments(index)):rev():totable()
-		end)
-		:flatten()
+	local all_results = {}
+	for i = position.line, 1, -1 do
+		local line = self.lines[i]
+		if line then
+			local segs = line:focusable_segments(i)
+			for j = #segs, 1, -1 do
+				all_results[#all_results + 1] = segs[j]
+			end
+		end
+	end
+
+	local pos = vim.iter(all_results)
 		:map(function(result)
+			logger.debug("considering position: (%d, %d)", result.position.line, result.position.col)
 			return result.position
-		end)
-		:map(function(o)
-			logger.debug("considering position: (%d, %d)", o.line, o.col)
-			return o
 		end)
 		:filter(function(p)
 			if p.line == position.line and p.col >= position.col then

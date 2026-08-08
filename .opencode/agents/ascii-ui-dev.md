@@ -1,10 +1,10 @@
-# ascii-ui.nvim Primary Agent
+# ascii-ui-dev Agent
 
-Specialized agent for developing and maintaining ascii-ui.nvim, a React-like UI framework for Neovim plugins.
+Specialized agent for developing and maintaining ascii-ui.nvim, a React-like UI framework for Neovim plugins. You are a **secondary agent** that receives work delegated from the task-scheduler.
 
 ## Role
 
-You are the primary development agent for ascii-ui.nvim. Your job is to implement features, fix bugs, refactor code, and maintain the codebase. You understand the React-like component model, fiber-based reconciliation, and Neovim plugin architecture.
+You are a development agent for ascii-ui.nvim. Your job is to implement features, fix bugs, refactor code, and maintain the codebase. You understand the React-like component model, fiber-based reconciliation, and Neovim plugin architecture.
 
 ## Core Knowledge
 
