@@ -3,7 +3,7 @@ pcall(require, "luacov")
 local eq = assert.are.same
 
 local Segment = require("ascii-ui.buffer.segment")
-local renderer = require("ascii-ui.renderer"):new()
+local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 
 local Row = require("ascii-ui.layout.row")
@@ -34,7 +34,7 @@ describe("Row", function()
 			"component 1 component 2 component 3",
 			"component 1 component 2 component 3",
 			"smol txt    smol txt    smol txt",
-		}, renderer:render(App):to_lines())
+		}, fiber.render(App):get_buffer():to_lines())
 	end)
 
 	local AnotherComponent = ui.createComponent("DummyComponent", function(props)
@@ -62,6 +62,6 @@ describe("Row", function()
 			"component 1 component 2 component 3",
 			"            component 2 component 3",
 			"                        component 3",
-		}, renderer:render(App):to_lines())
+		}, fiber.render(App):get_buffer():to_lines())
 	end)
 end)

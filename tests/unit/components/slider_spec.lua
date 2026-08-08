@@ -1,21 +1,18 @@
 pcall(require, "luacov")
 
 local eq = assert.are.same
-local test_config = require("tests.config")
 
-local Renderer = require("ascii-ui.renderer")
 local Slider = require("ascii-ui.components.slider")
+local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 
 describe("SliderComponent", function()
-	local renderer = Renderer:new(test_config)
-
 	---@return string
 	local line = function(props)
 		local App = ui.createComponent("App", function()
 			return Slider(props)
 		end)
-		local buffer = renderer:render(App)
+		local buffer = fiber.render(App):get_buffer()
 		return buffer:to_string()
 	end
 

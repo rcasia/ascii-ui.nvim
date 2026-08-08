@@ -3,14 +3,11 @@ pcall(require, "luacov")
 
 local eq = assert.are.same
 
-local Renderer = require("ascii-ui.renderer")
 local Tree = require("ascii-ui.components.tree")
 local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 
 describe("Tree Component", function()
-	local renderer = Renderer:new({})
-
 	it("renders just top node", function()
 		local App = ui.createComponent("App", function()
 			return Tree({ tree = { text = "dummy_treenode" } })
@@ -37,7 +34,7 @@ describe("Tree Component", function()
 			vim.trim([[node-1
  ├─ node-1-1
  ╰─ node-1-2]]),
-			renderer:render(App):to_string()
+			fiber.render(App):get_buffer():to_string()
 		)
 	end)
 
@@ -60,7 +57,7 @@ describe("Tree Component", function()
 			" ╰╮─ ▾ node-1-1",
 			" │╰─ node-1-1-1",
 			" ╰─ node-1-2",
-		}, renderer:render(App):to_lines())
+		}, fiber.render(App):get_buffer():to_lines())
 	end)
 
 	it("renders last level one node with space before its children", function()
@@ -84,7 +81,7 @@ describe("Tree Component", function()
 			" ╰╮─ ▾ node-1-3",
 			"  ╰╮─ ▾ node-1-3-1",
 			"   ╰─ node-1-3-1-1",
-		}, renderer:render(App):to_lines())
+		}, fiber.render(App):get_buffer():to_lines())
 	end)
 
 	it("renders nodes that are not expanded", function()
@@ -104,7 +101,7 @@ describe("Tree Component", function()
 		local App = ui.createComponent("App", function()
 			return Tree({ tree = tree })
 		end, {})
-		local result = renderer:render(App):to_string()
+		local result = fiber.render(App):get_buffer():to_string()
 
 		eq(
 			[[node-1

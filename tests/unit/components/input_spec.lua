@@ -4,12 +4,12 @@ pcall(require, "luacov")
 local eq = assert.are.same
 
 local Input = require("ascii-ui.components.input")
-local renderer = require("ascii-ui.renderer"):new()
+local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 
 describe("Input", function()
 	it("renders", function()
-		eq("", renderer:render(Input):to_string())
+		eq("", fiber.render(Input):get_buffer():to_string())
 	end)
 
 	it("renders with initial value", function()
@@ -18,6 +18,6 @@ describe("Input", function()
 			return Input({ value = initial_value })
 		end)
 
-		eq(initial_value, renderer:render(App):to_string())
+		eq(initial_value, fiber.render(App):get_buffer():to_string())
 	end)
 end)

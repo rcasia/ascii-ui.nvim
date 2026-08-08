@@ -3,7 +3,7 @@ pcall(require, "luacov")
 local eq = assert.are.same
 
 local Paragraph = require("ascii-ui.components.paragraph")
-local renderer = require("ascii-ui.renderer"):new()
+local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 
 describe("Paragraph", function()
@@ -12,7 +12,7 @@ describe("Paragraph", function()
 			return Paragraph({ content = "hello world!" })
 		end)
 
-		eq([[hello world!]], renderer:render(App):to_string())
+		eq([[hello world!]], fiber.render(App):get_buffer():to_string())
 	end)
 
 	it("renders text with new lines", function()
@@ -20,6 +20,6 @@ describe("Paragraph", function()
 			return Paragraph({ content = "hello\nworld!" })
 		end)
 
-		eq({ "hello", "world!" }, renderer:render(App):to_lines())
+		eq({ "hello", "world!" }, fiber.render(App):get_buffer():to_lines())
 	end)
 end)

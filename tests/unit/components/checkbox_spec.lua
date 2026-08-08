@@ -4,21 +4,19 @@ pcall(require, "luacov")
 local eq = assert.are.same
 
 local Checkbox = require("ascii-ui.components.checkbox")
-local Renderer = require("ascii-ui.renderer")
+local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 
 describe("checkbox", function()
-	local renderer = Renderer:new()
-
 	it("renders", function()
 		local App = ui.createComponent("App", function()
 			return Checkbox({ label = "some-label" })
 		end)
-		eq("[ ] some-label", renderer:render(App):to_string())
+		eq("[ ] some-label", fiber.render(App):get_buffer():to_string())
 
 		local App2 = ui.createComponent("App", function()
 			return Checkbox({ active = true, label = "some-other-label" })
 		end)
-		eq("[x] some-other-label", renderer:render(App2):to_string())
+		eq("[x] some-other-label", fiber.render(App2):get_buffer():to_string())
 	end)
 end)
