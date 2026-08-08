@@ -147,7 +147,8 @@ If you need to commit work but tests are failing:
 
 ```bash
 # Standard workflow
-git pull --rebase
+git fetch origin
+git rebase origin/main
 # Make changes
 make check
 make test
@@ -422,6 +423,8 @@ All agent delegation must use structured prompts via the task tool.
 
 ### Requirements
 
+0. Before starting implementation, fetch and rebase from origin/main:
+   `git fetch origin && git rebase origin/main`
 1. [specific requirement 1]
 2. [specific requirement 2]
 3. Work in isolated workspace under /tmp (if parallel execution)
@@ -433,6 +436,7 @@ All agent delegation must use structured prompts via the task tool.
 
 - [ ] [criterion 1]
 - [ ] [criterion 2]
+- [ ] Branch is up to date with origin/main (rebased)
 - [ ] PR created and merged to main
 - [ ] Pipeline is green on main after merge
 

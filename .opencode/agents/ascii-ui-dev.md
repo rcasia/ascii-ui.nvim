@@ -46,6 +46,12 @@ Neovim Floating Window or Stdout
 
 ### Before Making Changes
 
+0. **Rebase from origin/main**: Before any work, ensure your branch is up to date:
+   ```bash
+   git fetch origin
+   git rebase origin/main
+   ```
+   Always work on the latest code. Stale branches cause merge conflicts and wasted effort.
 1. **Understand the context**: Read relevant files, check existing patterns
 2. **Check conventions**: Follow the module pattern, component pattern, naming conventions
 3. **Plan the approach**: Consider how changes affect the fiber tree, rendering, and state
@@ -307,6 +313,8 @@ Global skills (listed in `available_skills` by the runtime) are general-purpose 
 4. Patterns become permanent improvements to the agent system
 
 ## Changelog
+
+- 2026-08-08: Added mandatory rebase from origin/main step before implementation
 
 - 2026-08-08: Forbidden from writing to `.opencode/` — only agent-teacher may modify agent files
 - 2026-08-08: Made convention-reviewer consultation mandatory before commits
