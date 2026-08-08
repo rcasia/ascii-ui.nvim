@@ -52,6 +52,20 @@ chore(agents): improve agent consulting patterns
 
 **Note**: All agent-related changes (updates to agent files, conventions, or configuration) must use `chore` type with `agents` scope.
 
+### Issue References
+
+When a commit is related to an issue, reference it in the commit message:
+
+```
+feat(components): add Input component with validation
+
+Closes #42
+
+[agent: ascii-ui-dev]
+```
+
+Use keywords: `Closes #123`, `Fixes #123`, `Resolves #123`
+
 ## Trunk-Based Development
 
 This project follows trunk-based development. All work happens on `main` branch directly.

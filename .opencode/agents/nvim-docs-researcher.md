@@ -96,6 +96,8 @@ Where `scope` describes the area affected (e.g., `docs`, `api`, `help`).
 - `refactor` only applies to code restructuring (imports, folders, code organization), not for docs or agent changes
 - Changes to agent files or conventions must use `chore(agents):` prefix
 
+**Issue References**: When a commit is related to an issue, reference it in the commit message using `Closes #123`, `Fixes #123`, or `Resolves #123`.
+
 ## Trunk-Based Development
 
 This project follows trunk-based development. **Never use --no-verify**.
