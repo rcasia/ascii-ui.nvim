@@ -163,7 +163,11 @@ Where `scope` describes the area affected (e.g., `agents`, `teaching`, `learning
 - `refactor` only applies to code restructuring (imports, folders, code organization), not for docs or agent changes
 - Changes to agent files or conventions must use `chore(agents):` prefix
 
-**Issue References**: When a commit is related to an issue, reference it in the commit message using `Closes #123`, `Fixes #123`, or `Resolves #123`.
+**Issue References**: When a commit is related to an issue, reference it in the commit message:
+- Use `Closes #123`, `Fixes #123`, or `Resolves #123` only when the commit completely solves the issue
+- Use `WIP #123` or `Progress on #123` for work-in-progress
+- Use `Related to #123` when the commit is related but doesn't solve the issue
+- Always confirm with the user before using closing keywords
 
 ## Trunk-Based Development
 

@@ -64,7 +64,12 @@ Closes #42
 [agent: ascii-ui-dev]
 ```
 
-Use keywords: `Closes #123`, `Fixes #123`, `Resolves #123`
+**Use closing keywords carefully:**
+- `Closes #123`, `Fixes #123`, `Resolves #123` — only when the commit **completely solves** the issue
+- `WIP #123` or `Progress on #123` — for work-in-progress that doesn't fully solve it yet
+- `Related to #123` — when the commit is related but doesn't solve the issue
+
+**Important:** Always confirm with the user before using closing keywords. Some issues may need verification or have additional requirements.
 
 ## Trunk-Based Development
 
