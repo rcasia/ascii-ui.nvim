@@ -407,6 +407,7 @@ task-scheduler evaluates
 
 All agent delegation must use structured prompts via the task tool.
 
+
 ### Delegation Format
 
 ```markdown
@@ -417,16 +418,22 @@ All agent delegation must use structured prompts via the task tool.
 **Context**: [relevant background]
 **Skills**: [suggested skills to load]
 **Priority**: [high/medium/low]
+**Workspace**: /tmp/ascii-ui-[agent-name]/ (for parallel work)
 
 ### Requirements
 
 1. [specific requirement 1]
 2. [specific requirement 2]
+3. Work in isolated workspace under /tmp (if parallel execution)
+4. Push branch to origin when complete
+5. Verify CI is green on your branch before reporting completion
 
 ### Success Criteria
 
 - [ ] [criterion 1]
 - [ ] [criterion 2]
+- [ ] Changes pushed to origin
+- [ ] CI is green on branch
 
 ### Difficulty Reporting
 
@@ -454,6 +461,8 @@ Agents must report results in this structure:
 - [ ] Tests pass
 - [ ] Linting passes
 - [ ] Documentation updated (if applicable)
+- [ ] Changes pushed to origin
+- [ ] CI is green on branch
 
 ### Difficulties
 
@@ -467,7 +476,7 @@ task-scheduler tracks all delegated work and reports status.
 ### Status Categories
 
 - **Active**: Currently being worked on (max 2 concurrent)
-- **Completed**: Finished and committed
+- **Completed**: Finished, committed, pushed to origin, and CI is green
 - **Queued**: Waiting for agent availability
 - **Blocked**: Cannot proceed due to external factor
 

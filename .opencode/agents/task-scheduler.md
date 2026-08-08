@@ -78,6 +78,25 @@ Your ONLY capabilities are:
 - If 2 agents are busy, queue additional tasks
 - Report which agents are busy and which tasks are queued
 
+### Parallel Agent Workspaces
+
+When delegating to multiple agents simultaneously, each agent MUST work in an isolated workspace to prevent conflicts:
+
+```bash
+# Each parallel agent gets its own clone under /tmp
+/tmp/ascii-ui-agent1/  # First agent's workspace
+/tmp/ascii-ui-agent2/  # Second agent's workspace
+```
+
+**Isolation Pattern**:
+1. Agent clones repo to `/tmp/ascii-ui-[agent-name]/`
+2. Creates feature branch: `git checkout -b feature/[task-name]`
+3. Works in isolated directory (no conflicts with other agents)
+4. Pushes branch to origin: `git push -u origin feature/[task-name]`
+5. Verifies CI is green on their branch before reporting completion
+
+**Why**: Parallel agents working in the same directory cause git conflicts. Isolated workspaces allow true parallel execution.
+
 ### Issue Prioritization
 
 1. **Critical bugs** (labeled `bug`, `critical`)
@@ -230,16 +249,22 @@ When delegating work, use the task tool with structured prompts:
 **Context**: [relevant background]
 **Skills**: [suggested skills to load]
 **Priority**: [high/medium/low]
+**Workspace**: /tmp/ascii-ui-[agent-name]/ (for parallel work)
 
 ### Requirements
 
 1. [specific requirement 1]
 2. [specific requirement 2]
+3. Work in isolated workspace under /tmp (if parallel execution)
+4. Push branch to origin when complete
+5. Verify CI is green on your branch before reporting completion
 
 ### Success Criteria
 
 - [ ] [criterion 1]
 - [ ] [criterion 2]
+- [ ] Changes pushed to origin
+- [ ] CI is green on branch
 
 ### Difficulty Reporting
 
@@ -320,6 +345,8 @@ If an agent is stuck or blocked:
 ```
 
 ## Changelog
+
+- 2026-08-08: Added push/verify CI requirements to delegation template. Added parallel agent workspace isolation pattern under /tmp.
 
 - 2026-08-08: Added `gh issue create` and `gh pr create` permissions. Task-scheduler can now create issues and PRs directly.
 - 2026-08-08: Added mandatory consultation rules for commit workflow
