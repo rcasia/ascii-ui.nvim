@@ -1,176 +1,263 @@
 # Permission Configuration Guide
 
-This document explains the permission syntax used in `opencode.json`.
+**Source of Truth**: The official schema at https://opencode.ai/config.json
 
-## Edit Permissions
+Always refer to the schema for the most up-to-date permission syntax and available options.
 
-Controls which files an agent can modify using file editing tools (Write, Edit, MultiEdit).
+## Overview
 
-### Syntax
+Permissions control what tools and actions each agent can perform. The schema defines:
+
+- **PermissionActionConfig**: `"ask"`, `"allow"`, `"deny"`
+- **PermissionObjectConfig**: Object mapping patterns to actions
+- **PermissionRuleConfig**: Either a simple action or an object with patterns
+
+## Permission Types
+
+The following tools/actions can be configured:
+
+| Permission | Description |
+|------------|-------------|
+| `read` | File reading operations |
+| `edit` | File editing operations (Write, Edit, MultiEdit) |
+| `glob` | File pattern matching |
+| `grep` | Content searching |
+| `list` | Directory listing |
+| `bash` | Shell command execution |
+| `task` | Task tool (delegation) |
+| `external_directory` | Access to directories outside workspace |
+| `todowrite` | Todo list management |
+| `question` | Question tool |
+| `webfetch` | Web content fetching |
+| `websearch` | Web search |
+| `lsp` | Language Server Protocol operations |
+| `doom_loop` | Doom loop detection |
+| `skill` | Skill loading |
+
+## Syntax
+
+### Simple Action (All or Nothing)
 
 ```json
-"edit": {
-  "<pattern>": "allow" | "deny",
-  "*": "allow" | "deny"
+"permission": {
+  "edit": "deny",
+  "bash": "allow"
 }
 ```
 
-### Patterns
+### Object with Patterns
 
-- `*` — Matches all files (wildcard)
-- `.opencode/*` — Matches all files under `.opencode/` directory
-- `opencode.json` — Matches specific file
-- `lua/ascii-ui/*` — Matches all files under `lua/ascii-ui/`
+```json
+"permission": {
+  "edit": {
+    ".opencode/*": "deny",
+    "*": "allow"
+  },
+  "bash": {
+    "gh *": "allow",
+    "make check": "allow",
+    "*": "deny"
+  }
+}
+```
+
+### Mixed Approach
+
+```json
+"permission": {
+  "read": "allow",
+  "edit": {
+    "src/*": "allow",
+    "*": "deny"
+  },
+  "bash": {
+    "git *": "allow",
+    "npm *": "allow",
+    "*": "deny"
+  }
+}
+```
+
+## Pattern Matching
+
+For `PermissionObjectConfig`, keys are patterns that match against:
+
+- **File paths** (for `read`, `edit`, `glob`, `grep`, `list`)
+- **Command strings** (for `bash`)
+
+### Pattern Rules
+
+1. **Exact match**: `"make check"` matches only `make check`
+2. **Wildcard**: `"gh *"` matches `gh` with any arguments
+3. **Path patterns**: `".opencode/*"` matches all files under `.opencode/`
+4. **Order matters**: More specific patterns should come before general ones
+5. **Last match wins**: If multiple patterns match, the last one takes precedence
 
 ### Examples
 
-**Allow everything except `.opencode/`:**
+**File path patterns:**
 ```json
 "edit": {
-  ".opencode/*": "deny",
-  "*": "allow"
-}
-```
-
-**Allow only specific directories:**
-```json
-"edit": {
-  ".opencode/agents/*": "allow",
-  ".opencode/skills/*": "allow",
-  "opencode.json": "allow",
+  "src/components/*": "allow",
+  "src/**/*.test.ts": "allow",
+  ".env": "deny",
   "*": "deny"
 }
 ```
 
-**Deny all edits (read-only):**
-```json
-"edit": "deny"
-```
-
-## Bash Permissions
-
-Controls which bash commands an agent can execute.
-
-### Syntax
-
+**Command patterns:**
 ```json
 "bash": {
-  "<command_pattern>": "allow" | "deny",
-  "*": "allow" | "deny"
-}
-```
-
-### Command Patterns
-
-- `*` — Matches all commands
-- `gh *` — Matches `gh` command with any arguments
-- `make check` — Matches exact command `make check`
-- `make test *` — Matches `make test` with any arguments
-- `git status` — Matches exact command `git status`
-- `git diff` — Matches exact command `git diff`
-
-### Pattern Matching Rules
-
-1. **Exact match**: `make check` matches only `make check`
-2. **Wildcard**: `gh *` matches `gh issue list`, `gh pr view`, etc.
-3. **Order matters**: More specific patterns should come before `*`
-4. **Last match wins**: If multiple patterns match, the last one in the list takes precedence
-
-### Examples
-
-**Allow only GitHub CLI commands:**
-```json
-"bash": {
-  "gh *": "allow",
+  "git status": "allow",
+  "git diff *": "allow",
+  "git commit *": "deny",
+  "make *": "allow",
   "*": "deny"
 }
 ```
 
-**Allow verification commands only:**
+## Agent Permission Matrix
+
+Current configuration for this project:
+
+| Agent | Edit | Bash | Purpose |
+|-------|------|------|---------|
+| task-scheduler | ❌ deny | `gh *` only | Read GitHub, delegate work |
+| ascii-ui-dev | ✅ all except `.opencode/*` | ✅ allow | Implementation |
+| nvim-docs-researcher | ❌ deny | ❌ deny | Read-only research |
+| convention-reviewer | ❌ deny | Verification commands only | Code review |
+| agent-teacher | ✅ `.opencode/*` | ✅ allow | Agent improvement |
+
+## Common Patterns
+
+### Read-Only Agent
+
+```json
+"permission": {
+  "read": "allow",
+  "edit": "deny",
+  "bash": "deny"
+}
+```
+
+### Implementation Agent
+
+```json
+"permission": {
+  "read": "allow",
+  "edit": "allow",
+  "bash": "allow"
+}
+```
+
+### Restricted Bash (Verification Only)
+
 ```json
 "bash": {
   "make check": "allow",
   "make test": "allow",
-  "make test *": "allow",
   "git status": "allow",
   "git diff": "allow",
   "*": "deny"
 }
 ```
 
-**Allow all bash commands:**
-```json
-"bash": "allow"
-```
-
-**Deny all bash commands:**
-```json
-"bash": "deny"
-```
-
-## Permission Matrix
-
-| Agent | Edit Scope | Bash Scope | Purpose |
-|-------|-----------|-----------|---------|
-| task-scheduler | ❌ None | `gh *` only | Read GitHub issues/PRs, delegate work |
-| ascii-ui-dev | ✅ All except `.opencode/` | ✅ All | Implement features, fix bugs, commit code |
-| nvim-docs-researcher | ❌ None | ❌ None | Read-only research |
-| convention-reviewer | ❌ None | `make check/test`, `git status/diff` | Verify conventions |
-| agent-teacher | ✅ `.opencode/agents/*`, `.opencode/skills/*`, `opencode.json` | ✅ All | Update agent instructions, create skills |
-
-## Common Mistakes
-
-### ❌ Wrong: Wildcard before specific patterns
+### Protected Directories
 
 ```json
-"bash": {
-  "*": "deny",
-  "gh *": "allow"  // This won't work - * matches first
+"edit": {
+  ".opencode/*": "deny",
+  ".env*": "deny",
+  "node_modules/*": "deny",
+  "*": "allow"
 }
 ```
 
-### ✅ Correct: Specific patterns first
+## Validation
+
+To validate your permission configuration:
+
+1. **Check schema**: Ensure JSON is valid against https://opencode.ai/config.json
+2. **Test permissions**: Try operations that should be allowed/denied
+3. **Review logs**: Check for permission denied errors
+
+## Schema Reference
+
+The complete permission schema:
 
 ```json
-"bash": {
-  "gh *": "allow",
-  "*": "deny"
+{
+  "PermissionActionConfig": {
+    "type": "string",
+    "enum": ["ask", "allow", "deny"]
+  },
+  "PermissionObjectConfig": {
+    "type": "object",
+    "additionalProperties": {
+      "$ref": "#/$defs/PermissionActionConfig"
+    }
+  },
+  "PermissionRuleConfig": {
+    "anyOf": [
+      { "$ref": "#/$defs/PermissionActionConfig" },
+      { "$ref": "#/$defs/PermissionObjectConfig" }
+    ]
+  },
+  "PermissionConfig": {
+    "anyOf": [
+      { "$ref": "#/$defs/PermissionActionConfig" },
+      {
+        "type": "object",
+        "properties": {
+          "read": { "$ref": "#/$defs/PermissionRuleConfig" },
+          "edit": { "$ref": "#/$defs/PermissionRuleConfig" },
+          "glob": { "$ref": "#/$defs/PermissionRuleConfig" },
+          "grep": { "$ref": "#/$defs/PermissionRuleConfig" },
+          "list": { "$ref": "#/$defs/PermissionRuleConfig" },
+          "bash": { "$ref": "#/$defs/PermissionRuleConfig" },
+          "task": { "$ref": "#/$defs/PermissionRuleConfig" },
+          "external_directory": { "$ref": "#/$defs/PermissionRuleConfig" },
+          "todowrite": { "$ref": "#/$defs/PermissionActionConfig" },
+          "question": { "$ref": "#/$defs/PermissionActionConfig" },
+          "webfetch": { "$ref": "#/$defs/PermissionActionConfig" },
+          "websearch": { "$ref": "#/$defs/PermissionActionConfig" },
+          "lsp": { "$ref": "#/$defs/PermissionRuleConfig" },
+          "doom_loop": { "$ref": "#/$defs/PermissionActionConfig" },
+          "skill": { "$ref": "#/$defs/PermissionRuleConfig" }
+        }
+      }
+    ]
+  }
 }
 ```
 
-### ❌ Wrong: Missing wildcard for arguments
+## Best Practices
 
-```json
-"bash": {
-  "gh": "allow"  // Only matches "gh" with no arguments
-}
-```
+1. **Start restrictive**: Use `"*": "deny"` as baseline, then allow specific patterns
+2. **Be explicit**: Document why certain permissions are granted/denied
+3. **Test thoroughly**: Verify agents can complete tasks with configured permissions
+4. **Review regularly**: Update permissions as agent needs change
+5. **Use schema**: Always validate against the official schema
 
-### ✅ Correct: Include wildcard for arguments
+## Troubleshooting
 
-```json
-"bash": {
-  "gh *": "allow"  // Matches "gh" with any arguments
-}
-```
+### Agent can't access needed files
+- Check `read` and `edit` permissions
+- Verify path patterns match actual file paths
+- Test with exact file path
 
-## Testing Permissions
+### Agent can't run commands
+- Check `bash` permissions
+- Verify command pattern matches (including arguments)
+- Remember `"command"` only matches exact command, `"command *"` matches with args
 
-To verify permissions work as expected:
-
-1. **Edit permissions**: Try editing a file outside allowed scope → should fail
-2. **Bash permissions**: Try running a disallowed command → should fail
-3. **Check logs**: Look for permission denied errors in agent output
-
-## Updating Permissions
-
-When adding new permissions:
-
-1. **Start restrictive**: Use `"*": "deny"` as baseline
-2. **Add specific allows**: List only needed commands/patterns
-3. **Test thoroughly**: Verify agent can complete tasks
-4. **Document changes**: Update this file if adding new patterns
+### Agent accessing protected resources
+- Add explicit `"deny"` rules for sensitive paths/commands
+- Use `external_directory: "deny"` to prevent workspace escape
+- Review and tighten permission patterns
 
 ## Changelog
 
-- 2026-08-08: Initial permission documentation created
+- 2026-02-08: Updated to reference official schema as source of truth
+- 2026-02-08: Added complete list of permission types from schema
+- 2026-02-08: Initial permission documentation created
