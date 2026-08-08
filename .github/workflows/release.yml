@@ -1,30 +1,39 @@
+name: Release
+
 on:
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: write
-  pull-requests: write
-
-name: release
+  schedule:
+    # Runs every day at 08:00 UTC
+    - cron: "0 8 * * *"
+  workflow_dispatch:
 
 jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+
   release:
+    needs: [test]
     name: release
     permissions:
       contents: write
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: "24"
+      - name: Install semantic-release
+        run: npm install --no-save semantic-release @semantic-release/release-notes-generator conventional-changelog-conventionalcommits @semantic-release/changelog @semantic-release/github
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx -p @semantic-release/changelog semantic-release
+        run: npx semantic-release
+
+  push-to-luarocks:
+    needs: release
+    uses: ./.github/workflows/luarocks.yml
+    secrets:
+      LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}

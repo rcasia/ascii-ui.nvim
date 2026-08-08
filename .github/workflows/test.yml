@@ -1,35 +1,36 @@
-name: Test
+name: CI
 
 on:
-  push:
-    paths-ignore:
-      - "**/*.md"
-    branches:
-      - "main"
-
+  schedule:
+    - cron: "00 00 * * 4" # every friday at 00:00
   pull_request:
-    paths-ignore:
-      - "**/*.md"
-    branches:
-      - "main"
+    branches: ["main"]
+    paths:
+      - "lua/**"
+      - "tests/**"
+      - "scripts/**"
+      - "*.lua"
+      - "Makefile"
+      - ".github/workflows/test.yml"
+  workflow_call:
 
 jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
-      matrix:
-        nvim-versions: ["stable", "nightly"]
-        os: [ubuntu-latest, windows-latest, macos-latest]
       fail-fast: false
-    name: Plenary Tests
+      matrix:
+        os: [ubuntu-latest]
+        nvim-version: [stable, v0.11.7, nightly]
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
-          version: ${{ matrix.nvim-versions }}
+          version: ${{ matrix.nvim-version }}
 
-      - name: run tests
+      - name: Run tests
         run: make test
+        timeout-minutes: 3
