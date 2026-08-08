@@ -983,6 +983,203 @@ Return ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
+                                                    *ascii-ui.testing.E2EScreen*
+                          `ascii-ui.testing.E2EScreen`
+@class ascii-ui.testing.E2EScreen : ascii-ui.testing.Screen
+@field private _bufnr integer
+@tag ascii-ui.testing.E2EScreen
+
+------------------------------------------------------------------------------
+                                                      *ascii-ui.testing.mount()*
+                     `ascii-ui.testing.mount`({component})
+Mounts a component in a real Neovim window for e2e testing.
+@param component ascii-ui.FunctionalComponent
+@return ascii-ui.testing.E2EScreen
+@tag ascii-ui.testing.e2e.mount()
+
+------------------------------------------------------------------------------
+                                *ascii-ui.testing.E2EScreen:_get_buffer_lines()*
+                `ascii-ui.testing.E2EScreen:_get_buffer_lines`()
+@private
+Gets lines from the actual Neovim buffer.
+@return string[]
+
+------------------------------------------------------------------------------
+                                   *ascii-ui.testing.E2EScreen:bufferContains()*
+         `ascii-ui.testing.E2EScreen:bufferContains`({text}, {timeout})
+@param text string
+@param timeout? integer milliseconds (default 1000)
+@return boolean
+
+------------------------------------------------------------------------------
+                                      *ascii-ui.testing.E2EScreen:waitForText()*
+          `ascii-ui.testing.E2EScreen:waitForText`({text}, {timeout})
+Waits for text to appear in the buffer.
+@param text string
+@param timeout? integer milliseconds (default 1000)
+@return boolean
+
+------------------------------------------------------------------------------
+Asserts cursor is at the given position.
+@param line integer
+@param col? integer
+@param timeout? integer milliseconds (default 400)
+@return boolean
+
+------------------------------------------------------------------------------
+Simulates a vim keypress.
+@param keys string
+
+------------------------------------------------------------------------------
+                                          *ascii-ui.testing.E2EScreen:hasText()*
+            `ascii-ui.testing.E2EScreen:hasText`({text}, {timeout})
+@param text string
+@param timeout? integer milliseconds (default 1000)
+@return boolean
+
+------------------------------------------------------------------------------
+                                          *ascii-ui.testing.E2EScreen:hasLine()*
+                  `ascii-ui.testing.E2EScreen:hasLine`({line})
+@param line string
+@return boolean
+
+------------------------------------------------------------------------------
+                                         *ascii-ui.testing.E2EScreen:hasLines()*
+            `ascii-ui.testing.E2EScreen:hasLines`({expected_lines})
+@param expected_lines string[]
+@return boolean
+
+------------------------------------------------------------------------------
+                                          *ascii-ui.testing.E2EScreen:toLines()*
+                     `ascii-ui.testing.E2EScreen:toLines`()
+@return string[]
+
+------------------------------------------------------------------------------
+                                       *ascii-ui.testing.E2EScreen:toSnapshot()*
+                   `ascii-ui.testing.E2EScreen:toSnapshot`()
+@return string
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                       *ascii-ui.testing.Screen*
+                           `ascii-ui.testing.Screen`
+@class ascii-ui.testing.Screen
+@field private _fiber_root ascii-ui.RootFiberNode
+@field private _bus ascii-ui.EventBus
+@tag ascii-ui.testing.Screen
+
+------------------------------------------------------------------------------
+                                                     *ascii-ui.testing.render()*
+                     `ascii-ui.testing.render`({component})
+@param component ascii-ui.FunctionalComponent
+@return ascii-ui.testing.Screen
+@tag ascii-ui.testing.render()
+
+------------------------------------------------------------------------------
+                                         *ascii-ui.testing.Screen:_get_buffer()*
+                    `ascii-ui.testing.Screen:_get_buffer`()
+@private
+@return ascii-ui.Buffer
+
+------------------------------------------------------------------------------
+                                           *ascii-ui.testing.Screen:_rerender()*
+                     `ascii-ui.testing.Screen:_rerender`()
+@private
+
+------------------------------------------------------------------------------
+                                           *ascii-ui.testing.Screen:getByText()*
+                  `ascii-ui.testing.Screen:getByText`({text})
+@param text string
+@return ascii-ui.Segment | nil
+
+------------------------------------------------------------------------------
+                                        *ascii-ui.testing.Screen:getAllByText()*
+                 `ascii-ui.testing.Screen:getAllByText`({text})
+@param text string
+@return ascii-ui.Segment[]
+
+------------------------------------------------------------------------------
+                                         *ascii-ui.testing.Screen:queryByText()*
+                 `ascii-ui.testing.Screen:queryByText`({text})
+@param text string
+@return ascii-ui.Segment | nil
+
+------------------------------------------------------------------------------
+                                      *ascii-ui.testing.Screen:getByHighlight()*
+             `ascii-ui.testing.Screen:getByHighlight`({highlight})
+@param highlight string
+@return ascii-ui.Segment | nil
+
+------------------------------------------------------------------------------
+                                        *ascii-ui.testing.Screen:getFocusable()*
+                    `ascii-ui.testing.Screen:getFocusable`()
+@return ascii-ui.Segment
+
+------------------------------------------------------------------------------
+                                     *ascii-ui.testing.Screen:getAllFocusable()*
+                  `ascii-ui.testing.Screen:getAllFocusable`()
+@return ascii-ui.Segment[]
+
+------------------------------------------------------------------------------
+                                             *ascii-ui.testing.Screen:hasText()*
+                   `ascii-ui.testing.Screen:hasText`({text})
+@param text string
+@return boolean
+
+------------------------------------------------------------------------------
+                                             *ascii-ui.testing.Screen:hasLine()*
+                   `ascii-ui.testing.Screen:hasLine`({line})
+@param line string
+@return boolean
+
+------------------------------------------------------------------------------
+                                            *ascii-ui.testing.Screen:hasLines()*
+              `ascii-ui.testing.Screen:hasLines`({expected_lines})
+@param expected_lines string[]
+@return boolean
+
+------------------------------------------------------------------------------
+                                        *ascii-ui.testing.Screen:hasFocusable()*
+                 `ascii-ui.testing.Screen:hasFocusable`({text})
+@param text string
+@return boolean
+
+------------------------------------------------------------------------------
+                                        *ascii-ui.testing.Screen:hasHighlight()*
+              `ascii-ui.testing.Screen:hasHighlight`({highlight})
+@param highlight string
+@return boolean
+
+------------------------------------------------------------------------------
+                                             *ascii-ui.testing.Screen:toLines()*
+                      `ascii-ui.testing.Screen:toLines`()
+@return string[]
+
+------------------------------------------------------------------------------
+                                          *ascii-ui.testing.Screen:toSnapshot()*
+                     `ascii-ui.testing.Screen:toSnapshot`()
+@return string
+
+------------------------------------------------------------------------------
+                                              *ascii-ui.testing.Screen:select()*
+                    `ascii-ui.testing.Screen:select`({text})
+@param text string
+
+------------------------------------------------------------------------------
+                                             *ascii-ui.testing.Screen:trigger()*
+            `ascii-ui.testing.Screen:trigger`({text}, {interaction})
+@param text string
+@param interaction string
+
+------------------------------------------------------------------------------
+                                               *ascii-ui.testing.Screen:focus()*
+                    `ascii-ui.testing.Screen:focus`({text})
+@param text string
+
+
+==============================================================================
+------------------------------------------------------------------------------
                                                      *ascii-ui.UserInteractions*
                           `ascii-ui.UserInteractions`
 Class ~
