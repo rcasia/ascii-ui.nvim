@@ -191,3 +191,27 @@ Where `scope` describes the area affected (e.g., `conventions`, `review`, `tests
 **Note**: 
 - `refactor` only applies to code restructuring (imports, folders, code organization), not for docs or agent changes
 - Changes to agent files or conventions must use `chore(agents):` prefix
+
+## Trunk-Based Development
+
+This project follows trunk-based development. **Never use --no-verify**.
+
+### Rules
+
+1. **Tests must pass** - Run `make test` and `make check` before committing
+2. **No --no-verify** - Always run pre-commit hooks
+3. **Pull before push** - Always `git pull --rebase` before pushing
+4. **Red pipeline = STOP** - If main pipeline is red, stop current work and fix it
+5. **Commit ASAP** - Commit the minimal significant change as soon as it works
+6. **TDD first** - Write tests first, then implement (red-green-refactor)
+
+### When Pipeline is Red
+
+If the main branch pipeline is failing:
+1. **Stop** all current tasks
+2. **Investigate** what's broken
+3. **Fix** the issue (on main or WIP branch)
+4. **Verify** tests pass
+5. **Resume** normal work only after pipeline is green
+
+If tests are failing, do NOT commit to main. Create a WIP branch and open a draft PR instead.

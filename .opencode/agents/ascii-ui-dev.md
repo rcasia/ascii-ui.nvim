@@ -247,3 +247,60 @@ Where `scope` describes the area affected (e.g., `components`, `hooks`, `fiber`,
 **Note**: 
 - `refactor` only applies to code restructuring (imports, folders, code organization), not for docs or agent changes
 - Changes to agent files or conventions must use `chore(agents):` prefix
+
+## Trunk-Based Development
+
+This project follows trunk-based development. **Never use --no-verify**.
+
+### Rules
+
+1. **Tests must pass** - Run `make test` and `make check` before committing
+2. **No --no-verify** - Always run pre-commit hooks
+3. **Pull before push** - Always `git pull --rebase` before pushing
+4. **Red pipeline = STOP** - If main pipeline is red, stop current work and fix it
+5. **Commit ASAP** - Commit the minimal significant change as soon as it works
+6. **TDD first** - Write tests first, then implement (red-green-refactor)
+
+### Commit ASAP
+
+Commit as soon as you have a minimal significant change working with its tests:
+- Don't accumulate large changes
+- One feature/fix per commit
+- Include tests with the change
+- If it works and has tests, commit it
+
+### TDD Workflow (Baby Steps)
+
+Follow test-driven development with small incremental steps:
+
+1. **Red** - Write a failing test for the smallest possible behavior
+2. **Green** - Write the minimal code to make the test pass
+3. **Refactor** - Clean up while tests still pass
+4. **Repeat** - Add the next small behavior
+
+**Baby steps means:**
+- One assertion at a time
+- One function at a time
+- Don't skip ahead or implement multiple things at once
+- Let the tests guide the design
+
+### When Pipeline is Red
+
+If the main branch pipeline is failing:
+1. **Stop** all current tasks
+2. **Investigate** what's broken
+3. **Fix** the issue (on main or WIP branch)
+4. **Verify** tests pass
+5. **Resume** normal work only after pipeline is green
+
+### When Tests Fail
+
+If tests are failing:
+- **Do NOT** commit to main
+- **Do NOT** use `--no-verify`
+- **Instead**: Create a WIP branch and open a draft PR
+  ```bash
+  git checkout -b wip/feature-name
+  git push -u origin wip/feature-name
+  # Open draft PR on GitHub
+  ```

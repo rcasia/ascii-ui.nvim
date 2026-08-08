@@ -52,6 +52,96 @@ chore(agents): improve agent consulting patterns
 
 **Note**: All agent-related changes (updates to agent files, conventions, or configuration) must use `chore` type with `agents` scope.
 
+## Trunk-Based Development
+
+This project follows trunk-based development. All work happens on `main` branch directly.
+
+### Rules
+
+1. **Tests must pass** - Never commit if tests are failing
+2. **No --no-verify** - Always run pre-commit hooks
+3. **Small commits** - Keep changes atomic and focused
+4. **Pull before push** - Always `git pull` before pushing
+5. **Red pipeline = STOP** - If main pipeline is red, all agents stop current work
+6. **Commit ASAP** - Commit the minimal significant change as soon as it works
+7. **TDD first** - Write tests first, then implement (red-green-refactor)
+
+### Commit ASAP
+
+Commit as soon as you have a minimal significant change working with its tests:
+- Don't accumulate large changes
+- One feature/fix per commit
+- Include tests with the change
+- If it works and has tests, commit it
+
+### TDD Workflow (Baby Steps)
+
+Follow test-driven development with small incremental steps:
+
+1. **Red** - Write a failing test for the smallest possible behavior
+2. **Green** - Write the minimal code to make the test pass
+3. **Refactor** - Clean up while tests still pass
+4. **Repeat** - Add the next small behavior
+
+**Baby steps means:**
+- One assertion at a time
+- One function at a time
+- Don't skip ahead or implement multiple things at once
+- Let the tests guide the design
+
+### When Pipeline is Red
+
+**CRITICAL**: If the main branch pipeline is failing:
+
+1. **All agents stop** - Pause whatever you're doing
+2. **One agent fixes** - Designate one agent to investigate and fix the issue
+3. **No new features** - Do not commit new code until pipeline is green
+4. **Priority #1** - Fixing the pipeline takes precedence over all other work
+
+**Workflow when pipeline is red:**
+```bash
+# Check if main is failing
+git checkout main
+git pull
+make test
+
+# If tests fail:
+# 1. All agents stop their current tasks
+# 2. ascii-ui-dev (or designated agent) investigates
+# 3. Fix the issue on main (or WIP branch if complex)
+# 4. Verify tests pass
+# 5. Only then resume normal work
+```
+
+### When Tests Fail
+
+If you need to commit work but tests are failing:
+- **Do NOT** use `--no-verify` to bypass hooks
+- **Do NOT** commit to main with failing tests
+- **Instead**: Create a draft PR or WIP branch
+  - `git checkout -b wip/feature-name`
+  - Push the branch
+  - Open a draft PR for review
+  - Fix tests before merging to main
+
+### Workflow
+
+```bash
+# Standard workflow
+git pull --rebase
+# Make changes
+make check
+make test
+git add .
+git commit -m "type(scope): description\n\n[agent: agent-name]"
+git push
+
+# If tests fail, use a WIP branch
+git checkout -b wip/broken-feature
+git push -u origin wip/broken-feature
+# Open draft PR on GitHub
+```
+
 ## Project Overview
 
 ascii-ui.nvim is a React-like UI framework for Neovim plugins, written in Lua. It provides functional components, hooks (`useState`, `useEffect`, `useReducer`, etc.), a fiber-based reconciler, built-in components (`Paragraph`, `Button`, `Box`, `Select`, `Slider`, `Checkbox`, `Tree`, `Input`), and layout primitives (`Row`). Components render to Neovim floating windows or terminal stdout.
