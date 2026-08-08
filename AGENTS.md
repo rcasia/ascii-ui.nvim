@@ -491,11 +491,11 @@ task-scheduler tracks all delegated work and reports status.
 
 ### Issue Updates
 
-When tasks complete, task-scheduler informs user:
+When tasks complete, task-scheduler can create new issues/PRs directly. For closing or editing existing ones, task-scheduler informs user:
 - "Issue #123 completed. Suggest closing."
 - "PR #456 ready for review."
 
-task-scheduler cannot update issues directly. User must act on suggestions.
+task-scheduler cannot edit or close existing issues/PRs. User must act on those suggestions.
 
 ## Agent Capabilities
 
@@ -503,7 +503,7 @@ task-scheduler cannot update issues directly. User must act on suggestions.
 
 | Agent | Edit | Bash | Scope |
 |-------|------|------|-------|
-| task-scheduler | ❌ | `gh` only | Coordination |
+| task-scheduler | ❌ | `gh` (read + create issues/PRs) | Coordination |
 | ascii-ui-dev | ✅ (except `.opencode/`) | ✅ | Implementation |
 | nvim-docs-researcher | ❌ | ❌ | Read-only research |
 | convention-reviewer | ❌ | `make check/test`, `git status/diff` | Verification |
@@ -511,7 +511,7 @@ task-scheduler cannot update issues directly. User must act on suggestions.
 
 ### Agent Specializations
 
-- **task-scheduler**: Reads GitHub issues/PRs, delegates work, tracks progress
+- **task-scheduler**: Reads and creates GitHub issues/PRs, delegates work, tracks progress
 - **ascii-ui-dev**: Implements features, fixes bugs, writes tests, commits code
 - **nvim-docs-researcher**: Finds Neovim API documentation, explains APIs
 - **convention-reviewer**: Reviews code against conventions, approves/rejects commits
