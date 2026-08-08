@@ -1,19 +1,19 @@
 local FiberNode = require("ascii-ui.fibernode")
 
---- @class ascii-ui.Row.Props
+--- @class ascii-ui.Column.Props
 --- @field children? ascii-ui.FiberNode[]
 --- @field gap? integer
 
---- Row layout component - arranges children horizontally.
+--- Column layout component - arranges children vertically.
 ---
 --- Can be called in two ways:
---- 1. With props table: `Row({ children = {...}, gap = 1 })`
---- 2. With varargs (legacy): `Row(child1, child2, child3)`
+--- 1. With props table: `Column({ children = {...}, gap = 1 })`
+--- 2. With varargs: `Column(child1, child2, child3)`
 ---
---- @param props_or_child1 ascii-ui.Row.Props | ascii-ui.FiberNode
+--- @param props_or_child1 ascii-ui.Column.Props | ascii-ui.FiberNode
 --- @param ... ascii-ui.FiberNode
 --- @return ascii-ui.FiberNode[]
-local function Row(props_or_child1, ...)
+local function Column(props_or_child1, ...)
 	local props
 	local rest = { ... }
 
@@ -27,7 +27,7 @@ local function Row(props_or_child1, ...)
 		-- Called with props table
 		props = props_or_child1
 	else
-		-- Called with varargs (legacy API)
+		-- Called with varargs
 		local children = { props_or_child1 }
 		for _, child in ipairs(rest) do
 			children[#children + 1] = child
@@ -38,9 +38,9 @@ local function Row(props_or_child1, ...)
 	-- Create a layout FiberNode with a closure that returns children
 	local children = props.children or {}
 	local node = FiberNode.new({
-		type = "Row",
+		type = "Column",
 		props = props,
-		layout = { direction = "row" },
+		layout = { direction = "column" },
 		closure = function()
 			return children
 		end,
@@ -50,4 +50,4 @@ local function Row(props_or_child1, ...)
 	return { node }
 end
 
-return Row
+return Column

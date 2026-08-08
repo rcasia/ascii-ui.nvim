@@ -20,6 +20,8 @@ end
 ---| "table"
 ---| "function"
 
+--- @alias ascii-ui.ComponentOptions { name: string, functional_component: function, types: table<string, ascii-ui.PropsType>, layout: ascii-ui.Layout | nil }
+
 --- @param props table<string, any>
 --- @param types table<string, ascii-ui.PropsType>
 --- @param component_name string
@@ -45,6 +47,26 @@ local function validate_props(props, types, component_name)
 	end)
 end
 
+--- Normalizes the third argument of createComponent into a consistent format.
+--- Supports both the legacy flat format and the new extended format.
+--- @param name string
+--- @param types_or_opts table<string, ascii-ui.PropsType> | { props?: table<string, ascii-ui.PropsType>, layout?: ascii-ui.Layout }
+--- @return table<string, ascii-ui.PropsType> types
+--- @return ascii-ui.Layout | nil layout
+local function normalize_opts(types_or_opts)
+	if types_or_opts == nil then
+		return {}, nil
+	end
+
+	-- Check if it's the extended format (has 'props' or 'layout' keys)
+	if types_or_opts.props or types_or_opts.layout then
+		return types_or_opts.props or {}, types_or_opts.layout
+	end
+
+	-- Legacy flat format
+	return types_or_opts, nil
+end
+
 --- @alias ascii-ui.TemplateString string
 
 --- @generic ascii-ui.ComponentClosure, T
@@ -58,17 +80,19 @@ end
 --- @generic ascii-ui.ComponentClosure, T
 --- @param name string Component name
 --- @param functional_component fun(props: T): ascii-ui.FiberNode[]
---- @param types? table<string, ascii-ui.PropsType> Component prop types
+--- @param types_or_opts? table<string, ascii-ui.PropsType> | { props?: table<string, ascii-ui.PropsType>, layout?: ascii-ui.Layout }
 --- @return ascii-ui.FunctionalComponent
 ---
 --- @overload fun(functional_component: ascii-ui.SimpleComponentFunction): ascii-ui.FunctionalComponent
-local function createComponent(name, functional_component, types)
-	local opts = { name = name, functional_component = functional_component, types = types or {} }
+local function createComponent(name, functional_component, types_or_opts)
+	local types, layout = normalize_opts(types_or_opts)
+	local opts = { name = name, functional_component = functional_component, types = types, layout = layout }
 
 	if type(opts.name) == "function" then
 		opts.functional_component = opts.name
 		opts.name = "anonymous"
-		opts.types = types or {}
+		opts.types = {}
+		opts.layout = nil
 	end
 
 	-- Validate that the name is unique
@@ -109,6 +133,7 @@ local function createComponent(name, functional_component, types)
 				type = opts.name,
 				props = props or _args,
 				closure = closure,
+				layout = opts.layout,
 			})
 		end,
 	})
