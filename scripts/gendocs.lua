@@ -126,10 +126,10 @@ hooks.block_pre = function(b)
 	end
 end
 
--- Allow overriding output via environment variable
+-- Allow overriding output via environment variable; default to doc/ascii-ui.txt
+-- so the output filename is consistent regardless of working directory name.
 local output = os.getenv("DOC_OUTPUT_FILE")
 if output == nil or output == "" then
-	mini.generate(project_files, nil, { hooks = hooks })
-else
-	mini.generate(project_files, output, { hooks = hooks })
+	output = "doc/ascii-ui.txt"
 end
+mini.generate(project_files, output, { hooks = hooks })
