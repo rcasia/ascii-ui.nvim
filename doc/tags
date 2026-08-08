@@ -169,7 +169,6 @@ ascii-ui.viewports.StdoutViewport.new()	ascii-ui.txt	/*ascii-ui.viewports.Stdout
 ascii-ui.viewports.StdoutViewport.open()	ascii-ui.txt	/*ascii-ui.viewports.StdoutViewport.open()*
 ascii-ui.viewports.StdoutViewport:update()	ascii-ui.txt	/*ascii-ui.viewports.StdoutViewport:update()*
 ascii-ui.viewports.build_color_map()	ascii-ui.txt	/*ascii-ui.viewports.build_color_map()*
-ascii-ui.viewports.hex_to_ansi()	ascii-ui.txt	/*ascii-ui.viewports.hex_to_ansi()*
 ascii-ui.viewports.render_line()	ascii-ui.txt	/*ascii-ui.viewports.render_line()*
 ascii-ui.viewports.seg_to_ansi()	ascii-ui.txt	/*ascii-ui.viewports.seg_to_ansi()*
 ascii-ui.window.Window	ascii-ui.txt	/*ascii-ui.window.Window*

@@ -163,11 +163,6 @@ Return ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
-@class ascii-ui.SegmentColor
-@field fg? string foreground color
-@field bg? string background color
-
-------------------------------------------------------------------------------
 @class ascii-ui.SegmentOpts
 @field content string does not support newlines
 @field is_focusable? boolean whether the segment can be focused
@@ -187,22 +182,22 @@ Fields ~
 {content} `(string)`
 {interactions} `(table<ascii-ui.UserInteractions.InteractionType, function>)`
 {highlight} `(optional)` `(string)`
-{color} `(optional)` `(ascii)`-ui.SegmentColor | ascii-ui.Color normalized to table {fg, bg} or Color instance
+{color} `(optional)` `(ascii)`-ui.Color normalized to Color instance
 {private} `(focusable)` boolean
 
 ------------------------------------------------------------------------------
                                              *ascii-ui.buffer.normalize_color()*
                    `ascii-ui.buffer.normalize_color`({color})
-Normalize the color field to a consistent format.
+Normalize the color field to a Color instance.
 Accepts:
   - nil → nil
-  - string "#rrggbb" → { fg = "#rrggbb" }
-  - table { fg, bg } → as-is
-  - Color instance → as-is (Color has fg/bg fields)
+  - string "#rrggbb" → Color instance with fg
+  - table { fg, bg } → Color instance
+  - Color instance → same instance (cached)
 Parameters ~
 {color} `(string | ascii)`-ui.SegmentColor | ascii-ui.Color | nil
 Return ~
-`(ascii)`-ui.SegmentColor | ascii-ui.Color | nil
+`(ascii)`-ui.Color | nil
 
 ------------------------------------------------------------------------------
                                                  *ascii-ui.buffer.Segment:new()*
@@ -1509,7 +1504,7 @@ ui.mount(MyComponent, viewport)
 ```
 
 **Color support**
-Segments with a `.color` field (`{ fg = "#rrggbb", bg = "#rrggbb" }`) are wrapped
+Segments with a `.color` field (a `ascii-ui.Color` instance) are wrapped
 in ANSI SGR truecolor sequences (`ESC[38;2;r;g;bm` for foreground,
 `ESC[48;2;r;g;bm` for background) followed by a reset (`ESC[0m`).
 Segments without color are emitted as plain text.
@@ -1523,16 +1518,6 @@ Class ~
 {ascii-ui.StdoutViewport} : ascii-ui.Viewport
 Fields ~
 {private} `(write)` fun(s: string)
-
-------------------------------------------------------------------------------
-                                              *ascii-ui.viewports.hex_to_ansi()*
-                `ascii-ui.viewports.hex_to_ansi`({hex}, {is_bg})
-Convert a hex color string like "#rrggbb" to an ANSI truecolor escape.
-Parameters ~
-{hex} `(string)`
-{is_bg} `(boolean)`
-Return ~
-`(string)`
 
 ------------------------------------------------------------------------------
                                               *ascii-ui.viewports.seg_to_ansi()*

@@ -1,4 +1,3 @@
-local Color = require("ascii-ui.color")
 local Cursor = require("ascii-ui.cursor")
 local highlights = require("ascii-ui.highlights")
 local initialize_window_keymaps = require("ascii-ui.window.keymaps")
@@ -276,13 +275,7 @@ function Window:update(buffer)
 				end
 
 				if segment.color then
-					-- Normalize to Color instance if needed (handles plain tables and strings)
-					local color = segment.color
-					if not Color.is_color(color) then
-						color = Color.new(color)
-					end
-
-					local hl_group = color:to_hl_group()
+					local hl_group = segment.color:to_hl_group()
 
 					vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, pos.line - 1, pos.col - 1, {
 						end_col = end_col - 1,

@@ -1,5 +1,3 @@
-local Color = require("ascii-ui.color")
-
 --- Writer function type used by StdoutViewport to emit output.
 --- Defaults to `io.write`. Override this in tests or custom environments
 --- where you need to capture or redirect the output.
@@ -31,7 +29,7 @@ local Color = require("ascii-ui.color")
 --- ```
 ---
 --- **Color support**
---- Segments with a `.color` field (`{ fg = "#rrggbb", bg = "#rrggbb" }`) are wrapped
+--- Segments with a `.color` field (a `ascii-ui.Color` instance) are wrapped
 --- in ANSI SGR truecolor sequences (`ESC[38;2;r;g;bm` for foreground,
 --- `ESC[48;2;r;g;bm` for background) followed by a reset (`ESC[0m`).
 --- Segments without color are emitted as plain text.
@@ -49,23 +47,6 @@ StdoutViewport.__index = StdoutViewport
 local ESC = "\027"
 local RESET = ESC .. "[0m"
 local CLEAR_SCREEN = ESC .. "[H" .. ESC .. "[2J"
-local ANSI_SGR_FMT = ESC .. "[%d;2;%d;%d;%dm"
-local SGR_FG = 38 -- ANSI SGR code: set foreground color (truecolor)
-local SGR_BG = 48 -- ANSI SGR code: set background color (truecolor)
-local HEX_R = { 2, 3 } -- byte positions of red channel in "#rrggbb"
-local HEX_G = { 4, 5 } -- byte positions of green channel
-local HEX_B = { 6, 7 } -- byte positions of blue channel
-
---- Convert a hex color string like "#rrggbb" to an ANSI truecolor escape.
----@param hex string
----@param is_bg boolean
----@return string
-local function hex_to_ansi(hex, is_bg)
-	local r = tonumber(hex:sub(HEX_R[1], HEX_R[2]), 16)
-	local g = tonumber(hex:sub(HEX_G[1], HEX_G[2]), 16)
-	local b = tonumber(hex:sub(HEX_B[1], HEX_B[2]), 16)
-	return ANSI_SGR_FMT:format(is_bg and SGR_BG or SGR_FG, r, g, b)
-end
 
 --- Build the ANSI escape prefix for a colored segment.
 --- Pure: depends only on its argument, no side effects.
@@ -75,16 +56,7 @@ local function seg_to_ansi(seg)
 	if not seg.color then
 		return ""
 	end
-
-	-- If it's already a Color instance, use its to_ansi method
-	if Color.is_color(seg.color) then
-		return seg.color:to_ansi()
-	end
-
-	-- Plain table { fg, bg } - use direct parsing (no object creation)
-	local fg = seg.color.fg and hex_to_ansi(seg.color.fg, false) or ""
-	local bg = seg.color.bg and hex_to_ansi(seg.color.bg, true) or ""
-	return fg .. bg
+	return seg.color:to_ansi()
 end
 
 --- Build a map of `{ [line_index] = { {col, len, ansi}, ... } }` from the

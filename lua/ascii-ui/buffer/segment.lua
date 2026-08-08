@@ -1,8 +1,5 @@
+local Color = require("ascii-ui.color")
 local interaction_type = require("ascii-ui.interaction_type")
-
---- @class ascii-ui.SegmentColor
---- @field fg? string foreground color
---- @field bg? string background color
 
 --- @class ascii-ui.SegmentOpts
 --- @field content string does not support newlines
@@ -18,7 +15,7 @@ local interaction_type = require("ascii-ui.interaction_type")
 ---@field content string
 ---@field interactions table<ascii-ui.UserInteractions.InteractionType, function>
 ---@field highlight? string
----@field color? ascii-ui.SegmentColor | ascii-ui.Color normalized to table {fg, bg} or Color instance
+---@field color? ascii-ui.Color normalized to Color instance
 ---@field private focusable boolean
 local Segment = {}
 Segment.__index = Segment
@@ -47,23 +44,19 @@ local function unicode_len(s)
 	return len
 end
 
---- Normalize the color field to a consistent format.
+--- Normalize the color field to a Color instance.
 --- Accepts:
 ---   - nil → nil
----   - string "#rrggbb" → { fg = "#rrggbb" }
----   - table { fg, bg } → as-is
----   - Color instance → as-is (Color has fg/bg fields)
+---   - string "#rrggbb" → Color instance with fg
+---   - table { fg, bg } → Color instance
+---   - Color instance → same instance (cached)
 ---@param color string | ascii-ui.SegmentColor | ascii-ui.Color | nil
----@return ascii-ui.SegmentColor | ascii-ui.Color | nil
+---@return ascii-ui.Color | nil
 local function normalize_color(color)
 	if color == nil then
 		return nil
 	end
-	if type(color) == "string" then
-		return { fg = color }
-	end
-	-- table or Color instance - return as-is
-	return color
+	return Color.new(color)
 end
 
 ---@param ... ascii-ui.SegmentOpts  | string
