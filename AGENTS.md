@@ -58,12 +58,23 @@ The area of the codebase affected. Must be lowercase, single word or hyphenated.
 | `utils` | Utility modules |
 | `tests` | Test infrastructure and helpers |
 | `bench` | Benchmarks |
-| `docs` | Documentation files (README, vimdocs) |
+| `docs` | Documentation **content** only (README, vimdocs, Lua annotations). NOT for doc generation scripts — those go in `build` |
 | `agents` | Agent files, conventions, and configuration (MUST use with `chore` type) |
-| `build` | Build system, Makefile, lux.toml |
+| `build` | Build system, Makefile, lux.toml, **scripts/** (including gendocs.lua) |
 | `ci` | CI/CD configuration |
 
 If a change spans multiple scopes, pick the most significant one or split into multiple commits.
+
+#### Common Scope Mistakes
+
+| ❌ Wrong | ✅ Correct | Why |
+|----------|-----------|-----|
+| `fix(docs):` for gendocs.lua changes | `fix(build):` | Scripts are build system, not docs content |
+| `docs(codebase):` for comment changes | `docs:` or `refactor:` | Lua annotations → `docs`; code comments → `refactor` |
+| `fix(ci):` for Makefile changes | `fix(build):` | Makefile is build system, not CI |
+| `feat(tests):` for test infra | `feat(tests):` | ✅ This one is correct |
+
+**Rule of thumb**: `docs` = user-facing documentation files. `build` = scripts, Makefile, tooling that generates/validates docs.
 
 #### Description (required)
 
