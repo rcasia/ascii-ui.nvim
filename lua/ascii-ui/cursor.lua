@@ -1,5 +1,10 @@
 local logger = require("ascii-ui.logger")
 
+--- Tracks and records cursor movement inside ascii-ui buffers.
+--- Registers a global `CursorMoved` autocmd that updates the current and last
+--- positions whenever the cursor moves in an attached buffer. Other modules
+--- (e.g. focus management) can query the last movement direction.
+---
 --- @class ascii-ui.Cursor
 --- @field buffers table<number, boolean>
 --- @field last_position ascii-ui.CursorPosition | nil
@@ -30,6 +35,8 @@ function Cursor.current_position()
 	return { line = row, col = visual_col }
 end
 
+--- Records a cursor move event. Sets `last_position` to the previous position
+--- and updates `_current_position` to the current cursor location.
 function Cursor.trigger_move_event()
 	Cursor.last_position = Cursor._current_position or Cursor.current_position()
 	Cursor._current_position = Cursor.current_position()
@@ -37,10 +44,13 @@ function Cursor.trigger_move_event()
 	logger.debug("CursorMoved to %s", vim.inspect(Cursor._current_position))
 end
 
+--- Registers a buffer so that cursor movements inside it are tracked.
+--- @param bufnr integer
 function Cursor.attach_buffer(bufnr)
 	Cursor.buffers[bufnr] = true
 end
 
+--- Moves the cursor to the given position in the specified window/buffer.
 --- @param position ascii-ui.Position
 --- @param winid? integer
 --- @param bufnr? integer
@@ -55,6 +65,8 @@ function Cursor.move_to(position, winid, bufnr)
 	Cursor._current_position = Cursor.current_position()
 end
 
+--- Returns the direction of the last cursor movement by comparing
+--- `last_position` to `_current_position`.
 --- @return ascii-ui.CursorDirection
 function Cursor.last_movement_direction()
 	if Cursor.last_position.line == Cursor._current_position.line then
@@ -76,6 +88,7 @@ function Cursor.last_movement_direction()
 	return Cursor.DIRECTION.SOUTH
 end
 
+--- Clears all tracked buffer registrations.
 function Cursor.clear()
 	Cursor.buffers = {}
 end
