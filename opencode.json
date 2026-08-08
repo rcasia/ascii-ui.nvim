@@ -47,8 +47,7 @@
       "mode": "all",
       "permission": {
         "edit": {
-          ".opencode/agents/*": "allow",
-          ".opencode/skills/*": "allow",
+          ".opencode/*": "allow",
           "opencode.json": "allow",
           "*": "deny"
         },
