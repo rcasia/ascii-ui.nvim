@@ -1,4 +1,50 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "default_agent": "task-scheduler"
+  "default_agent": "task-scheduler",
+  "agent": {
+    "task-scheduler": {
+      "mode": "primary",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "gh *": "allow",
+          "*": "deny"
+        },
+        "external_directory": "deny"
+      }
+    },
+    "ascii-ui-dev": {
+      "mode": "subagent",
+      "permission": {
+        "edit": {
+          ".opencode/*": "deny",
+          "*": "allow"
+        }
+      }
+    },
+    "nvim-docs-researcher": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "convention-reviewer": {
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "agent-teacher": {
+      "mode": "all",
+      "permission": {
+        "edit": {
+          ".opencode/agents/*": "allow",
+          "*": "deny"
+        },
+        "bash": "allow"
+      }
+    }
+  }
 }

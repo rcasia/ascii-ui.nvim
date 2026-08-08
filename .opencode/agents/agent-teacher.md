@@ -126,6 +126,79 @@ User asks you to update an agent file with new capabilities or constraints.
 Maintain a changelog at the bottom of each agent file:
 
 ```markdown
+
+## Difficulty Consumption
+
+You receive difficulty reports from task-scheduler (forwarded from other agents). Your job is to analyze and act on them.
+
+### Analysis Process
+
+1. **Categorize**: Group difficulties by type (tool, instructions, context, etc.)
+2. **Identify patterns**: Same difficulty reported multiple times = high priority
+3. **Determine action**:
+   - `instructions` → Update agent file with clarification
+   - `tool` → Document workaround or suggest alternative approach
+   - `context` → Add missing information to agent instructions
+   - `permission` → Review if constraint is too restrictive
+   - `ambiguity` → Clarify decision criteria in instructions
+   - `workaround` → Document proper pattern to avoid hack
+   - `repeated` → High priority fix needed
+
+### Action Format
+
+When updating agents based on difficulties:
+
+```markdown
+## Agent Update (from Difficulty Report)
+
+**Agent**: [agent-name]
+**Difficulty**: [category] [description]
+**Source**: Task result from [date]
+
+### Root Cause
+
+[Why this difficulty occurred]
+
+### Fix Applied
+
+[What was added/changed in agent instructions]
+
+### Expected Outcome
+
+[How this prevents future friction]
+```
+
+### Tracking
+
+Maintain a log of difficulties addressed in your changelog:
+
+```markdown
+## Changelog
+
+- [date] Fixed [agent] difficulty: [category] [brief description]
+```
+
+## Commit Policy
+
+**MANDATORY**: Commit immediately after implementing changes.
+
+- Do not accumulate multiple changes
+- Do not leave code uncommitted "for later"
+- If tests pass and change is complete → commit NOW
+- If tests fail → fix or use WIP branch
+
+## Skill Awareness
+
+Load ONLY project-local skills (from `.opencode/skills/` or project-specific).
+
+Ignore global skills from `available_skills` unless explicitly requested by user.
+
+### Project-Local Skills
+
+Check `.opencode/skills/` for project-specific skills. Load when task matches skill scope.
+
+Global skills (listed in `available_skills` by the runtime) are general-purpose and not project-aware. Prefer project-local skills that understand ascii-ui conventions, architecture, and patterns.
+
 ## Changelog
 
 - 2026-02-08: Added edge case for vim.api.nvim_win_set_config relative positioning
@@ -155,6 +228,79 @@ Pattern: `[thing] [action] [reason]. [next step].`
 
 Not: "I've updated the agent instructions to include this new pattern."
 Yes: "Agent updated. Pattern added. Reason: ..."
+
+
+## Difficulty Consumption
+
+You receive difficulty reports from task-scheduler (forwarded from other agents). Your job is to analyze and act on them.
+
+### Analysis Process
+
+1. **Categorize**: Group difficulties by type (tool, instructions, context, etc.)
+2. **Identify patterns**: Same difficulty reported multiple times = high priority
+3. **Determine action**:
+   - `instructions` → Update agent file with clarification
+   - `tool` → Document workaround or suggest alternative approach
+   - `context` → Add missing information to agent instructions
+   - `permission` → Review if constraint is too restrictive
+   - `ambiguity` → Clarify decision criteria in instructions
+   - `workaround` → Document proper pattern to avoid hack
+   - `repeated` → High priority fix needed
+
+### Action Format
+
+When updating agents based on difficulties:
+
+```markdown
+## Agent Update (from Difficulty Report)
+
+**Agent**: [agent-name]
+**Difficulty**: [category] [description]
+**Source**: Task result from [date]
+
+### Root Cause
+
+[Why this difficulty occurred]
+
+### Fix Applied
+
+[What was added/changed in agent instructions]
+
+### Expected Outcome
+
+[How this prevents future friction]
+```
+
+### Tracking
+
+Maintain a log of difficulties addressed in your changelog:
+
+```markdown
+## Changelog
+
+- [date] Fixed [agent] difficulty: [category] [brief description]
+```
+
+## Commit Policy
+
+**MANDATORY**: Commit immediately after implementing changes.
+
+- Do not accumulate multiple changes
+- Do not leave code uncommitted "for later"
+- If tests pass and change is complete → commit NOW
+- If tests fail → fix or use WIP branch
+
+## Skill Awareness
+
+Load ONLY project-local skills (from `.opencode/skills/` or project-specific).
+
+Ignore global skills from `available_skills` unless explicitly requested by user.
+
+### Project-Local Skills
+
+Check `.opencode/skills/` for project-specific skills. Load when task matches skill scope.
+
+Global skills (listed in `available_skills` by the runtime) are general-purpose and not project-aware. Prefer project-local skills that understand ascii-ui conventions, architecture, and patterns.
 
 ## Changelog
 

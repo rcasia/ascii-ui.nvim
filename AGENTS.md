@@ -300,3 +300,64 @@ Directories with multiple files expose an `init.lua` that re-exports the public 
 - **Runtime**: Lua 5.1 (Neovim's embedded Lua)
 - **Test dependency**: `plenary.nvim` (cloned automatically by `scripts/test`)
 - **Dev tools**: `stylua`, `luacheck`, `nvim`, `git`
+
+## Commit Policy
+
+**MANDATORY**: Commit immediately after implementing changes.
+
+- Do not accumulate multiple changes
+- Do not leave code uncommitted "for later"
+- If tests pass and change is complete → commit NOW
+- If tests fail → fix or use WIP branch
+
+This reinforces the "Commit ASAP" rule above. Agents must not sit on completed work.
+
+## Skill Awareness
+
+Agents load ONLY project-local skills (from `.opencode/skills/` or project-specific).
+
+Ignore global skills from `available_skills` unless explicitly requested by user.
+
+### Project-Local Skills
+
+Check `.opencode/skills/` for project-specific skills. Load when task matches skill scope.
+
+Global skills (listed in `available_skills` by the runtime) are general-purpose and not project-aware. Prefer project-local skills that understand ascii-ui conventions, architecture, and patterns.
+
+## Difficulty Reporting
+
+**MANDATORY**: After completing any task, agents must append a `## Difficulties` section to their result.
+
+### Format
+
+```markdown
+## Difficulties
+
+- [category] description | impact | workaround (if any)
+```
+
+### Categories
+
+- `tool` — Tool/API didn't work as expected
+- `instructions` — Agent instructions didn't cover the situation
+- `context` — Needed info not available
+- `permission` — Blocked by constraints
+- `ambiguity` — Multiple valid interpretations
+- `workaround` — Used hack or non-obvious solution
+- `repeated` — Same friction encountered before
+
+### Example
+
+```markdown
+## Difficulties
+
+- [instructions] Unclear when to use useState vs useReducer | wasted time | checked tests
+- [tool] stylua not found in PATH | had to use make check instead | ran make check
+```
+
+### Difficulty Flow
+
+1. Each agent reports difficulties after task completion
+2. `task-scheduler` forwards difficulties to `agent-teacher`
+3. `agent-teacher` processes difficulties and updates agent instructions
+4. Patterns become permanent improvements to the agent system
