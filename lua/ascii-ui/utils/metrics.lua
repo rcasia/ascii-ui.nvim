@@ -36,18 +36,18 @@
 ---@field show fun(opts?: MetricsShowOpts): integer            # Opens a popup and returns the winid.
 local Metrics = {}
 
--- Almacenamiento en memoria
+-- In-memory storage
 ---@type MetricsStore
 local store = {}
 
---- Devuelve el valor actual (0 si no existe).
+--- Returns the current value (0 if it does not exist).
 ---@param key MetricsKey
 ---@return MetricsValue value
 function Metrics.get(key)
 	return store[key] or 0
 end
 
---- Establece un valor exacto y lo devuelve.
+--- Sets an exact value and returns it.
 ---@param key MetricsKey
 ---@param value MetricsValue
 ---@return MetricsValue new_value
@@ -56,7 +56,7 @@ function Metrics.set(key, value)
 	return store[key]
 end
 
---- Incrementa (por defecto +1) y devuelve el nuevo total.
+--- Increments (default +1) and returns the new total.
 ---@param key MetricsKey
 ---@param amount? integer
 ---@return MetricsValue new_total
@@ -66,12 +66,12 @@ function Metrics.inc(key, amount)
 	return store[key]
 end
 
---- Reinicia todo el almacén de métricas.
+--- Resets all metric storage.
 function Metrics.reset()
 	store = {}
 end
 
---- Devuelve una copia con todas las métricas.
+--- Returns a copy with all metrics.
 ---@return MetricsStore copy
 function Metrics.all()
 	local out = {}
@@ -81,11 +81,11 @@ function Metrics.all()
 	return out
 end
 
---- Convierte a líneas de texto para mostrar.
+--- Converts to text lines for display.
 ---@return string[] lines
 local function as_lines()
 	local lines = { "# Metrics" }
-	-- Orden alfabético para que sea estable
+	-- Alphabetical order for stability
 	local keys = {}
 	for k in pairs(store) do
 		table.insert(keys, k)
@@ -100,7 +100,7 @@ local function as_lines()
 	return lines
 end
 
---- Muestra un popup muy simple con las métricas.
+--- Shows a very simple popup with the metrics.
 ---@param opts? MetricsShowOpts
 ---@return integer winid
 function Metrics.show(opts)
@@ -126,7 +126,7 @@ function Metrics.show(opts)
 		border = opts.border or "rounded",
 	})
 
-	-- Cerrar con q o <Esc>
+	-- Close with q or <Esc>
 	local function close()
 		if vim.api.nvim_win_is_valid(win) then
 			vim.api.nvim_win_close(win, true)
@@ -135,7 +135,7 @@ function Metrics.show(opts)
 	vim.keymap.set("n", "q", close, { buffer = buf, nowait = true, silent = true })
 	vim.keymap.set("n", "<Esc>", close, { buffer = buf, nowait = true, silent = true })
 
-	-- Resalta el título si existe 'Title'
+	-- Highlights the title if 'Title' exists
 	pcall(vim.api.nvim_buf_add_highlight, buf, -1, "Title", 0, 0, -1)
 
 	return win

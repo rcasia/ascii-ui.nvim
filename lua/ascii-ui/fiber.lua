@@ -6,16 +6,16 @@ local logger = require("ascii-ui.logger")
 local currentFiber
 
 ---
---- Debug: Imprime el árbol de Fibers con indentación y valores de hooks
+--- Debug: Prints the Fiber tree with indentation and hook values
 ---
 local function debugPrint(fiber, print_fn)
 	--- @param node ascii-ui.FiberNode
 	local function traverse(node, prefix, isLast)
 		local print = print_fn or logger.debug
-		-- Construye línea con prefijo gráfico
+		-- Builds line with graphic prefix
 		local branch = isLast and "└─ " or "├─ "
 		local line = prefix .. branch .. (node.type or "<buffer>")
-		-- Agrega estados de hooks si existen
+		-- Adds hook states if they exist
 		if node.hooks and #node.hooks > 0 then
 			local parts = {}
 			for _, h in ipairs(node.hooks) do
@@ -30,7 +30,7 @@ local function debugPrint(fiber, print_fn)
 			line = string.format("%s %s", line, node:get_line():to_string())
 		end
 		print(line)
-		-- Recorre hijos
+		-- Traverses children
 		local children = {}
 		local child = node.child
 		while child do
@@ -216,7 +216,7 @@ local function performUnitOfWork(fiber)
 	end
 end
 
--- recorre todos los Units of Work automáticamente
+-- Traverses all Units of Work automatically
 --- @param root ascii-ui.RootFiberNode
 local function workLoop(root)
 	local nextFiber = root
@@ -226,7 +226,7 @@ local function workLoop(root)
 	end
 end
 
--- helper de alto nivel: recibe un componente y devuelve las líneas del buffer
+-- High-level helper: receives a component and returns buffer lines
 --- @return ascii-ui.RootFiberNode
 local function render(Component)
 	logger.debug("📺 FIBER.RENDER")
@@ -237,7 +237,7 @@ local function render(Component)
 	return root
 end
 
---- Re-renderiza el árbol de fibers a partir de la raíz dada
+--- Re-renders the fiber tree from the given root
 --- @param root ascii-ui.RootFiberNode
 --- @return ascii-ui.RootFiberNode
 local function rerender(root)

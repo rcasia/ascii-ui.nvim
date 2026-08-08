@@ -46,11 +46,11 @@ end
 -- - @generic P : table<string, any>
 --- @alias ascii-ui.FunctionalComponent<P> fun(props?: P): ascii-ui.FiberNode
 
---- Crea un componente personalizado y lo registra
+--- Creates a custom component and registers it
 --- @generic ascii-ui.ComponentClosure, T
---- @param name string Nombre del componente
+--- @param name string Component name
 --- @param functional_component fun(props: T): ascii-ui.FiberNode[]
---- @param types? table<string, ascii-ui.PropsType> Tipos de los props del componente
+--- @param types? table<string, ascii-ui.PropsType> Component prop types
 --- @return ascii-ui.FunctionalComponent
 ---
 --- @overload fun(functional_component: ascii-ui.SimpleComponentFunction): ascii-ui.FunctionalComponent
@@ -63,12 +63,12 @@ local function createComponent(name, functional_component, types)
 		opts.types = types or {}
 	end
 
-	-- Validar que el nombre sea único
+	-- Validate that the name is unique
 	if Renderer.component_tags[opts.name] then
 		logger.error(("El componente con nombre '%s' ya está registrado."):format(opts.name))
 	end
 
-	-- Generar la pseudofunción del componente
+	-- Generate the component's pseudo-function
 	local component_function = setmetatable({}, {
 		__is_a_component = true,
 		__call = function(_, ...)
@@ -81,7 +81,7 @@ local function createComponent(name, functional_component, types)
 				props = _args[1] or {}
 				validate_props(props, opts.types, opts.name)
 				function factory()
-					-- dentro del workLoop, currentFiber ya está seteado
+					-- inside the workLoop, currentFiber is already set
 					return function()
 						return opts.functional_component(props)
 					end
