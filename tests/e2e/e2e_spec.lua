@@ -9,33 +9,7 @@ local Slider = ui.components.Slider
 local useState = ui.hooks.useState
 local Segment = require("ascii-ui.buffer.segment")
 local interaction_type = require("ascii-ui.interaction_type")
-
-local function feed(keys)
-	vim.api.nvim_feedkeys(keys, "mtx", true)
-end
-
-local function cursor_is_in_line(number)
-	return vim.wait(1000, function()
-		local cursor = vim.api.nvim_win_get_cursor(0)
-		local line = cursor[1]
-
-		return line == number
-	end)
-end
-
----@param bufnr integer
----@param pattern string
----@return boolean
-local function buffer_contains(bufnr, pattern)
-	return vim.wait(1000, function()
-		local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-		local content_str = vim.iter(lines):join("\n")
-
-		print(content_str)
-		print("")
-		return string.find(content_str, pattern, 1, true) ~= nil
-	end)
-end
+local testing_e2e = require("ascii-ui.testing.e2e")
 
 describe("ascii-ui", function()
 	it("interacts with segments of a Select component", function()
@@ -47,16 +21,16 @@ describe("ascii-ui", function()
 			} })
 		end)
 
-		local bufnr = ui.mount(App)
+		local screen = testing_e2e.mount(App)
 
-		assert(buffer_contains(bufnr, "[x] book"))
+		assert(screen:waitForText("[x] book"))
 
 		-- move down and press enter
-		feed("j")
+		screen:press("j")
 		local enter = vim.api.nvim_replace_termcodes("<CR>", true, false, true)
-		feed(enter) -- simulate pressing Enter on the button
+		screen:press(enter) -- simulate pressing Enter on the button
 
-		assert(buffer_contains(bufnr, "[x] pencil"))
+		assert(screen:waitForText("[x] pencil"))
 	end)
 
 	describe("sliders", function()
@@ -69,25 +43,25 @@ describe("ascii-ui", function()
 				}
 			end)
 
-			local bufnr = ui.mount(App)
-			assert(buffer_contains(bufnr, "0%"))
+			local screen = testing_e2e.mount(App)
+			assert(screen:waitForText("0%"))
 
-			feed("j")
+			screen:press("j")
 
-			feed("llllll")
-			assert(buffer_contains(bufnr, "60%"), "no encuentra 60%")
+			screen:press("llllll")
+			assert(screen:waitForText("60%"), "no encuentra 60%")
 
-			feed("hhh")
-			assert(buffer_contains(bufnr, "30%"), "no encuentra 30%")
+			screen:press("hhh")
+			assert(screen:waitForText("30%"), "no encuentra 30%")
 
-			feed("j")
-			assert(cursor_is_in_line(4), "no está en la línea 4")
+			screen:press("j")
+			assert(screen:cursorIsAt(4), "no está en la línea 4")
 
-			feed("ll")
-			assert(buffer_contains(bufnr, "20%"), "no encuentra 20%")
+			screen:press("ll")
+			assert(screen:waitForText("20%"), "no encuentra 20%")
 
-			feed("lll")
-			assert(buffer_contains(bufnr, "50%"))
+			screen:press("lll")
+			assert(screen:waitForText("50%"))
 		end)
 
 		it("fiber functional", function()
@@ -96,11 +70,11 @@ describe("ascii-ui", function()
 				content, setContent = useState("hola mundo")
 				return Paragraph({ content = content })
 			end)
-			local bufnr = ui.mount(App)
-			assert(buffer_contains(bufnr, "hola mundo"))
+			local screen = testing_e2e.mount(App)
+			assert(screen:waitForText("hola mundo"))
 
 			setContent("lemon juice")
-			assert(buffer_contains(bufnr, "lemon juice"))
+			assert(screen:waitForText("lemon juice"))
 		end)
 
 		it("fiber functional interaction", function()
@@ -121,14 +95,14 @@ describe("ascii-ui", function()
 					}):wrap(),
 				}
 			end)
-			local bufnr = ui.mount(App)
-			assert(buffer_contains(bufnr, "hola mundo"))
+			local screen = testing_e2e.mount(App)
+			assert(screen:waitForText("hola mundo"))
 
-			feed("l")
-			assert(buffer_contains(bufnr, "right"))
+			screen:press("l")
+			assert(screen:waitForText("right"))
 
-			feed("h")
-			assert(buffer_contains(bufnr, "left"))
+			screen:press("h")
+			assert(screen:waitForText("left"))
 		end)
 	end)
 
@@ -153,13 +127,13 @@ describe("ascii-ui", function()
 		local App = ui.createComponent("App", function()
 			return SomeComponent()
 		end)
-		local bufnr = ui.mount(App)
-		assert(buffer_contains(bufnr, "hola mundo"))
+		local screen = testing_e2e.mount(App)
+		assert(screen:waitForText("hola mundo"))
 
-		feed("l")
-		assert(buffer_contains(bufnr, "right"))
+		screen:press("l")
+		assert(screen:waitForText("right"))
 
-		feed("h")
-		assert(buffer_contains(bufnr, "left"))
+		screen:press("h")
+		assert(screen:waitForText("left"))
 	end)
 end)

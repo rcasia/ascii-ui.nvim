@@ -4,40 +4,8 @@ pcall(require, "luacov")
 local ui = require("ascii-ui")
 local it = require("plenary.async.tests").it
 local Bufferline = require("ascii-ui.buffer.bufferline")
-local Cursor = require("ascii-ui.cursor")
 local Segment = require("ascii-ui.buffer.segment")
-
-local function feed(keys)
-	vim.api.nvim_feedkeys(keys, "mtx", true)
-end
-
---- @param line integer
---- @param col? integer
-local function cursor_is_in(line, col)
-	return vim.wait(400, function()
-		local cursor = Cursor.current_position()
-		print("cursor in" .. vim.inspect(cursor))
-		if type(col) == "nil" then
-			return cursor.line == line
-		end
-
-		return cursor.line == line and cursor.col == col
-	end)
-end
-
----@param bufnr integer
----@param pattern string
----@return boolean
-local function buffer_contains(bufnr, pattern)
-	return vim.wait(1000, function()
-		local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-		local content_str = vim.iter(lines):join("\n")
-
-		print(content_str)
-		print("")
-		return string.find(content_str, pattern, 1, true) ~= nil
-	end)
-end
+local testing_e2e = require("ascii-ui.testing.e2e")
 
 describe("Focusable", function()
 	it("when user moves cursor jumps to focusables (UP and DOWN)", function()
@@ -55,28 +23,28 @@ describe("Focusable", function()
 			}
 		end)
 
-		local bufnr = ui.mount(App)
+		local screen = testing_e2e.mount(App)
 
-		assert(buffer_contains(bufnr, "Focusable"))
-		assert(cursor_is_in(1, 0))
+		assert(screen:waitForText("Focusable"))
+		assert(screen:cursorIsAt(1, 0))
 
-		feed("j")
-		assert(cursor_is_in(2, 0))
+		screen:press("j")
+		assert(screen:cursorIsAt(2, 0))
 
-		feed("j")
-		assert(cursor_is_in(3, 13))
+		screen:press("j")
+		assert(screen:cursorIsAt(3, 13))
 
-		feed("j")
-		assert(cursor_is_in(5, 0))
+		screen:press("j")
+		assert(screen:cursorIsAt(5, 0))
 
-		feed("k")
-		assert(cursor_is_in(3, 13))
+		screen:press("k")
+		assert(screen:cursorIsAt(3, 13))
 
-		feed("k")
-		assert(cursor_is_in(2, 0))
+		screen:press("k")
+		assert(screen:cursorIsAt(2, 0))
 
-		feed("k")
-		assert(cursor_is_in(2, 0))
+		screen:press("k")
+		assert(screen:cursorIsAt(2, 0))
 	end)
 
 	it("when user moves cursor jumps to focusables (LEFT and RIGHT)", function()
@@ -88,21 +56,21 @@ describe("Focusable", function()
 			}
 		end)
 
-		local bufnr = ui.mount(App)
+		local screen = testing_e2e.mount(App)
 
-		assert(buffer_contains(bufnr, "xoxox"), "not contains")
-		assert(cursor_is_in(1, 0), "1,0")
+		assert(screen:waitForText("xoxox"), "not contains")
+		assert(screen:cursorIsAt(1, 0), "1,0")
 
-		feed("l")
-		assert(cursor_is_in(1, 2), "1,2")
+		screen:press("l")
+		assert(screen:cursorIsAt(1, 2), "1,2")
 
-		feed("l")
-		assert(cursor_is_in(1, 4), "1,4")
+		screen:press("l")
+		assert(screen:cursorIsAt(1, 4), "1,4")
 
-		feed("h")
-		assert(cursor_is_in(1, 2), "1,2 back")
+		screen:press("h")
+		assert(screen:cursorIsAt(1, 2), "1,2 back")
 
-		feed("h")
-		assert(cursor_is_in(1, 0), "1,0 back")
+		screen:press("h")
+		assert(screen:cursorIsAt(1, 0), "1,0 back")
 	end)
 end)
