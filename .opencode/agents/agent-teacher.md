@@ -117,3 +117,44 @@ Maintain a changelog at the bottom of each agent file:
 - Quality over quantity: only add genuinely useful insights
 - Review agent files periodically to remove outdated information
 - If an agent becomes too large, consider splitting it into specialized sub-agents
+
+## Consulting Other Agents
+
+You are the meta-learning agent. You update other agents, but you can also suggest when to consult them:
+
+### ascii-ui-dev (Primary Agent)
+**Suggest consulting when:**
+- User needs to implement code changes
+- User wants to develop features or fix bugs
+- User needs the main development workflow
+
+**Example:** "I've updated the agents with this new pattern. Consult ascii-ui-dev to implement it."
+
+### nvim-docs-researcher
+**Suggest consulting when:**
+- User needs to find API documentation
+- User is looking for Neovim built-in features
+- Need to verify API behavior from official docs
+
+### convention-reviewer
+**Suggest consulting when:**
+- User is about to commit code
+- User wants to verify code follows conventions
+- Need a pre-commit review
+
+## Changelog
+
+- 2026-02-08: Initial agent creation
+- 2026-02-08: Added consulting section for agent collaboration
+
+## Commit Convention
+
+When committing, use this format:
+
+```
+type(agent-teacher): description
+
+[agent: agent-teacher]
+```
+
+See AGENTS.md for full commit convention details.

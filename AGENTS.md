@@ -2,6 +2,59 @@
 
 > **Agentic Development**: Since August 8, 2026, this project uses a multi-agent system for development. See `.opencode/agents/` for specialized agents (ascii-ui-dev, nvim-docs-researcher, convention-reviewer, agent-teacher).
 
+## Commit Convention
+
+All commits must specify which agent is acting using the format:
+
+```
+type(agent): description
+
+[agent: agent-name]
+```
+
+### Agent Identifiers
+
+- `ascii-ui-dev` - Primary development agent
+- `nvim-docs-researcher` - Documentation research agent
+- `convention-reviewer` - Convention validation agent
+- `agent-teacher` - Meta-learning agent
+
+### Examples
+
+```
+feat(ascii-ui-dev): add new Input component
+
+[agent: ascii-ui-dev]
+```
+
+```
+docs(nvim-docs-researcher): document vim.api.nvim_open_win behavior
+
+[agent: nvim-docs-researcher]
+```
+
+```
+chore(convention-reviewer): update review checklist for hooks
+
+[agent: convention-reviewer]
+```
+
+```
+refactor(agent-teacher): improve agent consulting patterns
+
+[agent: agent-teacher]
+```
+
+### Commit Types
+
+- `feat` - New features
+- `fix` - Bug fixes
+- `docs` - Documentation changes
+- `refactor` - Code refactoring
+- `test` - Test additions/changes
+- `chore` - Maintenance tasks
+- `perf` - Performance improvements
+
 ## Project Overview
 
 ascii-ui.nvim is a React-like UI framework for Neovim plugins, written in Lua. It provides functional components, hooks (`useState`, `useEffect`, `useReducer`, etc.), a fiber-based reconciler, built-in components (`Paragraph`, `Button`, `Box`, `Select`, `Slider`, `Checkbox`, `Tree`, `Input`), and layout primitives (`Row`). Components render to Neovim floating windows or terminal stdout.
