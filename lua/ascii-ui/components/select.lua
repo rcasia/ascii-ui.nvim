@@ -1,6 +1,6 @@
 local Segment = require("ascii-ui.buffer.segment")
 local highlights = require("ascii-ui.highlights")
-local interation_type = require("ascii-ui.interaction_type")
+local interaction_type = require("ascii-ui.interaction_type")
 local logger = require("ascii-ui.logger")
 
 local createComponent = require("ascii-ui.components.create-component")
@@ -47,7 +47,7 @@ local function Select(props)
 			end
 
 			return Segment:new(content, true, {
-				[interation_type.SELECT] = function()
+				[interaction_type.SELECT] = function()
 					setSelected(option.id)
 					if props.on_select then
 						props.on_select(option.name)

@@ -1,8 +1,8 @@
----@enum (key) ascii-ui.Highligths
-local Highligths = {
+---@enum (key) ascii-ui.Highlights
+local Highlights = {
 	DEFAULT = "AsciiUIDefault",
 	SELECTION = "AsciiUISelection",
 	BUTTON = "AsciiUIButton",
 }
 
-return Highligths
+return Highlights

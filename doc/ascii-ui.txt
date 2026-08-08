@@ -698,9 +698,9 @@ Retrieve the highlight group name
 
 ==============================================================================
 ------------------------------------------------------------------------------
-                                                           *ascii-ui.Highligths*
-                             `ascii-ui.Highligths`
-(key) ascii-ui.Highligths
+                                                           *ascii-ui.Highlights*
+                             `ascii-ui.Highlights`
+(key) ascii-ui.Highlights
 
 
 ==============================================================================
