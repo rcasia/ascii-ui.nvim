@@ -173,8 +173,7 @@ Return ~
 @field is_focusable? boolean whether the segment can be focused
 @field interactions? table<ascii-ui.UserInteractions.InteractionType, function> a map of interaction types to functions
 @field highlight? string a highlight group name to apply to the segment
-Fields ~
-{color} `(optional)` `(ascii)`-ui.SegmentColor
+@field color? string | ascii-ui.SegmentColor | ascii-ui.Color hex string shorthand ("#rrggbb"), table {fg, bg}, or Color instance
 
 ------------------------------------------------------------------------------
                                                        *ascii-ui.buffer.Segment*
@@ -188,8 +187,22 @@ Fields ~
 {content} `(string)`
 {interactions} `(table<ascii-ui.UserInteractions.InteractionType, function>)`
 {highlight} `(optional)` `(string)`
-{color} `(optional)` `(ascii)`-ui.SegmentColor
+{color} `(optional)` `(ascii)`-ui.SegmentColor | ascii-ui.Color normalized to table {fg, bg} or Color instance
 {private} `(focusable)` boolean
+
+------------------------------------------------------------------------------
+                                             *ascii-ui.buffer.normalize_color()*
+                   `ascii-ui.buffer.normalize_color`({color})
+Normalize the color field to a consistent format.
+Accepts:
+  - nil → nil
+  - string "#rrggbb" → { fg = "#rrggbb" }
+  - table { fg, bg } → as-is
+  - Color instance → as-is (Color has fg/bg fields)
+Parameters ~
+{color} `(string | ascii)`-ui.SegmentColor | ascii-ui.Color | nil
+Return ~
+`(ascii)`-ui.SegmentColor | ascii-ui.Color | nil
 
 ------------------------------------------------------------------------------
                                                  *ascii-ui.buffer.Segment:new()*
@@ -228,6 +241,119 @@ Return ~
 Wraps the segment in a ascii-ui.Bufferline object
 Return ~
 `(ascii)`-ui.BufferLine
+
+
+==============================================================================
+------------------------------------------------------------------------------
+                                                                *ascii-ui.Color*
+                                `ascii-ui.Color`
+A unified color representation for ascii-ui segments.
+
+`Color` encapsulates foreground and background colors and provides methods
+to convert them to Neovim highlight groups (with caching) or ANSI truecolor
+escape sequences for terminal output.
+
+```lua
+local ui = require("ascii-ui")
+
+-- Table form (both fg and bg optional)
+local red_on_white = ui.Color.new({ fg = "#ff0000", bg = "#ffffff" })
+
+-- String shorthand (treated as foreground only)
+local red = ui.Color.new("#ff0000")
+
+-- Use with segments
+local segment = ui.blocks.Segment({ content = "hello", color = red })
+-- or with string shorthand:
+local segment2 = ui.blocks.Segment({ content = "hello", color = "#ff0000" })
+```
+Class ~
+{ascii-ui.Color}
+Fields ~
+{fg} `(optional)` `(string)` foreground color in "#rrggbb" format
+{bg} `(optional)` `(string)` background color in "#rrggbb" format
+
+------------------------------------------------------------------------------
+                                                       *ascii-ui.hl_group_cache*
+                           `ascii-ui.hl_group_cache`
+Module-level cache for highlight groups, keyed by "fg_bg" string.
+Type ~
+`(table<string, string>)`
+
+------------------------------------------------------------------------------
+                                                          *ascii-ui.color_cache*
+                             `ascii-ui.color_cache`
+Module-level cache for Color instances, keyed by "fg_bg" string.
+Type ~
+`(table<string, ascii-ui.Color>)`
+
+------------------------------------------------------------------------------
+                                                      *ascii-ui.normalize_hex()*
+                        `ascii-ui.normalize_hex`({hex})
+Normalize a hex color string to lowercase "#rrggbb" format.
+Accepts "#rgb", "#rrggbb", "rgb", "rrggbb".
+Parameters ~
+{hex} `(string)`
+Return ~
+`(string)` normalized "#rrggbb" or nil if invalid
+
+------------------------------------------------------------------------------
+                                                           *ascii-ui.make_key()*
+                        `ascii-ui.make_key`({fg}, {bg})
+Create a cache key from fg and bg.
+Parameters ~
+{fg} `(optional)` `(string)`
+{bg} `(optional)` `(string)`
+Return ~
+`(string)`
+
+------------------------------------------------------------------------------
+                                                          *ascii-ui.Color.new()*
+                          `ascii-ui.Color.new`({opts})
+Creates a new Color instance.
+
+Accepts either:
+  - A table `{ fg = "#rrggbb", bg = "#rrggbb" }` (both fields optional)
+  - A string `"#rrggbb"` (treated as `{ fg = "#rrggbb" }`)
+
+Identical colors are cached and return the same instance.
+Parameters ~
+{opts} `(string | { fg?: string, bg?: string })`
+Return ~
+`(ascii)`-ui.Color
+
+------------------------------------------------------------------------------
+                                                  *ascii-ui.Color:to_hl_group()*
+                         `ascii-ui.Color:to_hl_group`()
+Returns a Neovim highlight group name for this color.
+Creates the group on first call and caches it for subsequent calls.
+Return ~
+`(string)` highlight_group_name
+
+------------------------------------------------------------------------------
+                                                      *ascii-ui.Color:to_ansi()*
+                           `ascii-ui.Color:to_ansi`()
+Returns ANSI truecolor escape sequences for this color.
+Produces foreground (`ESC[38;2;r;g;bm`) and/or background (`ESC[48;2;r;g;bm`)
+codes as appropriate. Returns empty string if neither fg nor bg is set.
+Return ~
+`(string)` ansi_escape
+
+------------------------------------------------------------------------------
+                                                     *ascii-ui.Color:is_empty()*
+                          `ascii-ui.Color:is_empty`()
+Returns true if neither fg nor bg is set.
+Return ~
+`(boolean)`
+
+------------------------------------------------------------------------------
+                                                     *ascii-ui.Color.is_color()*
+                        `ascii-ui.Color.is_color`({obj})
+Check if an object is a Color instance.
+Parameters ~
+{obj} `(any)`
+Return ~
+`(boolean)`
 
 
 ==============================================================================
@@ -713,6 +839,7 @@ hooks or effects.
 ------------------------------------------------------------------------------
                                                             *ascii-ui.HexaColor*
                               `ascii-ui.HexaColor`
+@deprecated Use `ascii-ui.color` instead. This module is kept for backward compatibility.
 @class ascii-ui.HexaColor
 @field group string The name of the highlight group created for the hex color
 
@@ -720,6 +847,7 @@ hooks or effects.
                                                       *ascii-ui.HexaColor.new()*
                         `ascii-ui.HexaColor.new`({hex})
 Create a new instance and register the highlight group
+@deprecated Use `require("ascii-ui.color").new(hex):to_hl_group()` instead.
 @param hex  string a hex color code (e.g. "#ff00aa")
 @return ascii-ui.HexaColor instance with its highlight group name
 
@@ -727,6 +855,7 @@ Create a new instance and register the highlight group
                                             *ascii-ui.HexaColor:get_highlight()*
                       `ascii-ui.HexaColor:get_highlight`()
 Retrieve the highlight group name
+@deprecated Use `Color:to_hl_group()` instead.
 @return string highlight the name of the highlight group created
 
 

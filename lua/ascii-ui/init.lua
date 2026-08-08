@@ -1,4 +1,5 @@
 local Bufferline = require("ascii-ui.buffer.bufferline")
+local Color = require("ascii-ui.color")
 local Segment = require("ascii-ui.buffer.segment")
 local logger = require("ascii-ui.logger")
 local mount = require("ascii-ui.mount")
@@ -8,6 +9,9 @@ local user_config = require("ascii-ui.config.user_config")
 local AsciiUI = {
 	--- This contains all the components available in the library
 	components = require("ascii-ui.components"),
+	--- Unified color class for creating colored segments.
+	--- See `ascii-ui.Color` for full documentation.
+	Color = Color,
 	blocks = {
 		Bufferline = Bufferline.new,
 		---@param opts ascii-ui.SegmentOpts

@@ -1,3 +1,4 @@
+local Color = require("ascii-ui.color")
 local Cursor = require("ascii-ui.cursor")
 local highlights = require("ascii-ui.highlights")
 local initialize_window_keymaps = require("ascii-ui.window.keymaps")
@@ -275,17 +276,18 @@ function Window:update(buffer)
 				end
 
 				if segment.color then
-					local anonymous_group = (("AsciiUIAnonymousColor_fg%s_bg%s"):format(
-						segment.color.fg or "NONE",
-						segment.color.bg or "NONE"
-					)):gsub("#", "")
+					-- Normalize to Color instance if needed (handles plain tables and strings)
+					local color = segment.color
+					if not Color.is_color(color) then
+						color = Color.new(color)
+					end
 
-					vim.api.nvim_set_hl(0, anonymous_group, { fg = segment.color.fg, bg = segment.color.bg })
+					local hl_group = color:to_hl_group()
 
 					vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, pos.line - 1, pos.col - 1, {
 						end_col = end_col - 1,
 						strict = false,
-						hl_group = anonymous_group,
+						hl_group = hl_group,
 					})
 				end
 			end

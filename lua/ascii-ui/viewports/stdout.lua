@@ -1,3 +1,5 @@
+local Color = require("ascii-ui.color")
+
 --- Writer function type used by StdoutViewport to emit output.
 --- Defaults to `io.write`. Override this in tests or custom environments
 --- where you need to capture or redirect the output.
@@ -73,6 +75,13 @@ local function seg_to_ansi(seg)
 	if not seg.color then
 		return ""
 	end
+
+	-- If it's already a Color instance, use its to_ansi method
+	if Color.is_color(seg.color) then
+		return seg.color:to_ansi()
+	end
+
+	-- Plain table { fg, bg } - use direct parsing (no object creation)
 	local fg = seg.color.fg and hex_to_ansi(seg.color.fg, false) or ""
 	local bg = seg.color.bg and hex_to_ansi(seg.color.bg, true) or ""
 	return fg .. bg

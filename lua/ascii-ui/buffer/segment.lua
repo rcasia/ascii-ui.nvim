@@ -9,7 +9,7 @@ local interaction_type = require("ascii-ui.interaction_type")
 --- @field is_focusable? boolean whether the segment can be focused
 --- @field interactions? table<ascii-ui.UserInteractions.InteractionType, function> a map of interaction types to functions
 --- @field highlight? string a highlight group name to apply to the segment
----@field color? ascii-ui.SegmentColor
+--- @field color? string | ascii-ui.SegmentColor | ascii-ui.Color hex string shorthand ("#rrggbb"), table {fg, bg}, or Color instance
 
 ---
 --- A segment is the minimal unit of a render in ascii-ui.
@@ -18,7 +18,7 @@ local interaction_type = require("ascii-ui.interaction_type")
 ---@field content string
 ---@field interactions table<ascii-ui.UserInteractions.InteractionType, function>
 ---@field highlight? string
----@field color? ascii-ui.SegmentColor
+---@field color? ascii-ui.SegmentColor | ascii-ui.Color normalized to table {fg, bg} or Color instance
 ---@field private focusable boolean
 local Segment = {}
 Segment.__index = Segment
@@ -47,6 +47,25 @@ local function unicode_len(s)
 	return len
 end
 
+--- Normalize the color field to a consistent format.
+--- Accepts:
+---   - nil → nil
+---   - string "#rrggbb" → { fg = "#rrggbb" }
+---   - table { fg, bg } → as-is
+---   - Color instance → as-is (Color has fg/bg fields)
+---@param color string | ascii-ui.SegmentColor | ascii-ui.Color | nil
+---@return ascii-ui.SegmentColor | ascii-ui.Color | nil
+local function normalize_color(color)
+	if color == nil then
+		return nil
+	end
+	if type(color) == "string" then
+		return { fg = color }
+	end
+	-- table or Color instance - return as-is
+	return color
+end
+
 ---@param ... ascii-ui.SegmentOpts  | string
 ---@return ascii-ui.Segment
 function Segment:new(...)
@@ -68,7 +87,7 @@ function Segment:new(...)
 		id = generate_id(),
 		content = props.content,
 		highlight = props.highlight,
-		color = props.color,
+		color = normalize_color(props.color),
 		focusable = props.is_focusable or false,
 		interactions = props.interactions or {},
 	}

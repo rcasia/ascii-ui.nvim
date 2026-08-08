@@ -224,7 +224,8 @@ local function render_analog_clock(hour, minute, second, size)
 				if current_segment.content ~= "" then
 					local segment_opts = { content = current_segment.content }
 					if current_segment.color then
-						segment_opts.color = { fg = current_segment.color }
+						-- Use string shorthand for foreground color
+						segment_opts.color = current_segment.color
 					end
 					table.insert(segments, Segment:new(segment_opts))
 				end
@@ -237,7 +238,8 @@ local function render_analog_clock(hour, minute, second, size)
 		if current_segment.content ~= "" then
 			local segment_opts = { content = current_segment.content }
 			if current_segment.color then
-				segment_opts.color = { fg = current_segment.color }
+				-- Use string shorthand for foreground color
+				segment_opts.color = current_segment.color
 			end
 			table.insert(segments, Segment:new(segment_opts))
 		end
@@ -294,9 +296,9 @@ local App = ui.createComponent("App", function()
 	local time_str = string.format("%02d:%02d:%02d", time_state.hour, time_state.minute, time_state.second)
 
 	return {
-		BufferLine.new(Segment:new({ content = "=== Analog Clock ===", color = { fg = "#FFD700" } })),
+		BufferLine.new(Segment:new({ content = "=== Analog Clock ===", color = "#FFD700" })),
 		Paragraph({ content = "" }),
-		BufferLine.new(Segment:new({ content = "Current time: " .. time_str, color = { fg = "#4ECDC4" } })),
+		BufferLine.new(Segment:new({ content = "Current time: " .. time_str, color = "#4ECDC4" })),
 		Paragraph({ content = "" }),
 		AnalogClockComponent({
 			size = 12,
@@ -304,7 +306,7 @@ local App = ui.createComponent("App", function()
 		Paragraph({ content = "" }),
 		BufferLine.new(Segment:new({
 			content = "Legend: # = Hour (Red)  * = Minute (Cyan)  | = Second (Yellow)",
-			color = { fg = "#8b949e" },
+			color = "#8b949e",
 		})),
 	}
 end)
