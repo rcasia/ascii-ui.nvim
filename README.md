@@ -20,6 +20,17 @@ npx skills add rcasia/agent-skills --skill ascii-ui-nvim
 
 The skill gives agents a mental model of the component system, hooks, and common patterns so they can generate correct ascii-ui code without hallucinating APIs. Source: [rcasia/agent-skills](https://github.com/rcasia/agent-skills).
 
+## Agentic Development
+
+Since August 8, 2026, this project is developed using a multi-agent system. The codebase is maintained by specialized AI agents that collaborate on development:
+
+- **ascii-ui-dev**: Primary development agent specialized in the framework's React-like component model and Neovim integration
+- **nvim-docs-researcher**: Read-only agent that searches Neovim API documentation
+- **convention-reviewer**: Read-only agent that validates code against project conventions
+- **agent-teacher**: Meta-learning agent that continuously improves the other agents by capturing discoveries
+
+See [AGENTS.md](./AGENTS.md) for details on the agent system and `.opencode/agents/` for agent definitions.
+
 <table align="center">
   <tr>
     <td><img src="https://github.com/user-attachments/assets/0d2729e1-1518-430f-93f1-e52755b6f347" height="250"></td>
