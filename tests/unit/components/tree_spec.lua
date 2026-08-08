@@ -5,7 +5,7 @@ local eq = assert.are.same
 
 local Segment = require("ascii-ui.buffer.segment")
 local Tree = require("ascii-ui.components.tree")
-local testing = require("ascii-ui.testing")
+local fiber = require("ascii-ui.fiber")
 local ui = require("ascii-ui")
 
 describe("Tree Component", function()
@@ -13,8 +13,7 @@ describe("Tree Component", function()
 		local App = ui.createComponent("App", function()
 			return Tree({ tree = { text = "dummy_treenode" } })
 		end, {})
-		local screen = testing.render(App)
-		local buffer = screen:_get_buffer()
+		local buffer = fiber.render(App):get_buffer()
 
 		eq([[dummy_treenode]], buffer:to_string())
 	end)
@@ -36,7 +35,7 @@ describe("Tree Component", function()
 			vim.trim([[node-1
  ├─ node-1-1
  ╰─ node-1-2]]),
-			testing.render(App):toSnapshot()
+			fiber.render(App):get_buffer():to_string()
 		)
 	end)
 
@@ -59,7 +58,7 @@ describe("Tree Component", function()
 			" ╰╮─ ▾ node-1-1",
 			" │╰─ node-1-1-1",
 			" ╰─ node-1-2",
-		}, testing.render(App):toLines())
+		}, fiber.render(App):get_buffer():to_lines())
 	end)
 
 	it("renders last level one node with space before its children", function()
@@ -83,7 +82,7 @@ describe("Tree Component", function()
 			" ╰╮─ ▾ node-1-3",
 			"  ╰╮─ ▾ node-1-3-1",
 			"   ╰─ node-1-3-1-1",
-		}, testing.render(App):toLines())
+		}, fiber.render(App):get_buffer():to_lines())
 	end)
 
 	it("renders nodes that are not expanded", function()
@@ -103,7 +102,7 @@ describe("Tree Component", function()
 		local App = ui.createComponent("App", function()
 			return Tree({ tree = tree })
 		end, {})
-		local result = testing.render(App):toSnapshot()
+		local result = fiber.render(App):get_buffer():to_string()
 
 		eq(
 			[[node-1
@@ -135,7 +134,7 @@ describe("Tree Component", function()
 			"root",
 			" ├─ [CUSTOM: item1]",
 			" ╰─ [CUSTOM: item2]",
-		}, testing.render(App):toLines())
+		}, fiber.render(App):get_buffer():to_lines())
 	end)
 
 	it("renders mixed text and component children", function()
@@ -161,7 +160,7 @@ describe("Tree Component", function()
 			" ├─ text-node",
 			" ├─ [COMP:comp-node]",
 			" ╰─ another-text",
-		}, testing.render(App):toLines())
+		}, fiber.render(App):get_buffer():to_lines())
 	end)
 
 	it("renders nested component children", function()
@@ -189,6 +188,6 @@ describe("Tree Component", function()
 			"level-0",
 			" ╰╮─ ▾ level-1",
 			"  ╰─ nested-deep",
-		}, testing.render(App):toLines())
+		}, fiber.render(App):get_buffer():to_lines())
 	end)
 end)
