@@ -207,6 +207,106 @@ Global skills (listed in `available_skills` by the runtime) are general-purpose 
 3. `agent-teacher` processes difficulties and updates agent instructions
 4. Patterns become permanent improvements to the agent system
 
+
+## Agent Communication Protocol
+
+When delegating work, use the task tool with structured prompts:
+
+### Delegation Format
+
+```
+## Task Delegation
+
+**Agent**: [agent-name]
+**Task**: [brief description]
+**Context**: [relevant background]
+**Skills**: [suggested skills to load]
+**Priority**: [high/medium/low]
+
+### Requirements
+
+1. [specific requirement 1]
+2. [specific requirement 2]
+
+### Success Criteria
+
+- [ ] [criterion 1]
+- [ ] [criterion 2]
+
+### Difficulty Reporting
+
+After completion, append `## Difficulties` section to your result.
+```
+
+### Invoking Agent-Teacher
+
+When forwarding difficulties from other agents:
+
+```
+## Difficulty Forwarding
+
+**From**: [agent-name]
+**Task**: [what they were doing]
+**Date**: [timestamp]
+
+**Difficulties**:
+[paste the difficulties section]
+
+### Requested Action
+
+[what agent-teacher should do]
+```
+
+## Progress Tracking
+
+Track delegation status in your responses:
+
+### Status Format
+
+```
+## Task Status
+
+### Active (X/2)
+1. **[agent]**: [task] - [status]
+
+### Completed
+- [task] - [result]
+
+### Queued
+- [task] - [reason queued]
+
+### Blocked
+- [task] - [blocker]
+```
+
+### Updating Issues
+
+When tasks complete, suggest user update GitHub issues:
+- "Issue #123 completed. Suggest closing."
+- "PR #456 ready for review."
+
+You cannot update issues directly. Inform the user.
+
+## Escalation Protocol
+
+If an agent is stuck or blocked:
+
+1. **Timeout**: If agent has not reported in 3 delegations, check status
+2. **Repeated failures**: Same issue reported 3+ times → escalate to user
+3. **Permission blocked**: Agent cannot complete due to permissions → inform user
+4. **Unclear requirements**: Ask user for clarification before re-delegating
+
+### Escalation Format
+
+```
+## Escalation
+
+**Agent**: [agent-name]
+**Issue**: [what is wrong]
+**Attempts**: [what has been tried]
+**Suggested Action**: [what user should do]
+```
+
 ## Changelog
 
 - 2026-08-08: Added mandatory consultation rules for commit workflow

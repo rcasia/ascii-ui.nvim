@@ -361,3 +361,200 @@ Global skills (listed in `available_skills` by the runtime) are general-purpose 
 2. `task-scheduler` forwards difficulties to `agent-teacher`
 3. `agent-teacher` processes difficulties and updates agent instructions
 4. Patterns become permanent improvements to the agent system
+
+## Escalation Protocol
+
+When agents are stuck or blocked, they must escalate rather than loop indefinitely.
+
+### When to Escalate
+
+1. **Timeout**: Task not progressing after multiple attempts
+2. **Permission blocked**: Cannot complete due to access restrictions
+3. **Repeated failures**: Same issue encountered 3+ times
+4. **Unclear requirements**: Task scope or success criteria ambiguous
+5. **Missing context**: Critical information not available
+
+### Escalation Flow
+
+```
+Agent stuck
+    ↓
+Attempts fix (max 3 tries)
+    ↓
+Still stuck?
+    ↓
+Reports difficulty to task-scheduler
+    ↓
+task-scheduler evaluates
+    ↓
+├─► Can delegate to another agent? → Re-delegate
+├─► Needs user input? → Escalate to user
+└─► Agent instruction issue? → Forward to agent-teacher
+```
+
+### Escalation Format
+
+```markdown
+## Escalation
+
+**Agent**: [agent-name]
+**Issue**: [what's wrong]
+**Attempts**: [what's been tried]
+**Suggested Action**: [what should happen next]
+```
+
+## Agent Communication Protocol
+
+All agent delegation must use structured prompts via the task tool.
+
+### Delegation Format
+
+```markdown
+## Task Delegation
+
+**Agent**: [agent-name]
+**Task**: [brief description]
+**Context**: [relevant background]
+**Skills**: [suggested skills to load]
+**Priority**: [high/medium/low]
+
+### Requirements
+
+1. [specific requirement 1]
+2. [specific requirement 2]
+
+### Success Criteria
+
+- [ ] [criterion 1]
+- [ ] [criterion 2]
+
+### Difficulty Reporting
+
+After completion, append `## Difficulties` section to your result.
+```
+
+### Result Format
+
+Agents must report results in this structure:
+
+```markdown
+## Task Result
+
+### Summary
+
+[Brief description of what was done]
+
+### Changes Made
+
+1. [change 1]
+2. [change 2]
+
+### Verification
+
+- [ ] Tests pass
+- [ ] Linting passes
+- [ ] Documentation updated (if applicable)
+
+### Difficulties
+
+- [category] description | impact | workaround
+```
+
+## Progress Tracking
+
+task-scheduler tracks all delegated work and reports status.
+
+### Status Categories
+
+- **Active**: Currently being worked on (max 2 concurrent)
+- **Completed**: Finished and committed
+- **Queued**: Waiting for agent availability
+- **Blocked**: Cannot proceed due to external factor
+
+### Status Report Format
+
+```markdown
+## Task Status
+
+### Active (X/2)
+1. **[agent]**: [task] - [status]
+
+### Completed
+- [task] - [result]
+
+### Queued
+- [task] - [reason queued]
+
+### Blocked
+- [task] - [blocker]
+```
+
+### Issue Updates
+
+When tasks complete, task-scheduler informs user:
+- "Issue #123 completed. Suggest closing."
+- "PR #456 ready for review."
+
+task-scheduler cannot update issues directly. User must act on suggestions.
+
+## Agent Capabilities
+
+### Permission Matrix
+
+| Agent | Edit | Bash | Scope |
+|-------|------|------|-------|
+| task-scheduler | ❌ | `gh` only | Coordination |
+| ascii-ui-dev | ✅ (except `.opencode/`) | ✅ | Implementation |
+| nvim-docs-researcher | ❌ | ❌ | Read-only research |
+| convention-reviewer | ❌ | `make check/test`, `git status/diff` | Verification |
+| agent-teacher | `.opencode/agents/*`, `.opencode/skills/*`, `opencode.json` | ✅ | Agent improvement |
+
+### Agent Specializations
+
+- **task-scheduler**: Reads GitHub issues/PRs, delegates work, tracks progress
+- **ascii-ui-dev**: Implements features, fixes bugs, writes tests, commits code
+- **nvim-docs-researcher**: Finds Neovim API documentation, explains APIs
+- **convention-reviewer**: Reviews code against conventions, approves/rejects commits
+- **agent-teacher**: Updates agent instructions, creates skills, processes difficulties
+
+## Skill Creation
+
+agent-teacher can create project-local skills in `.opencode/skills/`.
+
+### When to Create Skills
+
+1. Repeated pattern across multiple tasks
+2. Specialized domain knowledge needed
+3. Complex multi-step procedures
+4. Agents report missing knowledge in difficulties
+
+### Skill Structure
+
+```
+.opencode/skills/my-skill/
+├── SKILL.md          # Main instructions
+├── examples/         # Example files (optional)
+└── scripts/          # Helper scripts (optional)
+```
+
+See `.opencode/skills/README.md` for full documentation.
+
+## Agent Creation
+
+agent-teacher can create new specialized agents when gaps are identified.
+
+### When to Create Agents
+
+1. Current agents cannot handle the task type
+2. Task requires specialized knowledge
+3. Repeated delegation to same domain
+
+### Agent Creation Process
+
+1. Identify gap in current agent capabilities
+2. Define agent role, capabilities, constraints
+3. Create `.opencode/agents/<name>.md`
+4. Update `opencode.json` with permissions
+5. Document in `AGENTS.md`
+6. Test on sample tasks
+7. Commit immediately

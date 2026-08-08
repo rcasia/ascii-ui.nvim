@@ -173,6 +173,128 @@ When updating agents based on difficulties:
 Maintain a log of difficulties addressed in your changelog:
 
 ```markdown
+
+## Skill Creation Workflow
+
+You can create and maintain project-local skills in `.opencode/skills/`.
+
+### When to Create a Skill
+
+1. **Repeated pattern**: Same task appears multiple times across agents
+2. **Specialized knowledge**: Domain-specific workflows not covered by agents
+3. **Complex procedures**: Multi-step processes that benefit from documentation
+4. **Agent difficulty**: Agents report missing knowledge in difficulty reports
+
+### Skill Creation Process
+
+1. **Identify need**: From difficulty reports or repeated tasks
+2. **Design skill**: Define scope, triggers, and instructions
+3. **Create directory**: `.opencode/skills/<skill-name>/`
+4. **Write SKILL.md**: Main instructions file
+5. **Add resources**: Examples, scripts, supporting files
+6. **Document**: Add to `.opencode/skills/README.md`
+7. **Commit**: Commit skill files immediately
+
+### Skill File Structure
+
+```
+.opencode/skills/my-skill/
+├── SKILL.md          # Main instructions
+├── examples/         # Example files (optional)
+└── scripts/          # Helper scripts (optional)
+```
+
+### SKILL.md Template
+
+```markdown
+# Skill Name
+
+Brief description.
+
+## When to Use
+
+- Trigger 1
+- Trigger 2
+
+## Instructions
+
+Detailed workflow.
+
+## Examples
+
+Code examples.
+
+## Related Skills
+
+- Skill A
+- Skill B
+```
+
+## Agent Creation Workflow
+
+If a new specialized agent is needed:
+
+1. **Identify gap**: Current agents cannot handle the task
+2. **Propose agent**: Document role, capabilities, constraints
+3. **Create agent file**: `.opencode/agents/<agent-name>.md`
+4. **Define permissions**: Update `opencode.json`
+5. **Document**: Add to `AGENTS.md`
+6. **Test**: Verify agent works on sample tasks
+7. **Commit**: Commit agent files immediately
+
+### Agent File Template
+
+```markdown
+# Agent Name
+
+Brief description.
+
+## Role
+
+What this agent does.
+
+## Capabilities
+
+What it can do.
+
+## Constraints
+
+Limitations and boundaries.
+
+## Workflow
+
+How it operates.
+
+## Communication
+
+How it reports results.
+
+## Changelog
+
+- Date: Initial creation
+```
+
+## Escalation Protocol
+
+When agents report difficulties you cannot resolve:
+
+1. **Analyze**: Understand root cause
+2. **Attempt fix**: Update agent instructions
+3. **Verify**: Check if fix resolves issue
+4. **Escalate**: If fix fails, inform user
+
+### Escalation Format
+
+```
+## Escalation to User
+
+**Agent**: [agent-name]
+**Difficulty**: [category] [description]
+**Attempted Fix**: [what you tried]
+**Result**: [whether it worked]
+**Suggested Action**: [what user should do]
+```
+
 ## Changelog
 
 - [date] Fixed [agent] difficulty: [category] [brief description]
@@ -198,6 +320,128 @@ Ignore global skills from `available_skills` unless explicitly requested by user
 Check `.opencode/skills/` for project-specific skills. Load when task matches skill scope.
 
 Global skills (listed in `available_skills` by the runtime) are general-purpose and not project-aware. Prefer project-local skills that understand ascii-ui conventions, architecture, and patterns.
+
+
+## Skill Creation Workflow
+
+You can create and maintain project-local skills in `.opencode/skills/`.
+
+### When to Create a Skill
+
+1. **Repeated pattern**: Same task appears multiple times across agents
+2. **Specialized knowledge**: Domain-specific workflows not covered by agents
+3. **Complex procedures**: Multi-step processes that benefit from documentation
+4. **Agent difficulty**: Agents report missing knowledge in difficulty reports
+
+### Skill Creation Process
+
+1. **Identify need**: From difficulty reports or repeated tasks
+2. **Design skill**: Define scope, triggers, and instructions
+3. **Create directory**: `.opencode/skills/<skill-name>/`
+4. **Write SKILL.md**: Main instructions file
+5. **Add resources**: Examples, scripts, supporting files
+6. **Document**: Add to `.opencode/skills/README.md`
+7. **Commit**: Commit skill files immediately
+
+### Skill File Structure
+
+```
+.opencode/skills/my-skill/
+├── SKILL.md          # Main instructions
+├── examples/         # Example files (optional)
+└── scripts/          # Helper scripts (optional)
+```
+
+### SKILL.md Template
+
+```markdown
+# Skill Name
+
+Brief description.
+
+## When to Use
+
+- Trigger 1
+- Trigger 2
+
+## Instructions
+
+Detailed workflow.
+
+## Examples
+
+Code examples.
+
+## Related Skills
+
+- Skill A
+- Skill B
+```
+
+## Agent Creation Workflow
+
+If a new specialized agent is needed:
+
+1. **Identify gap**: Current agents cannot handle the task
+2. **Propose agent**: Document role, capabilities, constraints
+3. **Create agent file**: `.opencode/agents/<agent-name>.md`
+4. **Define permissions**: Update `opencode.json`
+5. **Document**: Add to `AGENTS.md`
+6. **Test**: Verify agent works on sample tasks
+7. **Commit**: Commit agent files immediately
+
+### Agent File Template
+
+```markdown
+# Agent Name
+
+Brief description.
+
+## Role
+
+What this agent does.
+
+## Capabilities
+
+What it can do.
+
+## Constraints
+
+Limitations and boundaries.
+
+## Workflow
+
+How it operates.
+
+## Communication
+
+How it reports results.
+
+## Changelog
+
+- Date: Initial creation
+```
+
+## Escalation Protocol
+
+When agents report difficulties you cannot resolve:
+
+1. **Analyze**: Understand root cause
+2. **Attempt fix**: Update agent instructions
+3. **Verify**: Check if fix resolves issue
+4. **Escalate**: If fix fails, inform user
+
+### Escalation Format
+
+```
+## Escalation to User
+
+**Agent**: [agent-name]
+**Difficulty**: [category] [description]
+**Attempted Fix**: [what you tried]
+**Result**: [whether it worked]
+**Suggested Action**: [what user should do]
+```
 
 ## Changelog
 
@@ -276,6 +520,128 @@ When updating agents based on difficulties:
 Maintain a log of difficulties addressed in your changelog:
 
 ```markdown
+
+## Skill Creation Workflow
+
+You can create and maintain project-local skills in `.opencode/skills/`.
+
+### When to Create a Skill
+
+1. **Repeated pattern**: Same task appears multiple times across agents
+2. **Specialized knowledge**: Domain-specific workflows not covered by agents
+3. **Complex procedures**: Multi-step processes that benefit from documentation
+4. **Agent difficulty**: Agents report missing knowledge in difficulty reports
+
+### Skill Creation Process
+
+1. **Identify need**: From difficulty reports or repeated tasks
+2. **Design skill**: Define scope, triggers, and instructions
+3. **Create directory**: `.opencode/skills/<skill-name>/`
+4. **Write SKILL.md**: Main instructions file
+5. **Add resources**: Examples, scripts, supporting files
+6. **Document**: Add to `.opencode/skills/README.md`
+7. **Commit**: Commit skill files immediately
+
+### Skill File Structure
+
+```
+.opencode/skills/my-skill/
+├── SKILL.md          # Main instructions
+├── examples/         # Example files (optional)
+└── scripts/          # Helper scripts (optional)
+```
+
+### SKILL.md Template
+
+```markdown
+# Skill Name
+
+Brief description.
+
+## When to Use
+
+- Trigger 1
+- Trigger 2
+
+## Instructions
+
+Detailed workflow.
+
+## Examples
+
+Code examples.
+
+## Related Skills
+
+- Skill A
+- Skill B
+```
+
+## Agent Creation Workflow
+
+If a new specialized agent is needed:
+
+1. **Identify gap**: Current agents cannot handle the task
+2. **Propose agent**: Document role, capabilities, constraints
+3. **Create agent file**: `.opencode/agents/<agent-name>.md`
+4. **Define permissions**: Update `opencode.json`
+5. **Document**: Add to `AGENTS.md`
+6. **Test**: Verify agent works on sample tasks
+7. **Commit**: Commit agent files immediately
+
+### Agent File Template
+
+```markdown
+# Agent Name
+
+Brief description.
+
+## Role
+
+What this agent does.
+
+## Capabilities
+
+What it can do.
+
+## Constraints
+
+Limitations and boundaries.
+
+## Workflow
+
+How it operates.
+
+## Communication
+
+How it reports results.
+
+## Changelog
+
+- Date: Initial creation
+```
+
+## Escalation Protocol
+
+When agents report difficulties you cannot resolve:
+
+1. **Analyze**: Understand root cause
+2. **Attempt fix**: Update agent instructions
+3. **Verify**: Check if fix resolves issue
+4. **Escalate**: If fix fails, inform user
+
+### Escalation Format
+
+```
+## Escalation to User
+
+**Agent**: [agent-name]
+**Difficulty**: [category] [description]
+**Attempted Fix**: [what you tried]
+**Result**: [whether it worked]
+**Suggested Action**: [what user should do]
+```
+
 ## Changelog
 
 - [date] Fixed [agent] difficulty: [category] [brief description]
@@ -301,6 +667,128 @@ Ignore global skills from `available_skills` unless explicitly requested by user
 Check `.opencode/skills/` for project-specific skills. Load when task matches skill scope.
 
 Global skills (listed in `available_skills` by the runtime) are general-purpose and not project-aware. Prefer project-local skills that understand ascii-ui conventions, architecture, and patterns.
+
+
+## Skill Creation Workflow
+
+You can create and maintain project-local skills in `.opencode/skills/`.
+
+### When to Create a Skill
+
+1. **Repeated pattern**: Same task appears multiple times across agents
+2. **Specialized knowledge**: Domain-specific workflows not covered by agents
+3. **Complex procedures**: Multi-step processes that benefit from documentation
+4. **Agent difficulty**: Agents report missing knowledge in difficulty reports
+
+### Skill Creation Process
+
+1. **Identify need**: From difficulty reports or repeated tasks
+2. **Design skill**: Define scope, triggers, and instructions
+3. **Create directory**: `.opencode/skills/<skill-name>/`
+4. **Write SKILL.md**: Main instructions file
+5. **Add resources**: Examples, scripts, supporting files
+6. **Document**: Add to `.opencode/skills/README.md`
+7. **Commit**: Commit skill files immediately
+
+### Skill File Structure
+
+```
+.opencode/skills/my-skill/
+├── SKILL.md          # Main instructions
+├── examples/         # Example files (optional)
+└── scripts/          # Helper scripts (optional)
+```
+
+### SKILL.md Template
+
+```markdown
+# Skill Name
+
+Brief description.
+
+## When to Use
+
+- Trigger 1
+- Trigger 2
+
+## Instructions
+
+Detailed workflow.
+
+## Examples
+
+Code examples.
+
+## Related Skills
+
+- Skill A
+- Skill B
+```
+
+## Agent Creation Workflow
+
+If a new specialized agent is needed:
+
+1. **Identify gap**: Current agents cannot handle the task
+2. **Propose agent**: Document role, capabilities, constraints
+3. **Create agent file**: `.opencode/agents/<agent-name>.md`
+4. **Define permissions**: Update `opencode.json`
+5. **Document**: Add to `AGENTS.md`
+6. **Test**: Verify agent works on sample tasks
+7. **Commit**: Commit agent files immediately
+
+### Agent File Template
+
+```markdown
+# Agent Name
+
+Brief description.
+
+## Role
+
+What this agent does.
+
+## Capabilities
+
+What it can do.
+
+## Constraints
+
+Limitations and boundaries.
+
+## Workflow
+
+How it operates.
+
+## Communication
+
+How it reports results.
+
+## Changelog
+
+- Date: Initial creation
+```
+
+## Escalation Protocol
+
+When agents report difficulties you cannot resolve:
+
+1. **Analyze**: Understand root cause
+2. **Attempt fix**: Update agent instructions
+3. **Verify**: Check if fix resolves issue
+4. **Escalate**: If fix fails, inform user
+
+### Escalation Format
+
+```
+## Escalation to User
+
+**Agent**: [agent-name]
+**Difficulty**: [category] [description]
+**Attempted Fix**: [what you tried]
+**Result**: [whether it worked]
+**Suggested Action**: [what user should do]
+```
 
 ## Changelog
 

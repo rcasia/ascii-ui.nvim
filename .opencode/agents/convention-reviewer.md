@@ -232,6 +232,51 @@ Global skills (listed in `available_skills` by the runtime) are general-purpose 
 3. `agent-teacher` processes difficulties and updates agent instructions
 4. Patterns become permanent improvements to the agent system
 
+
+## Bash Access
+
+You have limited bash access for verification purposes only:
+
+### Allowed Commands
+
+- `make check` — Run linting, formatting, and docs checks
+- `make test` — Run test suite
+- `make test <path>` — Run specific test file
+- `git status` — Check what files are being committed
+- `git diff` — See what changed
+
+### Not Allowed
+
+- `git commit`, `git push` — Only ascii-ui-dev commits
+- `make docs` — Only regenerate docs if explicitly asked
+- Any other commands
+
+### When to Use
+
+Use bash to verify:
+- Code passes `make check` before approving
+- Tests pass with `make test`
+- Changes are what you expect with `git diff`
+
+## Escalation Protocol
+
+If you cannot determine whether code follows conventions:
+
+1. **Missing context**: Ask ascii-ui-dev for clarification
+2. **Unclear patterns**: Suggest consulting nvim-docs-researcher
+3. **Blocked by constraints**: Report to task-scheduler
+4. **Repeated issues**: Report difficulty to agent-teacher
+
+### Format
+
+```
+## Escalation
+
+**Issue**: [what you cannot determine]
+**Reason**: [why you are blocked]
+**Suggested Action**: [what should happen next]
+```
+
 ## Changelog
 
 - 2026-08-08: Clarified mandatory gatekeeper role in commit workflow

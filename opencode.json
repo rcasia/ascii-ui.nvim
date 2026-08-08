@@ -33,7 +33,14 @@
       "mode": "subagent",
       "permission": {
         "edit": "deny",
-        "bash": "deny"
+        "bash": {
+          "make check": "allow",
+          "make test": "allow",
+          "make test *": "allow",
+          "git status": "allow",
+          "git diff": "allow",
+          "*": "deny"
+        }
       }
     },
     "agent-teacher": {
@@ -41,6 +48,8 @@
       "permission": {
         "edit": {
           ".opencode/agents/*": "allow",
+          ".opencode/skills/*": "allow",
+          "opencode.json": "allow",
           "*": "deny"
         },
         "bash": "allow"
