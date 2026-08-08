@@ -9,6 +9,9 @@ check:
 	# running doc check...
 	./scripts/check-docs
 
+	# running workflow validation...
+	./scripts/check-workflows
+
 ifdef GITHUB_ACTIONS
 build:
 	echo "Skipping build in GitHub Actions"
