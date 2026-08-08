@@ -1,7 +1,10 @@
 local Buffer = require("ascii-ui.buffer.buffer")
+local BufferLine = require("ascii-ui.buffer.bufferline")
 local Cursor = require("ascii-ui.cursor")
 local EventBus = require("ascii-ui.events")
+local Segment = require("ascii-ui.buffer.segment")
 local Window = require("ascii-ui.window")
+local error_handler = require("ascii-ui.utils.error_handler")
 local i = require("ascii-ui.interaction_type")
 local logger = require("ascii-ui.logger")
 local user_interations = require("ascii-ui.user_interactions")
@@ -10,6 +13,17 @@ local fiber = require("ascii-ui.fiber")
 local render = fiber.render
 local rerender = fiber.rerender
 local is_callable = require("ascii-ui.utils.is_callable")
+
+--- @param err ascii-ui.Error
+--- @return ascii-ui.Buffer
+local function render_error_buffer(err)
+	local lines = error_handler.render_error_to_lines(err)
+	local buffer = Buffer.new()
+	for _, line in ipairs(lines) do
+		buffer:add(BufferLine.new(Segment:new({ content = line, color = { fg = "#ff0000" } })))
+	end
+	return buffer
+end
 
 --- Mounts a root component into a viewport and starts the render loop.
 ---
@@ -62,11 +76,44 @@ return function(RootComponent, viewport)
 	-- create an isolated event bus for this mount
 	local bus = EventBus.new()
 
-	-- does first render
-	local fiberRoot = render(RootComponent)
+	-- does first render with error handling
+	local fiberRoot, rendered_buffer
+	local render_ok, render_err = xpcall(function()
+		fiberRoot = render(RootComponent)
+		return fiberRoot:get_buffer()
+	end, function(err)
+		-- Parse error message to extract component path and message
+		local err_type = "render"
+		local component_path = "unknown"
+		local message = tostring(err)
+
+		-- Try to parse the error format: [type] in <path>: message
+		local parsed_type, parsed_path, parsed_msg = err:match("^%[([^%]]+)%] in <([^>]+)>: (.+)$")
+		if parsed_type then
+			err_type = parsed_type
+			component_path = parsed_path
+			message = parsed_msg
+		end
+
+		return error_handler.create_error(err_type, component_path, message)
+	end)
+
+	if not render_ok then
+		-- Render error to viewport
+		local error_buffer = render_error_buffer(render_err)
+		local window = viewport or Window.new({ width = error_buffer:width(), height = error_buffer:height() })
+		window:open()
+		window:update(error_buffer)
+		logger.error("Render error: %s", vim.inspect(render_err))
+		return window:get_bufnr()
+	end
+
+	rendered_buffer = render_err -- render_err contains the buffer from the xpcall success
+
 	-- inject the bus so hooks (use_state) can trigger state_change on this instance only
 	fiberRoot.bus = bus
-	local rendered_buffer = fiberRoot:get_buffer()
+
+	fiber.debugPrint(fiberRoot, logger.debug)
 
 	fiber.debugPrint(fiberRoot, logger.debug)
 
@@ -85,10 +132,36 @@ return function(RootComponent, viewport)
 
 		logger.info("Rerendering on state change for window %d and buffer %d", window:get_id(), window:get_bufnr())
 		local current_lines_count = rendered_buffer:height()
-		fiberRoot = rerender(fiberRoot)
+
+		local rerender_ok, rerender_result = xpcall(function()
+			fiberRoot = rerender(fiberRoot)
+			return fiberRoot:get_buffer()
+		end, function(err)
+			local err_type = "render"
+			local component_path = "unknown"
+			local message = tostring(err)
+
+			local parsed_type, parsed_path, parsed_msg = err:match("^%[([^%]]+)%] in <([^>]+)>: (.+)$")
+			if parsed_type then
+				err_type = parsed_type
+				component_path = parsed_path
+				message = parsed_msg
+			end
+
+			return error_handler.create_error(err_type, component_path, message)
+		end)
+
+		if not rerender_ok then
+			-- Render error to viewport
+			local error_buffer = render_error_buffer(rerender_result)
+			window:update(error_buffer)
+			logger.error("Rerender error: %s", vim.inspect(rerender_result))
+			return
+		end
+
 		fiberRoot.bus = bus
+		rendered_buffer = rerender_result
 		fiber.debugPrint(fiberRoot, logger.debug)
-		rendered_buffer = fiberRoot:get_buffer()
 		local new_lines_count = rendered_buffer:height()
 		window:update(rendered_buffer)
 

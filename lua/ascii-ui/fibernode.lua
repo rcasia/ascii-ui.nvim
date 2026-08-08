@@ -1,5 +1,6 @@
 local Buffer = require("ascii-ui.buffer.buffer")
 local Bufferline = require("ascii-ui.buffer.bufferline")
+local error_handler = require("ascii-ui.utils.error_handler")
 local is_callable = require("ascii-ui.utils.is_callable")
 local logger = require("ascii-ui.logger")
 local props_are_equal = require("ascii-ui.utils.props_are_equal")
@@ -232,6 +233,18 @@ function FiberNode:unwrap_closure()
 	end
 
 	-- assert(FiberNode.is_node(output), "Fibernode.closure should return a FiberNode. Found " .. vim.inspect(output))
+
+	-- Validate that output is a table before flattening
+	if type(output) ~= "table" then
+		error(
+			string.format(
+				"Component must return a list (table) of FiberNode or BufferLine objects, got %s",
+				type(output)
+			),
+			0
+		)
+	end
+
 	output = flatten(output)
 
 	return vim.iter(output)
@@ -340,7 +353,8 @@ function FiberNode:run_pending()
 
 	local function wrap_call(fn, kind)
 		local ok, err = xpcall(fn, function(e)
-			return string.format("effect error in <%s> [%s]: %s", component_name, kind, e)
+			local err_obj = error_handler.create_error("effect", component_name, string.format("[%s] %s", kind, e))
+			return error_handler.format_error(err_obj.err_type, err_obj.component_path, err_obj.message)
 		end)
 		if not ok then
 			error(err, 0)

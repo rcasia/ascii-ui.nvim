@@ -647,17 +647,17 @@ Removes all registered listeners from every event type.
 Debug: Prints the Fiber tree with indentation and hook values
 
 ------------------------------------------------------------------------------
-                                                  *ascii-ui.reconcileChildren()*
-             `ascii-ui.reconcileChildren`({parent}, {new_children})
-@param parent ascii-ui.FiberNode
-@param new_children ascii-ui.FiberNode[]
-
-------------------------------------------------------------------------------
                                                       *ascii-ui.componentPath()*
                         `ascii-ui.componentPath`({node})
 Walks the parent chain of a fiber node and returns a path string like "Root > Outer > Inner"
 @param node ascii-ui.FiberNode
 @return string
+
+------------------------------------------------------------------------------
+                                                  *ascii-ui.reconcileChildren()*
+             `ascii-ui.reconcileChildren`({parent}, {new_children})
+@param parent ascii-ui.FiberNode
+@param new_children ascii-ui.FiberNode[]
 
 ------------------------------------------------------------------------------
                                                   *ascii-ui.performUnitOfWork()*
@@ -1063,6 +1063,12 @@ the component automatically (live-reload).
 
 ==============================================================================
 ------------------------------------------------------------------------------
+                                                *ascii-ui.render_error_buffer()*
+                     `ascii-ui.render_error_buffer`({err})
+@param err ascii-ui.Error
+@return ascii-ui.Buffer
+
+------------------------------------------------------------------------------
 Mounts a root component into a viewport and starts the render loop.
 
 The simplest call opens a centered Neovim floating window automatically:
@@ -1336,6 +1342,66 @@ Parameters ~
              `ascii-ui.UserInteractions:detach_buffer`({buffer_id})
 Parameters ~
 {buffer_id} `(integer)`
+
+
+==============================================================================
+------------------------------------------------------------------------------
+Error handling utilities for ascii-ui.
+Provides consistent error formatting and display for render failures.
+
+@module "ascii-ui.utils.error_handler"
+
+------------------------------------------------------------------------------
+@alias ascii-ui.ErrorType
+| "render"      # Error during component render
+| "hook"        # Error in a hook (useState, useEffect, etc.)
+| "effect"      # Error in an effect or cleanup
+| "interaction" # Error in user interaction handler
+| "viewport"    # Error in viewport operations
+
+------------------------------------------------------------------------------
+@class ascii-ui.Error
+@field err_type ascii-ui.ErrorType
+@field component_path string
+@field message string
+
+------------------------------------------------------------------------------
+                                                          *ascii-ui.utils.HINTS*
+                             `ascii-ui.utils.HINTS`
+Hints for each error type to help users understand what went wrong.
+@type table<ascii-ui.ErrorType, string>
+
+------------------------------------------------------------------------------
+                                                 *ascii-ui.utils.format_error()*
+     `ascii-ui.utils.format_error`({err_type}, {component_path}, {message})
+Formats an error with consistent structure.
+@param err_type ascii-ui.ErrorType
+@param component_path string | nil
+@param message string
+@return string formatted_error
+
+------------------------------------------------------------------------------
+                                                 *ascii-ui.utils.create_error()*
+     `ascii-ui.utils.create_error`({err_type}, {component_path}, {message})
+Creates an error table with structured information.
+@param err_type ascii-ui.ErrorType
+@param component_path string | nil
+@param message string
+@return ascii-ui.Error
+
+------------------------------------------------------------------------------
+                                                     *ascii-ui.utils.get_hint()*
+                     `ascii-ui.utils.get_hint`({err_type})
+Gets a helpful hint for an error type.
+@param err_type ascii-ui.ErrorType
+@return string hint
+
+------------------------------------------------------------------------------
+                                        *ascii-ui.utils.render_error_to_lines()*
+                 `ascii-ui.utils.render_error_to_lines`({err})
+Converts an error into displayable lines for the viewport.
+@param err ascii-ui.Error
+@return string[] lines
 
 
 ==============================================================================

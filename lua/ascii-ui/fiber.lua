@@ -1,4 +1,5 @@
 local FiberNode = require("ascii-ui.fibernode")
+local error_handler = require("ascii-ui.utils.error_handler")
 
 local logger = require("ascii-ui.logger")
 
@@ -46,17 +47,47 @@ local function debugPrint(fiber, print_fn)
 	traverse(fiber, "", true)
 end
 
+--- Walks the parent chain of a fiber node and returns a path string like "Root > Outer > Inner"
+--- @param node ascii-ui.FiberNode
+--- @return string
+local function componentPath(node)
+	local parts = {}
+	local current = node
+	while current do
+		if current.type then
+			table.insert(parts, 1, current.type)
+		end
+		current = current.parent
+	end
+	return table.concat(parts, " > ")
+end
+
 --- @param parent ascii-ui.FiberNode
 --- @param new_children ascii-ui.FiberNode[]
 local function reconcileChildren(parent, new_children)
-	assert(type(new_children) == "table", "new_children should be a table, got: " .. type(new_children))
-	assert(
-		--- @param node ascii-ui.FiberNode
-		vim.iter(new_children):all(function(node)
-			return FiberNode.is_node(node)
-		end),
-		"cannot reconcile parent with objects that are not FiberNodes. Found:" .. vim.inspect(new_children)
-	)
+	if type(new_children) ~= "table" then
+		local path = componentPath(parent)
+		local err = error_handler.create_error(
+			"render",
+			path,
+			string.format("expected list of FiberNode/BufferLine, got %s", type(new_children))
+		)
+		error(error_handler.format_error(err.err_type, err.component_path, err.message), 0)
+	end
+
+	local all_nodes = vim.iter(new_children):all(function(node)
+		return FiberNode.is_node(node)
+	end)
+
+	if not all_nodes then
+		local path = componentPath(parent)
+		local err = error_handler.create_error(
+			"render",
+			path,
+			"expected list of FiberNode/BufferLine, got non-FiberNode values"
+		)
+		error(error_handler.format_error(err.err_type, err.component_path, err.message), 0)
+	end
 
 	logger.debug(
 		"🧑‍🧑‍🧒‍🧒🧑‍🧑‍🧒‍🧒🧑‍🧑‍🧒‍🧒 Reconciling children of %s",
@@ -104,21 +135,6 @@ local function reconcileChildren(parent, new_children)
 	end
 end
 
---- Walks the parent chain of a fiber node and returns a path string like "Root > Outer > Inner"
---- @param node ascii-ui.FiberNode
---- @return string
-local function componentPath(node)
-	local parts = {}
-	local current = node
-	while current do
-		if current.type then
-			table.insert(parts, 1, current.type)
-		end
-		current = current.parent
-	end
-	return table.concat(parts, " > ")
-end
-
 --- @param fiber ascii-ui.RootFiberNode
 local function performUnitOfWork(fiber)
 	if fiber.tag == "NONE" then
@@ -138,7 +154,8 @@ local function performUnitOfWork(fiber)
 			return fiber:unwrap_closure()
 		end, function(err)
 			local path = componentPath(fiber)
-			return string.format("component error [%s]: %s", path, err)
+			local error_obj = error_handler.create_error("render", path, err)
+			return error_handler.format_error(error_obj.err_type, error_obj.component_path, error_obj.message)
 		end)
 
 		if not ok then
@@ -146,7 +163,15 @@ local function performUnitOfWork(fiber)
 		end
 
 		local new_children = result
-		assert(FiberNode.is_node_list(new_children), "Expected FiberNode. Found: " .. vim.inspect(new_children))
+		if not FiberNode.is_node_list(new_children) then
+			local path = componentPath(fiber)
+			local err = error_handler.create_error(
+				"render",
+				path,
+				string.format("expected list of FiberNode/BufferLine, got %s", type(new_children))
+			)
+			error(error_handler.format_error(err.err_type, err.component_path, err.message), 0)
+		end
 		local old_child = fiber.output and fiber.output or {}
 		local new_child = new_children[1]
 
