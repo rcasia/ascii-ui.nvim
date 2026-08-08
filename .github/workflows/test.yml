@@ -17,17 +17,27 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.job.target }} - Neovim ${{ matrix.nvim-version }}
+    runs-on: ${{ matrix.job.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        nvim-version: [stable, v0.11.7, nightly]
+        job:
+          - { os: ubuntu-24.04, target: x86_64-linux }
+          - { os: ubuntu-24.04-arm, target: aarch64-linux }
+          - { os: macos-14, target: aarch64-darwin }
+          - { os: windows-2025, target: x86_64-windows-msvc }
+        nvim-version: [stable, nightly]
     steps:
-      - name: checkout
+      - name: Checkout repository
         uses: actions/checkout@v6
 
-      - uses: rhysd/action-setup-vim@v1
+      - name: Install MSVC Compiler Toolchain
+        uses: ilammy/msvc-dev-cmd@v1
+        if: endsWith(matrix.job.target, '-msvc')
+
+      - name: Setup Neovim
+        uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
           version: ${{ matrix.nvim-version }}
