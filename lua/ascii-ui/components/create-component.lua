@@ -5,6 +5,13 @@ local memoize = require("ascii-ui.utils.memoize")
 
 local component_tags = {}
 
+-- Counter for generating unique closure IDs
+local next_closure_id = 0
+local function generate_closure_id()
+	next_closure_id = next_closure_id + 1
+	return string.format("closure_%d", next_closure_id)
+end
+
 --- @alias ascii-ui.PropsType
 ---| "nil"
 ---| "number"
@@ -73,7 +80,7 @@ local function createComponent(name, functional_component, types)
 	local component_function = setmetatable({}, {
 		__is_a_component = true,
 		__call = function(_, ...)
-			local closure_id = tostring({})
+			local closure_id = generate_closure_id()
 			logger.debug("Creating closure for component '%s' with id %s", name, closure_id)
 			local _args = { ... }
 			local factory, props
