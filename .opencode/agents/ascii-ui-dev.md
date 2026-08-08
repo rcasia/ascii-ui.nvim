@@ -237,9 +237,13 @@ You have access to specialized agents. Consult them when:
 When committing, use this format:
 
 ```
-type(ascii-ui-dev): description
+type(scope): description
 
 [agent: ascii-ui-dev]
 ```
 
-See AGENTS.md for full commit convention details.
+Where `scope` describes the area affected (e.g., `components`, `hooks`, `fiber`, `buffer`).
+
+**Note**: 
+- `refactor` only applies to code restructuring (imports, folders, code organization), not for docs or agent changes
+- Changes to agent files or conventions must use `chore(agents):` prefix

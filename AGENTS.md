@@ -4,13 +4,18 @@
 
 ## Commit Convention
 
-All commits must specify which agent is acting using the format:
+All commits must follow conventional commits and specify which agent is acting in the footer:
 
 ```
-type(agent): description
+type(scope): description
 
 [agent: agent-name]
 ```
+
+- `type` — conventional commit type (`feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`)
+  - `refactor` — only for code restructuring (imports, folders, code organization), not for docs or agent changes
+- `scope` — area of the codebase affected (e.g., `components`, `hooks`, `fiber`, `agents`, `buffer`)
+- `[agent: agent-name]` — footer identifying which agent made the commit
 
 ### Agent Identifiers
 
@@ -22,38 +27,30 @@ type(agent): description
 ### Examples
 
 ```
-feat(ascii-ui-dev): add new Input component
+feat(components): add new Input component
 
 [agent: ascii-ui-dev]
 ```
 
 ```
-docs(nvim-docs-researcher): document vim.api.nvim_open_win behavior
+docs(hooks): document useEffect cleanup behavior
 
 [agent: nvim-docs-researcher]
 ```
 
 ```
-chore(convention-reviewer): update review checklist for hooks
+chore(agents): update review checklist for hooks
 
 [agent: convention-reviewer]
 ```
 
 ```
-refactor(agent-teacher): improve agent consulting patterns
+chore(agents): improve agent consulting patterns
 
 [agent: agent-teacher]
 ```
 
-### Commit Types
-
-- `feat` - New features
-- `fix` - Bug fixes
-- `docs` - Documentation changes
-- `refactor` - Code refactoring
-- `test` - Test additions/changes
-- `chore` - Maintenance tasks
-- `perf` - Performance improvements
+**Note**: All agent-related changes (updates to agent files, conventions, or configuration) must use `chore` type with `agents` scope.
 
 ## Project Overview
 

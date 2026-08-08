@@ -152,9 +152,13 @@ You are the meta-learning agent. You update other agents, but you can also sugge
 When committing, use this format:
 
 ```
-type(agent-teacher): description
+type(scope): description
 
 [agent: agent-teacher]
 ```
 
-See AGENTS.md for full commit convention details.
+Where `scope` describes the area affected (e.g., `agents`, `teaching`, `learning`).
+
+**Note**: 
+- `refactor` only applies to code restructuring (imports, folders, code organization), not for docs or agent changes
+- Changes to agent files or conventions must use `chore(agents):` prefix

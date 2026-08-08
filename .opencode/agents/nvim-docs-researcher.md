@@ -85,9 +85,13 @@ You are a read-only research agent. You do NOT modify files. However, you can su
 When committing, use this format:
 
 ```
-type(nvim-docs-researcher): description
+type(scope): description
 
 [agent: nvim-docs-researcher]
 ```
 
-See AGENTS.md for full commit convention details.
+Where `scope` describes the area affected (e.g., `docs`, `api`, `help`).
+
+**Note**: 
+- `refactor` only applies to code restructuring (imports, folders, code organization), not for docs or agent changes
+- Changes to agent files or conventions must use `chore(agents):` prefix

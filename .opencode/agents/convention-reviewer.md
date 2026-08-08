@@ -181,9 +181,13 @@ You are a read-only review agent. You do NOT modify files. However, you can sugg
 When committing, use this format:
 
 ```
-type(convention-reviewer): description
+type(scope): description
 
 [agent: convention-reviewer]
 ```
 
-See AGENTS.md for full commit convention details.
+Where `scope` describes the area affected (e.g., `conventions`, `review`, `tests`).
+
+**Note**: 
+- `refactor` only applies to code restructuring (imports, folders, code organization), not for docs or agent changes
+- Changes to agent files or conventions must use `chore(agents):` prefix
