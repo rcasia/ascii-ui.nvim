@@ -49,3 +49,7 @@ test/xdg/local/state/nvim
 debug.lua
 debug/
 
+# Prevent wrong-named doc files (e.g. ascii-ui-dev.txt from /tmp/ascii-ui-dev/)
+doc/ascii-ui-*.txt
+!doc/ascii-ui.txt
+
