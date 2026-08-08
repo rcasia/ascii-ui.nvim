@@ -303,6 +303,75 @@ Return ~
 `(string)`
 
 ------------------------------------------------------------------------------
+                                                         *ascii-ui.hsl_to_rgb()*
+                      `ascii-ui.hsl_to_rgb`({h}, {s}, {l})
+Convert HSL values to RGB.
+H: 0-360 (hue), S: 0-100 (saturation), L: 0-100 (lightness)
+Returns R, G, B in range 0-255.
+Parameters ~
+{h} `(number)` hue (0-360)
+{s} `(number)` saturation (0-100)
+{l} `(number)` lightness (0-100)
+Return ~
+`(number)` r red (0-255)
+Return ~
+`(number)` g green (0-255)
+Return ~
+`(number)` b blue (0-255)
+
+------------------------------------------------------------------------------
+                                                         *ascii-ui.rgb_to_hsl()*
+                      `ascii-ui.rgb_to_hsl`({r}, {g}, {b})
+Convert RGB values to HSL.
+R, G, B: 0-255
+Returns H: 0-360, S: 0-100, L: 0-100.
+Parameters ~
+{r} `(number)` red (0-255)
+{g} `(number)` green (0-255)
+{b} `(number)` blue (0-255)
+Return ~
+`(number)` h hue (0-360)
+Return ~
+`(number)` s saturation (0-100)
+Return ~
+`(number)` l lightness (0-100)
+
+------------------------------------------------------------------------------
+                                                              *ascii-ui.clamp()*
+                `ascii-ui.clamp`({value}, {min_val}, {max_val})
+Clamp a value between min and max.
+Parameters ~
+{value} `(number)`
+{min_val} `(number)`
+{max_val} `(number)`
+Return ~
+`(number)`
+
+------------------------------------------------------------------------------
+                                                         *ascii-ui.hex_to_rgb()*
+                          `ascii-ui.hex_to_rgb`({hex})
+Convert hex color string to RGB values.
+Parameters ~
+{hex} `(string)` "#rrggbb" format
+Return ~
+`(number)` r red (0-255)
+Return ~
+`(number)` g green (0-255)
+Return ~
+`(number)` b blue (0-255)
+
+------------------------------------------------------------------------------
+                                                         *ascii-ui.rgb_to_hex()*
+                      `ascii-ui.rgb_to_hex`({r}, {g}, {b})
+Convert RGB values to hex color string.
+Parameters ~
+{r} `(number)` red (0-255)
+{g} `(number)` green (0-255)
+{b} `(number)` blue (0-255)
+Return ~
+`(string)` hex "#rrggbb" format
+
+------------------------------------------------------------------------------
                                                           *ascii-ui.Color.new()*
                           `ascii-ui.Color.new`({opts})
 Creates a new Color instance.
@@ -349,6 +418,78 @@ Parameters ~
 {obj} `(any)`
 Return ~
 `(boolean)`
+
+------------------------------------------------------------------------------
+                                                     *ascii-ui.Color.from_hsl()*
+                    `ascii-ui.Color.from_hsl`({h}, {s}, {l})
+Creates a Color from HSL values.
+H: 0-360 (hue), S: 0-100 (saturation), L: 0-100 (lightness).
+Values are clamped to valid ranges.
+Parameters ~
+{h} `(number)` hue (0-360)
+{s} `(number)` saturation (0-100)
+{l} `(number)` lightness (0-100)
+Return ~
+`(ascii)`-ui.Color
+
+------------------------------------------------------------------------------
+                                                       *ascii-ui.Color:to_hsl()*
+                           `ascii-ui.Color:to_hsl`()
+Returns the HSL representation of this color's foreground.
+Returns nil if fg is not set.
+Return ~
+`(number)` `(optional)` h hue (0-360)
+Return ~
+`(number)` `(optional)` s saturation (0-100)
+Return ~
+`(number)` `(optional)` l lightness (0-100)
+
+------------------------------------------------------------------------------
+                                                      *ascii-ui.Color:lighten()*
+                       `ascii-ui.Color:lighten`({amount})
+Returns a new Color with lightness increased by the given amount.
+Amount is 0-100. Result is clamped.
+Parameters ~
+{amount} `(number)` lightness increase (0-100)
+Return ~
+`(ascii)`-ui.Color
+
+------------------------------------------------------------------------------
+                                                       *ascii-ui.Color:darken()*
+                       `ascii-ui.Color:darken`({amount})
+Returns a new Color with lightness decreased by the given amount.
+Amount is 0-100. Result is clamped.
+Parameters ~
+{amount} `(number)` lightness decrease (0-100)
+Return ~
+`(ascii)`-ui.Color
+
+------------------------------------------------------------------------------
+                                                   *ascii-ui.Color:complement()*
+                         `ascii-ui.Color:complement`()
+Returns the complement color (hue rotated 180 degrees).
+Return ~
+`(ascii)`-ui.Color
+
+------------------------------------------------------------------------------
+                                                     *ascii-ui.Color:saturate()*
+                      `ascii-ui.Color:saturate`({amount})
+Returns a new Color with saturation increased by the given amount.
+Amount is 0-100. Result is clamped.
+Parameters ~
+{amount} `(number)` saturation increase (0-100)
+Return ~
+`(ascii)`-ui.Color
+
+------------------------------------------------------------------------------
+                                                   *ascii-ui.Color:desaturate()*
+                     `ascii-ui.Color:desaturate`({amount})
+Returns a new Color with saturation decreased by the given amount.
+Amount is 0-100. Result is clamped.
+Parameters ~
+{amount} `(number)` saturation decrease (0-100)
+Return ~
+`(ascii)`-ui.Color
 
 
 ==============================================================================

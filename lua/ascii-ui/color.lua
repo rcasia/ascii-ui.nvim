@@ -61,6 +61,128 @@ local function make_key(fg, bg)
 	return (fg or "NONE") .. "_" .. (bg or "NONE")
 end
 
+--- Convert HSL values to RGB.
+--- H: 0-360 (hue), S: 0-100 (saturation), L: 0-100 (lightness)
+--- Returns R, G, B in range 0-255.
+---@param h number hue (0-360)
+---@param s number saturation (0-100)
+---@param l number lightness (0-100)
+---@return number r red (0-255)
+---@return number g green (0-255)
+---@return number b blue (0-255)
+local function hsl_to_rgb(h, s, l)
+	-- Normalize values to 0-1 range
+	h = h / 360
+	s = s / 100
+	l = l / 100
+
+	local r, g, b
+
+	if s == 0 then
+		-- Achromatic (gray)
+		r, g, b = l, l, l
+	else
+		local function hue_to_rgb(p, q, t)
+			if t < 0 then
+				t = t + 1
+			end
+			if t > 1 then
+				t = t - 1
+			end
+			if t < 1 / 6 then
+				return p + (q - p) * 6 * t
+			end
+			if t < 1 / 2 then
+				return q
+			end
+			if t < 2 / 3 then
+				return p + (q - p) * (2 / 3 - t) * 6
+			end
+			return p
+		end
+
+		local q = l < 0.5 and l * (1 + s) or l + s - l * s
+		local p = 2 * l - q
+		r = hue_to_rgb(p, q, h + 1 / 3)
+		g = hue_to_rgb(p, q, h)
+		b = hue_to_rgb(p, q, h - 1 / 3)
+	end
+
+	-- Convert to 0-255 range and round
+	return math.floor(r * 255 + 0.5), math.floor(g * 255 + 0.5), math.floor(b * 255 + 0.5)
+end
+
+--- Convert RGB values to HSL.
+--- R, G, B: 0-255
+--- Returns H: 0-360, S: 0-100, L: 0-100.
+---@param r number red (0-255)
+---@param g number green (0-255)
+---@param b number blue (0-255)
+---@return number h hue (0-360)
+---@return number s saturation (0-100)
+---@return number l lightness (0-100)
+local function rgb_to_hsl(r, g, b)
+	-- Normalize to 0-1
+	r = r / 255
+	g = g / 255
+	b = b / 255
+
+	local max = math.max(r, g, b)
+	local min = math.min(r, g, b)
+	local h, s, l
+	l = (max + min) / 2
+
+	if max == min then
+		-- Achromatic
+		h, s = 0, 0
+	else
+		local d = max - min
+		s = l > 0.5 and d / (2 - max - min) or d / (max + min)
+
+		if max == r then
+			h = (g - b) / d + (g < b and 6 or 0)
+		elseif max == g then
+			h = (b - r) / d + 2
+		else
+			h = (r - g) / d + 4
+		end
+		h = h / 6
+	end
+
+	-- Convert to output ranges
+	return math.floor(h * 360 + 0.5), math.floor(s * 100 + 0.5), math.floor(l * 100 + 0.5)
+end
+
+--- Clamp a value between min and max.
+---@param value number
+---@param min_val number
+---@param max_val number
+---@return number
+local function clamp(value, min_val, max_val)
+	return math.max(min_val, math.min(max_val, value))
+end
+
+--- Convert hex color string to RGB values.
+---@param hex string "#rrggbb" format
+---@return number r red (0-255)
+---@return number g green (0-255)
+---@return number b blue (0-255)
+local function hex_to_rgb(hex)
+	local r = tonumber(hex:sub(2, 3), 16)
+	local g = tonumber(hex:sub(4, 5), 16)
+	local b = tonumber(hex:sub(6, 7), 16)
+	return r, g, b
+end
+
+--- Convert RGB values to hex color string.
+---@param r number red (0-255)
+---@param g number green (0-255)
+---@param b number blue (0-255)
+---@return string hex "#rrggbb" format
+local function rgb_to_hex(r, g, b)
+	return string.format("#%02x%02x%02x", r, g, b)
+end
+
 --- Creates a new Color instance.
 ---
 --- Accepts either:
@@ -156,6 +278,100 @@ end
 ---@return boolean
 function Color.is_color(obj)
 	return type(obj) == "table" and obj.__index == Color.__index
+end
+
+--- Creates a Color from HSL values.
+--- H: 0-360 (hue), S: 0-100 (saturation), L: 0-100 (lightness).
+--- Values are clamped to valid ranges.
+---@param h number hue (0-360)
+---@param s number saturation (0-100)
+---@param l number lightness (0-100)
+---@return ascii-ui.Color
+function Color.from_hsl(h, s, l)
+	-- Clamp values to valid ranges
+	h = clamp(h, 0, 360)
+	s = clamp(s, 0, 100)
+	l = clamp(l, 0, 100)
+
+	local r, g, b = hsl_to_rgb(h, s, l)
+	local hex = rgb_to_hex(r, g, b)
+	return Color.new(hex)
+end
+
+--- Returns the HSL representation of this color's foreground.
+--- Returns nil if fg is not set.
+---@return number? h hue (0-360)
+---@return number? s saturation (0-100)
+---@return number? l lightness (0-100)
+function Color:to_hsl()
+	if not self.fg then
+		return nil, nil, nil
+	end
+	local r, g, b = hex_to_rgb(self.fg)
+	return rgb_to_hsl(r, g, b)
+end
+
+--- Returns a new Color with lightness increased by the given amount.
+--- Amount is 0-100. Result is clamped.
+---@param amount number lightness increase (0-100)
+---@return ascii-ui.Color
+function Color:lighten(amount)
+	if not self.fg then
+		return self
+	end
+	local h, s, l = self:to_hsl()
+	l = clamp(l + amount, 0, 100)
+	return Color.from_hsl(h, s, l)
+end
+
+--- Returns a new Color with lightness decreased by the given amount.
+--- Amount is 0-100. Result is clamped.
+---@param amount number lightness decrease (0-100)
+---@return ascii-ui.Color
+function Color:darken(amount)
+	if not self.fg then
+		return self
+	end
+	local h, s, l = self:to_hsl()
+	l = clamp(l - amount, 0, 100)
+	return Color.from_hsl(h, s, l)
+end
+
+--- Returns the complement color (hue rotated 180 degrees).
+---@return ascii-ui.Color
+function Color:complement()
+	if not self.fg then
+		return self
+	end
+	local h, s, l = self:to_hsl()
+	h = (h + 180) % 360
+	return Color.from_hsl(h, s, l)
+end
+
+--- Returns a new Color with saturation increased by the given amount.
+--- Amount is 0-100. Result is clamped.
+---@param amount number saturation increase (0-100)
+---@return ascii-ui.Color
+function Color:saturate(amount)
+	if not self.fg then
+		return self
+	end
+	local h, s, l = self:to_hsl()
+	s = clamp(s + amount, 0, 100)
+	return Color.from_hsl(h, s, l)
+end
+
+--- Returns a new Color with saturation decreased by the given amount.
+--- Amount is 0-100. Result is clamped.
+---@param amount number saturation decrease (0-100)
+---@return ascii-ui.Color
+function Color:desaturate(amount)
+	if not self.fg then
+		return self
+	end
+	local h, s, l = self:to_hsl()
+	s = clamp(s - amount, 0, 100)
+	return Color.from_hsl(h, s, l)
 end
 
 return Color
