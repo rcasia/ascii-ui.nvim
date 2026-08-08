@@ -10,9 +10,19 @@ on:
 jobs:
   notify-docs-repo:
     runs-on: ubuntu-latest
-    if: secrets.DOCS_SYNC_TOKEN != ''
     steps:
+      - name: Check if secret is configured
+        id: check-secret
+        run: |
+          if [ -z "${{ secrets.DOCS_SYNC_TOKEN }}" ]; then
+            echo "::notice::DOCS_SYNC_TOKEN secret not configured, skipping"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Create issue in ascii-ui-docs
+        if: steps.check-secret.outputs.skip != 'true'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.DOCS_SYNC_TOKEN }}
@@ -21,11 +31,9 @@ jobs:
             const commitUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${commitSha}`;
             const commitMessage = context.payload.head_commit?.message || 'No message';
             
-            // Get list of changed files
             const before = context.payload.before;
             const after = context.payload.after;
             
-            // Skip if before is all zeros (new branch) or same as after
             if (!before || before === '0000000000000000000000000000000000000000' || before === after) {
               console.log('Skipping: no valid before commit');
               return;
@@ -69,7 +77,6 @@ jobs:
               '*This issue was automatically created by the docs-sync workflow.*',
             ].join('\n');
 
-            // Check if issue already exists for this commit
             const { data: existingIssues } = await github.rest.issues.listForRepo({
               owner: 'rcasia',
               repo: 'ascii-ui-docs',
