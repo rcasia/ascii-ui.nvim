@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Check if yq is available
+if ! command -v yq &> /dev/null; then
+    echo "Error: yq is required but not installed." >&2
+    echo "Install with: brew install yq" >&2
+    exit 1
+fi
+
+# Find workflow files
+WORKFLOW_FILES=(.github/workflows/*.yml)
+
+# Check if any workflow files exist
+if [ ! -f "${WORKFLOW_FILES[0]}" ]; then
+    echo "No workflow files found in .github/workflows/"
+    exit 0
+fi
+
+echo "Validating GitHub Actions workflows..."
+
+ERRORS=0
+
+for file in "${WORKFLOW_FILES[@]}"; do
+    if [ -f "$file" ]; then
+        # Validate YAML syntax using yq
+        if ! yq eval '.' "$file" > /dev/null 2>&1; then
+            echo "ERROR: Invalid YAML in $file" >&2
+            ERRORS=$((ERRORS + 1))
+        else
+            echo "  ✓ $file"
+        fi
+    fi
+done
+
+if [ $ERRORS -gt 0 ]; then
+    echo "" >&2
+    echo "Found $ERRORS invalid workflow file(s)" >&2
+    exit 1
+fi
+
+echo "All workflow files are valid YAML."
