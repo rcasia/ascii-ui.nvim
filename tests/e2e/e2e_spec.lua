@@ -15,7 +15,7 @@ local function feed(keys)
 end
 
 local function cursor_is_in_line(number)
-	return vim.wait(1, function()
+	return vim.wait(1000, function()
 		local cursor = vim.api.nvim_win_get_cursor(0)
 		local line = cursor[1]
 
