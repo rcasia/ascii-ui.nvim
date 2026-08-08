@@ -132,10 +132,17 @@ Work is NOT complete until ALL of the following are true:
 - ✅ Code changes implemented and tested locally
 - ✅ Convention-reviewer has reviewed and approved
 - ✅ Changes committed with proper conventional commit format
-- ✅ Changes pushed to remote repository
-- ✅ GitHub CI pipeline shows green (all checks passing)
+- ✅ PR created and merged to main
+- ✅ Pipeline is green on main after merge
 
-**Local tests passing ≠ done.** You must verify the remote CI is green. If CI fails on GitHub, you must fix it.
+A task is NOT done when:
+- Code is written but not committed
+- Code is committed but not pushed
+- Code is pushed but not in a PR
+- PR is open but not merged
+- PR is merged but pipeline is red on main
+
+**Local tests passing ≠ done.** You must verify the pipeline is green on main after merge. If CI fails on GitHub, you must fix it.
 
 ## Common Patterns
 
@@ -303,7 +310,7 @@ Global skills (listed in `available_skills` by the runtime) are general-purpose 
 
 - 2026-08-08: Forbidden from writing to `.opencode/` — only agent-teacher may modify agent files
 - 2026-08-08: Made convention-reviewer consultation mandatory before commits
-- 2026-08-08: Added "Definition of Done" requiring green remote CI
+- 2026-08-08: Updated "Definition of Done" requiring merged to main + pipeline green on main
 - 2026-08-08: Made agent-teacher invocation mandatory after fix sessions
 - 2026-08-08: Added caveman communication mode
 - 2026-08-08: Added "limitations are hints" principle to constraints

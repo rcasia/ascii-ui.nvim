@@ -425,15 +425,16 @@ All agent delegation must use structured prompts via the task tool.
 1. [specific requirement 1]
 2. [specific requirement 2]
 3. Work in isolated workspace under /tmp (if parallel execution)
-4. Push branch to origin when complete
-5. Verify CI is green on your branch before reporting completion
+4. Create PR when complete
+5. Wait for review and merge to main
+6. Verify pipeline is green on main after merge before reporting completion
 
 ### Success Criteria
 
 - [ ] [criterion 1]
 - [ ] [criterion 2]
-- [ ] Changes pushed to origin
-- [ ] CI is green on branch
+- [ ] PR created and merged to main
+- [ ] Pipeline is green on main after merge
 
 ### Difficulty Reporting
 
@@ -461,8 +462,8 @@ Agents must report results in this structure:
 - [ ] Tests pass
 - [ ] Linting passes
 - [ ] Documentation updated (if applicable)
-- [ ] Changes pushed to origin
-- [ ] CI is green on branch
+- [ ] PR created and merged to main
+- [ ] Pipeline is green on main after merge
 
 ### Difficulties
 
@@ -476,7 +477,8 @@ task-scheduler tracks all delegated work and reports status.
 ### Status Categories
 
 - **Active**: Currently being worked on (max 2 concurrent)
-- **Completed**: Finished, committed, pushed to origin, and CI is green
+- **In Review**: PR created, awaiting review and merge
+- **Completed**: Merged to main AND pipeline is green on main
 - **Queued**: Waiting for agent availability
 - **Blocked**: Cannot proceed due to external factor
 
@@ -488,8 +490,11 @@ task-scheduler tracks all delegated work and reports status.
 ### Active (X/2)
 1. **[agent]**: [task] - [status]
 
-### Completed
-- [task] - [result]
+### In Review
+- [task] - [PR link, awaiting review/merge]
+
+### Completed (merged to main + pipeline green)
+- [task] - [result, merged, pipeline green]
 
 ### Queued
 - [task] - [reason queued]

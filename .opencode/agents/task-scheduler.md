@@ -70,7 +70,7 @@ Your ONLY capabilities are:
 
 - **Before commits**: ascii-ui-dev MUST consult convention-reviewer
 - **After fix sessions**: ascii-ui-dev MUST consult agent-teacher to capture lessons
-- **Task not done until**: Changes pushed AND GitHub CI is green (not just local tests)
+- **Task not done until**: Changes merged to main AND pipeline is green on main (not just local tests, not just pushed to branch)
 
 ### Concurrency Management
 
@@ -93,7 +93,9 @@ When delegating to multiple agents simultaneously, each agent MUST work in an is
 2. Creates feature branch: `git checkout -b feature/[task-name]`
 3. Works in isolated directory (no conflicts with other agents)
 4. Pushes branch to origin: `git push -u origin feature/[task-name]`
-5. Verifies CI is green on their branch before reporting completion
+5. Creates PR: `gh pr create --title "..." --body "..." --base "main"`
+6. Waits for review and merge
+7. Verifies pipeline is green on main after merge before reporting completion
 
 **Why**: Parallel agents working in the same directory cause git conflicts. Isolated workspaces allow true parallel execution.
 
@@ -154,8 +156,11 @@ When delegating tasks:
 ### Queued Tasks
 - #789: Document useEffect (waiting for agent availability)
 
-### Completed
-- None yet
+### In Review
+- #456: Add Input component (PR #789 open, awaiting review)
+
+### Completed (merged to main + pipeline green)
+- #123: Fix button rendering issue (merged, pipeline green)
 ```
 
 ## Consultation
@@ -256,15 +261,16 @@ When delegating work, use the task tool with structured prompts:
 1. [specific requirement 1]
 2. [specific requirement 2]
 3. Work in isolated workspace under /tmp (if parallel execution)
-4. Push branch to origin when complete
-5. Verify CI is green on your branch before reporting completion
+4. Create PR when complete
+5. Wait for review and merge to main
+6. Verify pipeline is green on main after merge before reporting completion
 
 ### Success Criteria
 
 - [ ] [criterion 1]
 - [ ] [criterion 2]
-- [ ] Changes pushed to origin
-- [ ] CI is green on branch
+- [ ] PR created and merged to main
+- [ ] Pipeline is green on main after merge
 
 ### Difficulty Reporting
 
@@ -302,8 +308,11 @@ Track delegation status in your responses:
 ### Active (X/2)
 1. **[agent]**: [task] - [status]
 
-### Completed
-- [task] - [result]
+### In Review
+- [task] - [PR link, awaiting review/merge]
+
+### Completed (merged to main + pipeline green)
+- [task] - [result, merged, pipeline green]
 
 ### Queued
 - [task] - [reason queued]
@@ -350,7 +359,7 @@ If an agent is stuck or blocked:
 
 - 2026-08-08: Added `gh issue create` and `gh pr create` permissions. Task-scheduler can now create issues and PRs directly.
 - 2026-08-08: Added mandatory consultation rules for commit workflow
-- 2026-08-08: Clarified "done" = pushed + green remote CI
+- 2026-08-08: Updated "done" = merged to main + pipeline green on main. Added "In Review" status category.
 - 2026-08-08: Added caveman communication mode
 - 2026-08-08: Added "limitations are hints" principle to constraints
 - 2026-08-08: Clarified that task-scheduler may ONLY run `gh` commands for reading GitHub issues/PRs. No other commands allowed.
