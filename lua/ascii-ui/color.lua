@@ -155,7 +155,7 @@ end
 ---@param obj any
 ---@return boolean
 function Color.is_color(obj)
-	return type(obj) == "table" and getmetatable(obj) == Color
+	return type(obj) == "table" and obj.__index == Color.__index
 end
 
 return Color
