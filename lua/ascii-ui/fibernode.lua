@@ -111,7 +111,7 @@ function FiberNode:is_same(other)
 		return false
 	end
 
-	-- para nodos hoja compara la línea renderizada
+	-- For leaf nodes, compares the rendered line
 	if
 		self:is_leaf()
 		--
@@ -395,7 +395,7 @@ end
 function FiberNode:unmount()
 	--- @param fiber ascii-ui.FiberNode
 	local function traverse(fiber)
-		-- 1) Primero descendemos a todos los hijos (post-order)
+		-- 1) First descend to all children (post-order)
 		local children = {}
 		local child = fiber.child
 		while child do
@@ -406,7 +406,7 @@ function FiberNode:unmount()
 			traverse(c)
 		end
 
-		-- 2) Luego ejecutamos los cleanups de este fiber en orden inverso (LIFO)
+		-- 2) Then execute this fiber's cleanups in reverse order (LIFO)
 		for i = #fiber.effects, 1, -1 do
 			local effect = fiber.effects[i]
 			effect.cleanup()

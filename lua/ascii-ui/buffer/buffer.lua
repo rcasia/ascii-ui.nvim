@@ -150,7 +150,7 @@ function Buffer:iter_colored_segments()
 			return vim.iter(line.segments)
 				:map(function(segment)
 					local current_col = col_offset
-					col_offset = col_offset + segment:raw_len() -- o el método que dé el ancho
+					col_offset = col_offset + segment:raw_len() -- or the method that gives the width
 
 					if segment:is_colored() then
 						return {
