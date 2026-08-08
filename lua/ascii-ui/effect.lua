@@ -1,3 +1,11 @@
+--- Effects represent side-effects tied to a fiber's lifecycle (e.g. useEffect).
+--- Each Effect wraps a user-supplied function and an optional dependency list.
+--- The reconciler uses `should_be_replaced` to decide whether to re-run the
+--- effect after a re-render, and `cleanup` to tear down the previous effect
+--- before running a new one.
+---
+--- Lifecycle: INITIAL -> MOUNTED -> CLEANED_UP -> DONE (when replaced).
+
 --- @class ascii-ui.EffectOpts
 --- @field fn fun(): function
 --- @field dependencies any[] | nil

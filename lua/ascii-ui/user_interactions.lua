@@ -6,6 +6,7 @@ local logger = require("ascii-ui.logger")
 local UserInteractions = {
 	singleton_instance = nil,
 }
+UserInteractions.__index = UserInteractions
 
 function UserInteractions.instance()
 	if UserInteractions.singleton_instance then
@@ -22,7 +23,6 @@ function UserInteractions:new()
 		buffers = {},
 	}
 	setmetatable(state, self)
-	self.__index = self
 
 	return state
 end

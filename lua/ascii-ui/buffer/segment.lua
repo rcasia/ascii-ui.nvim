@@ -21,6 +21,7 @@ local interaction_type = require("ascii-ui.interaction_type")
 ---@field color? ascii-ui.SegmentColor
 ---@field private focusable boolean
 local Segment = {}
+Segment.__index = Segment
 
 local last_incremental_id = 0
 local function generate_id()
@@ -73,7 +74,6 @@ function Segment:new(...)
 	}
 
 	setmetatable(state, self)
-	self.__index = self
 
 	return state
 end

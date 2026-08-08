@@ -389,6 +389,11 @@ Return ~
 ------------------------------------------------------------------------------
                                                                *ascii-ui.Cursor*
                                `ascii-ui.Cursor`
+Tracks and records cursor movement inside ascii-ui buffers.
+Registers a global `CursorMoved` autocmd that updates the current and last
+positions whenever the cursor moves in an attached buffer. Other modules
+(e.g. focus management) can query the last movement direction.
+
 @class ascii-ui.Cursor
 @field buffers table<number, boolean>
 @field last_position ascii-ui.CursorPosition | nil
@@ -405,8 +410,21 @@ Return ~
 @return ascii-ui.CursorPosition
 
 ------------------------------------------------------------------------------
+                                          *ascii-ui.Cursor.trigger_move_event()*
+                     `ascii-ui.Cursor.trigger_move_event`()
+Records a cursor move event. Sets `last_position` to the previous position
+and updates `_current_position` to the current cursor location.
+
+------------------------------------------------------------------------------
+                                               *ascii-ui.Cursor.attach_buffer()*
+                    `ascii-ui.Cursor.attach_buffer`({bufnr})
+Registers a buffer so that cursor movements inside it are tracked.
+@param bufnr integer
+
+------------------------------------------------------------------------------
                                                      *ascii-ui.Cursor.move_to()*
             `ascii-ui.Cursor.move_to`({position}, {winid}, {bufnr})
+Moves the cursor to the given position in the specified window/buffer.
 @param position { line: integer, col: integer }
 @param winid? integer
 @param bufnr? integer
@@ -414,10 +432,26 @@ Return ~
 ------------------------------------------------------------------------------
                                      *ascii-ui.Cursor.last_movement_direction()*
                   `ascii-ui.Cursor.last_movement_direction`()
+Returns the direction of the last cursor movement by comparing
+`last_position` to `_current_position`.
 @return ascii-ui.CursorDirection
+
+------------------------------------------------------------------------------
+                                                       *ascii-ui.Cursor.clear()*
+                           `ascii-ui.Cursor.clear`()
+Clears all tracked buffer registrations.
 
 
 ==============================================================================
+------------------------------------------------------------------------------
+Effects represent side-effects tied to a fiber's lifecycle (e.g. useEffect).
+Each Effect wraps a user-supplied function and an optional dependency list.
+The reconciler uses `should_be_replaced` to decide whether to re-run the
+effect after a re-render, and `cleanup` to tear down the previous effect
+before running a new one.
+
+Lifecycle: INITIAL -> MOUNTED -> CLEANED_UP -> DONE (when replaced).
+
 ------------------------------------------------------------------------------
 @class ascii-ui.EffectOpts
 @field fn fun(): function
