@@ -5,13 +5,27 @@ local Paragraph = ui.components.Paragraph
 local useState = ui.hooks.useState
 local useInterval = ui.hooks.useInterval
 
+-- Color palette for the metro map
+local COLORS = {
+	-- Metro line colors
+	LINE_GREEN = "#00C853", -- emerald green (Line 1)
+	LINE_BLUE = "#1976D2", -- professional blue (Line 2, default)
+	LINE_RED = "#D32F2F", -- professional red (Line 3)
+	LINE_ORANGE = "#F57C00", -- orange (Line 4)
+	-- UI colors
+	STATION_CURRENT = "#FFD700", -- gold for current station marker
+	STATION_CURRENT_BG = "#1a1a1a", -- dark bg for current station name
+	TEXT_PRIMARY = "#FFFFFF", -- white for primary text
+	TEXT_SECONDARY = "#E0E0E0", -- light gray for secondary text
+}
+
 --- Component that displays a metro map with lines and stations
 --- @param props { stations: string[], current_station: number, line_color?: string }
 local function MetroMap(props)
 	props = props or {}
 	local stations = props.stations or {}
 	local current_station = props.current_station or 1
-	local line_color = props.line_color or "#1976D2" -- professional blue by default
+	local line_color = props.line_color or COLORS.LINE_BLUE -- professional blue by default
 
 	if #stations == 0 then
 		return { Segment:new({ content = "No stations" }):wrap() }
@@ -58,7 +72,7 @@ local function MetroMap(props)
 			points_line,
 			Segment:new({
 				content = station_marker,
-				color = is_current and { fg = "#FFD700", bg = line_color } or { fg = line_color },
+				color = is_current and { fg = COLORS.STATION_CURRENT, bg = line_color } or { fg = line_color },
 			})
 		)
 
@@ -98,7 +112,8 @@ local function MetroMap(props)
 			names_line,
 			Segment:new({
 				content = station_name,
-				color = is_current and { fg = "#FFFFFF", bg = "#1a1a1a" } or { fg = "#E0E0E0" },
+				color = is_current and { fg = COLORS.TEXT_PRIMARY, bg = COLORS.STATION_CURRENT_BG }
+					or { fg = COLORS.TEXT_SECONDARY },
 			})
 		)
 
@@ -124,7 +139,7 @@ local MetroMapComponent = ui.createComponent("MetroMap", MetroMap, {
 local function MovingTrain(props)
 	props = props or {}
 	local stations = props.stations or {}
-	local line_color = props.line_color or "#1976D2"
+	local line_color = props.line_color or COLORS.LINE_BLUE
 	local speed = props.speed or 2000 -- 2 seconds per station
 
 	if #stations == 0 then
@@ -167,7 +182,7 @@ local App = ui.createComponent("App", function()
 				"Park",
 				"Airport",
 			},
-			line_color = "#00C853", -- emerald green (typical metro color)
+			line_color = COLORS.LINE_GREEN, -- emerald green (typical metro color)
 			speed = 1500,
 		}),
 		Paragraph({ content = "" }),
@@ -178,7 +193,7 @@ local App = ui.createComponent("App", function()
 				"Center",
 				"South",
 			},
-			line_color = "#1976D2", -- professional blue
+			line_color = COLORS.LINE_BLUE, -- professional blue
 			speed = 2000,
 		}),
 		Paragraph({ content = "" }),
@@ -188,7 +203,7 @@ local App = ui.createComponent("App", function()
 				"East",
 				"West",
 			},
-			line_color = "#D32F2F", -- professional red
+			line_color = COLORS.LINE_RED, -- professional red
 			speed = 1800,
 		}),
 		Paragraph({ content = "" }),
@@ -199,7 +214,7 @@ local App = ui.createComponent("App", function()
 				"Terminal B",
 				"Terminal C",
 			},
-			line_color = "#F57C00", -- orange
+			line_color = COLORS.LINE_ORANGE, -- orange
 			speed = 1700,
 		}),
 	}

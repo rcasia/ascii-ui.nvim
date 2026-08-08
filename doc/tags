@@ -1,5 +1,11 @@
 ascii-ui.AsciiUI	ascii-ui.txt	/*ascii-ui.AsciiUI*
 ascii-ui.AsciiUI.debug()	ascii-ui.txt	/*ascii-ui.AsciiUI.debug()*
+ascii-ui.Color	ascii-ui.txt	/*ascii-ui.Color*
+ascii-ui.Color.is_color()	ascii-ui.txt	/*ascii-ui.Color.is_color()*
+ascii-ui.Color.new()	ascii-ui.txt	/*ascii-ui.Color.new()*
+ascii-ui.Color:is_empty()	ascii-ui.txt	/*ascii-ui.Color:is_empty()*
+ascii-ui.Color:to_ansi()	ascii-ui.txt	/*ascii-ui.Color:to_ansi()*
+ascii-ui.Color:to_hl_group()	ascii-ui.txt	/*ascii-ui.Color:to_hl_group()*
 ascii-ui.Cursor	ascii-ui.txt	/*ascii-ui.Cursor*
 ascii-ui.Cursor.attach_buffer()	ascii-ui.txt	/*ascii-ui.Cursor.attach_buffer()*
 ascii-ui.Cursor.clear()	ascii-ui.txt	/*ascii-ui.Cursor.clear()*
@@ -74,6 +80,8 @@ ascii-ui.buffer.Segment:len()	ascii-ui.txt	/*ascii-ui.buffer.Segment:len()*
 ascii-ui.buffer.Segment:new()	ascii-ui.txt	/*ascii-ui.buffer.Segment:new()*
 ascii-ui.buffer.Segment:raw_len()	ascii-ui.txt	/*ascii-ui.buffer.Segment:raw_len()*
 ascii-ui.buffer.Segment:wrap()	ascii-ui.txt	/*ascii-ui.buffer.Segment:wrap()*
+ascii-ui.buffer.normalize_color()	ascii-ui.txt	/*ascii-ui.buffer.normalize_color()*
+ascii-ui.color_cache	ascii-ui.txt	/*ascii-ui.color_cache*
 ascii-ui.componentPath()	ascii-ui.txt	/*ascii-ui.componentPath()*
 ascii-ui.components.Box()	ascii-ui.txt	/*ascii-ui.components.Box()*
 ascii-ui.components.Button()	ascii-ui.txt	/*ascii-ui.components.Button()*
@@ -89,6 +97,7 @@ ascii-ui.components.validate_props()	ascii-ui.txt	/*ascii-ui.components.validate
 ascii-ui.config	ascii-ui.txt	/*ascii-ui.config*
 ascii-ui.config._config	ascii-ui.txt	/*ascii-ui.config._config*
 ascii-ui.debugPrint()	ascii-ui.txt	/*ascii-ui.debugPrint()*
+ascii-ui.hl_group_cache	ascii-ui.txt	/*ascii-ui.hl_group_cache*
 ascii-ui.hooks.Hooks	ascii-ui.txt	/*ascii-ui.hooks.Hooks*
 ascii-ui.hooks.useConfig()	ascii-ui.txt	/*ascii-ui.hooks.useConfig()*
 ascii-ui.hooks.useEffect()	ascii-ui.txt	/*ascii-ui.hooks.useEffect()*
@@ -100,6 +109,8 @@ ascii-ui.layout.Layout	ascii-ui.txt	/*ascii-ui.layout.Layout*
 ascii-ui.layout.Row()	ascii-ui.txt	/*ascii-ui.layout.Row()*
 ascii-ui.layout.merge_bufferlines()	ascii-ui.txt	/*ascii-ui.layout.merge_bufferlines()*
 ascii-ui.levels	ascii-ui.txt	/*ascii-ui.levels*
+ascii-ui.make_key()	ascii-ui.txt	/*ascii-ui.make_key()*
+ascii-ui.normalize_hex()	ascii-ui.txt	/*ascii-ui.normalize_hex()*
 ascii-ui.performUnitOfWork()	ascii-ui.txt	/*ascii-ui.performUnitOfWork()*
 ascii-ui.reconcileChildren()	ascii-ui.txt	/*ascii-ui.reconcileChildren()*
 ascii-ui.render()	ascii-ui.txt	/*ascii-ui.render()*
@@ -158,7 +169,6 @@ ascii-ui.viewports.StdoutViewport.new()	ascii-ui.txt	/*ascii-ui.viewports.Stdout
 ascii-ui.viewports.StdoutViewport.open()	ascii-ui.txt	/*ascii-ui.viewports.StdoutViewport.open()*
 ascii-ui.viewports.StdoutViewport:update()	ascii-ui.txt	/*ascii-ui.viewports.StdoutViewport:update()*
 ascii-ui.viewports.build_color_map()	ascii-ui.txt	/*ascii-ui.viewports.build_color_map()*
-ascii-ui.viewports.hex_to_ansi()	ascii-ui.txt	/*ascii-ui.viewports.hex_to_ansi()*
 ascii-ui.viewports.render_line()	ascii-ui.txt	/*ascii-ui.viewports.render_line()*
 ascii-ui.viewports.seg_to_ansi()	ascii-ui.txt	/*ascii-ui.viewports.seg_to_ansi()*
 ascii-ui.window.Window	ascii-ui.txt	/*ascii-ui.window.Window*

@@ -9,6 +9,17 @@ local useInterval = ui.hooks.useInterval
 -- DATA LAYER: Color and character mapping
 -- ============================================================================
 
+-- Bar colors by value ratio (high → low)
+local COLOR_BAR_HIGH = "#39d353" -- bright green (ratio >= 0.8)
+local COLOR_BAR_MED_HIGH = "#26a641" -- green (ratio >= 0.6)
+local COLOR_BAR_MED = "#006d32" -- medium green (ratio >= 0.4)
+local COLOR_BAR_LOW = "#0e4429" -- dark green (ratio >= 0.2)
+local COLOR_BAR_VERY_LOW = "#161b22" -- very dark (ratio < 0.2)
+
+-- Text colors
+local COLOR_LABEL = "#8b949e" -- gray for bar labels
+local COLOR_VALUE = "#E0E0E0" -- light gray for bar values
+
 --- Get color for a bar based on value and max value
 --- @param value number Current value
 --- @param max_value number Maximum value
@@ -16,15 +27,15 @@ local useInterval = ui.hooks.useInterval
 local function get_bar_color(value, max_value)
 	local ratio = max_value > 0 and (value / max_value) or 0
 	if ratio >= 0.8 then
-		return "#39d353" -- bright green (high)
+		return COLOR_BAR_HIGH
 	elseif ratio >= 0.6 then
-		return "#26a641" -- green (medium-high)
+		return COLOR_BAR_MED_HIGH
 	elseif ratio >= 0.4 then
-		return "#006d32" -- medium green (medium)
+		return COLOR_BAR_MED
 	elseif ratio >= 0.2 then
-		return "#0e4429" -- dark green (low)
+		return COLOR_BAR_LOW
 	else
-		return "#161b22" -- very dark (very low)
+		return COLOR_BAR_VERY_LOW
 	end
 end
 
@@ -112,7 +123,7 @@ local function render_bar_chart(values, labels, bar_height)
 		end
 		-- Match bar structure: [space][2-char label] = 3 chars
 		table.insert(label_row_segments, Segment:new({ content = " " }))
-		table.insert(label_row_segments, Segment:new({ content = label_text, color = { fg = "#8b949e" } }))
+		table.insert(label_row_segments, Segment:new({ content = label_text, color = { fg = COLOR_LABEL } }))
 
 		-- No additional spacing - already 3 chars per column
 	end
@@ -131,7 +142,7 @@ local function render_bar_chart(values, labels, bar_height)
 		end
 		-- Match bar structure: [space][2-char value] = 3 chars
 		table.insert(value_row_segments, Segment:new({ content = " " }))
-		table.insert(value_row_segments, Segment:new({ content = value_text, color = { fg = "#E0E0E0" } }))
+		table.insert(value_row_segments, Segment:new({ content = value_text, color = { fg = COLOR_VALUE } }))
 
 		-- No additional spacing - already 3 chars per column
 	end

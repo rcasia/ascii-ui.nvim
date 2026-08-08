@@ -275,17 +275,12 @@ function Window:update(buffer)
 				end
 
 				if segment.color then
-					local anonymous_group = (("AsciiUIAnonymousColor_fg%s_bg%s"):format(
-						segment.color.fg or "NONE",
-						segment.color.bg or "NONE"
-					)):gsub("#", "")
-
-					vim.api.nvim_set_hl(0, anonymous_group, { fg = segment.color.fg, bg = segment.color.bg })
+					local hl_group = segment.color:to_hl_group()
 
 					vim.api.nvim_buf_set_extmark(self.bufnr, self.ns_id, pos.line - 1, pos.col - 1, {
 						end_col = end_col - 1,
 						strict = false,
-						hl_group = anonymous_group,
+						hl_group = hl_group,
 					})
 				end
 			end

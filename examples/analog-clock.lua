@@ -5,6 +5,17 @@ local Paragraph = ui.components.Paragraph
 local useState = ui.hooks.useState
 local useInterval = ui.hooks.useInterval
 
+-- Color palette for the analog clock
+local COLORS = {
+	FACE = "#4A90E2", -- Blue for clock face
+	MARKERS = "#FFD700", -- Gold for hour markers
+	HOUR_HAND = "#FF6B6B", -- Red for hour hand
+	MINUTE_HAND = "#4ECDC4", -- Cyan for minute hand
+	SECOND_HAND = "#FFE66D", -- Yellow for second hand
+	CENTER = "#FFFFFF", -- White for center dot
+	LEGEND = "#8b949e", -- Gray for legend text
+}
+
 -- ============================================================================
 -- DATA LAYER: Time calculations
 -- ============================================================================
@@ -141,17 +152,6 @@ local function render_analog_clock(hour, minute, second, size)
 	local clock_lines = {}
 	local grid = {}
 
-	-- Color palette
-	local colors = {
-		face = "#4A90E2", -- Blue for clock face
-		markers = "#FFD700", -- Gold for hour markers
-		hour_hand = "#FF6B6B", -- Red for hour hand
-		minute_hand = "#4ECDC4", -- Cyan for minute hand
-		second_hand = "#FFE66D", -- Yellow for second hand
-		center = "#FFFFFF", -- White for center
-		background = nil, -- No background color
-	}
-
 	-- Initialize grid (wider to accommodate aspect ratio compensation)
 	-- Grid stores {char, color} tables
 	local width = math.floor(size * aspect_ratio * 2) + 3
@@ -159,7 +159,7 @@ local function render_analog_clock(hour, minute, second, size)
 	for y = 1, height do
 		grid[y] = {}
 		for x = 1, width do
-			grid[y][x] = { char = " ", color = colors.background }
+			grid[y][x] = { char = " ", color = nil }
 		end
 	end
 
@@ -167,7 +167,7 @@ local function render_analog_clock(hour, minute, second, size)
 	for angle = 0, 360, 6 do
 		local x, y = position_on_circle(center_x, center_y, radius, angle)
 		if x >= 1 and x <= width and y >= 1 and y <= height then
-			grid[y][x] = { char = ".", color = colors.face }
+			grid[y][x] = { char = ".", color = COLORS.FACE }
 		end
 	end
 
@@ -181,7 +181,7 @@ local function render_analog_clock(hour, minute, second, size)
 	for _, marker in ipairs(hour_markers) do
 		local x, y = position_on_circle(center_x, center_y, radius, marker.angle)
 		if x >= 1 and x <= width and y >= 1 and y <= height then
-			grid[y][x] = { char = marker.char, color = colors.markers }
+			grid[y][x] = { char = marker.char, color = COLORS.MARKERS }
 		end
 	end
 
@@ -189,22 +189,22 @@ local function render_analog_clock(hour, minute, second, size)
 	local hour_ang = hour_angle(hour, minute)
 	local hour_radius = radius * 0.5
 	local hour_x, hour_y = position_on_circle(center_x, center_y, hour_radius, hour_ang)
-	draw_line(grid, center_x, center_y, hour_x, hour_y, "#", colors.hour_hand, width, height)
+	draw_line(grid, center_x, center_y, hour_x, hour_y, "#", COLORS.HOUR_HAND, width, height)
 
 	-- Draw minute hand (medium, longer)
 	local minute_ang = minute_angle(minute, second)
 	local minute_radius = radius * 0.75
 	local minute_x, minute_y = position_on_circle(center_x, center_y, minute_radius, minute_ang)
-	draw_line(grid, center_x, center_y, minute_x, minute_y, "*", colors.minute_hand, width, height)
+	draw_line(grid, center_x, center_y, minute_x, minute_y, "*", COLORS.MINUTE_HAND, width, height)
 
 	-- Draw second hand (thin, longest)
 	local second_ang = second_angle(second)
 	local second_radius = radius * 0.85
 	local second_x, second_y = position_on_circle(center_x, center_y, second_radius, second_ang)
-	draw_line(grid, center_x, center_y, second_x, second_y, "|", colors.second_hand, width, height)
+	draw_line(grid, center_x, center_y, second_x, second_y, "|", COLORS.SECOND_HAND, width, height)
 
 	-- Center dot
-	grid[center_y][center_x] = { char = "O", color = colors.center }
+	grid[center_y][center_x] = { char = "O", color = COLORS.CENTER }
 
 	-- Convert grid to BufferLines with colors
 	for y = 1, height do
@@ -224,7 +224,8 @@ local function render_analog_clock(hour, minute, second, size)
 				if current_segment.content ~= "" then
 					local segment_opts = { content = current_segment.content }
 					if current_segment.color then
-						segment_opts.color = { fg = current_segment.color }
+						-- Use string shorthand for foreground color
+						segment_opts.color = current_segment.color
 					end
 					table.insert(segments, Segment:new(segment_opts))
 				end
@@ -237,7 +238,8 @@ local function render_analog_clock(hour, minute, second, size)
 		if current_segment.content ~= "" then
 			local segment_opts = { content = current_segment.content }
 			if current_segment.color then
-				segment_opts.color = { fg = current_segment.color }
+				-- Use string shorthand for foreground color
+				segment_opts.color = current_segment.color
 			end
 			table.insert(segments, Segment:new(segment_opts))
 		end
@@ -294,9 +296,9 @@ local App = ui.createComponent("App", function()
 	local time_str = string.format("%02d:%02d:%02d", time_state.hour, time_state.minute, time_state.second)
 
 	return {
-		BufferLine.new(Segment:new({ content = "=== Analog Clock ===", color = { fg = "#FFD700" } })),
+		BufferLine.new(Segment:new({ content = "=== Analog Clock ===", color = COLORS.MARKERS })),
 		Paragraph({ content = "" }),
-		BufferLine.new(Segment:new({ content = "Current time: " .. time_str, color = { fg = "#4ECDC4" } })),
+		BufferLine.new(Segment:new({ content = "Current time: " .. time_str, color = COLORS.MINUTE_HAND })),
 		Paragraph({ content = "" }),
 		AnalogClockComponent({
 			size = 12,
@@ -304,7 +306,7 @@ local App = ui.createComponent("App", function()
 		Paragraph({ content = "" }),
 		BufferLine.new(Segment:new({
 			content = "Legend: # = Hour (Red)  * = Minute (Cyan)  | = Second (Yellow)",
-			color = { fg = "#8b949e" },
+			color = COLORS.LEGEND,
 		})),
 	}
 end)
