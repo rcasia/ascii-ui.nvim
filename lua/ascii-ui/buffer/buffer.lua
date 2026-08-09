@@ -123,6 +123,64 @@ function Buffer:find_last_focusable(position)
 	}
 end
 
+---@param position ascii-ui.Position
+---@return { found: boolean, pos: ascii-ui.Position }
+function Buffer:find_focusable_above(position)
+	local current_col = position.col
+	local best_match = nil
+	local best_distance = math.huge
+
+	-- Search from current line - 1 up to line 1
+	for line_num = position.line - 1, 1, -1 do
+		local line = self.lines[line_num]
+		if line then
+			local focusables = line:focusable_segments(line_num)
+			for _, item in ipairs(focusables) do
+				local distance = math.abs(item.position.col - current_col)
+				if distance < best_distance then
+					best_distance = distance
+					best_match = item.position
+				end
+			end
+		end
+		-- If we found any focusable on this line, return the closest one
+		if best_match then
+			return { found = true, pos = best_match }
+		end
+	end
+
+	return { found = false }
+end
+
+---@param position ascii-ui.Position
+---@return { found: boolean, pos: ascii-ui.Position }
+function Buffer:find_focusable_below(position)
+	local current_col = position.col
+	local best_match = nil
+	local best_distance = math.huge
+
+	-- Search from current line + 1 down to last line
+	for line_num = position.line + 1, #self.lines do
+		local line = self.lines[line_num]
+		if line then
+			local focusables = line:focusable_segments(line_num)
+			for _, item in ipairs(focusables) do
+				local distance = math.abs(item.position.col - current_col)
+				if distance < best_distance then
+					best_distance = distance
+					best_match = item.position
+				end
+			end
+		end
+		-- If we found any focusable on this line, return the closest one
+		if best_match then
+			return { found = true, pos = best_match }
+		end
+	end
+
+	return { found = false }
+end
+
 ---@return fun(): ascii-ui.Segment | nil
 function Buffer:iter_focusables()
 	local iter = vim.iter(self.lines)

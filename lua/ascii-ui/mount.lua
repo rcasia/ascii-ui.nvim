@@ -166,8 +166,8 @@ return function(RootComponent, viewport)
 	local key_map = {
 		["l"] = { direction = "EAST", interaction = i.CURSOR_MOVE_RIGHT, search_fn = Buffer.find_next_focusable },
 		["h"] = { direction = "WEST", interaction = i.CURSOR_MOVE_LEFT, search_fn = Buffer.find_last_focusable },
-		["j"] = { direction = "SOUTH", interaction = i.CURSOR_MOVE_DOWN, search_fn = Buffer.find_next_focusable },
-		["k"] = { direction = "NORTH", interaction = i.CURSOR_MOVE_UP, search_fn = Buffer.find_last_focusable },
+		["j"] = { direction = "SOUTH", interaction = i.CURSOR_MOVE_DOWN, search_fn = Buffer.find_focusable_below },
+		["k"] = { direction = "NORTH", interaction = i.CURSOR_MOVE_UP, search_fn = Buffer.find_focusable_above },
 	}
 
 	vim.on_key(function(key, _)

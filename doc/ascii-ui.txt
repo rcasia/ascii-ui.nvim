@@ -41,6 +41,22 @@ Return ~
 `({ found: boolean, pos: { line: integer, col: integer } })`
 
 ------------------------------------------------------------------------------
+                                 *ascii-ui.buffer.Buffer:find_focusable_above()*
+           `ascii-ui.buffer.Buffer:find_focusable_above`({position})
+Parameters ~
+{position} `({ line: integer, col: integer })`
+Return ~
+`({ found: boolean, pos: { line: integer, col: integer } })`
+
+------------------------------------------------------------------------------
+                                 *ascii-ui.buffer.Buffer:find_focusable_below()*
+           `ascii-ui.buffer.Buffer:find_focusable_below`({position})
+Parameters ~
+{position} `({ line: integer, col: integer })`
+Return ~
+`({ found: boolean, pos: { line: integer, col: integer } })`
+
+------------------------------------------------------------------------------
                                       *ascii-ui.buffer.Buffer:iter_focusables()*
                    `ascii-ui.buffer.Buffer:iter_focusables`()
 Return ~
