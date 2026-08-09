@@ -1318,6 +1318,9 @@ end)
                 `ascii-ui.hooks.useTimeout`({callback}, {delay})
 
 Executes a callback function after a specified delay.
+The callback always has access to the latest closure values.
+The timer restarts on every re-render, ensuring the callback fires
+after the most recent state change.
 
 @param callback function The function to be executed after the delay.
 @param delay number|nil The delay in milliseconds. If nil or negative, the timeout is not set.

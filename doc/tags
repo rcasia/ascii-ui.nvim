@@ -160,6 +160,7 @@ ascii-ui.testing.E2EScreen:hasLines()	ascii-ui.txt	/*ascii-ui.testing.E2EScreen:
 ascii-ui.testing.E2EScreen:hasText()	ascii-ui.txt	/*ascii-ui.testing.E2EScreen:hasText()*
 ascii-ui.testing.E2EScreen:toLines()	ascii-ui.txt	/*ascii-ui.testing.E2EScreen:toLines()*
 ascii-ui.testing.E2EScreen:toSnapshot()	ascii-ui.txt	/*ascii-ui.testing.E2EScreen:toSnapshot()*
+ascii-ui.testing.E2EScreen:unmount()	ascii-ui.txt	/*ascii-ui.testing.E2EScreen:unmount()*
 ascii-ui.testing.E2EScreen:waitForText()	ascii-ui.txt	/*ascii-ui.testing.E2EScreen:waitForText()*
 ascii-ui.testing.Screen	ascii-ui.txt	/*ascii-ui.testing.Screen*
 ascii-ui.testing.Screen:_get_buffer()	ascii-ui.txt	/*ascii-ui.testing.Screen:_get_buffer()*

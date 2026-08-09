@@ -43,7 +43,8 @@ local useEffect = function(fn, dependencies)
 	end
 
 	if new_effect then
-		if lastEffect and lastEffect.cleanup then
+		-- Only add cleanup for effects that actually ran (are MOUNTED)
+		if lastEffect and lastEffect.get_status and lastEffect.get_status() == "MOUNTED" then
 			currentFiber:add_cleanup(function()
 				lastEffect.cleanup()
 			end)
