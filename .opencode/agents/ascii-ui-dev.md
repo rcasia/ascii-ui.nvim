@@ -133,11 +133,14 @@ This matches the behavior of existing E2E tests where rendering is async.
 
 ### Code Quality
 
-Always run before committing:
-```bash
-make check    # Lint + format + docs check
-make test     # Run tests
-```
+**Trust pre-commit hooks** — they run automatically on `git commit` and handle:
+- Formatting (stylua auto-fixes)
+- Linting (luacheck)
+- Tests (make test)
+- Docs validation (check-docs)
+- Commit message format (commit-msg)
+
+Do NOT manually run `make check` or `make test` before committing. If pre-commit fails, read the error, fix the issue, and commit again.
 
 - **StyLua**: tabs, width 4, double quotes
 - **luacheck**: no warnings or errors
@@ -157,7 +160,7 @@ DOC_OUTPUT_FILE=doc/ascii-ui.txt make docs
 
 1. **Consult convention-reviewer**: Request a review of your changes. Do NOT commit without explicit approval from convention-reviewer.
 2. **Wait for approval**: If convention-reviewer finds violations, fix them before committing.
-3. **Verify CI will pass**: Local `make check` and `make test` must pass, but this is not sufficient.
+3. **Commit** — pre-commit hooks will automatically validate formatting, linting, tests, docs, and commit message format. If hooks fail, fix and commit again.
 
 #### Pushing and PR Creation
 
@@ -316,8 +319,15 @@ Yes: "Feature done. Tests pass. Ready commit."
 
 - Do not accumulate multiple changes
 - Do not leave code uncommitted "for later"
-- If tests pass and change is complete → commit NOW
-- If tests fail → fix or use WIP branch
+- **Trust pre-commit hooks** — they run automatically on `git commit` and validate:
+  - Code formatting (stylua)
+  - Linting (luacheck)
+  - Tests (make test)
+  - Docs (check-docs)
+  - Commit message format (commit-msg)
+- If pre-commit passes → commit succeeded, move on
+- If pre-commit fails → read the error, fix the issue, commit again
+- Do NOT manually run `make check` or `make test` before committing — pre-commit handles this
 
 ## Skill Awareness
 
@@ -370,6 +380,7 @@ Global skills (listed in `available_skills` by the runtime) are general-purpose 
 
 ## Changelog
 
+- 2026-08-09: Updated workflow to trust pre-commit hooks instead of manually running make check/test
 - 2026-08-08: Added async E2E testing guidance (vim.wait pattern), docs generation /tmp workaround (DOC_OUTPUT_FILE), remote verification for /tmp workspaces, PR delegation fallback, and module structure guidance (init.lua pattern for submodules)
 - 2026-08-08: Added mandatory rebase from origin/main step before implementation
 
