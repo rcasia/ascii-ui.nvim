@@ -30,11 +30,14 @@ local useState = function(value)
 
 	assert(_fiber.root, "fiber should have root: " .. vim.inspect(_fiber))
 	local idx = _fiber.hookIndex
+
+	-- Wrap values in a table to distinguish "not initialized" from "initialized to nil"
+	-- (In Lua, setting table[key] = nil deletes the key, so we can't store nil directly)
 	if _fiber.hooks[idx] == nil then
-		_fiber.hooks[idx] = value
+		_fiber.hooks[idx] = { v = value }
 		logger.debug("🥊 Initializing state for %s at index %d with value: %s", _fiber.type, idx, vim.inspect(value))
 	end
-	local snapshot = _fiber.hooks[idx]
+	local snapshot = _fiber.hooks[idx].v
 
 	local function get()
 		return vim.deepcopy(snapshot) -- return a copy of the state to avoid mutation
@@ -47,18 +50,18 @@ local useState = function(value)
 
 		local new_value
 		if type(value_param) == "function" then
-			new_value = value_param(_fiber.hooks[idx])
+			new_value = value_param(_fiber.hooks[idx].v)
 		else
 			new_value = value_param
 		end
 
 		-- do nothing if the value is the same as before
-		if new_value == _fiber.hooks[idx] then
+		if new_value == _fiber.hooks[idx].v then
 			logger.debug("🥊 No change in state, skipping re-render")
 			return
 		else
-			logger.debug("🥊 State changed from %s to %s", vim.inspect(_fiber.hooks[idx]), vim.inspect(new_value))
-			_fiber.hooks[idx] = new_value
+			logger.debug("🥊 State changed from %s to %s", vim.inspect(_fiber.hooks[idx].v), vim.inspect(new_value))
+			_fiber.hooks[idx] = { v = new_value }
 		end
 
 		_fiber:reset()
