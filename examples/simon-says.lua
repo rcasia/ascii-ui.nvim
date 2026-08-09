@@ -25,8 +25,8 @@ local COLORS = {
 local COLOR_NAMES = { "RED", "GREEN", "BLUE", "YELLOW" }
 local COLOR_VALUES = { COLORS.RED, COLORS.GREEN, COLORS.BLUE, COLORS.YELLOW }
 
--- Game phases: "idle", "showing", "input", "gameover"
-local function App()
+-- Custom hook: encapsulates all Simon game state and logic
+local function useSimonGame()
 	local sequence, setSequence = useState({})
 	local playerIndex, setPlayerIndex = useState(0)
 	local score, setScore = useState(0)
@@ -110,11 +110,23 @@ local function App()
 		nextRound()
 	end, pendingNextRound and 1000 or nil)
 
-	-- Flash indicator
-	local showingFlash = gamePhase == "showing" and currentFlash < #sequence
-
 	return {
-		-- Title
+		sequence = sequence,
+		playerIndex = playerIndex,
+		score = score,
+		highScore = highScore,
+		gamePhase = gamePhase,
+		currentFlash = currentFlash,
+		flashVisible = flashVisible,
+		startGame = startGame,
+		handleInput = handleInput,
+	}
+end
+
+-- Custom components
+
+local Title = ui.createComponent("Title", function()
+	return {
 		BufferLine.new(Segment:new({
 			content = "╔══════════════════════════════════╗",
 			color = COLORS.ACCENT,
@@ -124,65 +136,53 @@ local function App()
 			content = "╚══════════════════════════════════╝",
 			color = COLORS.ACCENT,
 		})),
-		Paragraph({ content = "" }),
+	}
+end)
 
-		-- Score display
+local ScoreDisplay = ui.createComponent("ScoreDisplay", function(props)
+	return {
 		BufferLine.new(
 			Segment:new({ content = "Score: ", color = COLORS.TEXT }),
-			Segment:new({ content = tostring(score), color = COLORS.ACCENT }),
+			Segment:new({ content = tostring(props.score), color = COLORS.ACCENT }),
 			Segment:new({ content = "  High Score: ", color = COLORS.TEXT }),
-			Segment:new({ content = tostring(highScore), color = COLORS.ACCENT })
+			Segment:new({ content = tostring(props.highScore), color = COLORS.ACCENT })
 		),
-		Paragraph({ content = "" }),
+	}
+end, { score = "number", highScore = "number" })
 
-		-- Game status
-		gamePhase == "idle" and Paragraph({ content = "Press any button to start!" }) or nil,
-		gamePhase == "showing" and Paragraph({ content = "Watch the sequence..." }) or nil,
-		gamePhase == "input" and BufferLine.new(
+local StatusMessage = ui.createComponent("StatusMessage", function(props)
+	return {
+		props.gamePhase == "idle" and Paragraph({ content = "Press any button to start!" }) or nil,
+		props.gamePhase == "showing" and Paragraph({ content = "Watch the sequence..." }) or nil,
+		props.gamePhase == "input" and BufferLine.new(
 			Segment:new({ content = "Your turn! Repeat the sequence (" }),
-			Segment:new({ content = tostring(playerIndex), color = COLORS.ACCENT }),
+			Segment:new({ content = tostring(props.playerIndex), color = COLORS.ACCENT }),
 			Segment:new({ content = "/" }),
-			Segment:new({ content = tostring(#sequence), color = COLORS.ACCENT }),
+			Segment:new({ content = tostring(props.sequenceLength), color = COLORS.ACCENT }),
 			Segment:new({ content = ")" })
 		) or nil,
-		gamePhase == "gameover" and BufferLine.new(Segment:new({
-			content = "Game Over! Final Score: " .. score,
+		props.gamePhase == "gameover" and BufferLine.new(Segment:new({
+			content = "Game Over! Final Score: " .. props.score,
 			color = COLORS.RED,
 		})) or nil,
-		gamePhase == "gameover" and Paragraph({ content = "Press any button to play again." }) or nil,
+		props.gamePhase == "gameover" and Paragraph({ content = "Press any button to play again." }) or nil,
+	}
+end, { gamePhase = "string", playerIndex = "number", sequenceLength = "number", score = "number" })
 
-		Paragraph({ content = "" }),
-
-		-- Flash indicator
-		showingFlash and flashVisible and BufferLine.new(
+local FlashIndicator = ui.createComponent("FlashIndicator", function(props)
+	return {
+		props.showing and props.visible and BufferLine.new(
 			Segment:new({ content = ">>> ", color = COLORS.TEXT }),
-			Segment:new({
-				content = COLOR_NAMES[sequence[currentFlash + 1]],
-				color = COLOR_VALUES[sequence[currentFlash + 1]],
-			}),
+			Segment:new({ content = props.colorName, color = props.colorValue }),
 			Segment:new({ content = " <<<", color = COLORS.TEXT })
 		) or nil,
-		showingFlash and not flashVisible and Paragraph({ content = "..." }) or nil,
-		showingFlash and Paragraph({ content = "" }) or nil,
+		props.showing and not props.visible and Paragraph({ content = "..." }) or nil,
+		props.showing and Paragraph({ content = "" }) or nil,
+	}
+end, { showing = "boolean", visible = "boolean", colorName = "string", colorValue = "string" })
 
-		-- Color buttons
-		ui.map(COLOR_NAMES, function(colorName, i)
-			local buttonLabel = string.format("[%s]", colorName:sub(1, 3))
-			return Button({
-				label = buttonLabel,
-				on_press = function()
-					if gamePhase == "idle" or gamePhase == "gameover" then
-						startGame()
-					elseif gamePhase == "input" then
-						handleInput(i)
-					end
-				end,
-			})
-		end),
-
-		Paragraph({ content = "" }),
-
-		-- Instructions
+local GameInstructions = ui.createComponent("GameInstructions", function()
+	return {
 		Paragraph({ content = "Controls:" }),
 		BufferLine.new(
 			Segment:new({ content = "• Navigate: ", color = COLORS.TEXT }),
@@ -197,6 +197,47 @@ local function App()
 			Segment:new({ content = "q", color = COLORS.DIM })
 		),
 	}
-end
+end)
 
-ui.mount(ui.createComponent("App", App))
+-- App composes the custom components
+local App = ui.createComponent("App", function()
+	local game = useSimonGame()
+	local showingFlash = game.gamePhase == "showing" and game.currentFlash < #game.sequence
+	local flashColorIdx = game.sequence[game.currentFlash + 1]
+
+	return {
+		Title(),
+		Paragraph({ content = "" }),
+		ScoreDisplay({ score = game.score, highScore = game.highScore }),
+		Paragraph({ content = "" }),
+		StatusMessage({
+			gamePhase = game.gamePhase,
+			playerIndex = game.playerIndex,
+			sequenceLength = #game.sequence,
+			score = game.score,
+		}),
+		Paragraph({ content = "" }),
+		FlashIndicator({
+			showing = showingFlash,
+			visible = game.flashVisible,
+			colorName = COLOR_NAMES[flashColorIdx] or "",
+			colorValue = COLOR_VALUES[flashColorIdx] or COLORS.TEXT,
+		}),
+		ui.map(COLOR_NAMES, function(colorName, i)
+			return Button({
+				label = "[" .. colorName:sub(1, 3) .. "]",
+				on_press = function()
+					if game.gamePhase == "idle" or game.gamePhase == "gameover" then
+						game.startGame()
+					elseif game.gamePhase == "input" then
+						game.handleInput(i)
+					end
+				end,
+			})
+		end),
+		Paragraph({ content = "" }),
+		GameInstructions(),
+	}
+end)
+
+ui.mount(App)
