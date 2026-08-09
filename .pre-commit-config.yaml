@@ -1,0 +1,43 @@
+repos:
+  - repo: https://github.com/JohnnyMorganz/StyLua
+    rev: v2.1.0
+    hooks:
+      - id: stylua-github
+        name: StyLua (auto-format)
+        description: Format Lua files with StyLua
+        types: [lua]
+
+  - repo: local
+    hooks:
+      - id: luacheck
+        name: luacheck
+        description: Lint Lua files with luacheck (via lux)
+        entry: lx --lua-version 5.1 lint
+        language: system
+        types: [lua]
+        pass_filenames: true
+
+      - id: check-docs
+        name: check-docs
+        description: Verify vimdocs are up to date with Lua annotations
+        entry: ./scripts/check-docs
+        language: system
+        files: ^lua/ascii-ui/.*\.lua$
+        pass_filenames: false
+
+      - id: check-workflows
+        name: check-workflows
+        description: Validate GitHub Actions workflow YAML files
+        entry: ./scripts/check-workflows
+        language: system
+        files: ^\.github/workflows/.*\.yml$
+        types: [yaml]
+        pass_filenames: false
+
+      - id: test
+        name: test
+        description: Run test suite
+        entry: make test
+        language: system
+        pass_filenames: false
+        always_run: true

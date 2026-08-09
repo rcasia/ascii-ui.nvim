@@ -314,8 +314,29 @@ ascii-ui.nvim is a React-like UI framework for Neovim plugins, written in Lua. I
 | `make docs` | Regenerate vimdocs from Lua annotations |
 | `make bench` | Run performance benchmarks |
 | `make debug` | Live-reload debug session |
+| `pre-commit run --all-files` | Run all pre-commit hooks on all files |
+| `pre-commit run --files <files>` | Run hooks on specific files |
 
 **Always run `make check` and `make test` after making changes.**
+
+### Pre-commit Hooks
+
+This project uses [pre-commit](https://pre-commit.com/) to automatically run checks before each commit. The hooks are configured in `.pre-commit-config.yaml` and include:
+
+- **stylua**: Auto-formats Lua files
+- **luacheck**: Lints Lua files
+- **check-docs**: Validates vimdocs are up to date (only on `lua/ascii-ui/**/*.lua` changes)
+- **check-workflows**: Validates GitHub Actions YAML (only on `.github/workflows/*.yml` changes)
+- **test**: Runs the test suite
+
+**Setup**: Install pre-commit hooks with:
+```bash
+pre-commit install --hook-dir .githooks
+```
+
+This uses the existing `.githooks/` directory (configured via `core.hooksPath`). The hook will run automatically on `git commit`.
+
+**Note**: `make check` still works and runs the same checks (without auto-formatting). Pre-commit is an addition that provides auto-formatting and runs on staged files only.
 
 ## Architecture
 

@@ -31,6 +31,40 @@ Since August 8, 2026, this project is developed using a multi-agent system. The 
 
 See [AGENTS.md](./AGENTS.md) for details on the agent system and `.opencode/agents/` for agent definitions.
 
+## Development
+
+### Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/rcasia/ascii-ui.nvim.git
+   cd ascii-ui.nvim
+   ```
+
+2. Install dependencies:
+   - [lux](https://github.com/lux-cli/lux) (Lua package manager)
+   - [stylua](https://github.com/JohnnyMorganz/StyLua) (Lua formatter)
+   - [luacheck](https://github.com/lunarmodules/luacheck) (Lua linter, via lux)
+   - [pre-commit](https://pre-commit.com/) (git hooks framework)
+   - [yq](https://github.com/mikefarah/yq) (YAML processor, for workflow validation)
+
+3. Install pre-commit hooks:
+   ```bash
+   pre-commit install --hook-dir .githooks
+   ```
+
+   This sets up automatic checks (formatting, linting, docs validation, tests) on every commit.
+
+### Common Commands
+
+| Command | Purpose |
+|---|---|
+| `make test` | Run full test suite |
+| `make check` | Run lint, format check, docs check |
+| `make docs` | Regenerate vimdocs from Lua annotations |
+| `make debug` | Live-reload debug session |
+| `pre-commit run --all-files` | Run all pre-commit hooks manually |
+
 <table align="center">
   <tr>
     <td><img src="https://github.com/user-attachments/assets/0d2729e1-1518-430f-93f1-e52755b6f347" height="250"></td>

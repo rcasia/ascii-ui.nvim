@@ -1,5 +1,5 @@
 #!/bin/bash
 
-make check || exit 1
-
-make test || exit 1
+# Delegate to pre-commit framework
+# pre-commit config is in .pre-commit-config.yaml
+exec pre-commit run "$@"
