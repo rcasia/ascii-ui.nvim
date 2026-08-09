@@ -689,7 +689,7 @@ Creates a custom component and registers it
 
 ==============================================================================
 ------------------------------------------------------------------------------
-@alias ascii-ui.InputProps { value?: string }
+@alias ascii-ui.InputProps { value?: string, initial_value?: string, password?: boolean, placeholder?: string, on_change?: fun(value: string) }
 
 ------------------------------------------------------------------------------
 @param props? ascii-ui.InputProps

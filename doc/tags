@@ -64,6 +64,8 @@ ascii-ui.buffer.Buffer.from_lines()	ascii-ui.txt	/*ascii-ui.buffer.Buffer.from_l
 ascii-ui.buffer.Buffer.is_buffer()	ascii-ui.txt	/*ascii-ui.buffer.Buffer.is_buffer()*
 ascii-ui.buffer.Buffer.new()	ascii-ui.txt	/*ascii-ui.buffer.Buffer.new()*
 ascii-ui.buffer.Buffer:add()	ascii-ui.txt	/*ascii-ui.buffer.Buffer:add()*
+ascii-ui.buffer.Buffer:find_focusable_above()	ascii-ui.txt	/*ascii-ui.buffer.Buffer:find_focusable_above()*
+ascii-ui.buffer.Buffer:find_focusable_below()	ascii-ui.txt	/*ascii-ui.buffer.Buffer:find_focusable_below()*
 ascii-ui.buffer.Buffer:find_last_focusable()	ascii-ui.txt	/*ascii-ui.buffer.Buffer:find_last_focusable()*
 ascii-ui.buffer.Buffer:find_next_focusable()	ascii-ui.txt	/*ascii-ui.buffer.Buffer:find_next_focusable()*
 ascii-ui.buffer.Buffer:find_segment_by_id()	ascii-ui.txt	/*ascii-ui.buffer.Buffer:find_segment_by_id()*
