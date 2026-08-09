@@ -1524,6 +1524,13 @@ Mounts a component in a real Neovim window for e2e testing.
 @tag ascii-ui.testing.e2e.mount()
 
 ------------------------------------------------------------------------------
+                                          *ascii-ui.testing.E2EScreen:unmount()*
+                     `ascii-ui.testing.E2EScreen:unmount`()
+Unmounts the component and closes the window.
+Should be called after each test to clean up timers and prevent leaks.
+@tag ascii-ui.testing.E2EScreen:unmount()
+
+------------------------------------------------------------------------------
                                 *ascii-ui.testing.E2EScreen:_get_buffer_lines()*
                 `ascii-ui.testing.E2EScreen:_get_buffer_lines`()
 @private

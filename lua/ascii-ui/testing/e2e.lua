@@ -28,6 +28,18 @@ local function mount(component)
 	return screen
 end
 
+--- Unmounts the component and closes the window.
+--- Should be called after each test to clean up timers and prevent leaks.
+--- @tag ascii-ui.testing.E2EScreen:unmount()
+function E2EScreen:unmount()
+	-- Find the window displaying this buffer
+	local winnr = vim.fn.bufwinid(self._bufnr)
+	if winnr and winnr ~= -1 then
+		-- Close the window, which will trigger cleanup via WinClosed autocmd
+		vim.api.nvim_win_close(winnr, true)
+	end
+end
+
 --- @private
 --- Gets lines from the actual Neovim buffer.
 --- @return string[]

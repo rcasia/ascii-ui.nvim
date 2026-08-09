@@ -229,6 +229,12 @@ return function(RootComponent, viewport)
 			-- Clean up the cursor autocmd
 			vim.api.nvim_del_autocmd(cursor_autocmd_id)
 
+			-- Unmount the fiber tree to clean up effects and timers
+			local root = fiberRootGetter()
+			if root and root.unmount then
+				root:unmount()
+			end
+
 			-- Trigger any remaining ui_close listeners (backward compatibility)
 			bus:trigger("ui_close")
 		end,

@@ -440,7 +440,10 @@ function FiberNode:unmount()
 		-- 2) Then execute this fiber's cleanups in reverse order (LIFO)
 		for i = #fiber.effects, 1, -1 do
 			local effect = fiber.effects[i]
-			effect.cleanup()
+			-- Only cleanup effects that have been mounted
+			if effect and effect.get_status and effect.get_status() == "MOUNTED" then
+				pcall(effect.cleanup)
+			end
 		end
 	end
 
