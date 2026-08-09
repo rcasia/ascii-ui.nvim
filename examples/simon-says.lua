@@ -9,6 +9,7 @@ local Button = ui.components.Button
 local Paragraph = ui.components.Paragraph
 local useState = ui.hooks.useState
 local useEffect = ui.hooks.useEffect
+local useTimeout = ui.hooks.useTimeout
 
 local COLORS = {
 	RED = "#FF6B6B",
@@ -33,6 +34,7 @@ local function App()
 	local gamePhase, setGamePhase = useState("idle")
 	local currentFlash, setCurrentFlash = useState(0)
 	local flashVisible, setFlashVisible = useState(false)
+	local pendingNextRound, setPendingNextRound = useState(false)
 
 	-- Start a new game
 	local function startGame()
@@ -42,6 +44,7 @@ local function App()
 		setGamePhase("showing")
 		setCurrentFlash(0)
 		setFlashVisible(false)
+		setPendingNextRound(false)
 	end
 
 	-- Add to sequence after successful round
@@ -69,10 +72,8 @@ local function App()
 				if score + 1 > highScore then
 					setHighScore(score + 1)
 				end
-				-- Wait a bit before showing next sequence
-				vim.defer_fn(function()
-					nextRound()
-				end, 1000)
+				-- Signal to start next round after delay
+				setPendingNextRound(true)
 			end
 		else
 			-- Wrong! Game over
@@ -80,30 +81,34 @@ local function App()
 		end
 	end
 
-	-- Sequence playback logic
+	-- Start showing first flash when entering "showing" phase
 	useEffect(function()
-		if gamePhase ~= "showing" then
-			return
+		if gamePhase == "showing" and currentFlash == 0 and not flashVisible then
+			setFlashVisible(true)
 		end
+	end, { gamePhase })
 
-		if currentFlash >= #sequence then
-			-- Done showing sequence, wait for input
-			vim.defer_fn(function()
-				setGamePhase("input")
-			end, 500)
-			return
-		end
+	-- Hide flash after 600ms when visible
+	useTimeout(function()
+		setFlashVisible(false)
+	end, flashVisible and gamePhase == "showing" and 600 or nil)
 
-		-- Show flash
+	-- Advance to next flash after 300ms when hidden
+	useTimeout(function()
+		setCurrentFlash(currentFlash + 1)
 		setFlashVisible(true)
-		vim.defer_fn(function()
-			setFlashVisible(false)
-			-- Move to next flash after a delay
-			vim.defer_fn(function()
-				setCurrentFlash(currentFlash + 1)
-			end, 300)
-		end, 600)
-	end, { gamePhase, currentFlash })
+	end, not flashVisible and gamePhase == "showing" and currentFlash < #sequence and 300 or nil)
+
+	-- Transition to input phase after 500ms when sequence complete
+	useTimeout(function()
+		setGamePhase("input")
+	end, not flashVisible and gamePhase == "showing" and currentFlash >= #sequence and 500 or nil)
+
+	-- Start next round after 1000ms when pending
+	useTimeout(function()
+		setPendingNextRound(false)
+		nextRound()
+	end, pendingNextRound and 1000 or nil)
 
 	-- Flash indicator
 	local showingFlash = gamePhase == "showing" and currentFlash < #sequence
