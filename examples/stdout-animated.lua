@@ -7,9 +7,7 @@ local StdoutViewport = ui.viewports.StdoutViewport
 
 local WIDTH = 40
 local HEIGHT = 16
-local BALL = "O"
 
---- @type ascii-ui.FunctionalComponent
 local App = ui.createComponent("App", function()
 	local x, setX = useState(1)
 	local y, setY = useState(1)
@@ -41,27 +39,18 @@ local App = ui.createComponent("App", function()
 		end)
 	end, 50)
 
-	local border_h = "+" .. ("-"):rep(WIDTH) .. "+"
-	local lines = {}
-
-	-- top border
-	table.insert(lines, Bufferline.new(Segment:new({ content = border_h })))
+	local border = "+" .. ("-"):rep(WIDTH) .. "+"
+	local lines = { Bufferline.new(Segment:new({ content = border })) }
 
 	for row = 1, HEIGHT do
 		local content = ""
 		for col = 1, WIDTH do
-			if row == y and col == x then
-				content = content .. BALL
-			else
-				content = content .. " "
-			end
+			content = content .. (row == y and col == x and "O" or " ")
 		end
-		table.insert(lines, Bufferline.new(Segment:new({ content = "|" .. content .. "|" })))
+		lines[#lines + 1] = Bufferline.new(Segment:new({ content = "|" .. content .. "|" }))
 	end
 
-	-- bottom border
-	table.insert(lines, Bufferline.new(Segment:new({ content = border_h })))
-
+	lines[#lines + 1] = Bufferline.new(Segment:new({ content = border }))
 	return lines
 end)
 

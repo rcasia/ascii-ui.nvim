@@ -3,19 +3,17 @@ local Paragraph = ui.components.Paragraph
 local Button = ui.components.Button
 local useState = ui.hooks.useState
 
---- @type ascii-ui.FunctionalComponent
-local App = ui.createComponent("App", function()
-	local content, setContent = useState("initial content")
+local function Counter()
+	local count, setCount = useState(0)
 	return {
-		--
-		Paragraph({ content = content }),
+		Paragraph({ content = "Count: " .. count }),
 		Button({
-			label = "change",
+			label = "+1",
 			on_press = function()
-				setContent("changed content")
+				setCount(count + 1)
 			end,
 		}),
 	}
-end)
+end
 
-ui.mount(App)
+ui.mount(ui.createComponent("App", Counter))

@@ -1,3 +1,4 @@
+-- Tree component: displays a collapsible file structure.
 local Tree = require("ascii-ui.components.tree")
 local ui = require("ascii-ui")
 
@@ -15,7 +16,6 @@ local tree = {
 	},
 }
 
---- @type ascii-ui.FunctionalComponent
 local App = ui.createComponent("App", function()
 	return Tree({ tree = tree })
 end)

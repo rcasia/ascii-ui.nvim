@@ -1,31 +1,26 @@
 local ui = require("ascii-ui")
 local Paragraph = ui.components.Paragraph
 local Button = ui.components.Button
-local useReducer = ui.hooks.useReducer
+local useState = ui.hooks.useState
 
---- @type ascii-ui.FunctionalComponent
-local App = ui.createComponent("App", function()
-	local items, dispatch = useReducer(function(state, action)
-		if action.type == "add" then
-			return vim.list_extend(state, { "this is " .. #state + 1 })
-		end
-		return state
-	end, { "this is 1", "this is 2" })
-
+local function App()
+	local items, setItems = useState({ "Learn ascii-ui", "Build something cool", "Share with others" })
 	return {
-		Paragraph({
-			content = "There are " .. #items .. " items in the list",
-		}),
-		ui.map(items, function(item)
-			return Paragraph({ content = item })
+		Paragraph({ content = "Todo (" .. #items .. " items)" }),
+		ui.map(items, function(item, i)
+			return Paragraph({ content = i .. ". " .. item })
 		end),
 		Button({
-			label = "Add more",
+			label = "Add item",
 			on_press = function()
-				dispatch({ type = "add" })
+				setItems(function(prev)
+					local new = vim.list_extend({}, prev)
+					table.insert(new, "New item #" .. (#prev + 1))
+					return new
+				end)
 			end,
 		}),
 	}
-end)
+end
 
-ui.mount(App)
+ui.mount(ui.createComponent("App", App))

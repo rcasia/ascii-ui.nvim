@@ -3,27 +3,17 @@ local Paragraph = ui.components.Paragraph
 local Button = ui.components.Button
 local useState = ui.hooks.useState
 
---- @type ascii-ui.FunctionalComponent
-local App = ui.createComponent("App", function()
-	local shouldShow, setShouldShow = useState(true)
-
-	local component
-	if shouldShow then
-		component = Paragraph({ content = "this is my content" })
-	else
-		component = Paragraph({ content = "hidden" })
-	end
-
+local function App()
+	local show, setShow = useState(true)
 	return {
-		component,
-
+		show and Paragraph({ content = "Now you see me!" }) or nil,
 		Button({
-			label = "change",
+			label = "Toggle",
 			on_press = function()
-				setShouldShow(not shouldShow)
+				setShow(not show)
 			end,
 		}),
 	}
-end)
+end
 
-ui.mount(App)
+ui.mount(ui.createComponent("App", App))
