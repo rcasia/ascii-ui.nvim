@@ -1,0 +1,221 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner [ref=e8]:
+      - heading "Navigation Menu" [level=2] [ref=e9]
+      - generic [ref=e10]:
+        - link "Homepage" [ref=e12] [cursor=pointer]:
+          - /url: /
+        - generic [ref=e15]:
+          - navigation "Global" [ref=e16]:
+            - list [ref=e17]:
+              - listitem [ref=e18]:
+                - button "Platform" [ref=e20] [cursor=pointer]
+              - listitem [ref=e23]:
+                - button "Solutions" [ref=e25] [cursor=pointer]
+              - listitem [ref=e28]:
+                - button "Resources" [ref=e30] [cursor=pointer]
+              - listitem [ref=e33]:
+                - button "Open Source" [ref=e35] [cursor=pointer]
+              - listitem [ref=e38]:
+                - button "Enterprise" [ref=e40] [cursor=pointer]
+              - listitem [ref=e43]:
+                - link "Pricing" [ref=e44] [cursor=pointer]:
+                  - /url: https://github.com/pricing
+          - generic [ref=e46]:
+            - button "Search or jump to, type / to search" [ref=e48] [cursor=pointer]:
+              - generic [ref=e51]:
+                - text: Type
+                - generic [ref=e52]: /
+                - text: to search
+            - link "Sign in" [ref=e54] [cursor=pointer]:
+              - /url: /login?return_to=https%3A%2F%2Fgithub.com%2Frcasia%2Fascii-ui.nvim%2Fissues%2F33
+            - link "Sign up" [ref=e55] [cursor=pointer]:
+              - /url: /signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E%2Fvoltron%2Fissues_fragments%2Fissue_layout&source=header-repo&source_repo=rcasia%2Fascii-ui.nvim
+            - button "Appearance settings" [ref=e56] [cursor=pointer]
+  - main [ref=e62]:
+    - generic [ref=e63]:
+      - generic [ref=e64]:
+        - generic [ref=e66]:
+          - link "rcasia" [ref=e70] [cursor=pointer]:
+            - /url: /rcasia
+          - generic [ref=e71]: /
+          - strong [ref=e72]:
+            - link "ascii-ui.nvim" [ref=e73] [cursor=pointer]:
+              - /url: /rcasia/ascii-ui.nvim
+          - generic [ref=e74]: Public
+        - generic [ref=e75]:
+          - list:
+            - listitem [ref=e76]:
+              - link "You must be signed in to change notification settings" [ref=e77] [cursor=pointer]:
+                - /url: /login?return_to=%2Frcasia%2Fascii-ui.nvim
+                - text: Notifications
+            - listitem [ref=e80]:
+              - link "Fork 0" [ref=e81] [cursor=pointer]:
+                - /url: /login?return_to=%2Frcasia%2Fascii-ui.nvim
+                - text: Fork
+                - generic "0" [ref=e84]
+            - listitem [ref=e85]:
+              - link "You must be signed in to star a repository" [ref=e87] [cursor=pointer]:
+                - /url: /login?return_to=%2Frcasia%2Fascii-ui.nvim
+                - text: Star
+                - generic "5 users starred this repository" [ref=e90]: "5"
+      - navigation "Repository" [ref=e91]:
+        - list [ref=e92]:
+          - listitem [ref=e93]:
+            - link "Code" [ref=e94] [cursor=pointer]:
+              - /url: /rcasia/ascii-ui.nvim
+          - listitem [ref=e98]:
+            - link "Issues 13" [ref=e99] [cursor=pointer]:
+              - /url: /rcasia/ascii-ui.nvim/issues
+              - generic [ref=e103]: Issues
+              - generic "13" [ref=e104]
+          - listitem [ref=e105]:
+            - link "Pull requests 1" [ref=e106] [cursor=pointer]:
+              - /url: /rcasia/ascii-ui.nvim/pulls
+              - generic [ref=e109]: Pull requests
+              - generic "1" [ref=e110]
+          - listitem [ref=e111]:
+            - link "Discussions" [ref=e112] [cursor=pointer]:
+              - /url: /rcasia/ascii-ui.nvim/discussions
+          - listitem [ref=e116]:
+            - link "Actions" [ref=e117] [cursor=pointer]:
+              - /url: /rcasia/ascii-ui.nvim/actions
+          - listitem [ref=e121]:
+            - link "Projects" [ref=e122] [cursor=pointer]:
+              - /url: /rcasia/ascii-ui.nvim/projects
+          - listitem [ref=e126]:
+            - link "Security and quality" [ref=e127] [cursor=pointer]:
+              - /url: /rcasia/ascii-ui.nvim/security
+          - listitem [ref=e131]:
+            - link "Insights" [ref=e132] [cursor=pointer]:
+              - /url: /rcasia/ascii-ui.nvim/pulse
+    - generic [ref=e143]:
+      - region "Header" [ref=e145]:
+        - generic [ref=e146]:
+          - 'heading "Refactor for receiving all of the user events #33" [level=1] [ref=e148]':
+            - text: Refactor for receiving all of the user events
+            - generic [ref=e149]: "#33"
+          - generic [ref=e152]:
+            - link "New issue" [ref=e154] [cursor=pointer]:
+              - /url: /login?return_to=https://github.com/rcasia/ascii-ui.nvim/issues/33
+            - button "Copy link" [ref=e157] [cursor=pointer]
+      - generic [ref=e166]:
+        - img "Issue" [ref=e167]
+        - text: Open
+      - generic [ref=e171]:
+        - generic [ref=e172]:
+          - generic [ref=e175]:
+            - heading "Description" [level=2] [ref=e176]
+            - generic [ref=e178]:
+              - generic [ref=e180]:
+                - link "@rcasia's profile" [ref=e182] [cursor=pointer]:
+                  - /url: https://github.com/rcasia
+                  - img "@rcasia" [ref=e183]
+                - generic [ref=e184]:
+                  - link "rcasia" [ref=e186] [cursor=pointer]:
+                    - /url: https://github.com/rcasia
+                  - generic [ref=e187]:
+                    - text: opened
+                    - link "on May 31, 2025on May 31, 2025" [ref=e188] [cursor=pointer]:
+                      - /url: https://github.com/rcasia/ascii-ui.nvim/issues/33#issue-3105453582
+                - button "Issue body actions" [ref=e192] [cursor=pointer]
+              - generic [ref=e195]:
+                - generic [ref=e197]:
+                  - paragraph [ref=e198]:
+                    - text: Currently the events that come from user interactions into the
+                    - code [ref=e199]: ascii-ui.Buffer
+                    - text: "'s is not well thought or designed, but it works for what it does."
+                  - paragraph [ref=e200]:
+                    - text: "Refactor into something that listens to user events and transform it into commands like:"
+                    - code [ref=e201]: "{ type = \"CloseWindowCommand\", window_id = 1 }"
+                - generic:
+                  - toolbar "Reactions"
+          - generic [ref=e203]:
+            - generic [ref=e204]:
+              - heading "Activity" [level=2] [ref=e205]
+              - region "Events" [ref=e207]:
+                - generic [ref=e222]:
+                  - link "rcasia" [ref=e224] [cursor=pointer]:
+                    - /url: /rcasia
+                  - text: added
+                  - link "refactor" [ref=e227] [cursor=pointer]:
+                    - /url: /rcasia/ascii-ui.nvim/issues?q=state%3Aopen%20label%3A%22refactor%22
+                  - link "on May 31, 2025on May 31, 2025" [ref=e231] [cursor=pointer]:
+                    - /url: https://github.com/rcasia/ascii-ui.nvim/issues/33#event-17900731617
+            - generic [ref=e232]:
+              - link "Sign up for free" [ref=e233] [cursor=pointer]:
+                - /url: /signup?return_to=https://github.com/rcasia/ascii-ui.nvim/issues/33
+              - generic [ref=e236]:
+                - strong [ref=e237]: to join this conversation on GitHub.
+                - text: Already have an account?
+              - link "Sign in to comment" [ref=e238] [cursor=pointer]:
+                - /url: /login?return_to=https://github.com/rcasia/ascii-ui.nvim/issues/33
+        - generic [ref=e240]:
+          - heading "Metadata" [level=2] [ref=e241]
+          - generic [ref=e243]:
+            - generic [ref=e245]:
+              - generic [ref=e246]:
+                - heading "Assignees" [level=3]
+              - generic [ref=e247]: No one assigned
+            - generic [ref=e248]:
+              - generic [ref=e250]:
+                - heading "Labels" [level=3]
+              - link "refactor" [ref=e253] [cursor=pointer]:
+                - /url: https://github.com/rcasia/ascii-ui.nvim/issues?q=state%3Aopen%20label%3A%22refactor%22
+            - generic [ref=e258]:
+              - generic [ref=e259]:
+                - heading "Projects" [level=3]
+              - generic [ref=e260]: No projects
+            - generic [ref=e262]:
+              - generic [ref=e263]:
+                - heading "Milestone" [level=3]
+              - generic [ref=e264]: No milestone
+            - generic [ref=e266]:
+              - generic [ref=e267]:
+                - heading "Relationships" [level=3]
+              - generic [ref=e268]: None yet
+            - generic [ref=e270]:
+              - generic [ref=e271]:
+                - heading "Development" [level=3]
+              - generic [ref=e272]: No branches or pull requests
+            - heading "Issue actions" [level=2] [ref=e273]
+            - list [ref=e274]:
+              - listitem [ref=e275]:
+                - button "Open in GitHub Copilot app" [ref=e276] [cursor=pointer]
+  - contentinfo [ref=e280]:
+    - heading "Footer" [level=2] [ref=e281]
+    - generic [ref=e282]:
+      - generic [ref=e283]:
+        - link "GitHub Homepage" [ref=e284] [cursor=pointer]:
+          - /url: https://github.com
+        - generic [ref=e287]: © 2026 GitHub, Inc.
+      - navigation "Footer" [ref=e288]:
+        - heading "Footer navigation" [level=3] [ref=e289]
+        - list "Footer navigation" [ref=e290]:
+          - listitem [ref=e291]:
+            - link "Terms" [ref=e292] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+          - listitem [ref=e293]:
+            - link "Privacy" [ref=e294] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+          - listitem [ref=e295]:
+            - link "Security" [ref=e296] [cursor=pointer]:
+              - /url: https://github.com/security
+          - listitem [ref=e297]:
+            - link "Status" [ref=e298] [cursor=pointer]:
+              - /url: https://www.githubstatus.com/
+          - listitem [ref=e299]:
+            - link "Community" [ref=e300] [cursor=pointer]:
+              - /url: https://github.community/
+          - listitem [ref=e301]:
+            - link "Docs" [ref=e302] [cursor=pointer]:
+              - /url: https://docs.github.com/
+          - listitem [ref=e303]:
+            - link "Contact" [ref=e304] [cursor=pointer]:
+              - /url: https://support.github.com?tags=dotcom-footer
+          - listitem [ref=e305]:
+            - button "Manage cookies" [ref=e307] [cursor=pointer]
+          - listitem [ref=e308]:
+            - button "Do not share my personal information" [ref=e310] [cursor=pointer]

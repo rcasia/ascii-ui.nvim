@@ -1,6 +1,5 @@
 local Cursor = require("ascii-ui.cursor")
 local highlights = require("ascii-ui.highlights")
-local initialize_window_keymaps = require("ascii-ui.window.keymaps")
 local logger = require("ascii-ui.logger")
 
 ---@alias ascii-ui.WindowOpts { width?: integer, height?: integer }
@@ -148,8 +147,6 @@ function Window:open()
 
 	self.winid = win
 	self.bufnr = buf
-
-	initialize_window_keymaps(self)
 end
 
 --- Get the position of the window

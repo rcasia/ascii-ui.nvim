@@ -1,0 +1,2 @@
+[     968ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://github.com/rcasia/ascii-ui.nvim/issues/33/agent_tasks:0
+[     972ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://github.com/copilot/agent-sessions/rcasia/ascii-ui.nvim/agents:0

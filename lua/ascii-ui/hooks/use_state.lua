@@ -1,3 +1,4 @@
+local Command = require("ascii-ui.commands")
 local fiber = require("ascii-ui.fiber")
 local logger = require("ascii-ui.logger")
 local metrics = require("ascii-ui.utils.metrics")
@@ -69,7 +70,7 @@ local useState = function(value)
 
 		local bus = _fiber.root and _fiber.root.bus
 		if bus then
-			bus:trigger("state_change")
+			bus:dispatch(Command.StateChange({ prop = "state", value = new_value }))
 		end
 	end
 

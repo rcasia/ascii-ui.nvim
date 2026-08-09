@@ -494,6 +494,99 @@ Return ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
+                                                     *ascii-ui.commands.Command*
+                          `ascii-ui.commands.Command`
+Command constructors for the ascii-ui command pattern.
+
+Commands are immutable data objects that describe user intents.
+They are created via constructor functions (e.g. `Command.CloseWindow({...})`)
+and dispatched through an `EventBus`. Handlers registered with `bus:on(type, fn)`
+receive the command and execute the corresponding side effects.
+
+**Immutability convention**: Once a command table is constructed, neither the
+dispatcher nor any handler may mutate its fields. Handlers must treat commands
+as read-only.
+
+@class ascii-ui.Command
+@field type ascii-ui.CommandType
+
+------------------------------------------------------------------------------
+                                                *ascii-ui.commands.CommandTypes*
+                        `ascii-ui.commands.CommandTypes`
+@enum ascii-ui.CommandType
+
+------------------------------------------------------------------------------
+                                       *ascii-ui.commands.Command.CloseWindow()*
+                `ascii-ui.commands.Command.CloseWindow`({opts})
+Creates a CLOSE_WINDOW command.
+@param opts { window_id: integer }
+@return ascii-ui.Command
+
+------------------------------------------------------------------------------
+                                        *ascii-ui.commands.Command.MoveWindow()*
+                 `ascii-ui.commands.Command.MoveWindow`({opts})
+Creates a MOVE_WINDOW command.
+@param opts { window_id: integer, position: { line: integer, col: integer } }
+@return ascii-ui.Command
+
+------------------------------------------------------------------------------
+                                        *ascii-ui.commands.Command.CursorMove()*
+                 `ascii-ui.commands.Command.CursorMove`({opts})
+Creates a CURSOR_MOVE command.
+@param opts { direction: ascii-ui.CursorDirection, position: { line: integer, col: integer } }
+@return ascii-ui.Command
+
+------------------------------------------------------------------------------
+                                            *ascii-ui.commands.Command.Select()*
+                   `ascii-ui.commands.Command.Select`({opts})
+Creates a SELECT command.
+@param opts { window_id: integer, position: { line: integer, col: integer } }
+@return ascii-ui.Command
+
+------------------------------------------------------------------------------
+                                             *ascii-ui.commands.Command.Hover()*
+                   `ascii-ui.commands.Command.Hover`({opts})
+Creates a HOVER command.
+@param opts { window_id: integer, position: { line: integer, col: integer } }
+@return ascii-ui.Command
+
+------------------------------------------------------------------------------
+                                             *ascii-ui.commands.Command.Input()*
+                   `ascii-ui.commands.Command.Input`({opts})
+Creates an INPUT command.
+@param opts { window_id: integer, position: { line: integer, col: integer }, text: string }
+@return ascii-ui.Command
+
+------------------------------------------------------------------------------
+                                       *ascii-ui.commands.Command.StateChange()*
+                `ascii-ui.commands.Command.StateChange`({opts})
+Creates a STATE_CHANGE command.
+@param opts { prop: string, value: any }
+@return ascii-ui.Command
+
+------------------------------------------------------------------------------
+                                             *ascii-ui.commands.Command.Mount()*
+                   `ascii-ui.commands.Command.Mount`({opts})
+Creates a MOUNT command.
+@param opts { component: ascii-ui.FunctionalComponent }
+@return ascii-ui.Command
+
+------------------------------------------------------------------------------
+                                           *ascii-ui.commands.Command.Unmount()*
+                  `ascii-ui.commands.Command.Unmount`({opts})
+Creates an UNMOUNT command.
+@param opts { window_id: integer }
+@return ascii-ui.Command
+
+------------------------------------------------------------------------------
+                                               *ascii-ui.commands.Command.types*
+                       `ascii-ui.commands.Command.types`
+Expose command type constants for handler registration.
+@type table<string, ascii-ui.CommandType>
+
+
+==============================================================================
+------------------------------------------------------------------------------
                                                      *ascii-ui.components.Box()*
                        `ascii-ui.components.Box`({props})
 Parameters ~
@@ -766,6 +859,8 @@ Lifecycle: INITIAL -> MOUNTED -> CLEANED_UP -> DONE (when replaced).
                                                              *ascii-ui.EventBus*
                               `ascii-ui.EventBus`
 @class ascii-ui.EventBus
+@field private _listeners table<string, function[]>  Command-type handlers (new API)
+@field private _history ascii-ui.Command[]  Dispatched command history
 
 ------------------------------------------------------------------------------
                                                        *ascii-ui.EventBus.new()*
@@ -790,6 +885,33 @@ mounted UIs never share listeners.
                                                    *ascii-ui.EventBus:trigger()*
                      `ascii-ui.EventBus:trigger`({ev_type})
 @param ev_type ascii-ui.EventType
+
+------------------------------------------------------------------------------
+                                                  *ascii-ui.EventBus:dispatch()*
+                    `ascii-ui.EventBus:dispatch`({command})
+Dispatches a command through the bus.
+
+The command is appended to `self._history` (immutable record) and then
+all handlers registered for `command.type` via `on()` are invoked with
+the command as their sole argument.
+
+Handlers must NOT mutate the command table.
+
+@param command ascii-ui.Command
+
+------------------------------------------------------------------------------
+                                                        *ascii-ui.EventBus:on()*
+               `ascii-ui.EventBus:on`({command_type}, {handler})
+Registers a handler for a specific command type.
+
+@param command_type ascii-ui.CommandType  The command type string (e.g. "CLOSE_WINDOW").
+@param handler fun(command: ascii-ui.Command)  Handler invoked with the dispatched command.
+
+------------------------------------------------------------------------------
+                                                   *ascii-ui.EventBus:history()*
+                         `ascii-ui.EventBus:history`()
+Returns a shallow copy of the command history.
+@return ascii-ui.Command[]
 
 ------------------------------------------------------------------------------
                                                      *ascii-ui.EventBus:clear()*
@@ -1003,6 +1125,45 @@ hooks or effects.
                                                *ascii-ui.FiberNode:get_buffer()*
                        `ascii-ui.FiberNode:get_buffer`()
 @return ascii-ui.Buffer
+
+
+==============================================================================
+------------------------------------------------------------------------------
+Command handler registration for ascii-ui.
+
+`register_handlers` wires up the command bus so that dispatched commands
+trigger the appropriate side effects (window close, cursor movement,
+segment interaction, rerender, etc.).
+
+All handlers receive the dispatched command as their sole argument.
+Commands are immutable — handlers MUST NOT mutate command tables.
+
+@module ascii-ui.handlers
+
+------------------------------------------------------------------------------
+                                       *ascii-ui.handlers.render_error_buffer()*
+                 `ascii-ui.handlers.render_error_buffer`({err})
+@param err ascii-ui.Error
+@return ascii-ui.Buffer
+
+------------------------------------------------------------------------------
+                                   *ascii-ui.handlers.search_fn_for_direction()*
+            `ascii-ui.handlers.search_fn_for_direction`({direction})
+Maps a CursorDirection to the appropriate buffer search function.
+@param direction ascii-ui.CursorDirection
+@return fun(buffer: ascii-ui.Buffer, position: { line: integer, col: integer }): { found: boolean, pos: { line: integer, col: integer } }
+
+------------------------------------------------------------------------------
+                                       *ascii-ui.handlers.M.register_handlers()*
+`ascii-ui.handlers.M.register_handlers`({bus}, {window}, {fiberRootGetter}, {fiberRootSetter}, {renderedBufferGetter}, {renderedBufferSetter})
+Registers all command handlers on the given bus.
+
+@param bus ascii-ui.EventBus  The command bus to attach handlers to.
+@param window ascii-ui.Window  The viewport (window) for this mount.
+@param fiberRootGetter fun(): ascii-ui.RootFiberNode  Returns the current fiber root (may change after rerender).
+@param fiberRootSetter fun(root: ascii-ui.RootFiberNode)  Updates the fiber root reference after rerender.
+@param renderedBufferGetter fun(): ascii-ui.Buffer  Returns the current rendered buffer.
+@param renderedBufferSetter fun(buffer: ascii-ui.Buffer)  Updates the rendered buffer reference after rerender.
 
 
 ==============================================================================
@@ -2089,14 +2250,10 @@ Return ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
-@param window ascii-ui.Window
+Sets up window keymaps that dispatch commands through the bus.
 
-
-==============================================================================
-------------------------------------------------------------------------------
-                                                   *ascii-ui.window.on_select()*
-                     `ascii-ui.window.on_select`({window})
 @param window ascii-ui.Window
+@param bus ascii-ui.EventBus
 
 
  vim:tw=78:ts=8:noet:ft=help:norl:
