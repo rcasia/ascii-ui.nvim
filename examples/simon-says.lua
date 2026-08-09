@@ -149,17 +149,14 @@ local function App()
 		Paragraph({ content = "" }),
 
 		-- Flash indicator
-		showingFlash
-				and flashVisible
-				and BufferLine.new(
-					Segment:new({ content = ">>> ", color = COLORS.TEXT }),
-					Segment:new({
-						content = COLOR_NAMES[sequence[currentFlash + 1]],
-						color = COLOR_VALUES[sequence[currentFlash + 1]],
-					}),
-					Segment:new({ content = " <<<", color = COLORS.TEXT })
-				)
-			or nil,
+		showingFlash and flashVisible and BufferLine.new(
+			Segment:new({ content = ">>> ", color = COLORS.TEXT }),
+			Segment:new({
+				content = COLOR_NAMES[sequence[currentFlash + 1]],
+				color = COLOR_VALUES[sequence[currentFlash + 1]],
+			}),
+			Segment:new({ content = " <<<", color = COLORS.TEXT })
+		) or nil,
 		showingFlash and not flashVisible and Paragraph({ content = "..." }) or nil,
 		showingFlash and Paragraph({ content = "" }) or nil,
 
