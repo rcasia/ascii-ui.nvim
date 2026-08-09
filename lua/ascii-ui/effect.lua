@@ -67,27 +67,40 @@ local Effect = function(opts)
 			local last_deps = opts.dependencies
 
 			local reasons = {}
+
+			-- Case 1: No dependencies provided - run every render
 			if new_deps == nil then
 				reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.NIL_DEPENDENCIES
-			else
-				if not last_deps then
-					reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.NIL_DEPENDENCIES
-					reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.DIFFERENT_COUNT_OF_VALUES
-				else
-					-- Shallow compare
-					if #new_deps ~= #last_deps then
-						reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.DIFFERENT_COUNT_OF_VALUES
-					else
-						for i = 1, #new_deps do
-							if new_deps[i] ~= last_deps[i] then
-								reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.DIFFERENT_VALUES
-								break
-							end
-						end
-					end
+				return true, reasons
+			end
+
+			-- Case 2: Previous effect had no dependencies but new one does
+			if not last_deps then
+				reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.NIL_DEPENDENCIES
+				reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.DIFFERENT_COUNT_OF_VALUES
+				return true, reasons
+			end
+
+			-- Case 3: Different number of dependencies
+			if #new_deps ~= #last_deps then
+				reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.DIFFERENT_COUNT_OF_VALUES
+				return true, reasons
+			end
+
+			-- Case 4: Compare each dependency value
+			for i = 1, #new_deps do
+				local new_val = new_deps[i]
+				local last_val = last_deps[i]
+
+				-- Check if values differ (handles nil comparisons correctly)
+				if new_val ~= last_val then
+					reasons[#reasons + 1] = EFFECT_REPLACEMENT_REASON.DIFFERENT_VALUES
+					return true, reasons
 				end
 			end
-			return #reasons > 0, reasons
+
+			-- All dependencies are equal
+			return false, reasons
 		end,
 		dependencies = opts.dependencies,
 	}
