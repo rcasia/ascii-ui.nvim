@@ -60,7 +60,9 @@ local function App()
 		Paragraph({ content = "" }),
 
 		-- Instructions
-		Paragraph({ content = "───────────────────────────────" }),
+		Paragraph({
+			content = "───────────────────────────────",
+		}),
 		Paragraph({ content = "Navigation: Tab/Shift+Tab between inputs" }),
 		Paragraph({ content = "Edit: Press 'i' to enter insert mode" }),
 		Paragraph({ content = "Submit: Press <CR> in insert mode" }),
