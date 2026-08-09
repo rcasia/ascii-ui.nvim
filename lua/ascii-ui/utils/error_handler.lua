@@ -88,6 +88,16 @@ function error_handler.get_hint(err_type)
 	return HINTS[err_type] or "An unexpected error occurred. Check the component code for issues."
 end
 
+-- Splits a string on newlines and inserts each sub-line into the target table.
+-- Ensures no element in the target contains embedded newline characters.
+-- @param target string[]
+-- @param str string
+local function insert_lines(target, str)
+	for sub_line in str:gmatch("[^\r\n]+") do
+		table.insert(target, sub_line)
+	end
+end
+
 --- Converts an error into displayable lines for the viewport.
 --- @param err ascii-ui.Error
 --- @return string[] lines
@@ -102,11 +112,11 @@ function error_handler.render_error_to_lines(err)
 	-- Error details
 	table.insert(lines, "Type: " .. err.err_type)
 	table.insert(lines, "Component: " .. err.component_path)
-	table.insert(lines, "Message: " .. err.message)
+	insert_lines(lines, "Message: " .. err.message)
 	table.insert(lines, "")
 
 	-- Hint
-	table.insert(lines, "Hint: " .. hint)
+	insert_lines(lines, "Hint: " .. hint)
 	table.insert(lines, "")
 
 	-- Footer

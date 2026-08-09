@@ -129,6 +129,62 @@ describe("error_handler", function()
 			local last_line = lines[#lines]
 			assert.truthy(last_line:find("═"))
 		end)
+
+		it("returns lines with no embedded newlines", function()
+			local err = {
+				err_type = "render",
+				component_path = "Root > App",
+				message = "expected list, got string",
+			}
+			local lines = error_handler.render_error_to_lines(err)
+			for i, line in ipairs(lines) do
+				assert.is_nil(line:find("\n", 1, true), string.format("line %d contains newline: %q", i, line))
+			end
+		end)
+
+		it("splits multi-line error messages into separate lines", function()
+			local err = {
+				err_type = "render",
+				component_path = "App",
+				message = "line1\nline2\nline3",
+			}
+			local lines = error_handler.render_error_to_lines(err)
+			local found_line1 = false
+			local found_line2 = false
+			local found_line3 = false
+			for _, line in ipairs(lines) do
+				if line:find("line1") then
+					found_line1 = true
+				end
+				if line:find("line2") then
+					found_line2 = true
+				end
+				if line:find("line3") then
+					found_line3 = true
+				end
+			end
+			assert.is_true(found_line1, "should contain line1")
+			assert.is_true(found_line2, "should contain line2")
+			assert.is_true(found_line3, "should contain line3")
+		end)
+
+		it("handles all error types without embedded newlines", function()
+			local err_types = { "render", "hook", "effect", "interaction", "viewport" }
+			for _, err_type in ipairs(err_types) do
+				local err = {
+					err_type = err_type,
+					component_path = "App",
+					message = "test error",
+				}
+				local lines = error_handler.render_error_to_lines(err)
+				for i, line in ipairs(lines) do
+					assert.is_nil(
+						line:find("\n", 1, true),
+						string.format("err_type=%s line %d contains newline: %q", err_type, i, line)
+					)
+				end
+			end
+		end)
 	end)
 
 	describe("create_error", function()
