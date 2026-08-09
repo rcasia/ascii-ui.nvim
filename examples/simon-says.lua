@@ -7,8 +7,8 @@ local Segment = require("ascii-ui.buffer.segment")
 local ui = require("ascii-ui")
 local Button = ui.components.Button
 local Paragraph = ui.components.Paragraph
-local useState = ui.hooks.useState
 local useEffect = ui.hooks.useEffect
+local useReducer = ui.hooks.useReducer
 local useTimeout = ui.hooks.useTimeout
 
 local COLORS = {
@@ -25,99 +25,141 @@ local COLORS = {
 local COLOR_NAMES = { "RED", "GREEN", "BLUE", "YELLOW" }
 local COLOR_VALUES = { COLORS.RED, COLORS.GREEN, COLORS.BLUE, COLORS.YELLOW }
 
+--- @class ascii-ui.simon.GameState
+--- @field sequence number[]
+--- @field playerIndex number
+--- @field score number
+--- @field highScore number
+--- @field gamePhase string
+--- @field currentFlash number
+--- @field flashVisible boolean
+--- @field pendingNextRound boolean
+
+--- @class ascii-ui.simon.GameAction
+--- @field type string
+
+--- @param state ascii-ui.simon.GameState
+--- @param action ascii-ui.simon.GameAction
+--- @return ascii-ui.simon.GameState
+local function gameReducer(state, action)
+	if action.type == "START_GAME" then
+		return {
+			sequence = { math.random(1, 4) },
+			playerIndex = 0,
+			score = 0,
+			highScore = state.highScore,
+			gamePhase = "showing",
+			currentFlash = 0,
+			flashVisible = false,
+			pendingNextRound = false,
+		}
+	elseif action.type == "NEXT_ROUND" then
+		local newSeq = vim.list_extend({}, state.sequence)
+		table.insert(newSeq, math.random(1, 4))
+		return vim.tbl_extend("force", state, {
+			sequence = newSeq,
+			playerIndex = 0,
+			gamePhase = "showing",
+			currentFlash = 0,
+			flashVisible = false,
+			pendingNextRound = false,
+		})
+	elseif action.type == "CORRECT_INPUT" then
+		local newPlayerIndex = state.playerIndex + 1
+		local roundComplete = newPlayerIndex >= #state.sequence
+		local newScore = roundComplete and state.score + 1 or state.score
+		local newHighScore = math.max(state.highScore, newScore)
+		return vim.tbl_extend("force", state, {
+			playerIndex = newPlayerIndex,
+			score = newScore,
+			highScore = newHighScore,
+			pendingNextRound = roundComplete,
+		})
+	elseif action.type == "WRONG_INPUT" then
+		return vim.tbl_extend("force", state, { gamePhase = "gameover" })
+	elseif action.type == "SHOW_FLASH" then
+		return vim.tbl_extend("force", state, { flashVisible = true })
+	elseif action.type == "HIDE_FLASH" then
+		return vim.tbl_extend("force", state, { flashVisible = false })
+	elseif action.type == "ADVANCE_FLASH" then
+		return vim.tbl_extend("force", state, {
+			currentFlash = state.currentFlash + 1,
+			flashVisible = true,
+		})
+	elseif action.type == "ENTER_INPUT_PHASE" then
+		return vim.tbl_extend("force", state, { gamePhase = "input" })
+	end
+	return state
+end
+
+local INITIAL_STATE = {
+	sequence = {},
+	playerIndex = 0,
+	score = 0,
+	highScore = 0,
+	gamePhase = "idle",
+	currentFlash = 0,
+	flashVisible = false,
+	pendingNextRound = false,
+}
+
 -- Custom hook: encapsulates all Simon game state and logic
 local function useSimonGame()
-	local sequence, setSequence = useState({})
-	local playerIndex, setPlayerIndex = useState(0)
-	local score, setScore = useState(0)
-	local highScore, setHighScore = useState(0)
-	local gamePhase, setGamePhase = useState("idle")
-	local currentFlash, setCurrentFlash = useState(0)
-	local flashVisible, setFlashVisible = useState(false)
-	local pendingNextRound, setPendingNextRound = useState(false)
+	local state, dispatch = useReducer(gameReducer, INITIAL_STATE)
 
 	-- Start a new game
 	local function startGame()
-		setSequence({ math.random(1, 4) })
-		setPlayerIndex(0)
-		setScore(0)
-		setGamePhase("showing")
-		setCurrentFlash(0)
-		setFlashVisible(false)
-		setPendingNextRound(false)
-	end
-
-	-- Add to sequence after successful round
-	local function nextRound()
-		local newSequence = vim.list_extend(sequence, { math.random(1, 4) })
-		setSequence(newSequence)
-		setPlayerIndex(0)
-		setGamePhase("showing")
-		setCurrentFlash(0)
-		setFlashVisible(false)
+		dispatch({ type = "START_GAME" })
 	end
 
 	-- Handle player input
 	local function handleInput(colorIndex)
-		if gamePhase ~= "input" then
+		if state.gamePhase ~= "input" then
 			return
 		end
 
-		if sequence[playerIndex + 1] == colorIndex then
-			-- Correct!
-			setPlayerIndex(playerIndex + 1)
-			if playerIndex + 1 >= #sequence then
-				-- Round complete!
-				setScore(score + 1)
-				if score + 1 > highScore then
-					setHighScore(score + 1)
-				end
-				-- Signal to start next round after delay
-				setPendingNextRound(true)
-			end
+		if state.sequence[state.playerIndex + 1] == colorIndex then
+			dispatch({ type = "CORRECT_INPUT" })
 		else
-			-- Wrong! Game over
-			setGamePhase("gameover")
+			dispatch({ type = "WRONG_INPUT" })
 		end
 	end
 
 	-- Start showing first flash when entering "showing" phase
 	useEffect(function()
-		if gamePhase == "showing" and currentFlash == 0 and not flashVisible then
-			setFlashVisible(true)
+		if state.gamePhase == "showing" and state.currentFlash == 0 and not state.flashVisible then
+			dispatch({ type = "SHOW_FLASH" })
 		end
-	end, { gamePhase })
+	end, { state.gamePhase })
 
 	-- Hide flash after 600ms when visible
 	useTimeout(function()
-		setFlashVisible(false)
-	end, flashVisible and gamePhase == "showing" and 600 or nil)
+		dispatch({ type = "HIDE_FLASH" })
+	end, state.flashVisible and state.gamePhase == "showing" and 600 or nil)
 
 	-- Advance to next flash after 300ms when hidden
-	useTimeout(function()
-		setCurrentFlash(currentFlash + 1)
-		setFlashVisible(true)
-	end, not flashVisible and gamePhase == "showing" and currentFlash < #sequence and 300 or nil)
+	useTimeout(
+		function()
+			dispatch({ type = "ADVANCE_FLASH" })
+		end,
+		not state.flashVisible and state.gamePhase == "showing" and state.currentFlash < #state.sequence and 300 or nil
+	)
 
 	-- Transition to input phase after 500ms when sequence complete
-	useTimeout(function()
-		setGamePhase("input")
-	end, not flashVisible and gamePhase == "showing" and currentFlash >= #sequence and 500 or nil)
+	useTimeout(
+		function()
+			dispatch({ type = "ENTER_INPUT_PHASE" })
+		end,
+		not state.flashVisible and state.gamePhase == "showing" and state.currentFlash >= #state.sequence and 500 or nil
+	)
 
 	-- Start next round after 1000ms when pending
 	useTimeout(function()
-		setPendingNextRound(false)
-		nextRound()
-	end, pendingNextRound and 1000 or nil)
+		dispatch({ type = "NEXT_ROUND" })
+	end, state.pendingNextRound and 1000 or nil)
 
 	return {
-		sequence = sequence,
-		playerIndex = playerIndex,
-		score = score,
-		highScore = highScore,
-		gamePhase = gamePhase,
-		currentFlash = currentFlash,
-		flashVisible = flashVisible,
+		state = state,
 		startGame = startGame,
 		handleInput = handleInput,
 	}
@@ -202,24 +244,25 @@ end)
 -- App composes the custom components
 local App = ui.createComponent("App", function()
 	local game = useSimonGame()
-	local showingFlash = game.gamePhase == "showing" and game.currentFlash < #game.sequence
-	local flashColorIdx = game.sequence[game.currentFlash + 1]
+	local state = game.state
+	local showingFlash = state.gamePhase == "showing" and state.currentFlash < #state.sequence
+	local flashColorIdx = state.sequence[state.currentFlash + 1]
 
 	return {
 		Title(),
 		Paragraph({ content = "" }),
-		ScoreDisplay({ score = game.score, highScore = game.highScore }),
+		ScoreDisplay({ score = state.score, highScore = state.highScore }),
 		Paragraph({ content = "" }),
 		StatusMessage({
-			gamePhase = game.gamePhase,
-			playerIndex = game.playerIndex,
-			sequenceLength = #game.sequence,
-			score = game.score,
+			gamePhase = state.gamePhase,
+			playerIndex = state.playerIndex,
+			sequenceLength = #state.sequence,
+			score = state.score,
 		}),
 		Paragraph({ content = "" }),
 		FlashIndicator({
 			showing = showingFlash,
-			visible = game.flashVisible,
+			visible = state.flashVisible,
 			colorName = COLOR_NAMES[flashColorIdx] or "",
 			colorValue = COLOR_VALUES[flashColorIdx] or COLORS.TEXT,
 		}),
@@ -227,9 +270,9 @@ local App = ui.createComponent("App", function()
 			return Button({
 				label = "[" .. colorName:sub(1, 3) .. "]",
 				on_press = function()
-					if game.gamePhase == "idle" or game.gamePhase == "gameover" then
+					if state.gamePhase == "idle" or state.gamePhase == "gameover" then
 						game.startGame()
-					elseif game.gamePhase == "input" then
+					elseif state.gamePhase == "input" then
 						game.handleInput(i)
 					end
 				end,
