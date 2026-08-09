@@ -1,12 +1,19 @@
 local Color = require("ascii-ui.color")
 local interaction_type = require("ascii-ui.interaction_type")
 
+--- @class ascii-ui.InputCallbacks
+--- @field state_setter fun(value: string) Sets the Input component's internal state
+--- @field on_change? fun(value: string) Fires on every text change
+--- @field on_submit? fun(value: string) Fires on <CR> in insert mode
+--- @field on_blur? fun(value: string) Fires on exit insert mode
+
 --- @class ascii-ui.SegmentOpts
 --- @field content string does not support newlines
 --- @field is_focusable? boolean whether the segment can be focused
 --- @field interactions? table<ascii-ui.UserInteractions.InteractionType, function> a map of interaction types to functions
 --- @field highlight? string a highlight group name to apply to the segment
 --- @field color? string | ascii-ui.SegmentColor | ascii-ui.Color hex string shorthand ("#rrggbb"), table {fg, bg}, or Color instance
+--- @field _input_callbacks? ascii-ui.InputCallbacks imperative callbacks for Input component (set by Input, read by mount autocmds)
 
 ---
 --- A segment is the minimal unit of a render in ascii-ui.
@@ -16,6 +23,7 @@ local interaction_type = require("ascii-ui.interaction_type")
 ---@field interactions table<ascii-ui.UserInteractions.InteractionType, function>
 ---@field highlight? string
 ---@field color? ascii-ui.Color normalized to Color instance
+---@field _input_callbacks? ascii-ui.InputCallbacks imperative callbacks for Input component
 ---@field private focusable boolean
 local Segment = {}
 Segment.__index = Segment
@@ -83,6 +91,7 @@ function Segment:new(...)
 		color = normalize_color(props.color),
 		focusable = props.is_focusable or false,
 		interactions = props.interactions or {},
+		_input_callbacks = props._input_callbacks,
 	}
 
 	setmetatable(state, self)
@@ -140,6 +149,12 @@ end
 
 function Segment:is_inputable()
 	return self.interactions[interaction_type.INPUT] ~= nil
+end
+
+--- Returns the input callbacks if this segment is an Input component.
+--- @return ascii-ui.InputCallbacks | nil
+function Segment:get_input_callbacks()
+	return self._input_callbacks
 end
 
 --- Wraps the segment in a ascii-ui.Bufferline object

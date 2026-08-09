@@ -4,6 +4,7 @@ local Components = {
 	Slider = require("ascii-ui.components.slider"),
 	Paragraph = require("ascii-ui.components.paragraph"),
 	Button = require("ascii-ui.components.button"),
+	Input = require("ascii-ui.components.input"),
 }
 
 return Components

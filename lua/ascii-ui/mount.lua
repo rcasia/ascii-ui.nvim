@@ -3,6 +3,7 @@ local BufferLine = require("ascii-ui.buffer.bufferline")
 local Command = require("ascii-ui.commands")
 local Cursor = require("ascii-ui.cursor")
 local EventBus = require("ascii-ui.events")
+local InputHandler = require("ascii-ui.input-handler")
 local Segment = require("ascii-ui.buffer.segment")
 local Window = require("ascii-ui.window")
 local error_handler = require("ascii-ui.utils.error_handler")
@@ -143,15 +144,35 @@ return function(RootComponent, viewport)
 	local window = viewport or Window.new({ width = rendered_buffer:width(), height = rendered_buffer:height() })
 	window:open()
 
-	-- Register command handlers
-	handlers.register_handlers(
-		bus,
-		window,
-		fiberRootGetter,
-		fiberRootSetter,
-		renderedBufferGetter,
-		renderedBufferSetter
-	)
+	-- Track which line is being edited (for Input component insert mode)
+	-- NOTE: Must be defined BEFORE InputHandler and register_handlers
+	local editing_input_line = nil
+	local editing_input_line_getter = function()
+		return editing_input_line
+	end
+	local editing_input_line_setter = function(line)
+		editing_input_line = line
+	end
+
+	-- Create input handler with injected dependencies
+	local input_handler = InputHandler.new({
+		window = window,
+		renderedBufferGetter = renderedBufferGetter,
+		editingLineGetter = editing_input_line_getter,
+		editingLineSetter = editing_input_line_setter,
+	})
+	input_handler:setup()
+
+	-- Register command handlers with config table
+	handlers.register_handlers({
+		bus = bus,
+		window = window,
+		fiberRootGetter = fiberRootGetter,
+		fiberRootSetter = fiberRootSetter,
+		renderedBufferGetter = renderedBufferGetter,
+		renderedBufferSetter = renderedBufferSetter,
+		inputHandler = input_handler,
+	})
 
 	-- Set up window keymaps (now that we have the bus)
 	initialize_window_keymaps(window, bus)
@@ -228,6 +249,9 @@ return function(RootComponent, viewport)
 
 			-- Clean up the cursor autocmd
 			vim.api.nvim_del_autocmd(cursor_autocmd_id)
+
+			-- Clean up input handler autocmds and keymaps
+			input_handler:teardown()
 
 			-- Unmount the fiber tree to clean up effects and timers
 			local root = fiberRootGetter()
