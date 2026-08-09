@@ -3,9 +3,8 @@ local useEffect = require("ascii-ui.hooks.use_effect")
 
 ---
 --- Executes a callback function after a specified delay.
---- The callback always has access to the latest closure values.
---- The timer restarts on every re-render, ensuring the callback fires
---- after the most recent state change.
+--- The callback always has access to the latest closure values via a ref.
+--- The timer only restarts when the delay value changes, not on every render.
 ---
 --- @param callback function The function to be executed after the delay.
 --- @param delay number|nil The delay in milliseconds. If nil or negative, the timeout is not set.
@@ -19,49 +18,39 @@ local function useTimeout(callback, delay)
 	if not currentFiber.hooks[idx] then
 		currentFiber.hooks[idx] = {
 			callbackRef = {},
-			timer = nil,
 		}
 	end
 
 	local storage = currentFiber.hooks[idx]
+	-- Always update the callback ref so it has the latest closure
 	storage.callbackRef.current = callback
 
-	-- Use nil dependencies so effect runs on every render
-	-- This ensures the timer restarts with the latest callback
+	-- Use {delay} as dependencies so timer only restarts when delay changes
 	useEffect(function()
 		if delay == nil or delay < 0 then
 			return -- Do nothing if delay is nil or negative
 		end
 
-		-- Cancel any existing timer
-		if storage.timer then
-			storage.timer:stop()
-			storage.timer:close()
-			storage.timer = nil
-		end
-
 		local timer = assert(vim.uv.new_timer())
-		storage.timer = timer
 
 		timer:start(
 			delay,
 			0,
 			vim.schedule_wrap(function()
-				-- Always call the latest callback via the ref
-				if storage.callbackRef then
+				-- Call the latest callback via the ref
+				if storage.callbackRef and storage.callbackRef.current then
 					storage.callbackRef.current()
 				end
 			end)
 		)
 
 		return function()
-			if storage.timer then
-				storage.timer:stop()
-				storage.timer:close()
-				storage.timer = nil
+			if timer and not timer:is_closing() then
+				timer:stop()
+				timer:close()
 			end
 		end
-	end, nil) -- nil dependencies = run on every render
+	end, { delay }) -- Only restart when delay changes
 
 	currentFiber.hookIndex = idx + 1
 end

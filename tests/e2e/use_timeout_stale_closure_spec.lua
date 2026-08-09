@@ -17,12 +17,16 @@ describe("useTimeout stale closure bug - simple", function()
 		local App = ui.createComponent("App", function()
 			local count, setCount = useState(0)
 
+			-- Use a changing delay to create a timer chain
+			-- Each time count changes, delay changes, so timer restarts
+			local delay = count < 3 and (50 + count) or nil
+
 			useTimeout(function()
 				-- This callback should see the latest count value
 				if count < 3 then
 					setCount(count + 1)
 				end
-			end, 50)
+			end, delay)
 
 			-- Track final state
 			final_count = count
