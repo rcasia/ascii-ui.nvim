@@ -1,29 +1,43 @@
 -- Simon Says: A memory game where you repeat an increasingly long sequence of colors.
--- Use arrow keys or h/j/k/l to navigate between buttons, then press press Enter to select.
--- Or press 1-4 to directly select a color.
+-- Classic Simon visual design with 4 colored quadrants that "light up".
+-- Use arrow keys or h/j/k/l to navigate between quadrants, then press Enter to select.
 
 local BufferLine = require("ascii-ui.buffer.bufferline")
 local Segment = require("ascii-ui.buffer.segment")
+local interaction_type = require("ascii-ui.interaction_type")
 local ui = require("ascii-ui")
-local Button = ui.components.Button
 local Paragraph = ui.components.Paragraph
 local useEffect = ui.hooks.useEffect
 local useReducer = ui.hooks.useReducer
 local useTimeout = ui.hooks.useTimeout
 
+-- Quadrant dimensions
+local QUAD_WIDTH = 12
+local QUAD_HEIGHT = 4
+local FILL = "█"
+
+-- Color pairs: dark (inactive) and bright (lit/flash)
 local COLORS = {
-	RED = "#FF6B6B",
-	GREEN = "#4ECDC4",
-	BLUE = "#4A90E2",
-	YELLOW = "#FFE66D",
-	DIM = "#6c757d",
-	BORDER = "#495057",
-	TEXT = "#f8f9fa",
-	ACCENT = "#FFD700",
+	GREEN = { dark = "#2d5a2d", bright = "#4ade80" },
+	RED = { dark = "#5a2d2d", bright = "#f87171" },
+	YELLOW = { dark = "#5a5a2d", bright = "#facc15" },
+	BLUE = { dark = "#2d2d5a", bright = "#60a5fa" },
 }
 
-local COLOR_NAMES = { "RED", "GREEN", "BLUE", "YELLOW" }
-local COLOR_VALUES = { COLORS.RED, COLORS.GREEN, COLORS.BLUE, COLORS.YELLOW }
+local BORDER_COLOR = "#586572"
+local TEXT_COLOR = "#f8f9fa"
+local ACCENT_COLOR = "#FFD700"
+local DIM_COLOR = "#6c757d"
+
+-- Canonical Simon positions:
+-- Top-left: GREEN (1), Top-right: RED (2)
+-- Bottom-left: YELLOW (3), Bottom-right: BLUE (4)
+local QUADRANTS = {
+	{ index = 1, color = COLORS.GREEN },
+	{ index = 2, color = COLORS.RED },
+	{ index = 3, color = COLORS.YELLOW },
+	{ index = 4, color = COLORS.BLUE },
+}
 
 --- @class ascii-ui.simon.GameState
 --- @field sequence number[]
@@ -34,6 +48,7 @@ local COLOR_VALUES = { COLORS.RED, COLORS.GREEN, COLORS.BLUE, COLORS.YELLOW }
 --- @field currentFlash number
 --- @field flashVisible boolean
 --- @field pendingNextRound boolean
+--- @field inputFlash number|nil
 
 --- @class ascii-ui.simon.GameAction
 --- @field type string
@@ -52,6 +67,7 @@ local function gameReducer(state, action)
 			currentFlash = 0,
 			flashVisible = false,
 			pendingNextRound = false,
+			inputFlash = nil,
 		}
 	elseif action.type == "NEXT_ROUND" then
 		local newSeq = vim.list_extend({}, state.sequence)
@@ -63,6 +79,7 @@ local function gameReducer(state, action)
 			currentFlash = 0,
 			flashVisible = false,
 			pendingNextRound = false,
+			inputFlash = nil,
 		})
 	elseif action.type == "CORRECT_INPUT" then
 		local newPlayerIndex = state.playerIndex + 1
@@ -76,7 +93,7 @@ local function gameReducer(state, action)
 			pendingNextRound = roundComplete,
 		})
 	elseif action.type == "WRONG_INPUT" then
-		return vim.tbl_extend("force", state, { gamePhase = "gameover" })
+		return vim.tbl_extend("force", state, { gamePhase = "gameover", inputFlash = nil })
 	elseif action.type == "SHOW_FLASH" then
 		return vim.tbl_extend("force", state, { flashVisible = true })
 	elseif action.type == "HIDE_FLASH" then
@@ -88,6 +105,10 @@ local function gameReducer(state, action)
 		})
 	elseif action.type == "ENTER_INPUT_PHASE" then
 		return vim.tbl_extend("force", state, { gamePhase = "input" })
+	elseif action.type == "INPUT_FLASH" then
+		return vim.tbl_extend("force", state, { inputFlash = action.colorIndex })
+	elseif action.type == "CLEAR_INPUT_FLASH" then
+		return vim.tbl_extend("force", state, { inputFlash = nil })
 	end
 	return state
 end
@@ -101,6 +122,7 @@ local INITIAL_STATE = {
 	currentFlash = 0,
 	flashVisible = false,
 	pendingNextRound = false,
+	inputFlash = nil,
 }
 
 -- Custom hook: encapsulates all Simon game state and logic
@@ -112,12 +134,12 @@ local function useSimonGame()
 		dispatch({ type = "START_GAME" })
 	end
 
-	-- Handle player input
+	-- Handle player input on a quadrant
 	local function handleInput(colorIndex)
 		if state.gamePhase ~= "input" then
 			return
 		end
-
+		dispatch({ type = "INPUT_FLASH", colorIndex = colorIndex })
 		if state.sequence[state.playerIndex + 1] == colorIndex then
 			dispatch({ type = "CORRECT_INPUT" })
 		else
@@ -158,6 +180,11 @@ local function useSimonGame()
 		dispatch({ type = "NEXT_ROUND" })
 	end, state.pendingNextRound and 1000 or nil)
 
+	-- Clear input flash after 300ms
+	useTimeout(function()
+		dispatch({ type = "CLEAR_INPUT_FLASH" })
+	end, state.inputFlash ~= nil and 300 or nil)
+
 	return {
 		state = state,
 		startGame = startGame,
@@ -165,18 +192,29 @@ local function useSimonGame()
 	}
 end
 
+-- Helper: check if a quadrant should be lit
+local function isQuadrantLit(quadrantIndex, state)
+	if state.gamePhase == "showing" and state.flashVisible then
+		return state.sequence[state.currentFlash + 1] == quadrantIndex
+	end
+	if state.gamePhase == "input" then
+		return state.inputFlash == quadrantIndex
+	end
+	return false
+end
+
 -- Custom components
 
 local Title = ui.createComponent("Title", function()
 	return {
 		BufferLine.new(Segment:new({
-			content = "╔══════════════════════════════════╗",
-			color = COLORS.ACCENT,
+			content = "╔════════════════════════════════════╗",
+			color = ACCENT_COLOR,
 		})),
-		BufferLine.new(Segment:new({ content = "║       SIMON SAYS MEMORY GAME     ║", color = COLORS.ACCENT })),
+		BufferLine.new(Segment:new({ content = "║        SIMON SAYS MEMORY GAME      ║", color = ACCENT_COLOR })),
 		BufferLine.new(Segment:new({
-			content = "╚══════════════════════════════════╝",
-			color = COLORS.ACCENT,
+			content = "╚════════════════════════════════════╝",
+			color = ACCENT_COLOR,
 		})),
 	}
 end)
@@ -184,59 +222,101 @@ end)
 local ScoreDisplay = ui.createComponent("ScoreDisplay", function(props)
 	return {
 		BufferLine.new(
-			Segment:new({ content = "Score: ", color = COLORS.TEXT }),
-			Segment:new({ content = tostring(props.score), color = COLORS.ACCENT }),
-			Segment:new({ content = "  High Score: ", color = COLORS.TEXT }),
-			Segment:new({ content = tostring(props.highScore), color = COLORS.ACCENT })
+			Segment:new({ content = "  Score: ", color = TEXT_COLOR }),
+			Segment:new({ content = tostring(props.score), color = ACCENT_COLOR }),
+			Segment:new({ content = "    High Score: ", color = TEXT_COLOR }),
+			Segment:new({ content = tostring(props.highScore), color = ACCENT_COLOR })
 		),
 	}
 end, { score = "number", highScore = "number" })
 
 local StatusMessage = ui.createComponent("StatusMessage", function(props)
 	return {
-		props.gamePhase == "idle" and Paragraph({ content = "Press any button to start!" }) or nil,
-		props.gamePhase == "showing" and Paragraph({ content = "Watch the sequence..." }) or nil,
+		props.gamePhase == "idle" and Paragraph({ content = "  Press any quadrant to start!" }) or nil,
+		props.gamePhase == "showing" and Paragraph({ content = "  Watch the sequence..." }) or nil,
 		props.gamePhase == "input" and BufferLine.new(
-			Segment:new({ content = "Your turn! Repeat the sequence (" }),
-			Segment:new({ content = tostring(props.playerIndex), color = COLORS.ACCENT }),
+			Segment:new({ content = "  Your turn! Repeat (", color = TEXT_COLOR }),
+			Segment:new({ content = tostring(props.playerIndex), color = ACCENT_COLOR }),
 			Segment:new({ content = "/" }),
-			Segment:new({ content = tostring(props.sequenceLength), color = COLORS.ACCENT }),
+			Segment:new({ content = tostring(props.sequenceLength), color = ACCENT_COLOR }),
 			Segment:new({ content = ")" })
 		) or nil,
 		props.gamePhase == "gameover" and BufferLine.new(Segment:new({
-			content = "Game Over! Final Score: " .. props.score,
-			color = COLORS.RED,
+			content = "  Game Over! Final Score: " .. props.score,
+			color = COLORS.RED.bright,
 		})) or nil,
-		props.gamePhase == "gameover" and Paragraph({ content = "Press any button to play again." }) or nil,
+		props.gamePhase == "gameover" and Paragraph({ content = "  Press any quadrant to play again." }) or nil,
 	}
 end, { gamePhase = "string", playerIndex = "number", sequenceLength = "number", score = "number" })
 
-local FlashIndicator = ui.createComponent("FlashIndicator", function(props)
-	return {
-		props.showing and props.visible and BufferLine.new(
-			Segment:new({ content = ">>> ", color = COLORS.TEXT }),
-			Segment:new({ content = props.colorName, color = props.colorValue }),
-			Segment:new({ content = " <<<", color = COLORS.TEXT })
-		) or nil,
-		props.showing and not props.visible and Paragraph({ content = "..." }) or nil,
-		props.showing and Paragraph({ content = "" }) or nil,
-	}
-end, { showing = "boolean", visible = "boolean", colorName = "string", colorValue = "string" })
+--- Renders the 2×2 Simon quadrant board with double-line borders.
+--- Each quadrant is a multi-line filled block that lights up when active.
+local SimonBoard = ui.createComponent("SimonBoard", function(props)
+	local state = props.state
+	local onInput = props.onInput
+
+	local hLine = string.rep("═", QUAD_WIDTH)
+	local fillStr = string.rep(FILL, QUAD_WIDTH)
+
+	--- Create a colored quadrant segment
+	local function makeQuadSeg(colorPair, lit, focusable, on_press)
+		local color = lit and colorPair.bright or colorPair.dark
+		return Segment:new({
+			content = fillStr,
+			color = { fg = color, bg = color },
+			is_focusable = focusable,
+			interactions = focusable and {
+				[interaction_type.SELECT] = on_press,
+			} or {},
+		})
+	end
+
+	--- Create a border segment
+	local function makeBorderSeg(content)
+		return Segment:new({ content = content, color = BORDER_COLOR })
+	end
+
+	--- Create one row of two quadrants with borders
+	local function makeQuadRow(leftIdx, rightIdx, isFirstLine)
+		return BufferLine.new(
+			makeBorderSeg("║"),
+			makeQuadSeg(QUADRANTS[leftIdx].color, isQuadrantLit(leftIdx, state), isFirstLine, function()
+				onInput(leftIdx)
+			end),
+			makeBorderSeg("║"),
+			makeQuadSeg(QUADRANTS[rightIdx].color, isQuadrantLit(rightIdx, state), isFirstLine, function()
+				onInput(rightIdx)
+			end),
+			makeBorderSeg("║")
+		)
+	end
+
+	-- Build board lines: top border, top row, middle border, bottom row, bottom border
+	local topBorder = { BufferLine.new(makeBorderSeg("╔" .. hLine .. "╦" .. hLine .. "╗")) }
+	local topRows = ui.map(vim.fn.range(1, QUAD_HEIGHT), function(_, row)
+		return makeQuadRow(1, 2, row == 1) -- GREEN (left), RED (right)
+	end)
+	local midBorder = { BufferLine.new(makeBorderSeg("╠" .. hLine .. "╬" .. hLine .. "╣")) }
+	local bottomRows = ui.map(vim.fn.range(1, QUAD_HEIGHT), function(_, row)
+		return makeQuadRow(3, 4, row == 1) -- YELLOW (left), BLUE (right)
+	end)
+	local bottomBorder = { BufferLine.new(makeBorderSeg("╚" .. hLine .. "╩" .. hLine .. "╝")) }
+
+	local lines = {}
+	vim.list_extend(lines, topBorder)
+	vim.list_extend(lines, topRows)
+	vim.list_extend(lines, midBorder)
+	vim.list_extend(lines, bottomRows)
+	vim.list_extend(lines, bottomBorder)
+	return lines
+end, { state = "table", onInput = "function" })
 
 local GameInstructions = ui.createComponent("GameInstructions", function()
 	return {
-		Paragraph({ content = "Controls:" }),
+		Paragraph({ content = "" }),
 		BufferLine.new(
-			Segment:new({ content = "• Navigate: ", color = COLORS.TEXT }),
-			Segment:new({ content = "Arrow keys or h/j/k/l", color = COLORS.DIM })
-		),
-		BufferLine.new(
-			Segment:new({ content = "• Select: ", color = COLORS.TEXT }),
-			Segment:new({ content = "Enter", color = COLORS.DIM })
-		),
-		BufferLine.new(
-			Segment:new({ content = "• Quit: ", color = COLORS.TEXT }),
-			Segment:new({ content = "q", color = COLORS.DIM })
+			Segment:new({ content = "  Controls: ", color = TEXT_COLOR }),
+			Segment:new({ content = "Navigate with arrow keys/hjkl, select with Enter", color = DIM_COLOR })
 		),
 	}
 end)
@@ -245,13 +325,21 @@ end)
 local App = ui.createComponent("App", function()
 	local game = useSimonGame()
 	local state = game.state
-	local showingFlash = state.gamePhase == "showing" and state.currentFlash < #state.sequence
-	local flashColorIdx = state.sequence[state.currentFlash + 1]
+
+	local function handleQuadrantPress(colorIndex)
+		if state.gamePhase == "idle" or state.gamePhase == "gameover" then
+			game.startGame()
+		elseif state.gamePhase == "input" then
+			game.handleInput(colorIndex)
+		end
+	end
 
 	return {
 		Title(),
 		Paragraph({ content = "" }),
 		ScoreDisplay({ score = state.score, highScore = state.highScore }),
+		Paragraph({ content = "" }),
+		SimonBoard({ state = state, onInput = handleQuadrantPress }),
 		Paragraph({ content = "" }),
 		StatusMessage({
 			gamePhase = state.gamePhase,
@@ -259,26 +347,6 @@ local App = ui.createComponent("App", function()
 			sequenceLength = #state.sequence,
 			score = state.score,
 		}),
-		Paragraph({ content = "" }),
-		FlashIndicator({
-			showing = showingFlash,
-			visible = state.flashVisible,
-			colorName = COLOR_NAMES[flashColorIdx] or "",
-			colorValue = COLOR_VALUES[flashColorIdx] or COLORS.TEXT,
-		}),
-		ui.map(COLOR_NAMES, function(colorName, i)
-			return Button({
-				label = "[" .. colorName:sub(1, 3) .. "]",
-				on_press = function()
-					if state.gamePhase == "idle" or state.gamePhase == "gameover" then
-						game.startGame()
-					elseif state.gamePhase == "input" then
-						game.handleInput(i)
-					end
-				end,
-			})
-		end),
-		Paragraph({ content = "" }),
 		GameInstructions(),
 	}
 end)
