@@ -41,3 +41,20 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+      - id: check-no-print
+        name: check-no-print
+        description: Warn about print() statements in production code
+        entry: .githooks/check-no-print
+        language: system
+        pass_filenames: false
+        always_run: true
+
+  - repo: local
+    hooks:
+      - id: commit-msg
+        name: commit-msg
+        description: Validate conventional commit message format
+        entry: .githooks/validate-commit-msg
+        language: system
+        stages: [commit-msg]

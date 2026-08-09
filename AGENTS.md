@@ -317,7 +317,7 @@ ascii-ui.nvim is a React-like UI framework for Neovim plugins, written in Lua. I
 | `pre-commit run --all-files` | Run all pre-commit hooks on all files |
 | `pre-commit run --files <files>` | Run hooks on specific files |
 
-**Always run `make check` and `make test` after making changes.**
+**Pre-commit hooks run automatically on `git commit` — no need to manually run `make check` or `make test` before committing.**
 
 ### Pre-commit Hooks
 
@@ -328,15 +328,58 @@ This project uses [pre-commit](https://pre-commit.com/) to automatically run che
 - **check-docs**: Validates vimdocs are up to date (only on `lua/ascii-ui/**/*.lua` changes)
 - **check-workflows**: Validates GitHub Actions YAML (only on `.github/workflows/*.yml` changes)
 - **test**: Runs the test suite
+- **commit-msg**: Validates conventional commit format (MANDATORY — rejects invalid messages)
+- **check-no-print**: Warns about `print()` statements in production code (non-blocking)
 
 **Setup**: Install pre-commit hooks with:
 ```bash
 pre-commit install --hook-dir .githooks
+pre-commit install --hook-dir .githooks --hook-type commit-msg
 ```
 
-This uses the existing `.githooks/` directory (configured via `core.hooksPath`). The hook will run automatically on `git commit`.
+This uses the existing `.githooks/` directory (configured via `core.hooksPath`). The pre-commit hook runs on `git commit`; the commit-msg hook validates the message format.
 
 **Note**: `make check` still works and runs the same checks (without auto-formatting). Pre-commit is an addition that provides auto-formatting and runs on staged files only.
+
+### Commit Message Validation
+
+The `commit-msg` hook enforces conventional commits format automatically. Commits without proper format are rejected.
+
+**Required format:**
+```
+type(scope): description
+
+[agent: <name>]
+```
+
+**Valid types:** `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+
+**Valid agents:** `ascii-ui-dev`, `nvim-docs-researcher`, `convention-reviewer`, `agent-teacher`, `task-scheduler`
+
+**Rules:**
+- Scope is optional but must be lowercase if present
+- Description must start with lowercase letter
+- Description must not end with period
+- First line must be 72 characters or less
+- Must include `[agent: <name>]` footer
+
+### Trusting Pre-commit Hooks
+
+**Philosophy**: Pre-commit hooks run automatically on `git commit`. They validate:
+- Code formatting (stylua auto-fixes)
+- Linting (luacheck)
+- Tests (make test)
+- Docs validation (check-docs)
+- Commit message format (commit-msg)
+
+**What this means for agents:**
+- ✅ **DO**: Just commit. Pre-commit will catch issues.
+- ✅ **DO**: If pre-commit fails, read the error and fix it.
+- ❌ **DON'T**: Manually run `make check` before committing — pre-commit does this.
+- ❌ **DON'T**: Manually run `make test` before committing — pre-commit does this.
+- ❌ **DON'T**: Worry about missing formatting or linting issues — stylua auto-fixes, luacheck catches the rest.
+
+**Exception**: If you're debugging a complex issue and want to verify tests pass before committing, you CAN run `make test` manually. But for normal workflow, trust pre-commit.
 
 ## Architecture
 

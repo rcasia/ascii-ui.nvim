@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Validate conventional commit message format.
+# Called by pre-commit framework during commit-msg stage.
+# $1 = path to file containing the commit message
+
+set -euo pipefail
+
+commit_msg=$(cat "$1")
+first_line=$(echo "$commit_msg" | head -1)
+
+# Check format: type(scope): description OR type: description
+if ! echo "$first_line" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z-]+\))?: [a-z].*'; then
+	echo "ERROR: Commit message does not follow conventional commits format"
+	echo "Expected: type(scope): description"
+	echo "Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+	exit 1
+fi
+
+# Check no period at end
+if echo "$first_line" | grep -qE '\.$'; then
+	echo "ERROR: Description must not end with period"
+	exit 1
+fi
+
+# Check length
+if [ ${#first_line} -gt 72 ]; then
+	echo "ERROR: First line must be 72 characters or less (currently ${#first_line})"
+	exit 1
+fi
+
+# Check for agent footer
+if ! echo "$commit_msg" | grep -qE '\[agent: (ascii-ui-dev|nvim-docs-researcher|convention-reviewer|agent-teacher|task-scheduler)\]'; then
+	echo "ERROR: Commit must include [agent: <name>] footer"
+	echo "Valid agents: ascii-ui-dev, nvim-docs-researcher, convention-reviewer, agent-teacher, task-scheduler"
+	exit 1
+fi
+
+exit 0

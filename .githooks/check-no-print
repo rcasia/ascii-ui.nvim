@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Warn (but don't block) if print() is found in production Lua code.
+# Runs as a pre-commit hook via .pre-commit-config.yaml.
+
+set -euo pipefail
+
+files=$(git diff --cached --name-only --diff-filter=ACM | grep '^lua/ascii-ui/.*\.lua$' | grep -v '_spec\.lua$' || true)
+
+if [ -n "$files" ]; then
+	for file in $files; do
+		if grep -n '^\s*print(' "$file" > /dev/null 2>&1; then
+			echo "WARNING: Found print() statement in $file"
+			echo "  Remove debug prints before committing"
+		fi
+	done
+fi
+
+exit 0
