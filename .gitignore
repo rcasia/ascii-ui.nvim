@@ -53,3 +53,6 @@ debug/
 doc/ascii-ui-*.txt
 !doc/ascii-ui.txt
 
+# Playwright MCP artifacts
+.playwright-mcp/
+
