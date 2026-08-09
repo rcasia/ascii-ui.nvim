@@ -154,7 +154,7 @@ return function(RootComponent, viewport)
 	)
 
 	-- Set up window keymaps (now that we have the bus)
-	initialize_window_keymaps(window, bus)
+	initialize_window_keymaps(window, bus, renderedBufferGetter)
 
 	-- updates the window with the rendered buffer
 	window:update(rendered_buffer)
@@ -217,6 +217,34 @@ return function(RootComponent, viewport)
 		end,
 	})
 
+	-- TextChangedI autocmd captures input when user types in insert mode
+	local text_changed_autocmd_id = vim.api.nvim_create_autocmd("TextChangedI", {
+		buffer = window:get_bufnr(),
+		callback = function()
+			if not window:is_focused() then
+				return
+			end
+			local current_buffer = renderedBufferGetter()
+			local position = Cursor.current_position()
+			local segment = current_buffer:find_segment_by_position(position)
+			if not segment or not segment:is_inputable() then
+				return
+			end
+
+			-- Get the current line content
+			local line = vim.api.nvim_get_current_line()
+			logger.debug("Text changed in inputable segment: %s", line)
+
+			-- Trigger INPUT interaction with the new text
+			user_interations:instance():interact({
+				buffer_id = window:get_bufnr(),
+				position = position,
+				interaction_type = i.INPUT,
+				text = line,
+			})
+		end,
+	})
+
 	-- binds to window close event (handles external closures like :close or :quit)
 	vim.api.nvim_create_autocmd("WinClosed", {
 		callback = function(args)
@@ -228,6 +256,9 @@ return function(RootComponent, viewport)
 
 			-- Clean up the cursor autocmd
 			vim.api.nvim_del_autocmd(cursor_autocmd_id)
+
+			-- Clean up the text changed autocmd
+			vim.api.nvim_del_autocmd(text_changed_autocmd_id)
 
 			-- Unmount the fiber tree to clean up effects and timers
 			local root = fiberRootGetter()

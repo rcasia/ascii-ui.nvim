@@ -1,12 +1,12 @@
 local Segment = require("ascii-ui.buffer.segment")
+local createComponent = require("ascii-ui.components.create-component")
 local interaction_type = require("ascii-ui.interaction_type")
-local ui = require("ascii-ui")
 local useState = require("ascii-ui.hooks.use_state")
 
 --- @alias ascii-ui.InputProps { value?: string, initial_value?: string, password?: boolean, placeholder?: string, on_change?: fun(value: string) }
 
 --- @param props? ascii-ui.InputProps
-return ui.createComponent(
+return createComponent(
 	"Input",
 	function(props)
 		props = props or {}

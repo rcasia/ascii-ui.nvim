@@ -11,7 +11,8 @@ local THROTTLE_DELAY = 50 -- milliseconds
 ---
 --- @param window ascii-ui.Window
 --- @param bus ascii-ui.EventBus
-return function(window, bus)
+--- @param renderedBufferGetter fun(): ascii-ui.Buffer
+return function(window, bus, renderedBufferGetter)
 	-- Quit keymap: dispatch CLOSE_WINDOW
 	vim.keymap.set("n", config.keymaps.quit, function()
 		logger.debug("Quit key pressed, dispatching CLOSE_WINDOW")
@@ -26,6 +27,24 @@ return function(window, bus)
 			window_id = window:get_id(),
 			position = position,
 		}))
+	end, { buffer = window.bufnr, noremap = true, silent = true })
+
+	-- Insert mode keymap: enter insert mode when on inputable segment
+	vim.keymap.set("n", "i", function()
+		logger.debug("Insert key pressed")
+		local current_buffer = renderedBufferGetter()
+		if not current_buffer then
+			logger.debug("No buffer available")
+			return
+		end
+		local position = Cursor.current_position()
+		local segment = current_buffer:find_segment_by_position(position)
+		if segment and segment:is_inputable() then
+			logger.debug("Segment is inputable, entering insert mode")
+			vim.cmd("startinsert")
+		else
+			logger.debug("Segment is not inputable")
+		end
 	end, { buffer = window.bufnr, noremap = true, silent = true })
 
 	-- Mouse drag: dispatch MOVE_WINDOW

@@ -27,7 +27,7 @@ function UserInteractions:new()
 	return state
 end
 
----@alias ascii-ui.UserInteractions.InteractionOpts { buffer_id: integer, position: ascii-ui.Position, interaction_type: ascii-ui.UserInteractions.InteractionType | string }
+---@alias ascii-ui.UserInteractions.InteractionOpts { buffer_id: integer, position: ascii-ui.Position, interaction_type: ascii-ui.UserInteractions.InteractionType | string, text?: string }
 ---@param opts ascii-ui.UserInteractions.InteractionOpts
 function UserInteractions:interact(opts)
 	local buffer = self.buffers[opts.buffer_id]
@@ -50,7 +50,13 @@ function UserInteractions:interact(opts)
 
 	local interaction_function = segment.interactions[opts.interaction_type]
 	if type(interaction_function) == "function" then
-		local ok, err = xpcall(interaction_function, function(e)
+		local ok, err = xpcall(function()
+			if opts.text ~= nil then
+				interaction_function(opts.text)
+			else
+				interaction_function()
+			end
+		end, function(e)
 			return string.format("interaction error [%s]: %s", opts.interaction_type, e)
 		end)
 		if not ok then
