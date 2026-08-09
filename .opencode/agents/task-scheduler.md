@@ -261,14 +261,18 @@ When delegating work, use the task tool with structured prompts:
 1. [specific requirement 1]
 2. [specific requirement 2]
 3. Work in isolated workspace under /tmp (if parallel execution)
-4. Create PR when complete
-5. Wait for review and merge to main
-6. Verify pipeline is green on main after merge before reporting completion
+4. Commit changes — **trust pre-commit hooks** to catch failures
+5. If pre-commit fails, fix and commit again
+6. Create PR when complete
+7. Wait for review and merge to main
+8. Verify pipeline is green on main after merge before reporting completion
 
 ### Success Criteria
 
 - [ ] [criterion 1]
 - [ ] [criterion 2]
+- [ ] Branch is up to date with origin/main (rebased)
+- [ ] Pre-commit hooks pass (formatting, linting, tests, commit message)
 - [ ] PR created and merged to main
 - [ ] Pipeline is green on main after merge
 
@@ -355,6 +359,7 @@ If an agent is stuck or blocked:
 
 ## Changelog
 
+- 2026-08-09: Updated delegation template to trust pre-commit hooks instead of manual checks
 - 2026-08-08: Added push/verify CI requirements to delegation template. Added parallel agent workspace isolation pattern under /tmp.
 
 - 2026-08-08: Added `gh issue create` and `gh pr create` permissions. Task-scheduler can now create issues and PRs directly.
