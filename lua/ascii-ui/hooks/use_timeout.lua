@@ -12,12 +12,19 @@ local useEffect = require("ascii-ui.hooks.use_effect")
 local function useTimeout(callback, delay)
 	local currentFiber = assert(fiber.getCurrentFiber(), "cannot call useTimeout out of the component scope")
 
-	-- Store callback ref on the fiber to persist across renders
-	-- This prevents stale closure issues where the callback captures old state
-	if not currentFiber._timeoutCallbackRef then
-		currentFiber._timeoutCallbackRef = {}
+	-- Use hookIndex for per-instance storage (like useState)
+	local idx = currentFiber.hookIndex
+
+	-- Initialize storage for this timeout instance
+	if not currentFiber.hooks[idx] then
+		currentFiber.hooks[idx] = {
+			callbackRef = {},
+			timer = nil,
+		}
 	end
-	currentFiber._timeoutCallbackRef.current = callback
+
+	local storage = currentFiber.hooks[idx]
+	storage.callbackRef.current = callback
 
 	-- Use nil dependencies so effect runs on every render
 	-- This ensures the timer restarts with the latest callback
@@ -27,34 +34,36 @@ local function useTimeout(callback, delay)
 		end
 
 		-- Cancel any existing timer
-		if currentFiber._timeoutTimer then
-			currentFiber._timeoutTimer:stop()
-			currentFiber._timeoutTimer:close()
-			currentFiber._timeoutTimer = nil
+		if storage.timer then
+			storage.timer:stop()
+			storage.timer:close()
+			storage.timer = nil
 		end
 
 		local timer = assert(vim.uv.new_timer())
-		currentFiber._timeoutTimer = timer
+		storage.timer = timer
 
 		timer:start(
 			delay,
 			0,
 			vim.schedule_wrap(function()
 				-- Always call the latest callback via the ref
-				if currentFiber._timeoutCallbackRef then
-					currentFiber._timeoutCallbackRef.current()
+				if storage.callbackRef then
+					storage.callbackRef.current()
 				end
 			end)
 		)
 
 		return function()
-			if currentFiber._timeoutTimer then
-				currentFiber._timeoutTimer:stop()
-				currentFiber._timeoutTimer:close()
-				currentFiber._timeoutTimer = nil
+			if storage.timer then
+				storage.timer:stop()
+				storage.timer:close()
+				storage.timer = nil
 			end
 		end
 	end, nil) -- nil dependencies = run on every render
+
+	currentFiber.hookIndex = idx + 1
 end
 
 return useTimeout
