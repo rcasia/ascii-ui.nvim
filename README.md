@@ -6,9 +6,176 @@
 
 # ascii-ui.nvim
 
-A WIP extensible ui framework with no non-sense apis (hopefully) for nvim.
+**Build rich, interactive UIs for your Neovim plugins — with React-like components, hooks, and a fiber-based reconciler.**
 
-check out the [docs](https://rcasia.github.io/ascii-ui-docs/) to learn more.
+ascii-ui.nvim is a complete UI framework for Neovim. Write functional components, manage state with hooks, compose layouts, and render to floating windows or terminal stdout. No more wrestling with raw `nvim_buf_set_lines` calls.
+
+## Features
+
+- **React-like component model** — functional components with props, composition, and reconciliation
+- **Hooks** — `useState`, `useEffect`, `useReducer`, `useInterval`, `useTimeout`, `useConfig`
+- **Built-in components** — Button, Input, Select, Slider, Checkbox, Tree, Box, Paragraph
+- **Layout primitives** — `Row` and `Column` for horizontal and vertical arrangement
+- **Fiber-based reconciler** — efficient tree diffing and minimal re-renders
+- **Multiple viewports** — Neovim floating windows (default), terminal stdout, or custom
+- **Live reload** — instant feedback during development with `make debug`
+- **ANSI truecolor** — full color support via the `Color` class and segment colors
+- **Zero dependencies** — pure Lua, runs on Neovim's embedded Lua 5.1
+
+## Quick Start
+
+### Installation
+
+**[lazy.nvim](https://github.com/folke/lazy.nvim):**
+
+```lua
+return {
+    "rcasia/ascii-ui.nvim",
+    opts = {},
+}
+```
+
+**[luarocks](https://luarocks.org/):**
+
+```bash
+luarocks install ascii-ui
+```
+
+**[lux](https://github.com/lux-cli/lux):**
+
+```bash
+lux install ascii-ui
+```
+
+### Hello World
+
+```lua
+local ui = require("ascii-ui")
+local Paragraph = ui.components.Paragraph
+local Button = ui.components.Button
+local useState = ui.hooks.useState
+
+local App = ui.createComponent("App", function()
+    local count, setCount = useState(0)
+    return {
+        Paragraph({ content = "Count: " .. count }),
+        Button({
+            label = "+1",
+            on_press = function()
+                setCount(count + 1)
+            end,
+        }),
+    }
+end)
+
+ui.mount(App)
+```
+
+That's it. A floating window opens with a counter and a button. Click the button, the count updates. State management and rendering handled for you.
+
+## What Can You Build?
+
+<table align="center">
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/0d2729e1-1518-430f-93f1-e52755b6f347" height="250"></td>
+    <td><img src="https://github.com/user-attachments/assets/1df3c920-0ced-46a0-90c7-97231ad33ba9" height="250"></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/419ab99a-424a-46e5-bc1c-8f177cbef298" height="250"></td>
+    <td><img src="https://github.com/user-attachments/assets/1e9ecc74-9e1a-4e67-b3c1-9d04b5c4755e" height="250"></td>
+  </tr>
+</table>
+
+From file explorers and dashboards to animated clocks and train station boards — if it can be drawn with text, ascii-ui.nvim can render it.
+
+See the [`examples/`](./examples/) directory for more:
+
+| Example | What it shows |
+|---------|--------------|
+| [`analog-clock.lua`](./examples/analog-clock.lua) | Animated clock with `useInterval` + `Color` |
+| [`file_structure.lua`](./examples/file_structure.lua) | Collapsible tree with the `Tree` component |
+| [`train-station-board.lua`](./examples/train-station-board.lua) | Scrolling text animation |
+| [`animated-bar-chart.lua`](./examples/animated-bar-chart.lua) | Dynamic bar chart with state |
+| [`metro-map.lua`](./examples/metro-map.lua) | ASCII art with colored segments |
+| [`text-input.lua`](./examples/text-input.lua) | Form with `Input` component |
+| [`select-dropdown.lua`](./examples/select-dropdown.lua) | Selectable list with `Select` |
+
+## Documentation
+
+| Guide | Description |
+|-------|-------------|
+| [**Components**](./docs/COMPONENTS.md) | Full reference for all built-in components with props and examples |
+| [**Hooks**](./docs/HOOKS.md) | State management, side effects, timers — the full hooks API |
+| [**Layout**](./docs/LAYOUT.md) | `Row` and `Column` for arranging components |
+| [**Advanced**](./docs/ADVANCED.md) | Custom components, viewports, low-level rendering (Segment, BufferLine, Buffer) |
+| [**API Reference**](https://rcasia.github.io/ascii-ui-docs/) | Full generated documentation |
+
+## Configuration
+
+```lua
+require("ascii-ui").setup({
+    log_level = "INFO",
+    characters = {
+        top_left = "╭", top_right = "╮",
+        bottom_left = "╰", bottom_right = "╯",
+        horizontal = "─", vertical = "│",
+        left_tree = "├", thumb = "●",
+        whitespace = " ", right_triangule = "▸", down_triangule = "▾",
+    },
+    keymaps = {
+        quit = "q",
+        select = "<CR>",
+    },
+})
+```
+
+## Live Reload
+
+> **Experimental:** This feature is under active development and the API may change.
+
+ascii-ui.nvim ships a live-reload debug mode. Save any `.lua` file and the running Neovim instance automatically tears down the current UI, unloads all modules, and re-executes your script.
+
+**Requirements:** `nvim` on `$PATH`.
+
+### Quick start
+
+1. Write your component in any `.lua` file and return it:
+
+```lua
+-- lua/myplugin/MyComp.lua
+local ui = require("ascii-ui")
+local useState = ui.hooks.useState
+local Paragraph = ui.components.Paragraph
+local Button = ui.components.Button
+
+return ui.createComponent("MyComp", function()
+    local count, setCount = useState(0)
+    return {
+        Paragraph({ content = "count: " .. count }),
+        Button({ label = "+1", on_press = function() setCount(count + 1) end }),
+    }
+end)
+```
+
+2. Create a `debug.lua` in the repository root:
+
+```lua
+require("ascii-ui").debug("lua/myplugin/MyComp.lua")
+```
+
+3. Start the session:
+
+```sh
+make debug
+```
+
+Every save reloads the UI automatically. Errors are shown as notifications without crashing the session.
+
+Works from any running Neovim session too:
+
+```
+:lua require("ascii-ui").debug("lua/myplugin/MyComp.lua")
+```
 
 ## AI Agent Skill
 
@@ -19,17 +186,6 @@ npx skills add rcasia/agent-skills --skill ascii-ui-nvim
 ```
 
 The skill gives agents a mental model of the component system, hooks, and common patterns so they can generate correct ascii-ui code without hallucinating APIs. Source: [rcasia/agent-skills](https://github.com/rcasia/agent-skills).
-
-## Agentic Development
-
-Since August 8, 2026, this project is developed using a multi-agent system. The codebase is maintained by specialized AI agents that collaborate on development:
-
-- **ascii-ui-dev**: Primary development agent specialized in the framework's React-like component model and Neovim integration
-- **nvim-docs-researcher**: Read-only agent that searches Neovim API documentation
-- **convention-reviewer**: Read-only agent that validates code against project conventions
-- **agent-teacher**: Meta-learning agent that continuously improves the other agents by capturing discoveries
-
-See [AGENTS.md](./AGENTS.md) for details on the agent system and `.opencode/agents/` for agent definitions.
 
 ## Development
 
@@ -53,9 +209,7 @@ See [AGENTS.md](./AGENTS.md) for details on the agent system and `.opencode/agen
    pre-commit install --hook-dir .githooks
    ```
 
-   This sets up automatic checks (formatting, linting, docs validation, tests) on every commit.
-
-### Common Commands
+### Commands
 
 | Command | Purpose |
 |---|---|
@@ -65,109 +219,6 @@ See [AGENTS.md](./AGENTS.md) for details on the agent system and `.opencode/agen
 | `make debug` | Live-reload debug session |
 | `pre-commit run --all-files` | Run all pre-commit hooks manually |
 
-<table align="center">
-  <tr>
-    <td><img src="https://github.com/user-attachments/assets/0d2729e1-1518-430f-93f1-e52755b6f347" height="250"></td>
-    <td><img src="https://github.com/user-attachments/assets/1df3c920-0ced-46a0-90c7-97231ad33ba9" height="250"></td>
-  </tr>
-  <tr>
-       <td><img src="https://github.com/user-attachments/assets/419ab99a-424a-46e5-bc1c-8f177cbef298" height="250"></td>
-       <td><img src="https://github.com/user-attachments/assets/1e9ecc74-9e1a-4e67-b3c1-9d04b5c4755e" height="250"></td>
-  </tr>
-</table>
+## License
 
-# Installation
-
-```lua
-return {
-  { 
-  "rcasia/ascii-ui.nvim", 
-  opts = {}
- },
-}
-```
-
-## Usage
-
-```lua
-
-local ui = require("ascii-ui")
-local Paragraph = ui.components.Paragraph
-local Button = ui.components.Button
-local useState = ui.hooks.useState
-
-local App = ui.createComponent(function(props)
-  local content, setContent = useState("initial content")
-  return {
-   Paragraph({ content = content }),
-   Button({
-    label = "change",
-    on_press = function()
-     setContent("changed content")
-    end,
-   })
-  }
-end)
-
-ui.mount(App)
-
-```
-
-## Live Reload (Experimental)
-
-> **Experimental:** This feature is under active development and the API may change.
-
-ascii-ui.nvim ships a live-reload debug mode that lets you iterate on your UI without leaving the terminal. Save any `.lua` file in the plugin and the running Neovim instance automatically tears down the current UI, unloads all `ascii-ui` modules, and re-executes your script from scratch.
-
-**Requirements:** `nvim` on `$PATH`.
-
-### Quick start
-
-1. Write your component in any `.lua` file and return it:
-
-```lua
--- lua/myplugin/MyComp.lua
-local ui = require("ascii-ui")
-local useState = ui.hooks.useState
-local Paragraph = ui.components.Paragraph
-local Button    = ui.components.Button
-
-return ui.createComponent("MyComp", function()
-  local count, setCount = useState(0)
-  return {
-    Paragraph({ content = "count: " .. count }),
-    Button({ label = "+1", on_press = function() setCount(count + 1) end }),
-  }
-end)
-```
-
-2. Create a `debug.lua` in the repository root (it is git-ignored) that points at it:
-
-```lua
-require("ascii-ui").debug("lua/myplugin/MyComp.lua")
-```
-
-3. Start the session:
-
-```sh
-make debug
-# or
-./scripts/debug
-```
-
-Every time you save any `.lua` file under `lua/` or `debug.lua` itself, the UI reloads automatically. Errors are shown as Neovim notifications without crashing the session.
-
-`ui.debug` also works from any running Neovim session without `make debug`:
-
-```
-:lua require("ascii-ui").debug("lua/myplugin/MyComp.lua")
-```
-
-### How it works
-
-| File / API | Role |
-|---|---|
-| `ui.debug(file)` | Loads the component file with `dofile`, mounts it, and returns the `bufnr` |
-| `lua/ascii-ui/dev/init.lua` | Live-reload module — watches the plugin directory, debounces events, unloads modules, re-runs `debug.lua` |
-| `scripts/debug-init.lua` | Minimal Neovim init used for the debug session (no user config loaded) |
-| `scripts/debug` | Shell launcher — resolves paths, exports env vars, opens Neovim |
+MIT
