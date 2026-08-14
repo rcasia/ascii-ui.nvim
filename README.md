@@ -1,8 +1,8 @@
 <img align="right" width="100px" src="./logo.png" alt="Ascii-UI Logo" />
 
-[![Test](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/test.yml/badge.svg)](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/test.yml)
-[![Lux Publish](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/publish-to-luarocks.yml/badge.svg)](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/publish-to-luarocks.yml)
-[![Docs](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/check-docs.yml/badge.svg)](https://github.com/rcasia/ascii-ui.nvim/actions/workflows/check-docs.yml)
+[![Test](https://github.com/ascii-ui/ascii-ui.nvim/actions/workflows/test.yml/badge.svg)](https://github.com/ascii-ui/ascii-ui.nvim/actions/workflows/test.yml)
+[![Lux Publish](https://github.com/ascii-ui/ascii-ui.nvim/actions/workflows/publish-to-luarocks.yml/badge.svg)](https://github.com/ascii-ui/ascii-ui.nvim/actions/workflows/publish-to-luarocks.yml)
+[![Docs](https://github.com/ascii-ui/ascii-ui.nvim/actions/workflows/check-docs.yml/badge.svg)](https://github.com/ascii-ui/ascii-ui.nvim/actions/workflows/check-docs.yml)
 
 # ascii-ui.nvim
 
@@ -30,7 +30,7 @@ ascii-ui.nvim is a complete UI framework for Neovim. Write functional components
 
 ```lua
 return {
-    "rcasia/ascii-ui.nvim",
+    "ascii-ui/ascii-ui.nvim",
     opts = {},
 }
 ```
@@ -108,7 +108,7 @@ See the [`examples/`](./examples/) directory for more:
 | [**Hooks**](./docs/HOOKS.md) | State management, side effects, timers — the full hooks API |
 | [**Layout**](./docs/LAYOUT.md) | `Row` and `Column` for arranging components |
 | [**Advanced**](./docs/ADVANCED.md) | Custom components, viewports, low-level rendering (Segment, BufferLine, Buffer) |
-| [**API Reference**](https://rcasia.github.io/ascii-ui-docs/) | Full generated documentation |
+| [**API Reference**](https://ascii-ui.github.io/ascii-ui-docs/) | Full generated documentation |
 
 ## Configuration
 
@@ -182,10 +182,10 @@ Works from any running Neovim session too:
 Use ascii-ui.nvim with AI coding agents (OpenCode, Claude, etc.) by installing the official agent skill:
 
 ```sh
-npx skills add rcasia/agent-skills --skill ascii-ui-nvim
+npx skills add ascii-ui/agent-skills --skill ascii-ui-nvim
 ```
 
-The skill gives agents a mental model of the component system, hooks, and common patterns so they can generate correct ascii-ui code without hallucinating APIs. Source: [rcasia/agent-skills](https://github.com/rcasia/agent-skills).
+The skill gives agents a mental model of the component system, hooks, and common patterns so they can generate correct ascii-ui code without hallucinating APIs. Source: [ascii-ui/agent-skills](https://github.com/ascii-ui/agent-skills).
 
 ## Development
 
@@ -193,7 +193,7 @@ The skill gives agents a mental model of the component system, hooks, and common
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/rcasia/ascii-ui.nvim.git
+   git clone https://github.com/ascii-ui/ascii-ui.nvim.git
    cd ascii-ui.nvim
    ```
 

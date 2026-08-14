@@ -781,7 +781,7 @@ agent-teacher can create new specialized agents when gaps are identified.
 
 ## Documentation Sync
 
-When changes are made to `lua/ascii-ui/` or `doc/ascii-ui.txt`, the Docusaurus documentation at [ascii-ui-docs](https://github.com/rcasia/ascii-ui-docs) may need to be updated.
+When changes are made to `lua/ascii-ui/` or `doc/ascii-ui.txt`, the Docusaurus documentation at [ascii-ui-docs](https://github.com/ascii-ui/ascii-ui-docs) may need to be updated.
 
 ### Automatic Notifications
 

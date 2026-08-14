@@ -71,14 +71,14 @@ jobs:
               '',
               '### Action Required',
               '',
-              'Review the changes and update the Docusaurus documentation at https://github.com/rcasia/ascii-ui-docs if needed.',
+              'Review the changes and update the Docusaurus documentation at https://github.com/ascii-ui/ascii-ui-docs if needed.',
               '',
               '---',
               '*This issue was automatically created by the docs-sync workflow.*',
             ].join('\n');
 
             const { data: existingIssues } = await github.rest.issues.listForRepo({
-              owner: 'rcasia',
+              owner: 'ascii-ui',
               repo: 'ascii-ui-docs',
               state: 'open',
               labels: 'docs-sync',
@@ -94,7 +94,7 @@ jobs:
             }
             
             await github.rest.issues.create({
-              owner: 'rcasia',
+              owner: 'ascii-ui',
               repo: 'ascii-ui-docs',
               title: title,
               body: body,
