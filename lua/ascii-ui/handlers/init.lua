@@ -42,15 +42,26 @@ local function search_fn_for_direction(direction)
 	return Buffer.find_last_focusable
 end
 
+--- @class ascii-ui.HandlerConfig
+--- @field bus ascii-ui.EventBus The command bus
+--- @field window ascii-ui.Window The viewport
+--- @field fiberRootGetter fun(): ascii-ui.RootFiberNode Returns current fiber root
+--- @field fiberRootSetter fun(root: ascii-ui.RootFiberNode) Updates fiber root reference
+--- @field renderedBufferGetter fun(): ascii-ui.Buffer Returns current rendered buffer
+--- @field renderedBufferSetter fun(buffer: ascii-ui.Buffer) Updates rendered buffer reference
+--- @field inputHandler? ascii-ui.InputHandler Optional input handler for pre-render guard
+
 --- Registers all command handlers on the given bus.
----
---- @param bus ascii-ui.EventBus  The command bus to attach handlers to.
---- @param window ascii-ui.Window  The viewport (window) for this mount.
---- @param fiberRootGetter fun(): ascii-ui.RootFiberNode  Returns the current fiber root (may change after rerender).
---- @param fiberRootSetter fun(root: ascii-ui.RootFiberNode)  Updates the fiber root reference after rerender.
---- @param renderedBufferGetter fun(): ascii-ui.Buffer  Returns the current rendered buffer.
---- @param renderedBufferSetter fun(buffer: ascii-ui.Buffer)  Updates the rendered buffer reference after rerender.
-function M.register_handlers(bus, window, fiberRootGetter, fiberRootSetter, renderedBufferGetter, renderedBufferSetter)
+--- @param config ascii-ui.HandlerConfig Configuration table with dependencies
+function M.register_handlers(config)
+	local bus = config.bus
+	local window = config.window
+	local fiberRootGetter = config.fiberRootGetter
+	local fiberRootSetter = config.fiberRootSetter
+	local renderedBufferGetter = config.renderedBufferGetter
+	local renderedBufferSetter = config.renderedBufferSetter
+	local inputHandler = config.inputHandler
+
 	-- CLOSE_WINDOW: close window, unmount fiber tree, detach interactions, clear bus
 	bus:on("CLOSE_WINDOW", function()
 		logger.info("Handling CLOSE_WINDOW for window %d", window:get_id())
@@ -140,6 +151,9 @@ function M.register_handlers(bus, window, fiberRootGetter, fiberRootSetter, rend
 
 		logger.info("Rerendering on state change for window %d and buffer %d", window:get_id(), window:get_bufnr())
 
+		-- Pre-render guard: save editing line state if in insert mode
+		local restore = inputHandler and inputHandler:pre_render_guard() or function() end
+
 		local rerender_ok, new_fiberRoot, new_buffer = xpcall(function()
 			local root = fiber.rerender(fiberRoot)
 			return root, root:get_buffer()
@@ -163,6 +177,7 @@ function M.register_handlers(bus, window, fiberRootGetter, fiberRootSetter, rend
 			local error_buffer = render_error_buffer(new_fiberRoot)
 			window:update(error_buffer)
 			logger.error("Rerender error: %s", vim.inspect(new_fiberRoot))
+			restore() -- still try to restore
 			return
 		end
 
@@ -175,6 +190,9 @@ function M.register_handlers(bus, window, fiberRootGetter, fiberRootSetter, rend
 
 		local new_lines_count = new_buffer:height()
 		window:update(new_buffer)
+
+		-- Restore editing line content after update (re-render guard)
+		restore()
 
 		-- Rebind the buffer to user interactions
 		user_interations:instance():attach_buffer(new_buffer, window:get_bufnr())

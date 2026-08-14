@@ -51,6 +51,11 @@ ascii-ui.HexaColor.new()	ascii-ui.txt	/*ascii-ui.HexaColor.new()*
 ascii-ui.HexaColor:get_highlight()	ascii-ui.txt	/*ascii-ui.HexaColor:get_highlight()*
 ascii-ui.Highlights	ascii-ui.txt	/*ascii-ui.Highlights*
 ascii-ui.INTERACTION_TYPE	ascii-ui.txt	/*ascii-ui.INTERACTION_TYPE*
+ascii-ui.InputHandler	ascii-ui.txt	/*ascii-ui.InputHandler*
+ascii-ui.InputHandler.new()	ascii-ui.txt	/*ascii-ui.InputHandler.new()*
+ascii-ui.InputHandler:pre_render_guard()	ascii-ui.txt	/*ascii-ui.InputHandler:pre_render_guard()*
+ascii-ui.InputHandler:setup()	ascii-ui.txt	/*ascii-ui.InputHandler:setup()*
+ascii-ui.InputHandler:teardown()	ascii-ui.txt	/*ascii-ui.InputHandler:teardown()*
 ascii-ui.Logger	ascii-ui.txt	/*ascii-ui.Logger*
 ascii-ui.Logger.set_level()	ascii-ui.txt	/*ascii-ui.Logger.set_level()*
 ascii-ui.UserInteractions	ascii-ui.txt	/*ascii-ui.UserInteractions*
@@ -85,6 +90,7 @@ ascii-ui.buffer.BufferLine:len()	ascii-ui.txt	/*ascii-ui.buffer.BufferLine:len()
 ascii-ui.buffer.BufferLine:to_string()	ascii-ui.txt	/*ascii-ui.buffer.BufferLine:to_string()*
 ascii-ui.buffer.Segment	ascii-ui.txt	/*ascii-ui.buffer.Segment*
 ascii-ui.buffer.Segment.is_segment()	ascii-ui.txt	/*ascii-ui.buffer.Segment.is_segment()*
+ascii-ui.buffer.Segment:get_input_callbacks()	ascii-ui.txt	/*ascii-ui.buffer.Segment:get_input_callbacks()*
 ascii-ui.buffer.Segment:is_focusable()	ascii-ui.txt	/*ascii-ui.buffer.Segment:is_focusable()*
 ascii-ui.buffer.Segment:len()	ascii-ui.txt	/*ascii-ui.buffer.Segment:len()*
 ascii-ui.buffer.Segment:new()	ascii-ui.txt	/*ascii-ui.buffer.Segment:new()*

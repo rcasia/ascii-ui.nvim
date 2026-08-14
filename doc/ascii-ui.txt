@@ -179,12 +179,20 @@ Return ~
 
 ==============================================================================
 ------------------------------------------------------------------------------
+@class ascii-ui.InputCallbacks
+@field state_setter fun(value: string) Sets the Input component's internal state
+@field on_change? fun(value: string) Fires on every text change
+@field on_submit? fun(value: string) Fires on <CR> in insert mode
+@field on_blur? fun(value: string) Fires on exit insert mode
+
+------------------------------------------------------------------------------
 @class ascii-ui.SegmentOpts
 @field content string does not support newlines
 @field is_focusable? boolean whether the segment can be focused
 @field interactions? table<ascii-ui.UserInteractions.InteractionType, function> a map of interaction types to functions
 @field highlight? string a highlight group name to apply to the segment
 @field color? string | ascii-ui.SegmentColor | ascii-ui.Color hex string shorthand ("#rrggbb"), table {fg, bg}, or Color instance
+@field _input_callbacks? ascii-ui.InputCallbacks imperative callbacks for Input component (set by Input, read by mount autocmds)
 
 ------------------------------------------------------------------------------
                                                        *ascii-ui.buffer.Segment*
@@ -199,6 +207,7 @@ Fields ~
 {interactions} `(table<ascii-ui.UserInteractions.InteractionType, function>)`
 {highlight} `(optional)` `(string)`
 {color} `(optional)` `(ascii)`-ui.Color normalized to Color instance
+{_input_callbacks} `(optional)` `(ascii)`-ui.InputCallbacks imperative callbacks for Input component
 {private} `(focusable)` boolean
 
 ------------------------------------------------------------------------------
@@ -245,6 +254,12 @@ Return ~
                     `ascii-ui.buffer.Segment:is_focusable`()
 Return ~
 `(boolean)`
+
+------------------------------------------------------------------------------
+                                 *ascii-ui.buffer.Segment:get_input_callbacks()*
+                `ascii-ui.buffer.Segment:get_input_callbacks`()
+Returns the input callbacks if this segment is an Input component.
+@return ascii-ui.InputCallbacks | nil
 
 ------------------------------------------------------------------------------
                                                 *ascii-ui.buffer.Segment:wrap()*
@@ -689,7 +704,14 @@ Creates a custom component and registers it
 
 ==============================================================================
 ------------------------------------------------------------------------------
-@alias ascii-ui.InputProps { value?: string }
+@class ascii-ui.InputProps
+@field value? string Controlled value
+@field initial_value? string Initial value (uncontrolled)
+@field placeholder? string Shown when empty + unfocused
+@field on_change? fun(value: string) Fires on every text change
+@field on_submit? fun(value: string) Fires on <CR> in insert mode
+@field on_blur? fun(value: string) Fires on exit insert mode
+@field password? boolean Mask display with *
 
 ------------------------------------------------------------------------------
 @param props? ascii-ui.InputProps
@@ -1170,16 +1192,20 @@ Maps a CursorDirection to the appropriate buffer search function.
 @return fun(buffer: ascii-ui.Buffer, position: { line: integer, col: integer }): { found: boolean, pos: { line: integer, col: integer } }
 
 ------------------------------------------------------------------------------
-                                       *ascii-ui.handlers.M.register_handlers()*
-`ascii-ui.handlers.M.register_handlers`({bus}, {window}, {fiberRootGetter}, {fiberRootSetter}, {renderedBufferGetter}, {renderedBufferSetter})
-Registers all command handlers on the given bus.
+@class ascii-ui.HandlerConfig
+@field bus ascii-ui.EventBus The command bus
+@field window ascii-ui.Window The viewport
+@field fiberRootGetter fun(): ascii-ui.RootFiberNode Returns current fiber root
+@field fiberRootSetter fun(root: ascii-ui.RootFiberNode) Updates fiber root reference
+@field renderedBufferGetter fun(): ascii-ui.Buffer Returns current rendered buffer
+@field renderedBufferSetter fun(buffer: ascii-ui.Buffer) Updates rendered buffer reference
+@field inputHandler? ascii-ui.InputHandler Optional input handler for pre-render guard
 
-@param bus ascii-ui.EventBus  The command bus to attach handlers to.
-@param window ascii-ui.Window  The viewport (window) for this mount.
-@param fiberRootGetter fun(): ascii-ui.RootFiberNode  Returns the current fiber root (may change after rerender).
-@param fiberRootSetter fun(root: ascii-ui.RootFiberNode)  Updates the fiber root reference after rerender.
-@param renderedBufferGetter fun(): ascii-ui.Buffer  Returns the current rendered buffer.
-@param renderedBufferSetter fun(buffer: ascii-ui.Buffer)  Updates the rendered buffer reference after rerender.
+------------------------------------------------------------------------------
+                                       *ascii-ui.handlers.M.register_handlers()*
+               `ascii-ui.handlers.M.register_handlers`({config})
+Registers all command handlers on the given bus.
+@param config ascii-ui.HandlerConfig Configuration table with dependencies
 
 
 ==============================================================================
@@ -1367,6 +1393,55 @@ the component automatically (live-reload).
 @param file string Path to a Lua file that returns a component.
 @param opts? { loader?: fun(path: string): any, mounter?: fun(comp: any): integer, notifier?: fun(msg: string, level: integer), watcher?: fun(path: string, bufnr: integer, reload: fun()) }
 @return integer|nil bufnr
+
+
+==============================================================================
+------------------------------------------------------------------------------
+Input handler for ascii-ui.
+
+Encapsulates all insert-mode input handling for the Input component.
+Dependencies are injected via constructor for testability.
+
+@module ascii-ui.input-handler
+
+------------------------------------------------------------------------------
+@class ascii-ui.InputHandlerDeps
+@field window ascii-ui.Window The viewport
+@field renderedBufferGetter fun(): ascii-ui.Buffer Returns current rendered buffer
+@field editingLineGetter fun(): integer|nil Returns line being edited
+@field editingLineSetter fun(line: integer|nil) Sets the editing line
+
+------------------------------------------------------------------------------
+                                                         *ascii-ui.InputHandler*
+                            `ascii-ui.InputHandler`
+@class ascii-ui.InputHandler
+@field private _deps ascii-ui.InputHandlerDeps
+@field private _autocmd_ids integer[] Autocmd IDs for cleanup
+@field private _keymaps table[] Keymap info for cleanup
+
+------------------------------------------------------------------------------
+                                                   *ascii-ui.InputHandler.new()*
+                      `ascii-ui.InputHandler.new`({deps})
+Creates a new InputHandler with injected dependencies.
+@param deps ascii-ui.InputHandlerDeps
+@return ascii-ui.InputHandler
+
+------------------------------------------------------------------------------
+                                                 *ascii-ui.InputHandler:setup()*
+                        `ascii-ui.InputHandler:setup`()
+Sets up all autocmds and keymaps for input handling.
+
+------------------------------------------------------------------------------
+                                              *ascii-ui.InputHandler:teardown()*
+                       `ascii-ui.InputHandler:teardown`()
+Tears down all autocmds and keymaps.
+
+------------------------------------------------------------------------------
+                                      *ascii-ui.InputHandler:pre_render_guard()*
+                   `ascii-ui.InputHandler:pre_render_guard`()
+Pre-render guard for STATE_CHANGE handler.
+Saves the editing line content before render and returns a restoration function.
+@return fun() restore Function to call after render to restore editing line
 
 
 ==============================================================================
