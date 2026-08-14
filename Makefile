@@ -22,7 +22,7 @@ build:
 endif
 
 test: build
-	 bash scripts/test $(filter-out $@, $(MAKECMDGOALS))
+	 bash scripts/test-with-timeout.sh 15 $(filter-out $@, $(MAKECMDGOALS))
 
 bench: build
 	bash scripts/bench
