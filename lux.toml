@@ -9,8 +9,8 @@ labels = []
 license = "MIT"
 
 [source]
-url = "https://github.com/rcasia/$(PACKAGE)/archive/refs/tags/v$(VERSION).zip"
-dev = "git+https://github.com/rcasia/$(PACKAGE).git"
+url = "https://github.com/ascii-ui/$(PACKAGE)/archive/refs/tags/v$(VERSION).zip"
+dev = "git+https://github.com/ascii-ui/$(PACKAGE).git"
 
 [dependencies]
 "plenary.nvim" = "scm-1"

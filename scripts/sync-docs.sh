@@ -14,7 +14,7 @@ echo ""
 # Check if docs repo exists
 if [ ! -d "$DOCS_REPO" ]; then
     echo "Cloning ascii-ui-docs to $DOCS_REPO..."
-    git clone https://github.com/rcasia/ascii-ui-docs.git "$DOCS_REPO"
+    git clone https://github.com/ascii-ui/ascii-ui-docs.git "$DOCS_REPO"
 fi
 
 cd "$DOCS_REPO"
